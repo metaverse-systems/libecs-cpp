@@ -23,6 +23,8 @@ Makefile.in
 /install-sh
 /missing
 /stamp-h1
+/config.log
+/config.status
 
 # https://www.gnu.org/software/libtool/
 
@@ -40,3 +42,13 @@ m4/ltsugar.m4
 m4/ltversion.m4
 m4/lt~obsolete.m4
 autom4te.cache
+
+/ecs-cpp.pc
+/Doxyfile
+Makefile
+.libs
+.deps
+*.o
+*.la
+*.lo
+libtool
