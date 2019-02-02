@@ -3,7 +3,7 @@
 namespace ecs
 {
 
-    /*! Manages containers. */
+    /** Manages containers. */
 
     class Manager
     {
