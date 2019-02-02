@@ -2,6 +2,9 @@
 
 namespace ecs
 {
+
+    /*! Manages containers. */
+
     class Manager
     {
       public:
