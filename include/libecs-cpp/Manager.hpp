@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <mutex>
 
 namespace ecs
 {
@@ -21,5 +22,6 @@ namespace ecs
         void ContainersKill(std::vector<std::string>);
         ecs::Container *ContainerCreate(std::string handle);
         std::map<std::string, ecs::Container *> containers;
+        std::mutex mutex_containers;
     };
 }
