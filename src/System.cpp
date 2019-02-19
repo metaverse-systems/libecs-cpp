@@ -21,4 +21,9 @@ namespace ecs
     {
         return this->Handle;
     }
+
+    void System::ContainerSet(ecs::Container *container)
+    {
+        this->Container = Container;
+    }
 }
