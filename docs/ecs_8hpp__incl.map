@@ -1,4 +1,5 @@
 <map id="include/libecs&#45;cpp/ecs.hpp" name="include/libecs&#45;cpp/ecs.hpp">
-<area shape="rect" id="node2" href="$Manager_8hpp.html" title="libecs&#45;cpp/Manager.hpp" alt="" coords="197,95,357,121"/>
-<area shape="rect" id="node7" href="$Container_8hpp.html" title="libecs&#45;cpp/Container.hpp" alt="" coords="5,95,172,121"/>
+<area shape="rect" id="node2" href="$Manager_8hpp.html" title="libecs&#45;cpp/Manager.hpp" alt="" coords="184,95,344,121"/>
+<area shape="rect" id="node7" href="$Container_8hpp.html" title="libecs&#45;cpp/Container.hpp" alt="" coords="369,95,535,121"/>
+<area shape="rect" id="node10" href="$System_8hpp.html" title="libecs&#45;cpp/System.hpp" alt="" coords="5,95,160,121"/>
 </map>
