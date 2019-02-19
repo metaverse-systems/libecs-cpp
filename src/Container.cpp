@@ -38,6 +38,7 @@ namespace ecs
 
     ecs::System *Container::System(ecs::System *system)
     {
+        system->ContainerSet(this);
         this->Systems[system->HandleGet()] = system;
         return system;
     }
