@@ -1,6 +1,7 @@
 <map id="include/libecs&#45;cpp/Manager.hpp" name="include/libecs&#45;cpp/Manager.hpp">
-<area shape="rect" id="node2" href="$ecs_8hpp.html" title="include/libecs&#45;cpp\l/ecs.hpp" alt="" coords="151,95,278,136"/>
-<area shape="rect" id="node3" href="$Container_8cpp.html" title="src/Container.cpp" alt="" coords="5,184,131,211"/>
-<area shape="rect" id="node4" href="$Manager_8cpp.html" title="src/Manager.cpp" alt="" coords="155,184,274,211"/>
-<area shape="rect" id="node5" href="$System_8cpp.html" title="src/System.cpp" alt="" coords="299,184,413,211"/>
+<area shape="rect" id="node2" href="$ecs_8hpp.html" title="include/libecs&#45;cpp\l/ecs.hpp" alt="" coords="238,95,365,136"/>
+<area shape="rect" id="node3" href="$Component_8cpp.html" title="src/Component.cpp" alt="" coords="5,184,141,211"/>
+<area shape="rect" id="node4" href="$Container_8cpp.html" title="src/Container.cpp" alt="" coords="165,184,291,211"/>
+<area shape="rect" id="node5" href="$Manager_8cpp.html" title="src/Manager.cpp" alt="" coords="315,184,434,211"/>
+<area shape="rect" id="node6" href="$System_8cpp.html" title="src/System.cpp" alt="" coords="459,184,573,211"/>
 </map>
