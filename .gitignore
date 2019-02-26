@@ -16,6 +16,7 @@ Makefile.in
 /compile
 /config.guess
 /config.h.in
+/config.h
 /config.sub
 /configure
 /configure.scan

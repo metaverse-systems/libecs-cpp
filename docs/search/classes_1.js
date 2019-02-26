@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['manager',['Manager',['../classecs_1_1Manager.html',1,'ecs']]]
+  ['entity',['Entity',['../classecs_1_1Entity.html',1,'ecs']]]
 ];

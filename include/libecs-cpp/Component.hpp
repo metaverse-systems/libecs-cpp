@@ -10,6 +10,6 @@ namespace ecs
         Component();
         std::string Handle;
         std::string Type;
-        std::string EntityID;
+        std::string EntityHandle;
     };
 }
