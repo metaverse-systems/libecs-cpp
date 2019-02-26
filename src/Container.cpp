@@ -1,9 +1,9 @@
 #include <uuid/uuid.h>
 #include <libecs-cpp/ecs.hpp>
 #include <thread>
-#include <mutex>
 #include <chrono>
 #include <unistd.h>
+#include <iostream>
 
 namespace ecs
 {
@@ -53,6 +53,60 @@ namespace ecs
         return Handles;
     }
 
+    ecs::Component *Container::Component(ecs::Component *c)
+    {
+        std::cout << "Type: " << c->Type << std::endl;
+        std::cout << "Handle: " << c->Handle << std::endl;
+
+        this->Components[c->Type][c->Handle] = c; 
+        return c;
+    }
+
+    std::map<std::string, std::map<std::string, ecs::Component *>> Container::ComponentsGet()
+    {
+        return this->Components;
+    }
+
+    std::map<std::string, std::map<std::string, ecs::Component *>> Container::ComponentsGet(std::vector<std::string> Types)
+    {
+        std::map<std::string, std::map<std::string, ecs::Component *>> c;
+
+        for(auto &t : Types) c[t] = this->Components[t];
+        return c;
+    }
+
+    ecs::Entity *Container::Entity(std::string Handle)
+    {
+        return this->EntityCreate(Handle);
+    }
+
+    ecs::Entity *Container::Entity()
+    {
+        return this->EntityCreate("");
+    }
+
+    ecs::Entity *Container::EntityCreate(std::string Handle)
+    {
+        ecs::Entity *e;
+        if(Handle.size() == 0)
+        {
+            e = new ecs::Entity();
+            this->Entities[e->HandleGet()] = e;
+        }
+        else
+        {
+            if(this->Entities.count(Handle) == 0)
+            {
+                e = new ecs::Entity(Handle);
+                this->Entities[Handle] = e;
+            }
+            else e = this->Entities[Handle];
+        }
+
+        e->ContainerSet(this);
+        return e;
+    }
+
     void Container::ThreadFunc()
     {
         while(this->ThreadRunning)
@@ -68,13 +122,9 @@ namespace ecs
         uint32_t dt = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->LastTime).count();
         this->LastTime = now;
 
-        this->SystemsMutex.lock();
+        for(auto &Handle : this->SystemsGet())
         {
-            for(auto &Handle : this->SystemsGet())
-            {
-                this->Systems[Handle]->Update(dt);
-            }
+            this->Systems[Handle]->Update(dt);
         }
-        this->SystemsMutex.unlock();
     }
 }

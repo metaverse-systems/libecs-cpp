@@ -4,13 +4,14 @@
 #include <vector>
 #include <map>
 #include <thread>
-#include <mutex>
 #include <chrono>
 
 namespace ecs
 {
     class Manager;
     class System;
+    class Component;
+    class Entity;
 
     class Container
     {
@@ -21,15 +22,22 @@ namespace ecs
         std::string HandleGet();
         ecs::System *System(ecs::System *);
         std::vector<std::string> SystemsGet();
+        ecs::Component *Component(ecs::Component *c);
+        std::map<std::string, std::map<std::string, ecs::Component *>> ComponentsGet();
+        std::map<std::string, std::map<std::string, ecs::Component *>> ComponentsGet(std::vector<std::string>);
+        ecs::Entity *Entity(std::string);
+        ecs::Entity *Entity();
       private:
         std::string Handle;
         ecs::Manager *Manager = nullptr;
         std::map <std::string, ecs::System *> Systems;
+        std::map<std::string, std::map<std::string, ecs::Component *>> Components;
         std::thread ContainerThread;
         void ThreadFunc();
         bool ThreadRunning = true;
         void Update();
-        std::mutex SystemsMutex;
+        ecs::Entity *EntityCreate(std::string Handle);
         std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
+        std::map<std::string, ecs::Entity *> Entities;
     };
 }

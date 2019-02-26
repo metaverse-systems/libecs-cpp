@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['manager',['Manager',['../classecs_1_1Manager.html#a752c44853b64f2ae4807f882bc2e7cbe',1,'ecs::Manager']]],
-  ['managerset',['ManagerSet',['../classecs_1_1Container.html#ade5e836eabd07de330fcc8b229c8aba3',1,'ecs::Container']]]
+  ['handleget',['HandleGet',['../classecs_1_1Container.html#a03e10083123f4eb4c7a0fab2814ac8c6',1,'ecs::Container::HandleGet()'],['../classecs_1_1Entity.html#af11001a3fc442cda0b17933297d9df1a',1,'ecs::Entity::HandleGet()'],['../classecs_1_1System.html#af94f5fdd6b497324e46a0d0d2bcb4b1e',1,'ecs::System::HandleGet()']]]
 ];

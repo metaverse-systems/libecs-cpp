@@ -5,3 +5,4 @@
 
 #include <libecs-cpp/System.hpp>
 #include <libecs-cpp/Component.hpp>
+#include <libecs-cpp/Entity.hpp>
