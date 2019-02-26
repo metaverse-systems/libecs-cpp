@@ -24,6 +24,6 @@ namespace ecs
 
     void System::ContainerSet(ecs::Container *container)
     {
-        this->Container = Container;
+        this->Container = container;
     }
 }
