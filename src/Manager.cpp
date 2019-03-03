@@ -1,5 +1,7 @@
 #include <libecs-cpp/ecs.hpp>
 
+ecs::Manager *ECS = new ecs::Manager();
+
 namespace ecs
 {
     Manager::Manager()
