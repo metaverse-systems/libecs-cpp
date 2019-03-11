@@ -7,8 +7,4 @@
 #include <libecs-cpp/Component.hpp>
 #include <libecs-cpp/Entity.hpp>
 
-#include <string>
-#include <map>
-typedef std::map<std::string, std::string> ConfigMap;
-
 extern ecs::Manager *ECS;
