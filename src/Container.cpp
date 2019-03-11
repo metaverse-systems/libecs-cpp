@@ -3,7 +3,6 @@
 #include <thread>
 #include <chrono>
 #include <unistd.h>
-#include <iostream>
 
 namespace ecs
 {
@@ -71,9 +70,6 @@ namespace ecs
 
     ecs::Component *Container::Component(ecs::Component *c)
     {
-        std::cout << "Type: " << c->Type << std::endl;
-        std::cout << "Handle: " << c->Handle << std::endl;
-
         this->Components[c->Type][c->Handle] = c; 
         return c;
     }
