@@ -20,6 +20,7 @@ namespace ecs
         Container();
         Container(std::string Handle);
         void ManagerSet(ecs::Manager *Manager);
+        ecs::Manager *ManagerGet();
         std::string HandleGet();
         ecs::System *System(ecs::System *);
         std::vector<std::string> SystemsGet();

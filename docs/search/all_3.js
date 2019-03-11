@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lasttime',['LastTime',['../classecs_1_1Container.html#a64173daa1e3e4da016913a2b556cfaff',1,'ecs::Container']]]
+  ['isrunning',['IsRunning',['../classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624',1,'ecs::Manager']]]
 ];
