@@ -46,6 +46,11 @@ namespace ecs
         this->Manager = Manager;
     }
 
+    ecs::Manager *Container::ManagerGet()
+    {
+        return this->Manager;
+    }
+
     std::string Container::HandleGet()
     {
         return this->Handle;

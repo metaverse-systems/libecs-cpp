@@ -18,6 +18,16 @@ namespace ecs
         return this->ContainerCreate("");
     }
 
+    bool Manager::IsRunning()
+    {
+        return Running;
+    }
+
+    void Manager::Shutdown()
+    {
+        this->Running = false;
+    }
+
     ecs::Container *Manager::ContainerCreate(std::string handle)
     {
         ecs::Container *c;

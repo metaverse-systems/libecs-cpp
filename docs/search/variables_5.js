@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['systems',['Systems',['../classecs_1_1Container.html#ab4076c51c98ea1b72b40c893de2cbed7',1,'ecs::Container']]]
+  ['running',['Running',['../classecs_1_1Manager.html#ad7da3ae18d48d971de855290f7893016',1,'ecs::Manager']]]
 ];

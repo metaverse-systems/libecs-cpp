@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['threadrunning',['ThreadRunning',['../classecs_1_1Container.html#a59117cb358b7808b2ccf469892e04541',1,'ecs::Container']]],
-  ['type',['Type',['../classecs_1_1Component.html#a98d0cb9184cefc653e4b66dc289c7ee0',1,'ecs::Component']]]
+  ['systems',['Systems',['../classecs_1_1Container.html#ab4076c51c98ea1b72b40c893de2cbed7',1,'ecs::Container']]]
 ];
