@@ -1,5 +1,6 @@
 #pragma once
 
+#include <jsoncpp/json/json.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -27,6 +28,7 @@ namespace ecs
         std::map<std::string, std::map<std::string, ecs::Component *>> ComponentsGet(std::vector<std::string>);
         ecs::Entity *Entity(std::string);
         ecs::Entity *Entity();
+        Json::Value save();
       private:
         std::string Handle;
         ecs::Manager *Manager = nullptr;
