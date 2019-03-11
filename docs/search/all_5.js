@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['save',['save',['../classecs_1_1Component.html#a73b79919ba3063fb5744b023f90ea046',1,'ecs::Component::save()'],['../classecs_1_1Container.html#a1bb16451350091e6a6705c6f5096cd49',1,'ecs::Container::save()'],['../classecs_1_1Entity.html#ad89018b58ebda377e898e6245404bd7c',1,'ecs::Entity::save()']]],
   ['system',['System',['../classecs_1_1System.html',1,'ecs::System'],['../classecs_1_1Container.html#af116a65d191332d17d0df9b91bf60ec1',1,'ecs::Container::System()'],['../classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8',1,'ecs::System::System()'],['../classecs_1_1System.html#abeea1820ec340a2755efd87589f18eb4',1,'ecs::System::System(std::string Handle)']]],
   ['system_2ecpp',['System.cpp',['../System_8cpp.html',1,'']]],
   ['system_2ehpp',['System.hpp',['../System_8hpp.html',1,'']]],

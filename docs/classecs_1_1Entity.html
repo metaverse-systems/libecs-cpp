@@ -90,14 +90,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a281c72932973d334c60e87446cd33055"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e2e9455c1e2494cce88cfa3547534f2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#a1e2e9455c1e2494cce88cfa3547534f2">Entity</a> (std::string <a class="el" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>)</td></tr>
 <tr class="separator:a1e2e9455c1e2494cce88cfa3547534f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad89018b58ebda377e898e6245404bd7c"><td class="memItemLeft" align="right" valign="top">Json::Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#ad89018b58ebda377e898e6245404bd7c">save</a> ()</td></tr>
+<tr class="separator:ad89018b58ebda377e898e6245404bd7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbd3c302ffd4240e062334d99b83aa92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#abbd3c302ffd4240e062334d99b83aa92">ContainerSet</a> (<a class="el" href="classecs_1_1Container.html">ecs::Container</a> *<a class="el" href="classecs_1_1Container.html">Container</a>)</td></tr>
 <tr class="separator:abbd3c302ffd4240e062334d99b83aa92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af11001a3fc442cda0b17933297d9df1a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#af11001a3fc442cda0b17933297d9df1a">HandleGet</a> ()</td></tr>
 <tr class="separator:af11001a3fc442cda0b17933297d9df1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99ba81397a344b2741744dce5cb0f0b3"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::map&lt; std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> * &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#a99ba81397a344b2741744dce5cb0f0b3">ComponentsGet</a> ()</td></tr>
-<tr class="separator:a99ba81397a344b2741744dce5cb0f0b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4030001dedb93f0af04c32ecff7c5518"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::map&lt; std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> * &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#a4030001dedb93f0af04c32ecff7c5518">ComponentsGet</a> (std::vector&lt; std::string &gt; Types)</td></tr>
-<tr class="separator:a4030001dedb93f0af04c32ecff7c5518"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a661b93f35b40e3486db713412cc5b94f"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#a661b93f35b40e3486db713412cc5b94f">ComponentsGet</a> ()</td></tr>
+<tr class="separator:a661b93f35b40e3486db713412cc5b94f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8667c8a723fbae826b86ee34286467fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecs_1_1Component.html">ecs::Component</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#a8667c8a723fbae826b86ee34286467fc">ComponentGet</a> (std::string Type)</td></tr>
+<tr class="separator:a8667c8a723fbae826b86ee34286467fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6797e834b64fd323e4904f2b27847e6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecs_1_1Component.html">ecs::Component</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#aa6797e834b64fd323e4904f2b27847e6">Component</a> (<a class="el" href="classecs_1_1Component.html">ecs::Component</a> *c)</td></tr>
 <tr class="separator:aa6797e834b64fd323e4904f2b27847e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -110,12 +112,12 @@ Public Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:aee52b113feb439bd2bf35620884bb389"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::map&lt; std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> * &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#aee52b113feb439bd2bf35620884bb389">Components</a></td></tr>
-<tr class="separator:aee52b113feb439bd2bf35620884bb389"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3e646e31b5494158abfc20197cc56aa"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Entity.html#aa3e646e31b5494158abfc20197cc56aa">Components</a></td></tr>
+<tr class="separator:aa3e646e31b5494158abfc20197cc56aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="Entity_8hpp_source.html#l00012">12</a> of file <a class="el" href="Entity_8hpp_source.html">Entity.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Entity_8hpp_source.html#l00013">13</a> of file <a class="el" href="Entity_8hpp_source.html">Entity.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a281c72932973d334c60e87446cd33055"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a281c72932973d334c60e87446cd33055">&#9670;&nbsp;</a></span>Entity() <span class="overload">[1/2]</span></h2>
@@ -134,8 +136,8 @@ Private Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00006">6</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00019">Handle</a>.</p>
-<div class="fragment"><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    {</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        uuid_t uuid;</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        uuid_generate(uuid);</div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>.resize(40);</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        uuid_unparse(uuid, &amp;this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>[0]);</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_a1d5964205c0573e46dedeeb4a1c64575"><div class="ttname"><a href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">ecs::Entity::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00019">Entity.hpp:19</a></div></div>
+<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00021">Handle</a>.</p>
+<div class="fragment"><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    {</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        uuid_t uuid;</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        uuid_generate(uuid);</div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>.resize(40);</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        uuid_unparse(uuid, &amp;this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>[0]);</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_a1d5964205c0573e46dedeeb4a1c64575"><div class="ttname"><a href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">ecs::Entity::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00021">Entity.hpp:21</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -157,8 +159,8 @@ Private Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00015">15</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00019">Handle</a>.</p>
-<div class="fragment"><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    {</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a> = <a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>;</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_a1d5964205c0573e46dedeeb4a1c64575"><div class="ttname"><a href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">ecs::Entity::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00019">Entity.hpp:19</a></div></div>
+<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00021">Handle</a>.</p>
+<div class="fragment"><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    {</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a> = <a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>;</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_a1d5964205c0573e46dedeeb4a1c64575"><div class="ttname"><a href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">ecs::Entity::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00021">Entity.hpp:21</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -179,27 +181,49 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00043">43</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00054">54</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="Container_8cpp_source.html#l00056">ecs::Container::Component()</a>, <a class="el" href="Entity_8hpp_source.html#l00025">Components</a>, <a class="el" href="Component_8hpp_source.html#l00013">ecs::Component::EntityHandle</a>, <a class="el" href="Component_8hpp_source.html#l00011">ecs::Component::Handle</a>, <a class="el" href="Entity_8hpp_source.html#l00019">Handle</a>, and <a class="el" href="Component_8hpp_source.html#l00012">ecs::Component::Type</a>.</p>
-<div class="fragment"><div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {</div><div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        c-&gt;<a class="code" href="classecs_1_1Component.html#aa69d3ae389b5205236c809a3fd38666b">EntityHandle</a> = this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>;</div><div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        this-&gt;<a class="code" href="classecs_1_1Entity.html#aee52b113feb439bd2bf35620884bb389">Components</a>[c-&gt;<a class="code" href="classecs_1_1Component.html#a98d0cb9184cefc653e4b66dc289c7ee0">Type</a>][c-&gt;<a class="code" href="classecs_1_1Component.html#a8dd3a09572435aaca6b85f6461eb28a5">Handle</a>] = c;</div><div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        this-&gt;<a class="code" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code" href="classecs_1_1Container.html#a8fbf5d1b29133e7733acb88c4a4b0eca">Component</a>(c);</div><div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">return</span> c;</div><div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div><div class="ttc" id="classecs_1_1Component_html_a98d0cb9184cefc653e4b66dc289c7ee0"><div class="ttname"><a href="classecs_1_1Component.html#a98d0cb9184cefc653e4b66dc289c7ee0">ecs::Component::Type</a></div><div class="ttdeci">std::string Type</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00012">Component.hpp:12</a></div></div>
-<div class="ttc" id="classecs_1_1Container_html_a8fbf5d1b29133e7733acb88c4a4b0eca"><div class="ttname"><a href="classecs_1_1Container.html#a8fbf5d1b29133e7733acb88c4a4b0eca">ecs::Container::Component</a></div><div class="ttdeci">ecs::Component * Component(ecs::Component *c)</div><div class="ttdef"><b>Definition:</b> <a href="Container_8cpp_source.html#l00056">Container.cpp:56</a></div></div>
-<div class="ttc" id="classecs_1_1Component_html_a8dd3a09572435aaca6b85f6461eb28a5"><div class="ttname"><a href="classecs_1_1Component.html#a8dd3a09572435aaca6b85f6461eb28a5">ecs::Component::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00011">Component.hpp:11</a></div></div>
-<div class="ttc" id="classecs_1_1Entity_html_a1d5964205c0573e46dedeeb4a1c64575"><div class="ttname"><a href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">ecs::Entity::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00019">Entity.hpp:19</a></div></div>
-<div class="ttc" id="classecs_1_1Component_html_aa69d3ae389b5205236c809a3fd38666b"><div class="ttname"><a href="classecs_1_1Component.html#aa69d3ae389b5205236c809a3fd38666b">ecs::Component::EntityHandle</a></div><div class="ttdeci">std::string EntityHandle</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00013">Component.hpp:13</a></div></div>
-<div class="ttc" id="classecs_1_1Entity_html_aa829b0bd9d26729d00393ea4ccaa7b5d"><div class="ttname"><a href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">ecs::Entity::Container</a></div><div class="ttdeci">ecs::Container * Container</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00020">Entity.hpp:20</a></div></div>
-<div class="ttc" id="classecs_1_1Entity_html_aee52b113feb439bd2bf35620884bb389"><div class="ttname"><a href="classecs_1_1Entity.html#aee52b113feb439bd2bf35620884bb389">ecs::Entity::Components</a></div><div class="ttdeci">std::map&lt; std::string, std::map&lt; std::string, ecs::Component * &gt; &gt; Components</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00025">Entity.hpp:25</a></div></div>
+<p class="reference">References <a class="el" href="Container_8cpp_source.html#l00072">ecs::Container::Component()</a>, <a class="el" href="Entity_8hpp_source.html#l00027">Components</a>, <a class="el" href="Component_8hpp_source.html#l00015">ecs::Component::EntityHandle</a>, <a class="el" href="Entity_8hpp_source.html#l00021">Handle</a>, and <a class="el" href="Component_8hpp_source.html#l00014">ecs::Component::Type</a>.</p>
+<div class="fragment"><div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    {</div><div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        c-&gt;<a class="code" href="classecs_1_1Component.html#aa69d3ae389b5205236c809a3fd38666b">EntityHandle</a> = this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>;</div><div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        this-&gt;<a class="code" href="classecs_1_1Entity.html#aa3e646e31b5494158abfc20197cc56aa">Components</a>[c-&gt;<a class="code" href="classecs_1_1Component.html#a98d0cb9184cefc653e4b66dc289c7ee0">Type</a>] = c;</div><div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        this-&gt;<a class="code" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code" href="classecs_1_1Container.html#a8fbf5d1b29133e7733acb88c4a4b0eca">Component</a>(c);</div><div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">return</span> c;</div><div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div><div class="ttc" id="classecs_1_1Component_html_a98d0cb9184cefc653e4b66dc289c7ee0"><div class="ttname"><a href="classecs_1_1Component.html#a98d0cb9184cefc653e4b66dc289c7ee0">ecs::Component::Type</a></div><div class="ttdeci">std::string Type</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00014">Component.hpp:14</a></div></div>
+<div class="ttc" id="classecs_1_1Container_html_a8fbf5d1b29133e7733acb88c4a4b0eca"><div class="ttname"><a href="classecs_1_1Container.html#a8fbf5d1b29133e7733acb88c4a4b0eca">ecs::Container::Component</a></div><div class="ttdeci">ecs::Component * Component(ecs::Component *c)</div><div class="ttdef"><b>Definition:</b> <a href="Container_8cpp_source.html#l00072">Container.cpp:72</a></div></div>
+<div class="ttc" id="classecs_1_1Entity_html_a1d5964205c0573e46dedeeb4a1c64575"><div class="ttname"><a href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">ecs::Entity::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00021">Entity.hpp:21</a></div></div>
+<div class="ttc" id="classecs_1_1Entity_html_aa3e646e31b5494158abfc20197cc56aa"><div class="ttname"><a href="classecs_1_1Entity.html#aa3e646e31b5494158abfc20197cc56aa">ecs::Entity::Components</a></div><div class="ttdeci">std::map&lt; std::string, ecs::Component * &gt; Components</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00027">Entity.hpp:27</a></div></div>
+<div class="ttc" id="classecs_1_1Component_html_aa69d3ae389b5205236c809a3fd38666b"><div class="ttname"><a href="classecs_1_1Component.html#aa69d3ae389b5205236c809a3fd38666b">ecs::Component::EntityHandle</a></div><div class="ttdeci">std::string EntityHandle</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00015">Component.hpp:15</a></div></div>
+<div class="ttc" id="classecs_1_1Entity_html_aa829b0bd9d26729d00393ea4ccaa7b5d"><div class="ttname"><a href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">ecs::Entity::Container</a></div><div class="ttdeci">ecs::Container * Container</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00022">Entity.hpp:22</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a99ba81397a344b2741744dce5cb0f0b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a99ba81397a344b2741744dce5cb0f0b3">&#9670;&nbsp;</a></span>ComponentsGet() <span class="overload">[1/2]</span></h2>
+<a id="a8667c8a723fbae826b86ee34286467fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8667c8a723fbae826b86ee34286467fc">&#9670;&nbsp;</a></span>ComponentGet()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt; std::string, std::map&lt; std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> * &gt; &gt; ecs::Entity::ComponentsGet </td>
+          <td class="memname"><a class="el" href="classecs_1_1Component.html">ecs::Component</a> * ecs::Entity::ComponentGet </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>Type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00049">49</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00027">Components</a>.</p>
+<div class="fragment"><div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    {</div><div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordflow">return</span> this-&gt;<a class="code" href="classecs_1_1Entity.html#aa3e646e31b5494158abfc20197cc56aa">Components</a>[Type];</div><div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_aa3e646e31b5494158abfc20197cc56aa"><div class="ttname"><a href="classecs_1_1Entity.html#aa3e646e31b5494158abfc20197cc56aa">ecs::Entity::Components</a></div><div class="ttdeci">std::map&lt; std::string, ecs::Component * &gt; Components</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00027">Entity.hpp:27</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a661b93f35b40e3486db713412cc5b94f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a661b93f35b40e3486db713412cc5b94f">&#9670;&nbsp;</a></span>ComponentsGet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt; std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> * &gt; ecs::Entity::ComponentsGet </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -207,33 +231,10 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00030">30</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00044">44</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00025">Components</a>.</p>
-<div class="fragment"><div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    {</div><div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordflow">return</span> this-&gt;<a class="code" href="classecs_1_1Entity.html#aee52b113feb439bd2bf35620884bb389">Components</a>;</div><div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_aee52b113feb439bd2bf35620884bb389"><div class="ttname"><a href="classecs_1_1Entity.html#aee52b113feb439bd2bf35620884bb389">ecs::Entity::Components</a></div><div class="ttdeci">std::map&lt; std::string, std::map&lt; std::string, ecs::Component * &gt; &gt; Components</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00025">Entity.hpp:25</a></div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a4030001dedb93f0af04c32ecff7c5518"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4030001dedb93f0af04c32ecff7c5518">&#9670;&nbsp;</a></span>ComponentsGet() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::map&lt; std::string, std::map&lt; std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> * &gt; &gt; ecs::Entity::ComponentsGet </td>
-          <td>(</td>
-          <td class="paramtype">std::vector&lt; std::string &gt;&#160;</td>
-          <td class="paramname"><em>Types</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00035">35</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
-
-<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00025">Components</a>.</p>
-<div class="fragment"><div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    {</div><div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        std::map&lt;std::string, std::map&lt;std::string, ecs::Component *&gt;&gt; c;</div><div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div><div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;t : Types) c[t] = this-&gt;<a class="code" href="classecs_1_1Entity.html#aee52b113feb439bd2bf35620884bb389">Components</a>[t];</div><div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">return</span> c;</div><div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_aee52b113feb439bd2bf35620884bb389"><div class="ttname"><a href="classecs_1_1Entity.html#aee52b113feb439bd2bf35620884bb389">ecs::Entity::Components</a></div><div class="ttdeci">std::map&lt; std::string, std::map&lt; std::string, ecs::Component * &gt; &gt; Components</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00025">Entity.hpp:25</a></div></div>
+<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00027">Components</a>.</p>
+<div class="fragment"><div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    {</div><div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">return</span> this-&gt;<a class="code" href="classecs_1_1Entity.html#aa3e646e31b5494158abfc20197cc56aa">Components</a>;</div><div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_aa3e646e31b5494158abfc20197cc56aa"><div class="ttname"><a href="classecs_1_1Entity.html#aa3e646e31b5494158abfc20197cc56aa">ecs::Entity::Components</a></div><div class="ttdeci">std::map&lt; std::string, ecs::Component * &gt; Components</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00027">Entity.hpp:27</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -253,10 +254,10 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00025">25</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00039">39</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00088">ecs::Container::EntityCreate()</a>.</p>
-<div class="fragment"><div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    {</div><div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        this-&gt;Container = container;</div><div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    }</div></div><!-- fragment -->
+<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00104">ecs::Container::EntityCreate()</a>.</p>
+<div class="fragment"><div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    {</div><div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        this-&gt;Container = container;</div><div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div></div><!-- fragment -->
 </div>
 </div>
 <a id="af11001a3fc442cda0b17933297d9df1a"></a>
@@ -274,18 +275,44 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00034">34</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00021">Handle</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00104">ecs::Container::EntityCreate()</a>.</p>
+<div class="fragment"><div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    {</div><div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>;</div><div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_a1d5964205c0573e46dedeeb4a1c64575"><div class="ttname"><a href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">ecs::Entity::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00021">Entity.hpp:21</a></div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="ad89018b58ebda377e898e6245404bd7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad89018b58ebda377e898e6245404bd7c">&#9670;&nbsp;</a></span>save()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::Value ecs::Entity::save </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 <p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00020">20</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00019">Handle</a>.</p>
+<p class="reference">References <a class="el" href="Entity_8hpp_source.html#l00027">Components</a>, and <a class="el" href="classecs_1_1Component.html#a73b79919ba3063fb5744b023f90ea046">ecs::Component::save()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00088">ecs::Container::EntityCreate()</a>.</p>
-<div class="fragment"><div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    {</div><div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="keywordflow">return</span> this-&gt;<a class="code" href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">Handle</a>;</div><div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_a1d5964205c0573e46dedeeb4a1c64575"><div class="ttname"><a href="classecs_1_1Entity.html#a1d5964205c0573e46dedeeb4a1c64575">ecs::Entity::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00019">Entity.hpp:19</a></div></div>
+<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00029">ecs::Container::save()</a>.</p>
+<div class="fragment"><div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    {</div><div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        Json::Value data;</div><div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div><div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;c : this-&gt;<a class="code" href="classecs_1_1Entity.html#aa3e646e31b5494158abfc20197cc56aa">Components</a>)</div><div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        {</div><div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            <a class="code" href="classecs_1_1Component.html">ecs::Component</a> *component = this-&gt;Components[c.first];</div><div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div><div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            data[<span class="stringliteral">&quot;components&quot;</span>][c.first] = component-&gt;<a class="code" href="classecs_1_1Component.html#a73b79919ba3063fb5744b023f90ea046">save</a>();</div><div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        }</div><div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div><div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordflow">return</span> data;</div><div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    }</div><div class="ttc" id="classecs_1_1Entity_html_aa3e646e31b5494158abfc20197cc56aa"><div class="ttname"><a href="classecs_1_1Entity.html#aa3e646e31b5494158abfc20197cc56aa">ecs::Entity::Components</a></div><div class="ttdeci">std::map&lt; std::string, ecs::Component * &gt; Components</div><div class="ttdef"><b>Definition:</b> <a href="Entity_8hpp_source.html#l00027">Entity.hpp:27</a></div></div>
+<div class="ttc" id="classecs_1_1Component_html_a73b79919ba3063fb5744b023f90ea046"><div class="ttname"><a href="classecs_1_1Component.html#a73b79919ba3063fb5744b023f90ea046">ecs::Component::save</a></div><div class="ttdeci">virtual Json::Value save()=0</div></div>
+<div class="ttc" id="classecs_1_1Component_html"><div class="ttname"><a href="classecs_1_1Component.html">ecs::Component</a></div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00008">Component.hpp:8</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="aee52b113feb439bd2bf35620884bb389"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aee52b113feb439bd2bf35620884bb389">&#9670;&nbsp;</a></span>Components</h2>
+<a id="aa3e646e31b5494158abfc20197cc56aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3e646e31b5494158abfc20197cc56aa">&#9670;&nbsp;</a></span>Components</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -294,7 +321,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt;std::string, std::map&lt;std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> *&gt; &gt; ecs::Entity::Components</td>
+          <td class="memname">std::map&lt;std::string, <a class="el" href="classecs_1_1Component.html">ecs::Component</a> *&gt; ecs::Entity::Components</td>
         </tr>
       </table>
   </td>
@@ -304,9 +331,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Entity_8hpp_source.html#l00025">25</a> of file <a class="el" href="Entity_8hpp_source.html">Entity.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Entity_8hpp_source.html#l00027">27</a> of file <a class="el" href="Entity_8hpp_source.html">Entity.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Entity_8cpp_source.html#l00043">Component()</a>, and <a class="el" href="Entity_8cpp_source.html#l00030">ComponentsGet()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Entity_8cpp_source.html#l00054">Component()</a>, <a class="el" href="Entity_8cpp_source.html#l00049">ComponentGet()</a>, <a class="el" href="Entity_8cpp_source.html#l00044">ComponentsGet()</a>, and <a class="el" href="Entity_8cpp_source.html#l00020">save()</a>.</p>
 
 </div>
 </div>
@@ -322,7 +349,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Entity_8hpp_source.html#l00020">20</a> of file <a class="el" href="Entity_8hpp_source.html">Entity.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Entity_8hpp_source.html#l00022">22</a> of file <a class="el" href="Entity_8hpp_source.html">Entity.hpp</a>.</p>
 
 </div>
 </div>
@@ -338,9 +365,9 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Entity_8hpp_source.html#l00019">19</a> of file <a class="el" href="Entity_8hpp_source.html">Entity.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Entity_8hpp_source.html#l00021">21</a> of file <a class="el" href="Entity_8hpp_source.html">Entity.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Entity_8cpp_source.html#l00043">Component()</a>, <a class="el" href="Entity_8cpp_source.html#l00006">Entity()</a>, and <a class="el" href="Entity_8cpp_source.html#l00020">HandleGet()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Entity_8cpp_source.html#l00054">Component()</a>, <a class="el" href="Entity_8cpp_source.html#l00006">Entity()</a>, and <a class="el" href="Entity_8cpp_source.html#l00034">HandleGet()</a>.</p>
 
 </div>
 </div>
@@ -351,7 +378,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Mar 3 2019 08:02:35 for libecs-cpp by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Mar 10 2019 19:10:26 for libecs-cpp by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

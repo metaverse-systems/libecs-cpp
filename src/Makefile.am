@@ -8,7 +8,7 @@ pkginclude_HEADERS = \
 	../include/libecs-cpp/Component.hpp \
         ../include/libecs-cpp/Entity.hpp
 
-libecs_cpp_la_CXXFLAGS = -std=c++14 -I../include $(UUID_CFLAGS)
-libecs_cpp_la_LIBADD = -lpthread $(UUID_LIBS)
+libecs_cpp_la_CXXFLAGS = -std=c++14 -I../include $(UUID_CFLAGS) $(JSONCPP_CFLAGS)
+libecs_cpp_la_LIBADD = -lpthread $(UUID_LIBS) $(JSONCPP_LIBS)
 libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Component.cpp Entity.cpp
 libecs_cpp_la_LDFLAGS = -no-undefined

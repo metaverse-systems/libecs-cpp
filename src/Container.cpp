@@ -26,6 +26,22 @@ namespace ecs
         this->ContainerThread.detach();
     }
 
+    Json::Value Container::save()
+    {
+        Json::Value data;
+
+        data["handle"] = this->Handle;
+
+        for(auto &e : this->Entities)
+        {
+            ecs::Entity *entity = this->Entities[e.first];
+
+            data["entities"][e.first] = entity->save();
+        }
+
+        return data;
+    }
+
     void Container::ManagerSet(ecs::Manager *Manager)
     {
         this->Manager = Manager;

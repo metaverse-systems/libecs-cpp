@@ -13,6 +13,7 @@ AC_PROG_CXX
 AM_INIT_AUTOMAKE([subdir-objects])
 
 PKG_CHECK_MODULES([UUID], uuid)
+PKG_CHECK_MODULES([JSONCPP], jsoncpp)
 
 AC_CONFIG_FILES([Doxyfile])
 AC_CONFIG_FILES([ecs-cpp.pc])
