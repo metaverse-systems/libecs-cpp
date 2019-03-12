@@ -1,6 +1,6 @@
 #pragma once
 
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 #include <string>
 
 namespace ecs
@@ -9,6 +9,7 @@ namespace ecs
     {
       public:
         Component();
+        Component(Json::Value);
         virtual Json::Value save() = 0;
         std::string Handle;
         std::string Type;

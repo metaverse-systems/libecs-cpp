@@ -19,16 +19,17 @@ namespace ecs
 
     Json::Value Entity::save()
     {
-        Json::Value data;
+        Json::Value config;
 
+        config["Handle"] = this->HandleGet();
         for(auto &c : this->Components)
         {
             ecs::Component *component = this->Components[c.first];
 
-            data["components"][c.first] = component->save();
+            config["Components"][c.first] = component->save();
         }
 
-        return data;
+        return config;
     }
 
     std::string Entity::HandleGet()
