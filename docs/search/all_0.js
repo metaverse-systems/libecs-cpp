@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['component',['Component',['../classecs_1_1Component.html',1,'ecs::Component'],['../classecs_1_1Component.html#a90368789c17bd4fdcf0485ee3b477773',1,'ecs::Component::Component()'],['../classecs_1_1Container.html#a8fbf5d1b29133e7733acb88c4a4b0eca',1,'ecs::Container::Component()'],['../classecs_1_1Entity.html#aa6797e834b64fd323e4904f2b27847e6',1,'ecs::Entity::Component()']]],
+  ['component',['Component',['../classecs_1_1Component.html',1,'ecs::Component'],['../classecs_1_1Component.html#a90368789c17bd4fdcf0485ee3b477773',1,'ecs::Component::Component()'],['../classecs_1_1Component.html#ad956fbbcfaeb3f5b093b263128f1da0e',1,'ecs::Component::Component(Json::Value)'],['../classecs_1_1Container.html#a8fbf5d1b29133e7733acb88c4a4b0eca',1,'ecs::Container::Component()'],['../classecs_1_1Entity.html#aa6797e834b64fd323e4904f2b27847e6',1,'ecs::Entity::Component()']]],
   ['component_2ecpp',['Component.cpp',['../Component_8cpp.html',1,'']]],
   ['component_2ehpp',['Component.hpp',['../Component_8hpp.html',1,'']]],
   ['componentget',['ComponentGet',['../classecs_1_1Entity.html#a8667c8a723fbae826b86ee34286467fc',1,'ecs::Entity']]],
