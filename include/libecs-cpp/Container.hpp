@@ -19,6 +19,7 @@ namespace ecs
       public:
         Container();
         Container(std::string Handle);
+        void Start();
         void ManagerSet(ecs::Manager *Manager);
         ecs::Manager *ManagerGet();
         std::string HandleGet();
@@ -30,6 +31,7 @@ namespace ecs
         ecs::Entity *Entity(std::string);
         ecs::Entity *Entity();
         Json::Value save();
+        void Update();
       private:
         std::string Handle;
         ecs::Manager *Manager = nullptr;
@@ -38,7 +40,6 @@ namespace ecs
         std::thread ContainerThread;
         void ThreadFunc();
         bool ThreadRunning = true;
-        void Update();
         ecs::Entity *EntityCreate(std::string Handle);
         std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
         std::map<std::string, ecs::Entity *> Entities;
