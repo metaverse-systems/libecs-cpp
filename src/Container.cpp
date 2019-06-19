@@ -13,14 +13,15 @@ namespace ecs
 
         this->Handle.resize(40);
         uuid_unparse(uuid, &this->Handle[0]);
-
-        this->ContainerThread = std::thread(&Container::ThreadFunc, this);
-        this->ContainerThread.detach();
     }
 
     Container::Container(std::string Handle)
     {
         this->Handle = Handle;
+    }
+
+    void Container::Start()
+    {
         this->ContainerThread = std::thread(&Container::ThreadFunc, this);
         this->ContainerThread.detach();
     }
