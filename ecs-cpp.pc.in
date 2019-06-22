@@ -8,4 +8,4 @@ Description: Entity Component System library in C++
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lecs-cpp
 Cflags: -I${includedir}
-Requires: uuid
+Requires: uuid jsoncpp
