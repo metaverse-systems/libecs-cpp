@@ -26,4 +26,18 @@ namespace ecs
     {
         this->Container = container;
     }
+
+    void System::ComponentRequest(std::string component)
+    {
+        for(auto &s : this->RequestedComponents)
+        {
+            if(s == component) return;
+        }
+        RequestedComponents.push_back(component);
+    }
+
+    std::map<std::string, std::map<std::string, ecs::Component *>> System::ComponentsGet()
+    {
+        return this->Container->ComponentsGet(this->RequestedComponents);
+    }
 }

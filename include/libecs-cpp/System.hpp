@@ -16,5 +16,9 @@ namespace ecs
         virtual void Update(uint32_t dt) {};
         std::string Handle;
         ecs::Container *Container = nullptr;
+        std::map<std::string, std::map<std::string, ecs::Component *>> ComponentsGet();
+        void ComponentRequest(std::string);
+      private:
+        std::vector<std::string> RequestedComponents;
     };
 }
