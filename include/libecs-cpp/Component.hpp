@@ -1,6 +1,7 @@
 #pragma once
 
 #include <json/json.h>
+#include <map>
 #include <string>
 
 namespace ecs
@@ -15,4 +16,6 @@ namespace ecs
         std::string Type;
         std::string EntityHandle;
     };
+
+    typedef std::map<std::string, std::map<std::string, ecs::Component *>> ComponentMap;
 }
