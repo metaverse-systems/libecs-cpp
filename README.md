@@ -50,7 +50,9 @@ int main(int argc, char *argv[])
     world->System(new TestSystem());
 
     ecs::Entity *e = world->Entity();
-    e->Component(new TestComponent(3453521));
+    Json::Value config;
+    config["somedata"] = 3453521;
+    e->Component(new TestComponent(&config));
 
     bool threaded = true;
 
