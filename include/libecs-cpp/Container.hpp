@@ -6,6 +6,7 @@
 #include <map>
 #include <thread>
 #include <chrono>
+#include <unistd.h>
 
 namespace ecs
 {
