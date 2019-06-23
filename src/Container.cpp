@@ -2,7 +2,6 @@
 #include <libecs-cpp/ecs.hpp>
 #include <thread>
 #include <chrono>
-#include <unistd.h>
 
 namespace ecs
 {
