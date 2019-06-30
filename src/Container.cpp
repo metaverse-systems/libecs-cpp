@@ -25,6 +25,13 @@ namespace ecs
         this->ContainerThread.detach();
     }
 
+    void Container::Start(uint32_t interval)
+    {
+        this->sleep_interval = interval;
+        this->ContainerThread = std::thread(&Container::ThreadFunc, this);
+        this->ContainerThread.detach();
+    }
+
     Json::Value Container::save()
     {
         Json::Value data;
@@ -128,7 +135,7 @@ namespace ecs
     {
         while(this->ThreadRunning)
         {
-            usleep(10000);	
+            usleep(this->sleep_interval);	
             this->Update();
         }
     }

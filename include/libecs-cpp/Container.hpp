@@ -21,6 +21,7 @@ namespace ecs
         Container();
         Container(std::string Handle);
         void Start();
+        void Start(uint32_t);
         void ManagerSet(ecs::Manager *Manager);
         ecs::Manager *ManagerGet();
         std::string HandleGet();
@@ -34,6 +35,7 @@ namespace ecs
         Json::Value save();
         void Update();
       private:
+        uint32_t sleep_interval = 1000000 / 30;
         std::string Handle;
         ecs::Manager *Manager = nullptr;
         std::map <std::string, ecs::System *> Systems;
