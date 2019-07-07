@@ -17,6 +17,10 @@ namespace ecs
         this->Handle = Handle;
     }
 
+    void System::Init()
+    {
+    }
+
     std::string System::HandleGet()
     {
         return this->Handle;
