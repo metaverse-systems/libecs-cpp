@@ -131,8 +131,18 @@ namespace ecs
         return e;
     }
 
+    void Container::SystemsInit()
+    {
+        for(auto &Handle : this->SystemsGet())
+        {
+            this->Systems[Handle]->Init();
+        }
+    }
+
     void Container::ThreadFunc()
     {
+        this->SystemsInit();
+
         while(this->ThreadRunning)
         {
             usleep(this->sleep_interval);	

@@ -22,6 +22,7 @@ namespace ecs
         Container(std::string Handle);
         void Start();
         void Start(uint32_t);
+        void SystemsInit();
         void ManagerSet(ecs::Manager *Manager);
         ecs::Manager *ManagerGet();
         std::string HandleGet();
