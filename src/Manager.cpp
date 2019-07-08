@@ -75,4 +75,16 @@ namespace ecs
         }
         this->mutex_containers.unlock();
     }
+
+    void Manager::MessageSubmit(Json::Value message)
+    {
+        auto dest_container = message["destination"]["container"].asString();
+        if(!this->containers[dest_container])
+        {
+            auto err = "ecs::Manager::MessageSubmit(): Container " + dest_container + " not found.";
+            throw std::runtime_error(err);
+        }
+
+        this->containers[dest_container]->MessageSubmit(message);
+    }
 }
