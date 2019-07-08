@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <queue>
 
 namespace ecs
 {
@@ -19,7 +20,9 @@ namespace ecs
         ecs::Container *Container = nullptr;
         std::map<std::string, std::map<std::string, ecs::Component *>> ComponentsGet();
         void ComponentRequest(std::string);
-      private:
+        void MessageSubmit(Json::Value);
+      protected:
         std::vector<std::string> RequestedComponents;
+        std::queue<Json::Value> messages;
     };
 }
