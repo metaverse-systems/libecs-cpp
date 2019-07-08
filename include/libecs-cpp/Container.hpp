@@ -35,6 +35,7 @@ namespace ecs
         ecs::Entity *Entity();
         Json::Value save();
         void Update();
+        void MessageSubmit(Json::Value);
       private:
         uint32_t sleep_interval = 1000000 / 30;
         std::string Handle;

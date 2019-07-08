@@ -44,4 +44,9 @@ namespace ecs
     {
         return this->Container->ComponentsGet(this->RequestedComponents);
     }
+
+    void System::MessageSubmit(Json::Value message)
+    {
+        this->messages.push(message);
+    }
 }
