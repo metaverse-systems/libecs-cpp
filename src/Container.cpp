@@ -167,7 +167,7 @@ namespace ecs
         auto dest_system = message["destination"]["system"].asString();
         if(!this->Systems[dest_system])
         {
-            auto err = "ecs::Container::MessageSubmit(): System " + dest_system + " not found.";
+            auto err = "ecs::Container(\"" + message["destination"]["container"].asString() + "\")::MessageSubmit(): System " + dest_system + " not found.";
             throw std::runtime_error(err);
         }
 
