@@ -3,8 +3,14 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <mutex>
 #include <json/json.h>
+#include <thread>
+#ifdef _WIN32
+    #include <mingw.mutex.h>
+#else
+    #include <mutex>
+#endif
+
 
 namespace ecs
 {
