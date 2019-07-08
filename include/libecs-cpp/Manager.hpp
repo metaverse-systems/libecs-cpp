@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <mutex>
+#include <json/json.h>
 
 namespace ecs
 {
@@ -20,6 +21,7 @@ namespace ecs
         std::vector<std::string> ContainersGet();
         bool IsRunning();
         void Shutdown();
+        void MessageSubmit(Json::Value);
       private:
         void ContainersKill(std::vector<std::string>);
         ecs::Container *ContainerCreate(std::string handle);
