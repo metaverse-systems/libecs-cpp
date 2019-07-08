@@ -6,10 +6,20 @@ namespace ecs
     System::System()
     {
         uuid_t uuid;
-        uuid_generate(uuid);
-
         this->Handle.resize(40);
+
+#ifdef _WIN32
+        UuidCreate(&uuid);
+        RPC_CSTR szUuid = NULL;
+        if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
+        {
+            this->Handle = (char*) szUuid;
+            RpcStringFree(&szUuid);
+        }
+#else
+        uuid_generate(uuid);
         uuid_unparse(uuid, &this->Handle[0]);
+#endif
     }
 
     System::System(std::string Handle)
