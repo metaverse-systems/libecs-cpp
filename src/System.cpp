@@ -1,4 +1,5 @@
 #include <uuid/uuid.h>
+#include <libecs-cpp/Component.hpp>
 #include <libecs-cpp/ecs.hpp>
 
 namespace ecs
@@ -50,7 +51,7 @@ namespace ecs
         RequestedComponents.push_back(component);
     }
 
-    std::map<std::string, std::map<std::string, ecs::Component *>> System::ComponentsGet()
+    std::map<std::string, ecs::ComponentList> System::ComponentsGet()
     {
         return this->Container->ComponentsGet(this->RequestedComponents);
     }

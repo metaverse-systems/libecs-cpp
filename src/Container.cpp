@@ -92,18 +92,18 @@ namespace ecs
 
     ecs::Component *Container::Component(ecs::Component *c)
     {
-        this->Components[c->Type][c->Handle] = c; 
+        this->Components[c->Type].push_back(c); 
         return c;
     }
 
-    std::map<std::string, std::map<std::string, ecs::Component *>> Container::ComponentsGet()
+    std::map<std::string, ecs::ComponentList> Container::ComponentsGet()
     {
         return this->Components;
     }
 
-    std::map<std::string, std::map<std::string, ecs::Component *>> Container::ComponentsGet(std::vector<std::string> Types)
+    std::map<std::string, ecs::ComponentList> Container::ComponentsGet(std::vector<std::string> Types)
     {
-        std::map<std::string, std::map<std::string, ecs::Component *>> c;
+        std::map<std::string, ecs::ComponentList> c;
 
         for(auto &t : Types) c[t] = this->Components[t];
         return c;
