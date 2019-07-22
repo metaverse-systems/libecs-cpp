@@ -7,6 +7,7 @@
 #include <thread>
 #include <chrono>
 #include <unistd.h>
+#include <libecs-cpp/Component.hpp>
 
 namespace ecs
 {
@@ -29,8 +30,8 @@ namespace ecs
         ecs::System *System(ecs::System *);
         std::vector<std::string> SystemsGet();
         ecs::Component *Component(ecs::Component *c);
-        std::map<std::string, std::map<std::string, ecs::Component *>> ComponentsGet();
-        std::map<std::string, std::map<std::string, ecs::Component *>> ComponentsGet(std::vector<std::string>);
+        std::map<std::string, ecs::ComponentList> ComponentsGet();
+        std::map<std::string, ecs::ComponentList> ComponentsGet(std::vector<std::string>);
         ecs::Entity *Entity(std::string);
         ecs::Entity *Entity();
         Json::Value save();
@@ -41,7 +42,7 @@ namespace ecs
         std::string Handle;
         ecs::Manager *Manager = nullptr;
         std::map <std::string, ecs::System *> Systems;
-        std::map<std::string, std::map<std::string, ecs::Component *>> Components;
+        std::map<std::string, ecs::ComponentList> Components;
         std::thread ContainerThread;
         void ThreadFunc();
         bool ThreadRunning = true;
