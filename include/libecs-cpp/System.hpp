@@ -18,7 +18,7 @@ namespace ecs
         virtual void Update(uint32_t dt) {};
         std::string Handle;
         ecs::Container *Container = nullptr;
-        std::map<std::string, std::map<std::string, ecs::Component *>> ComponentsGet();
+        std::map<std::string, ecs::ComponentList> ComponentsGet();
         void ComponentRequest(std::string);
         void MessageSubmit(Json::Value);
       protected:

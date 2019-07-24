@@ -34,9 +34,7 @@ namespace ecs
         config["Handle"] = this->HandleGet();
         for(auto &c : this->Components)
         {
-            ecs::Component *component = this->Components[c.first];
-
-            config["Components"][c.first] = component->save();
+            config["Components"][c->Type] = c->save();
         }
 
         return config;
@@ -52,20 +50,26 @@ namespace ecs
         this->Container = container;
     }
 
-    std::map<std::string, ecs::Component *> Entity::ComponentsGet()
+    ecs::ComponentList Entity::ComponentsGet()
     {
         return this->Components;
     }
 
     ecs::Component *Entity::ComponentGet(std::string Type)
     {
-        return this->Components[Type];
+        for(auto &c : this->Components)
+        {
+            if(c->Type == Type) return c;
+        }
+
+        std::string err = "No component of type: " + Type;
+        throw std::runtime_error(err); 
     }
 
     ecs::Component *Entity::Component(ecs::Component *c)
     {
         c->EntityHandle = this->Handle;
-        this->Components[c->Type] = c;
+        this->Components.push_back(c);
         this->Container->Component(c);
         return c;
     }
