@@ -17,5 +17,5 @@ namespace ecs
         std::string EntityHandle;
     };
 
-    typedef std::map<std::string, std::map<std::string, ecs::Component *>> ComponentMap;
+    typedef std::vector<ecs::Component *> ComponentList;
 }
