@@ -13,6 +13,7 @@ namespace ecs
         System();
         System(std::string Handle);
         virtual void Init();
+        void ResourceAdd(std::string, void *);
         void ContainerSet(ecs::Container *Container);
         std::string HandleGet();
         virtual void Update(uint32_t dt) {};
@@ -24,5 +25,6 @@ namespace ecs
       protected:
         std::vector<std::string> RequestedComponents;
         std::queue<Json::Value> messages;
+        std::map<std::string, void *> resources;
     };
 }
