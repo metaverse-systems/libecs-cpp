@@ -29,11 +29,12 @@ namespace ecs
         std::string HandleGet();
         ecs::System *System(ecs::System *);
         std::vector<std::string> SystemsGet();
-        ecs::Component *Component(ecs::Component *c);
+        std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
         std::map<std::string, ecs::ComponentList> ComponentsGet();
         std::map<std::string, ecs::ComponentList> ComponentsGet(std::vector<std::string>);
         ecs::Entity *Entity(std::string);
         ecs::Entity *Entity();
+        void EntityDestroy(std::string handle);
         Json::Value save();
         void Update();
         void MessageSubmit(Json::Value);
