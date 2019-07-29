@@ -21,8 +21,9 @@ namespace ecs
         std::string Handle;
         ecs::Container *Container = nullptr;
         ecs::ComponentList ComponentsGet();
-        ecs::Component *ComponentGet(std::string Type);
-        ecs::Component *Component(ecs::Component *c);
+        std::shared_ptr<ecs::Component> ComponentGet(std::string Type);
+        std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
+        void destroy();
       private:
         ecs::ComponentList Components;
     };

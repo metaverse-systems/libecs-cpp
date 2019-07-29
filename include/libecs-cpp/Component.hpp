@@ -2,6 +2,7 @@
 
 #include <json/json.h>
 #include <map>
+#include <memory>
 #include <string>
 
 namespace ecs
@@ -17,5 +18,5 @@ namespace ecs
         std::string EntityHandle;
     };
 
-    typedef std::vector<ecs::Component *> ComponentList;
+    typedef std::vector<std::shared_ptr<ecs::Component>> ComponentList;
 }
