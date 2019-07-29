@@ -90,7 +90,7 @@ namespace ecs
         return Handles;
     }
 
-    ecs::Component *Container::Component(ecs::Component *c)
+    std::shared_ptr<ecs::Component> Container::Component(std::shared_ptr<ecs::Component> c)
     {
         this->Components[c->Type].push_back(c); 
         return c;
@@ -182,5 +182,23 @@ namespace ecs
         }
 
         this->Systems[dest_system]->MessageSubmit(message);
+    }
+
+    void Container::EntityDestroy(std::string handle)
+    {
+        for(auto &t : this->Components)
+        {
+            for (auto it = t.second.begin(); it != t.second.end();) 
+            {
+                if((*it)->EntityHandle == handle)
+                {
+                    it = t.second.erase(it);
+                }
+                else
+                {
+                    ++it;
+                }
+            }
+        }
     }
 }

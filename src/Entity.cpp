@@ -55,7 +55,7 @@ namespace ecs
         return this->Components;
     }
 
-    ecs::Component *Entity::ComponentGet(std::string Type)
+    std::shared_ptr<ecs::Component> Entity::ComponentGet(std::string Type)
     {
         for(auto &c : this->Components)
         {
@@ -66,11 +66,20 @@ namespace ecs
         throw std::runtime_error(err); 
     }
 
-    ecs::Component *Entity::Component(ecs::Component *c)
+    std::shared_ptr<ecs::Component> Entity::Component(std::shared_ptr<ecs::Component> c)
     {
         c->EntityHandle = this->Handle;
         this->Components.push_back(c);
         this->Container->Component(c);
         return c;
+    }
+
+    void Entity::destroy()
+    {
+        while (!this->Components.empty())
+        {
+            this->Components.pop_back();
+        }
+        this->Container->EntityDestroy(this->Handle);
     }
 }
