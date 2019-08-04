@@ -2,6 +2,9 @@
 #include <libecs-cpp/ecs.hpp>
 #include <thread>
 #include <chrono>
+#ifdef WITHGPERFTOOLS
+#include <gperftools/profiler.h>
+#endif
 
 namespace ecs
 {
@@ -153,11 +156,17 @@ namespace ecs
     {
         this->SystemsInit();
 
+#ifdef WITHGPERFTOOLS
+       ProfilerStart("container_update.log");
+#endif
         while(this->ThreadRunning)
         {
             usleep(this->sleep_interval);	
             this->Update();
         }
+#ifdef WITHGPERFTOOLS
+       ProfilerStop();
+#endif
     }
 
     void Container::Update()
