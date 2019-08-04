@@ -7,7 +7,6 @@
 #include <thread>
 #include <chrono>
 #include <unistd.h>
-#include <uuid/uuid.h>
 #include <libecs-cpp/Component.hpp>
 
 namespace ecs
