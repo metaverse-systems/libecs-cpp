@@ -1,4 +1,5 @@
 #include <uuid/uuid.h>
+#include <cstring>
 #include <libecs-cpp/ecs.hpp>
 
 namespace ecs
@@ -6,25 +7,17 @@ namespace ecs
     Entity::Entity()
     {
         uuid_t uuid;
-        this->Handle.resize(40);
-
 #ifdef _WIN32
         UuidCreate(&uuid);
-        RPC_CSTR szUuid = NULL;
-        if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
-        {
-            this->Handle = (char*) szUuid;
-            RpcStringFree(&szUuid);
-        }
 #else
         uuid_generate(uuid);
-        uuid_unparse(uuid, &this->Handle[0]);
 #endif
+        std::memcpy(&this->Handle, &uuid, 16);
     }
 
-    Entity::Entity(std::string Handle)
+    Entity::Entity(unsigned __int128 uuid)
     {
-        this->Handle = Handle;
+        std::memcpy(&this->Handle, &uuid, 16);
     }
 
     Json::Value Entity::save()
@@ -38,11 +31,6 @@ namespace ecs
         }
 
         return config;
-    }
-
-    std::string Entity::HandleGet()
-    {
-        return this->Handle;
     }
 
     void Entity::ContainerSet(ecs::Container *container)
@@ -62,13 +50,12 @@ namespace ecs
             if(c->Type == Type) return c;
         }
 
-        std::string err = "No component of type: " + Type;
-        throw std::runtime_error(err); 
+        return nullptr;
     }
 
     std::shared_ptr<ecs::Component> Entity::Component(std::shared_ptr<ecs::Component> c)
     {
-        c->EntityHandle = this->Handle;
+        std::memcpy(&c->EntityHandle, &this->Handle, 16);
         this->Components.push_back(c);
         this->Container->Component(c);
         return c;
@@ -81,5 +68,25 @@ namespace ecs
             this->Components.pop_back();
         }
         this->Container->EntityDestroy(this->Handle);
+    }
+
+    std::string Entity::HandleGet()
+    {
+        uuid_t uuid;
+        std::memcpy(&uuid, &this->Handle, 16);
+
+        std::string handle;
+        handle.resize(40);
+#ifdef _WIN32
+        RPC_CSTR szUuid = NULL;
+        if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
+        {
+            handle = (char*) szUuid;
+            RpcStringFree(&szUuid);
+        }
+#else
+        uuid_unparse(uuid, &handle[0]);
+#endif
+        return handle;
     }
 }

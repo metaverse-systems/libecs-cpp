@@ -1,7 +1,8 @@
-#include <uuid/uuid.h>
 #include <libecs-cpp/ecs.hpp>
 #include <thread>
 #include <chrono>
+#include <algorithm>
+#include <cstring>
 #ifdef WITHGPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
@@ -55,7 +56,20 @@ namespace ecs
         {
             ecs::Entity *entity = this->Entities[e.first];
 
-            data["entities"][e.first] = entity->save();
+            std::string handle;
+            uuid_t uuid;
+            std::memcpy(&uuid, &e.first, 16);
+#ifdef _WIN32
+            RPC_CSTR szUuid = NULL;
+            if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
+            {
+                handle = (char*) szUuid;
+                RpcStringFree(&szUuid);
+            }
+#else
+            uuid_unparse(uuid, &handle[0]);
+#endif
+            data["entities"][handle] = entity->save();
         }
 
         return data;
@@ -112,32 +126,36 @@ namespace ecs
         return c;
     }
 
-    ecs::Entity *Container::Entity(std::string Handle)
+    ecs::Entity *Container::Entity(unsigned __int128 uuid)
     {
-        return this->EntityCreate(Handle);
+        return this->EntityCreate(uuid);
     }
 
     ecs::Entity *Container::Entity()
     {
-        return this->EntityCreate("");
+        return this->EntityCreate(0);
     }
 
-    ecs::Entity *Container::EntityCreate(std::string Handle)
+    ecs::Entity *Container::EntityCreate(unsigned __int128 uuid)
     {
         ecs::Entity *e;
-        if(Handle.size() == 0)
+        if(uuid == 0)
         {
             e = new ecs::Entity();
-            this->Entities[e->HandleGet()] = e;
+            std::memcpy(&uuid, &e->Handle, 16);
+            this->Entities[uuid] = e;
         }
         else
         {
-            if(this->Entities.count(Handle) == 0)
+            if(this->Entities.count(uuid) == 0)
             {
-                e = new ecs::Entity(Handle);
-                this->Entities[Handle] = e;
+                e = new ecs::Entity(uuid);
+                this->Entities[uuid] = e;
             }
-            else e = this->Entities[Handle];
+            else
+            {
+                e = this->Entities[uuid];
+            }
         }
 
         e->ContainerSet(this);
@@ -193,13 +211,13 @@ namespace ecs
         this->Systems[dest_system]->MessageSubmit(message);
     }
 
-    void Container::EntityDestroy(std::string handle)
+    void Container::EntityDestroy(unsigned __int128 uuid)
     {
         for(auto &t : this->Components)
         {
             for (auto it = t.second.begin(); it != t.second.end();) 
             {
-                if((*it)->EntityHandle == handle)
+                if((*it)->EntityHandle == uuid)
                 {
                     it = t.second.erase(it);
                 }

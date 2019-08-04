@@ -15,7 +15,7 @@ namespace ecs
         virtual Json::Value save() = 0;
         std::string Handle;
         std::string Type;
-        std::string EntityHandle;
+        unsigned __int128 EntityHandle;
     };
 
     typedef std::vector<std::shared_ptr<ecs::Component>> ComponentList;
