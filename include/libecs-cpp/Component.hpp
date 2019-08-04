@@ -1,5 +1,6 @@
 #pragma once
 
+#include <uuid/uuid.h>
 #include <json/json.h>
 #include <map>
 #include <memory>
@@ -15,7 +16,7 @@ namespace ecs
         virtual Json::Value save() = 0;
         std::string Handle;
         std::string Type;
-        std::string EntityHandle;
+        unsigned __int128 EntityHandle;
     };
 
     typedef std::vector<std::shared_ptr<ecs::Component>> ComponentList;
