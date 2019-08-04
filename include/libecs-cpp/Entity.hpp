@@ -14,11 +14,11 @@ namespace ecs
     {
       public:
         Entity();
-        Entity(std::string Handle);
+        Entity(unsigned __int128 uuid);
         Json::Value save();
         void ContainerSet(ecs::Container *Container);
+        unsigned __int128 Handle;
         std::string HandleGet();
-        std::string Handle;
         ecs::Container *Container = nullptr;
         ecs::ComponentList ComponentsGet();
         std::shared_ptr<ecs::Component> ComponentGet(std::string Type);
