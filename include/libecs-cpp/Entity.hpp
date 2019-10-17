@@ -2,7 +2,7 @@
 
 #include <json/json.h>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 namespace ecs
@@ -14,17 +14,17 @@ namespace ecs
     {
       public:
         Entity();
-        Entity(unsigned __int128 uuid);
+        Entity(std::string uuid);
         Json::Value save();
         void ContainerSet(ecs::Container *Container);
-        unsigned __int128 Handle;
+        std::string Handle;
         std::string HandleGet();
         ecs::Container *Container = nullptr;
-        ecs::ComponentList ComponentsGet();
-        std::shared_ptr<ecs::Component> ComponentGet(std::string Type);
+        ecs::TypeEntityComponentList ComponentsGet();
+        ecs::TypeEntityComponentList ComponentGet(std::string Type);
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
         void destroy();
       private:
-        ecs::ComponentList Components;
+        ecs::TypeEntityComponentList Components;
     };
 }

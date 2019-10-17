@@ -3,6 +3,7 @@
 #include <chrono>
 #include <algorithm>
 #include <cstring>
+#include <uuid/uuid.h>
 #ifdef WITHGPERFTOOLS
 #include <gperftools/profiler.h>
 #endif
@@ -11,10 +12,10 @@ namespace ecs
 {
     Container::Container()
     {
-        uuid_t uuid;
         this->Handle.resize(40);
 
 #ifdef _WIN32
+        UUID uuid;
         UuidCreate(&uuid);
         RPC_CSTR szUuid = NULL;
         if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
@@ -23,6 +24,7 @@ namespace ecs
             RpcStringFree(&szUuid);
         }
 #else
+        uuid_t uuid;
         uuid_generate(uuid);
         uuid_unparse(uuid, &this->Handle[0]);
 #endif
@@ -57,9 +59,9 @@ namespace ecs
             ecs::Entity *entity = this->Entities[e.first];
 
             std::string handle;
-            uuid_t uuid;
-            std::memcpy(&uuid, &e.first, 16);
+            
 #ifdef _WIN32
+            UUID uuid;
             RPC_CSTR szUuid = NULL;
             if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
             {
@@ -67,6 +69,8 @@ namespace ecs
                 RpcStringFree(&szUuid);
             }
 #else
+            uuid_t uuid;
+            std::memcpy(&uuid, &e.first, 16);
             uuid_unparse(uuid, &handle[0]);
 #endif
             data["entities"][handle] = entity->save();
@@ -109,41 +113,40 @@ namespace ecs
 
     std::shared_ptr<ecs::Component> Container::Component(std::shared_ptr<ecs::Component> c)
     {
-        this->Components[c->Type].push_back(c); 
+        this->Components[c->Type][c->EntityHandle].push_back(c); 
         return c;
     }
 
-    std::map<std::string, ecs::ComponentList> Container::ComponentsGet()
+    ecs::TypeEntityComponentList Container::ComponentsGet()
     {
         return this->Components;
     }
 
-    std::map<std::string, ecs::ComponentList> Container::ComponentsGet(std::vector<std::string> Types)
+    ecs::TypeEntityComponentList Container::ComponentsGet(std::vector<std::string> Types)
     {
-        std::map<std::string, ecs::ComponentList> c;
+        ecs::TypeEntityComponentList c;
 
         for(auto &t : Types) c[t] = this->Components[t];
         return c;
     }
 
-    ecs::Entity *Container::Entity(unsigned __int128 uuid)
+    ecs::Entity *Container::Entity(std::string uuid)
     {
         return this->EntityCreate(uuid);
     }
 
     ecs::Entity *Container::Entity()
     {
-        return this->EntityCreate(0);
+        return this->EntityCreate("");
     }
 
-    ecs::Entity *Container::EntityCreate(unsigned __int128 uuid)
+    ecs::Entity *Container::EntityCreate(std::string uuid)
     {
         ecs::Entity *e;
-        if(uuid == 0)
+        if(uuid.size() == 0)
         {
             e = new ecs::Entity();
-            std::memcpy(&uuid, &e->Handle, 16);
-            this->Entities[uuid] = e;
+            this->Entities[e->HandleGet()] = e;
         }
         else
         {
@@ -211,21 +214,11 @@ namespace ecs
         this->Systems[dest_system]->MessageSubmit(message);
     }
 
-    void Container::EntityDestroy(unsigned __int128 uuid)
+    void Container::EntityDestroy(std::string uuid)
     {
         for(auto &t : this->Components)
         {
-            for (auto it = t.second.begin(); it != t.second.end();) 
-            {
-                if((*it)->EntityHandle == uuid)
-                {
-                    it = t.second.erase(it);
-                }
-                else
-                {
-                    ++it;
-                }
-            }
+            t.second.erase(uuid);
         }
     }
 }

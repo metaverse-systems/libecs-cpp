@@ -1,7 +1,7 @@
 #pragma once
 
 #include <json/json.h>
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 
@@ -15,8 +15,10 @@ namespace ecs
         virtual Json::Value save() = 0;
         std::string Handle;
         std::string Type;
-        unsigned __int128 EntityHandle;
+        std::string EntityHandle;
     };
 
     typedef std::vector<std::shared_ptr<ecs::Component>> ComponentList;
+    typedef std::unordered_map<std::string, ecs::ComponentList> EntityComponentList;
+    typedef std::unordered_map<std::string, ecs::EntityComponentList> TypeEntityComponentList;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <json/json.h>
 #include <thread>
@@ -31,7 +31,7 @@ namespace ecs
       private:
         void ContainersKill(std::vector<std::string>);
         ecs::Container *ContainerCreate(std::string handle);
-        std::map<std::string, ecs::Container *> containers;
+        std::unordered_map<std::string, ecs::Container *> containers;
         std::mutex mutex_containers;
         bool Running = true;
     };
