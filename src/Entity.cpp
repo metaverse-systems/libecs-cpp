@@ -1,23 +1,33 @@
 #include <uuid/uuid.h>
 #include <cstring>
 #include <libecs-cpp/ecs.hpp>
+#include <iostream>
 
 namespace ecs
 {
     Entity::Entity()
     {
-        uuid_t uuid;
+        this->Handle.resize(20);
+
 #ifdef _WIN32
+        UUID uuid;
         UuidCreate(&uuid);
+        RPC_CSTR szUuid = NULL;
+        if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
+        {
+            this->Handle = (char*) szUuid;
+            RpcStringFree(&szUuid);
+        }
 #else
+        uuid_t uuid;
         uuid_generate(uuid);
+        uuid_unparse(uuid, &this->Handle[0]);
 #endif
-        std::memcpy(&this->Handle, &uuid, 16);
     }
 
-    Entity::Entity(unsigned __int128 uuid)
+    Entity::Entity(std::string uuid)
     {
-        std::memcpy(&this->Handle, &uuid, 16);
+        this->Handle = uuid;
     }
 
     Json::Value Entity::save()
@@ -25,9 +35,15 @@ namespace ecs
         Json::Value config;
 
         config["Handle"] = this->HandleGet();
-        for(auto &c : this->Components)
+        for(auto &t : this->Components)
         {
-            config["Components"][c->Type] = c->save();
+            for(auto &c : t.second)
+            {
+                for(auto &component : c.second)
+                {
+                    config["Components"][t.first].append(component->save()); 
+                }
+            }
         }
 
         return config;
@@ -38,34 +54,32 @@ namespace ecs
         this->Container = container;
     }
 
-    ecs::ComponentList Entity::ComponentsGet()
+    ecs::TypeEntityComponentList Entity::ComponentsGet()
     {
         return this->Components;
     }
 
-    std::shared_ptr<ecs::Component> Entity::ComponentGet(std::string Type)
+    ecs::TypeEntityComponentList Entity::ComponentGet(std::string Type)
     {
-        for(auto &c : this->Components)
-        {
-            if(c->Type == Type) return c;
-        }
+        ecs::TypeEntityComponentList result;
+        result[Type] = this->Components[Type];
 
-        return nullptr;
+        return result;
     }
 
     std::shared_ptr<ecs::Component> Entity::Component(std::shared_ptr<ecs::Component> c)
     {
         std::memcpy(&c->EntityHandle, &this->Handle, 16);
-        this->Components.push_back(c);
+        this->Components[c->Type][c->EntityHandle].push_back(c);
         this->Container->Component(c);
         return c;
     }
 
     void Entity::destroy()
     {
-        while (!this->Components.empty())
+        for(auto &t : this->Components)
         {
-            this->Components.pop_back();
+            for(auto &c : t.second) t.second.erase(c.first);
         }
         this->Container->EntityDestroy(this->Handle);
     }

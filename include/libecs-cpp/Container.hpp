@@ -3,7 +3,7 @@
 #include <json/json.h>
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <thread>
 #include <chrono>
 #include <unistd.h>
@@ -30,11 +30,11 @@ namespace ecs
         ecs::System *System(ecs::System *);
         std::vector<std::string> SystemsGet();
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
-        std::map<std::string, ecs::ComponentList> ComponentsGet();
-        std::map<std::string, ecs::ComponentList> ComponentsGet(std::vector<std::string>);
-        ecs::Entity *Entity(unsigned __int128);
+        ecs::TypeEntityComponentList ComponentsGet();
+        ecs::TypeEntityComponentList ComponentsGet(std::vector<std::string>);
+        ecs::Entity *Entity(std::string);
         ecs::Entity *Entity();
-        void EntityDestroy(unsigned __int128);
+        void EntityDestroy(std::string);
         Json::Value save();
         void Update();
         void MessageSubmit(Json::Value);
@@ -42,13 +42,13 @@ namespace ecs
         uint32_t sleep_interval = 1000000 / 30;
         std::string Handle;
         ecs::Manager *Manager = nullptr;
-        std::map <std::string, ecs::System *> Systems;
-        std::map<std::string, ecs::ComponentList> Components;
+        std::unordered_map <std::string, ecs::System *> Systems;
+        ecs::TypeEntityComponentList Components;
         std::thread ContainerThread;
         void ThreadFunc();
         bool ThreadRunning = true;
-        ecs::Entity *EntityCreate(unsigned __int128);
+        ecs::Entity *EntityCreate(std::string);
         std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
-        std::map<unsigned __int128, ecs::Entity *> Entities;
+        std::unordered_map<std::string, ecs::Entity *> Entities;
     };
 }
