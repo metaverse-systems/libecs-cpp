@@ -56,7 +56,7 @@ namespace ecs
         RequestedComponents.push_back(component);
     }
 
-    std::map<std::string, ecs::ComponentList> System::ComponentsGet()
+    ecs::TypeEntityComponentList System::ComponentsGet()
     {
         return this->Container->ComponentsGet(this->RequestedComponents);
     }
