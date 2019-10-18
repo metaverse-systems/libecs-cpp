@@ -39,7 +39,7 @@ namespace ecs
         {
             for(auto &c : t.second)
             {
-                for(auto &component : c.second)
+                while(auto component = c.second.Pop())
                 {
                     config["Components"][t.first].append(component->save()); 
                 }
@@ -69,8 +69,8 @@ namespace ecs
 
     std::shared_ptr<ecs::Component> Entity::Component(std::shared_ptr<ecs::Component> c)
     {
-        std::memcpy(&c->EntityHandle, &this->Handle, 16);
-        this->Components[c->Type][c->EntityHandle].push_back(c);
+        c->EntityHandle = this->Handle;
+        this->Components[c->Type][c->EntityHandle].Push(c);
         this->Container->Component(c);
         return c;
     }
@@ -86,21 +86,6 @@ namespace ecs
 
     std::string Entity::HandleGet()
     {
-        uuid_t uuid;
-        std::memcpy(&uuid, &this->Handle, 16);
-
-        std::string handle;
-        handle.resize(40);
-#ifdef _WIN32
-        RPC_CSTR szUuid = NULL;
-        if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
-        {
-            handle = (char*) szUuid;
-            RpcStringFree(&szUuid);
-        }
-#else
-        uuid_unparse(uuid, &handle[0]);
-#endif
-        return handle;
+        return this->Handle;
     }
 }
