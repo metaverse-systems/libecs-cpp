@@ -58,22 +58,7 @@ namespace ecs
         {
             ecs::Entity *entity = this->Entities[e.first];
 
-            std::string handle;
-            
-#ifdef _WIN32
-            UUID uuid;
-            RPC_CSTR szUuid = NULL;
-            if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
-            {
-                handle = (char*) szUuid;
-                RpcStringFree(&szUuid);
-            }
-#else
-            uuid_t uuid;
-            std::memcpy(&uuid, &e.first, 16);
-            uuid_unparse(uuid, &handle[0]);
-#endif
-            data["entities"][handle] = entity->save();
+            data["entities"][e.first] = entity->save();
         }
 
         return data;
@@ -113,7 +98,7 @@ namespace ecs
 
     std::shared_ptr<ecs::Component> Container::Component(std::shared_ptr<ecs::Component> c)
     {
-        this->Components[c->Type][c->EntityHandle].push_back(c); 
+        this->Components[c->Type][c->EntityHandle].Push(c); 
         return c;
     }
 
