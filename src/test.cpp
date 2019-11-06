@@ -18,6 +18,8 @@ class TestComponent : public ecs::Component
         config["somedata"] = (Json::Value::UInt64)this->somedata;
         return config;
     }
+
+    ~TestComponent() {}
 };
 
 class TestSystem : public ecs::System
@@ -56,26 +58,31 @@ class TestSystem : public ecs::System
 int main(int argc, char *argv[])
 {
     ecs::Container *world = ECS->Container();
+
     world->System(new TestSystem());
 
+    /* Create a new entity in the 'world' container */
     ecs::Entity *e = world->Entity();
+
+    /* Initialize a TestComponent and add it to the Entity 'e' */
     Json::Value config;
     config["somedata"] = 3453521;
-    e->Component(std::make_shared<TestComponent>(config));
+    e->Component(std::shared_ptr<TestComponent>(new TestComponent(config)));
 
+    /* Run container in its own thread */
     bool threaded = true;
 
-    if(threaded)
-    {
-        /* Start a thread and run container loop */
-        world->Start();
-    }
+    /*                   OR               */
 
-    /*                   OR                  */
+    /* Run container loop in main thread, */
+    /* OS X won't let GUI stuff happen    */
+    /* outside the main thread)           */
+#if __APPLE__
+    threaded = false;
+#endif
 
-    /* Run container loop manually (MacOS    */
-    /* won't let GUI stuff happen outside    */
-    /* the main thread)                      */
+    if(threaded) world->Start();
+    else world->SystemsInit();
 
     while(ECS->IsRunning())
     {
