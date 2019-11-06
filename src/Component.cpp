@@ -21,4 +21,6 @@ namespace ecs
         uuid_unparse(uuid, &this->Handle[0]);
 #endif
     }
+
+    Component::~Component() {};
 }
