@@ -1,13 +1,12 @@
 #include <uuid/uuid.h>
 #include <cstring>
 #include <libecs-cpp/ecs.hpp>
-#include <iostream>
 
 namespace ecs
 {
     Entity::Entity()
     {
-        this->Handle.resize(20);
+        this->Handle.resize(40);
 
 #ifdef _WIN32
         UUID uuid;
