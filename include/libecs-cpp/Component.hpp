@@ -16,6 +16,7 @@ namespace ecs
         std::string Handle;
         std::string Type;
         std::string EntityHandle;
+        virtual ~Component() = 0;
     };
 
     /* 
