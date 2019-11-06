@@ -15,5 +15,5 @@ libecs_cpp_la_LDFLAGS = -no-undefined
 
 bin_PROGRAMS = test
 test_SOURCES = test.cpp
-test_CXXFLAGS = -I../include/libecs-cpp -Werror -Wall $(UUID_CFLAGS) $(JSONCPP_CFLAGS)
+test_CXXFLAGS = -std=c++14 -I../include -Werror -Wall $(UUID_CFLAGS) $(JSONCPP_CFLAGS)
 test_LDADD = -lpthread libecs-cpp.la $(UUID_LIBS) $(JSONCPP_LIBS)
