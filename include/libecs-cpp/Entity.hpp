@@ -22,7 +22,7 @@ namespace ecs
         ecs::Container *Container = nullptr;
         ecs::TypeEntityComponentList ComponentsGet();
         ecs::TypeEntityComponentList ComponentGet(std::string Type);
-        std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
+        std::shared_ptr<ecs::Component> Component(ecs::Component *component);
         void destroy();
       private:
         ecs::TypeEntityComponentList Components;
