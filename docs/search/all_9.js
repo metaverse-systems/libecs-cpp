@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['update',['Update',['../classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073',1,'ecs::Container::Update()'],['../classecs_1_1System.html#ad384aaff28bc8a2ffdc25e523580abf2',1,'ecs::System::Update()']]]
+  ['requestedcomponents',['RequestedComponents',['../classecs_1_1System.html#af932447df790f96d13e47a6bbcc0fd93',1,'ecs::System']]],
+  ['resourceadd',['ResourceAdd',['../classecs_1_1System.html#a3bbc443c09578f7447eb3b28508d7cfb',1,'ecs::System']]],
+  ['resources',['resources',['../classecs_1_1System.html#aa721be3b75ddbf8d8b468aa0a847c270',1,'ecs::System']]],
+  ['running',['Running',['../classecs_1_1Manager.html#ad7da3ae18d48d971de855290f7893016',1,'ecs::Manager']]]
 ];

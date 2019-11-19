@@ -1,13 +1,12 @@
 var searchData=
 [
-  ['save',['save',['../classecs_1_1Component.html#a73b79919ba3063fb5744b023f90ea046',1,'ecs::Component::save()'],['../classecs_1_1Container.html#a1bb16451350091e6a6705c6f5096cd49',1,'ecs::Container::save()'],['../classecs_1_1Entity.html#ad89018b58ebda377e898e6245404bd7c',1,'ecs::Entity::save()']]],
-  ['shutdown',['Shutdown',['../classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a',1,'ecs::Manager']]],
-  ['sleep_5finterval',['sleep_interval',['../classecs_1_1Container.html#ac40dcbd113942ca2000c368155722aea',1,'ecs::Container']]],
-  ['start',['Start',['../classecs_1_1Container.html#abfb8bcfb8b652b6938ebe463cb646f0f',1,'ecs::Container::Start()'],['../classecs_1_1Container.html#abb3d08b5bd747217dd6be08fce0e1f7c',1,'ecs::Container::Start(uint32_t)']]],
-  ['system',['System',['../classecs_1_1System.html',1,'ecs::System'],['../classecs_1_1Container.html#af116a65d191332d17d0df9b91bf60ec1',1,'ecs::Container::System()'],['../classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8',1,'ecs::System::System()'],['../classecs_1_1System.html#abeea1820ec340a2755efd87589f18eb4',1,'ecs::System::System(std::string Handle)']]],
-  ['system_2ecpp',['System.cpp',['../System_8cpp.html',1,'']]],
-  ['system_2ehpp',['System.hpp',['../System_8hpp.html',1,'']]],
-  ['systems',['Systems',['../classecs_1_1Container.html#ab4076c51c98ea1b72b40c893de2cbed7',1,'ecs::Container']]],
-  ['systemsget',['SystemsGet',['../classecs_1_1Container.html#adc6c340f2c1f92c26b0517e9b5e23067',1,'ecs::Container']]],
-  ['systemsinit',['SystemsInit',['../classecs_1_1Container.html#a771167b30d05079ea3db91d668101fb9',1,'ecs::Container']]]
+  ['main',['main',['../test_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'test.cpp']]],
+  ['manager',['Manager',['../classecs_1_1Manager.html',1,'ecs::Manager'],['../classecs_1_1Container.html#a6f4a6fe2647a8bb067402a7827f59e1c',1,'ecs::Container::Manager()'],['../classecs_1_1Manager.html#a752c44853b64f2ae4807f882bc2e7cbe',1,'ecs::Manager::Manager()']]],
+  ['manager_2ecpp',['Manager.cpp',['../Manager_8cpp.html',1,'']]],
+  ['manager_2ehpp',['Manager.hpp',['../Manager_8hpp.html',1,'']]],
+  ['managerget',['ManagerGet',['../classecs_1_1Container.html#a2b5b68db08b1e323bd682d16919f9ba5',1,'ecs::Container']]],
+  ['managerset',['ManagerSet',['../classecs_1_1Container.html#ade5e836eabd07de330fcc8b229c8aba3',1,'ecs::Container']]],
+  ['messages',['messages',['../classecs_1_1System.html#afe4d6254e18a3076a05182b40e8d9d49',1,'ecs::System']]],
+  ['messagesubmit',['MessageSubmit',['../classecs_1_1Container.html#ad8d3f8768c1d08e116ded525bb26473c',1,'ecs::Container::MessageSubmit()'],['../classecs_1_1Manager.html#a935675a134b82244c19af434e3b79cb4',1,'ecs::Manager::MessageSubmit()'],['../classecs_1_1System.html#a0f88461bd2345e3b8f55ecfa31a93be5',1,'ecs::System::MessageSubmit()']]],
+  ['mutex_5fcontainers',['mutex_containers',['../classecs_1_1Manager.html#aa9873c03e516627c17fbc3f2486c5431',1,'ecs::Manager']]]
 ];

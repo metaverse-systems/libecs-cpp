@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['system',['System',['../classecs_1_1System.html',1,'ecs']]]
+  ['manager',['Manager',['../classecs_1_1Manager.html',1,'ecs']]]
 ];
