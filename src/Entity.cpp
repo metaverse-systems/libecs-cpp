@@ -66,8 +66,9 @@ namespace ecs
         return result;
     }
 
-    std::shared_ptr<ecs::Component> Entity::Component(std::shared_ptr<ecs::Component> c)
+    std::shared_ptr<ecs::Component> Entity::Component(ecs::Component *component)
     {
+        std::shared_ptr<ecs::Component> c(component);
         c->EntityHandle = this->Handle;
         this->Components[c->Type][c->EntityHandle].Push(c);
         this->Container->Component(c);

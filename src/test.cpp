@@ -57,17 +57,17 @@ class TestSystem : public ecs::System
 
 int main(int argc, char *argv[])
 {
-    ecs::Container *world = ECS->Container();
+    auto world = ECS->Container();
 
     world->System(new TestSystem());
 
     /* Create a new entity in the 'world' container */
-    ecs::Entity *e = world->Entity();
+    auto e = world->Entity();
 
     /* Initialize a TestComponent and add it to the Entity 'e' */
     Json::Value config;
     config["somedata"] = 3453521;
-    e->Component(std::shared_ptr<TestComponent>(new TestComponent(config)));
+    e->Component(new TestComponent(config));
 
     /* Run container in its own thread */
     bool threaded = true;
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
     while(ECS->IsRunning())
     {
-        usleep(10000);
+        usleep(100000);
         if(!threaded) world->Update();
     }
 
