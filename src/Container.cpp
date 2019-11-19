@@ -1,6 +1,5 @@
 #include <libecs-cpp/ecs.hpp>
 #include <thread>
-#include <chrono>
 #include <algorithm>
 #include <cstring>
 #include <uuid/uuid.h>
@@ -177,13 +176,9 @@ namespace ecs
 
     void Container::Update()
     {
-        std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-        uint32_t dt = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->LastTime).count();
-        this->LastTime = now;
-
         for(auto &Handle : this->SystemsGet())
         {
-            this->Systems[Handle]->Update(dt);
+            this->Systems[Handle]->Update();
         }
     }
 

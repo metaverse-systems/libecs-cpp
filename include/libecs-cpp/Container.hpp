@@ -5,7 +5,6 @@
 #include <vector>
 #include <unordered_map>
 #include <thread>
-#include <chrono>
 #include <unistd.h>
 #include <libecs-cpp/Component.hpp>
 
@@ -39,7 +38,10 @@ namespace ecs
         void Update();
         void MessageSubmit(Json::Value);
       private:
+        /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleep_interval = 1000000 / 30;
+
+        /*! A unique ID for the container */
         std::string Handle;
         ecs::Manager *Manager = nullptr;
         std::unordered_map <std::string, ecs::System *> Systems;
@@ -48,7 +50,6 @@ namespace ecs
         void ThreadFunc();
         bool ThreadRunning = true;
         ecs::Entity *EntityCreate(std::string);
-        std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
         std::unordered_map<std::string, ecs::Entity *> Entities;
     };
 }

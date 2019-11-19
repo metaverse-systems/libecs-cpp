@@ -31,9 +31,12 @@ class TestSystem : public ecs::System
         this->ComponentRequest("TestComponent");
     }
 
-    void Update(uint32_t dt)
+    void Update()
     {
         /* dt = number of milliseconds since last Update() */
+        auto dt = this->DeltaTimeGet();
+
+        std::cout << "Last run " << dt << "ms ago" << std::endl;
 
         // Get components specified with this->ComponentRequest()...
         auto Components = this->ComponentsGet();
@@ -49,7 +52,7 @@ class TestSystem : public ecs::System
                 
                 // Do stuff with component data
                 c->somedata = c->somedata + 1;
-                std::cout << entity.first << ": " << c->somedata << std::endl;
+                std::cout << entity.first << " - somedata: " << c->somedata << std::endl;
             }
         }
     }
