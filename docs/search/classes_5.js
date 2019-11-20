@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['testcomponent',['TestComponent',['../classTestComponent.html',1,'']]],
-  ['testsystem',['TestSystem',['../classTestSystem.html',1,'']]]
+  ['system',['System',['../classecs_1_1System.html',1,'ecs']]]
 ];
