@@ -85,7 +85,8 @@ class PhysicsSystem : public ecs::System
                 // Adjust position data
                 pos->x += vel->x * multiplier;
                 pos->y += vel->y * multiplier;
-                std::cout << entity << " - Position - x: " << pos->x << ", y: " << pos->y << "   Velocity - x: " << vel->x << ", y: " << vel->y << "    Multiplier: " << multiplier << std::endl;
+                std::cout << entity << " - Position - x: " << pos->x << ", y: " << pos->y << "   Velocity - x: ";
+                std::cout << vel->x << ", y: " << vel->y << "    Multiplier: " << multiplier << std::endl;
             }
         }
     }
