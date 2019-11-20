@@ -62,23 +62,39 @@ namespace ecs
         std::vector<std::shared_ptr<ecs::Component>> component_list;
     };
 
-    class _EntityComponentList
+    class EntityComponentList
     {
       public:
         std::string EntityHandle = "";
-/*         ecs::ComponentList ComponentListGet(std::string type)
+        EntityComponentList() {};
+        EntityComponentList(std::string EntityHandle)
         {
-            if(this->entity_component_list[])
+            this->EntityHandle = EntityHandle;
         }
- */      private:
+        ecs::ComponentList &operator[] (std::string Type)
+        {
+            return this->entity_component_list[Type];
+        }
+        std::unordered_map<std::string, ecs::ComponentList>::iterator begin()
+        {
+            return this->entity_component_list.begin();
+        }
+        std::unordered_map<std::string, ecs::ComponentList>::iterator end()
+        {
+            return this->entity_component_list.end();
+        }
+        void erase(std::string Handle)
+        {
+            this->entity_component_list.erase(Handle);
+        }
+      private:
         std::unordered_map<std::string, ecs::ComponentList> entity_component_list;
     };
-    typedef std::unordered_map<std::string, ecs::ComponentList> EntityComponentList;
 
     class _TypeEntityComponentList
     {
       private:
-        std::unordered_map<std::string, ecs::_EntityComponentList> type_entity_component_list;
+        std::unordered_map<std::string, ecs::EntityComponentList> type_entity_component_list;
     };
     typedef std::unordered_map<std::string, ecs::EntityComponentList> TypeEntityComponentList;
 }
