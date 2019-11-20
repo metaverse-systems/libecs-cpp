@@ -54,4 +54,4 @@ Makefile
 *.lo
 *.exe
 libtool
-src/test
+src/example
