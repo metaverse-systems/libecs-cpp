@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['entitycomponentlist',['EntityComponentList',['../namespaceecs.html#a1faf8df6285bb1496f04d2c1f4dc83ea',1,'ecs']]]
+  ['typeentitycomponentlist',['TypeEntityComponentList',['../namespaceecs.html#afd37fd3311d4f828b035751c6312b41e',1,'ecs']]]
 ];
