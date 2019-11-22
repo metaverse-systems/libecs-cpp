@@ -77,9 +77,12 @@ namespace ecs
 
     void Entity::destroy()
     {
-        for(auto &t : this->Components)
+        for(auto &[type, entity_component_list] : this->Components)
         {
-            for(auto &c : t.second) t.second.erase(c.first);
+            for(auto &[entity, component_list] : entity_component_list)
+            {
+                while(component_list.Pop());
+            }
         }
         this->Container->EntityDestroy(this->Handle);
     }
