@@ -47,17 +47,20 @@ namespace ecs
         this->ContainerThread.detach();
     }
 
-    Json::Value Container::save()
+    Json::Value Container::Export()
     {
         Json::Value data;
 
-        data["handle"] = this->Handle;
+        data["Handle"] = this->Handle;
 
-        for(auto &e : this->Entities)
+        for(auto &[name, entity] : this->Entities)
         {
-            ecs::Entity *entity = this->Entities[e.first];
+            data["Entities"][name] = entity->Export();
+        }
 
-            data["entities"][e.first] = entity->save();
+        for(auto &[name, system] : this->Systems)
+        {
+            data["Systems"][name] = system->Export();
         }
 
         return data;
