@@ -15,7 +15,7 @@ namespace ecs
       public:
         Entity();
         Entity(std::string uuid);
-        Json::Value save();
+        Json::Value Export();
         void ContainerSet(ecs::Container *Container);
         std::string Handle;
         std::string HandleGet();
