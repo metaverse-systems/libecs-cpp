@@ -12,7 +12,7 @@ namespace ecs
       public:
         Component();
         Component(Json::Value);
-        virtual Json::Value save() = 0;
+        virtual Json::Value Export() = 0;
         std::string Handle;
         std::string Type;
         std::string EntityHandle;

@@ -34,7 +34,7 @@ namespace ecs
         ecs::Entity *Entity(std::string);
         ecs::Entity *Entity();
         void EntityDestroy(std::string);
-        Json::Value save();
+        Json::Value Export();
         void Update();
         void MessageSubmit(Json::Value);
       private:

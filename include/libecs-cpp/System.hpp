@@ -22,6 +22,7 @@ namespace ecs
         ecs::TypeEntityComponentList ComponentsGet();
         void ComponentRequest(std::string);
         void MessageSubmit(Json::Value);
+        virtual Json::Value Export() = 0;
       protected:
         std::vector<std::string> RequestedComponents;
         std::queue<Json::Value> messages;
