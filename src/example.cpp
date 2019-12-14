@@ -13,7 +13,7 @@ class PositionComponent : public ecs::Component
         this->y = config["y"].asFloat();
     }
 
-    Json::Value save()
+    Json::Value Export()
     {
         Json::Value config;
         config["x"] = this->x;
@@ -36,7 +36,7 @@ class VelocityComponent : public ecs::Component
         this->y = config["y"].asFloat();
     }
 
-    Json::Value save()
+    Json::Value Export()
     {
         Json::Value config;
         config["x"] = this->x;
@@ -55,6 +55,12 @@ class PhysicsSystem : public ecs::System
         this->Handle = "PhysicsSystem";
         this->ComponentRequest("PositionComponent");
         this->ComponentRequest("VelocityComponent");
+    }
+
+    Json::Value Export()
+    {
+        Json::Value config;
+        return config;
     }
 
     void Update()
@@ -126,6 +132,8 @@ int main(int argc, char *argv[])
 
     if(threaded) world->Start();
     else world->SystemsInit();
+
+    std::cout << world->Export() << std::endl;
 
     while(ECS->IsRunning())
     {

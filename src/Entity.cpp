@@ -29,18 +29,18 @@ namespace ecs
         this->Handle = uuid;
     }
 
-    Json::Value Entity::save()
+    Json::Value Entity::Export()
     {
         Json::Value config;
 
         config["Handle"] = this->HandleGet();
-        for(auto &t : this->Components)
+        for(auto &[type, entity_component_list] : this->Components)
         {
-            for(auto &c : t.second)
+            for(auto &[entity, component_list] : entity_component_list)
             {
-                while(auto component = c.second.Pop())
+                while(auto component = component_list.Pop())
                 {
-                    config["Components"][t.first].append(component->save()); 
+                    config["Components"][type].append(component->Export()); 
                 }
             }
         }
