@@ -11,7 +11,7 @@ namespace ecs
 {
     Container::Container()
     {
-        this->Handle.resize(40);
+        this->Handle.resize(36);
 
 #ifdef _WIN32
         UUID uuid;

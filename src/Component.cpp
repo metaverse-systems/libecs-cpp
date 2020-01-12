@@ -6,7 +6,7 @@ namespace ecs
     Component::Component()
     {
         uuid_t uuid;
-        this->Handle.resize(40);
+        this->Handle.resize(36);
 
 #ifdef _WIN32
         UuidCreate(&uuid);
