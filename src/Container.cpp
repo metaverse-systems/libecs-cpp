@@ -203,5 +203,6 @@ namespace ecs
         {
             t.second.erase(uuid);
         }
+        this->Entities.erase(uuid);
     }
 }
