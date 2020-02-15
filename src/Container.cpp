@@ -3,9 +3,6 @@
 #include <algorithm>
 #include <cstring>
 #include <uuid/uuid.h>
-#ifdef WITHGPERFTOOLS
-#include <gperftools/profiler.h>
-#endif
 
 namespace ecs
 {
