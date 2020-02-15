@@ -14,8 +14,8 @@ AM_INIT_AUTOMAKE([subdir-objects])
 
 AC_CHECK_HEADER(
   [windows.h],
-  [UUID_LIBS="-lrpcrt4 $LIBS"],
-  [PKG_CHECK_MODULES([UUID], uuid)]
+  [UUID_LIBS="-lrpcrt4 $LIBS"; AC_SUBST([UUID_REQUIRE], "")],
+  [PKG_CHECK_MODULES([UUID], uuid, AC_SUBST([UUID_REQUIRE], "uuid"))]
 )
 PKG_CHECK_MODULES([JSONCPP], jsoncpp)
 
