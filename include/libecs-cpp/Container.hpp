@@ -4,7 +4,13 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <thread>
+
+#if _WIN32
+  #include <mingw.thread.h>
+#else
+  #include <thread>
+#endif
+
 #include <unistd.h>
 #include <libecs-cpp/Component.hpp>
 
