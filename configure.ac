@@ -12,7 +12,11 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CXX
 AM_INIT_AUTOMAKE([subdir-objects])
 
-PKG_CHECK_MODULES([UUID], uuid)
+AC_CHECK_HEADER(
+  [windows.h],
+  [UUID_LIBS="-lrpcrt4 $LIBS"],
+  [PKG_CHECK_MODULES([UUID], uuid)]
+)
 PKG_CHECK_MODULES([JSONCPP], jsoncpp)
 
 AC_CONFIG_FILES([Doxyfile])

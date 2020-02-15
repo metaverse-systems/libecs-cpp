@@ -2,28 +2,12 @@
 #include <thread>
 #include <algorithm>
 #include <cstring>
-#include <uuid/uuid.h>
 
 namespace ecs
 {
     Container::Container()
     {
-        this->Handle.resize(36);
-
-#ifdef _WIN32
-        UUID uuid;
-        UuidCreate(&uuid);
-        RPC_CSTR szUuid = NULL;
-        if(UuidToString(&uuid, &szUuid) == RPC_S_OK)
-        {
-            this->Handle = (char*) szUuid;
-            RpcStringFree(&szUuid);
-        }
-#else
-        uuid_t uuid;
-        uuid_generate(uuid);
-        uuid_unparse(uuid, &this->Handle[0]);
-#endif
+        this->Handle = ecs::Uuid().Get();
     }
 
     Container::Container(std::string Handle)
