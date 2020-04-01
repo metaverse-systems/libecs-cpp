@@ -43,5 +43,5 @@ unset PKG_CONFIG_PATH
 Test with:
 
 ```
-wine src/example.exe
+WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/8.3-posix;/usr/x86_64-w64-mingw32/lib" wine64 src/example.exe
 ```
