@@ -4,12 +4,6 @@ Setup build environment as described in ```build-environment.md```
 
 # Install dependencies
 
-## Install cross-compile instructions for cmake
-
-```
-cp mingw64.cmake ~
-```
-
 ## jsoncpp - https://github.com/open-source-parsers/jsoncpp.git
 
 ```
@@ -32,6 +26,7 @@ unset PKG_CONFIG_PATH
 export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig/
 git clone https://github.com/metaversesystems/libecs-cpp.git
 cd libecs-cpp
+cp mingw64.cmake ~
 ./autogen.sh
 ./configure --host=x86_64-w64-mingw32 --prefix=/usr/x86_64-w64-mingw32
 make
