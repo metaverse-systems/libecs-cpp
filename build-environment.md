@@ -15,6 +15,7 @@ sudo apt install build-essential libtool pkg-config curl git wget
 sudo su -
 curl -sL https://deb.nodesource.com/setup_13.x | bash -
 apt install nodejs
+exit
 ```
 
 ## Win64
@@ -26,6 +27,7 @@ apt install nodejs
 sudo su -
 dpkg --add-architecture i386
 apt update
+exit
 ```
 
 * Install Windows dev packages
@@ -39,6 +41,7 @@ g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 cmake wine wine32 wine64 wixl osslsign
 
 ```
 sudo su -
+
 wget -O /usr/x86_64-w64-mingw32/include/mingw.thread.h \
 https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.thread.h
 
@@ -47,4 +50,6 @@ https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.invoke.h
 
 wget -O /usr/x86_64-w64-mingw32/include/mingw.mutex.h \
 https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.mutex.h
+
+exit
 ```
