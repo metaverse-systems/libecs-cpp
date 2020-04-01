@@ -48,9 +48,3 @@ https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.invoke.h
 wget -O /usr/x86_64-w64-mingw32/include/mingw.mutex.h \
 https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.mutex.h
 ```
-
-* Install cross-compile instructions for cmake
-
-```
-cp mingw64.cmake ~
-```

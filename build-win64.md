@@ -4,6 +4,12 @@ Setup build environment as described in ```build-environment.md```
 
 # Install dependencies
 
+## Install cross-compile instructions for cmake
+
+```
+cp mingw64.cmake ~
+```
+
 ## jsoncpp - https://github.com/open-source-parsers/jsoncpp.git
 
 ```
