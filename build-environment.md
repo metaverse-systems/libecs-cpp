@@ -3,17 +3,18 @@
 The build system and its dependencies are designed around Linux, 
 if you want to build on Windows you will need to use Windows Subsystem for Linux.
 
+* Install base packages
+
+```
+sudo apt install build-essential libtool pkg-config curl git
+```
+
 * Add Node repository
 
 ```
 sudo su -
 curl -sL https://deb.nodesource.com/setup_13.x | bash -
-```
-
-* Install base packages
-
-```
-sudo apt install build-essential libtool pkg-config curl git nodejs
+apt install nodejs
 ```
 
 ## Win64
