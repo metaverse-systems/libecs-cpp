@@ -8,6 +8,7 @@ Setup build environment as described in ```build-environment.md```
 git clone https://github.com/metaversesystems/libecs-cpp.git
 cd libecs-cpp
 cp mingw64.cmake ~
+cd ..
 ```
 
 # Install dependencies
@@ -24,6 +25,7 @@ cmake -DCMAKE_TOOLCHAIN_FILE=~/mingw64.cmake -DCMAKE_INSTALL_PREFIX=/usr/x86_64-
 WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/8.3-posix;/usr/x86_64-w64-mingw32/lib" make
 sudo make install
 unset PKG_CONFIG_PATH
+cd ../..
 ```
 
 # Install libecs-cpp
