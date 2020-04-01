@@ -3,8 +3,6 @@
 The build system and its dependencies are designed around Linux, 
 if you want to build on Windows you will need to use Windows Subsystem for Linux.
 
-## Native
-
 * Add Node repository
 
 ```
