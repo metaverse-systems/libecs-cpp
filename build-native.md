@@ -4,7 +4,7 @@ Setup build environment as described in ```build-environment.md```
 
 # Install dependencies
 
-## jsoncpp - https://github.com/open-source-parsers/jsoncpp.git
+## jsoncpp
 
 ```
 sudo apt install jsoncpp
