@@ -87,6 +87,10 @@ namespace ecs
         {
             this->entity_component_list.erase(Handle);
         }
+        std::size_t Size()
+        {
+            return this->entity_component_list.size();
+        }
       private:
         std::unordered_map<std::string, ecs::ComponentList> entity_component_list;
     };
