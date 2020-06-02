@@ -81,7 +81,7 @@ namespace ecs
 
     std::shared_ptr<ecs::Component> Container::Component(std::shared_ptr<ecs::Component> c)
     {
-        this->Components[c->Type][c->EntityHandle].Push(c); 
+        this->Components[c->Type][c->EntityHandle] = c; 
         return c;
     }
 

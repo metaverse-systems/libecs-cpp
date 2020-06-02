@@ -20,12 +20,9 @@ namespace ecs
         config["Handle"] = this->HandleGet();
         for(auto &[type, entity_component_list] : this->Components)
         {
-            for(auto &[entity, component_list] : entity_component_list)
+            for(auto &[entity, component] : entity_component_list)
             {
-                while(auto component = component_list.Pop())
-                {
-                    config["Components"][type].append(component->Export()); 
-                }
+                config["Components"][type].append(component->Export()); 
             }
         }
 
@@ -54,20 +51,13 @@ namespace ecs
     {
         std::shared_ptr<ecs::Component> c(component);
         c->EntityHandle = this->Handle;
-        this->Components[c->Type][c->EntityHandle].Push(c);
+        this->Components[c->Type][c->EntityHandle] = c;
         this->Container->Component(c);
         return c;
     }
 
     void Entity::destroy()
     {
-        for(auto &[type, entity_component_list] : this->Components)
-        {
-            for(auto &[entity, component_list] : entity_component_list)
-            {
-                while(component_list.Pop());
-            }
-        }
         this->Container->EntityDestroy(this->Handle);
     }
 

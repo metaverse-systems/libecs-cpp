@@ -74,26 +74,23 @@ class PhysicsSystem : public ecs::System
         auto Components = this->ComponentsGet();
 
         // ...and cycle through them
-        for(auto &[entity, component_list] : Components["PositionComponent"])
+        for(auto &[entity, pcomponent] : Components["PositionComponent"])
         {
-            while(auto pcomponent = component_list.Pop())
-            {
-                // Cast to PositionComponent class
-                auto pos = std::dynamic_pointer_cast<PositionComponent>(pcomponent);
+            // Cast to PositionComponent class
+            auto pos = std::dynamic_pointer_cast<PositionComponent>(pcomponent);
 
-                // Get related VelocityComponent
-                auto vcomponent = Components["VelocityComponent"][entity].Pop();
-                auto vel = std::dynamic_pointer_cast<VelocityComponent>(vcomponent);
+            // Get related VelocityComponent
+            auto vcomponent = Components["VelocityComponent"][entity];
+            auto vel = std::dynamic_pointer_cast<VelocityComponent>(vcomponent);
                 
-                // scale velocity
-                float multiplier = dt / 1000.0;
+            // scale velocity
+            float multiplier = dt / 1000.0;
 
-                // Adjust position data
-                pos->x += vel->x * multiplier;
-                pos->y += vel->y * multiplier;
-                std::cout << entity << " - Position - x: " << pos->x << ", y: " << pos->y << "   Velocity - x: ";
-                std::cout << vel->x << ", y: " << vel->y << "    Multiplier: " << multiplier << std::endl;
-            }
+            // Adjust position data
+            pos->x += vel->x * multiplier;
+            pos->y += vel->y * multiplier;
+            std::cout << entity << " - Position - x: " << pos->x << ", y: " << pos->y << "   Velocity - x: ";
+            std::cout << vel->x << ", y: " << vel->y << "    Multiplier: " << multiplier << std::endl;
         }
     }
 };
