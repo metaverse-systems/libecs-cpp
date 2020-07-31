@@ -12,6 +12,7 @@
 #endif
 
 #include <unistd.h>
+#include <libecs-cpp/Resource.hpp>
 #include <libecs-cpp/Component.hpp>
 
 namespace ecs
@@ -43,6 +44,8 @@ namespace ecs
         Json::Value Export();
         void Update();
         void MessageSubmit(Json::Value);
+        void ResourceAdd(std::string, ecs::Resource);
+        ecs::Resource ResourceGet(std::string);
       private:
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleep_interval = 1000000 / 30;
@@ -57,5 +60,7 @@ namespace ecs
         bool ThreadRunning = true;
         ecs::Entity *EntityCreate(std::string);
         std::unordered_map<std::string, ecs::Entity *> Entities;
+
+        std::unordered_map<std::string, ecs::Resource> resources;
     };
 }

@@ -186,4 +186,18 @@ namespace ecs
         }
         this->Entities.erase(uuid);
     }
+
+    void Container::ResourceAdd(std::string name, ecs::Resource r)
+    {
+        this->resources[name] = r;
+    }
+
+    ecs::Resource Container::ResourceGet(std::string name)
+    {
+        if(this->resources.count(name) == 0)
+        {
+            auto err = "Attempted to access non-existent resource: " + name;
+            throw std::runtime_error(err);
+        }
+    }
 }
