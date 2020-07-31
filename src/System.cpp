@@ -17,11 +17,6 @@ namespace ecs
     {
     }
 
-    void System::ResourceAdd(std::string name, void *p)
-    {
-        this->resources[name] = p;
-    }
-
     std::string System::HandleGet()
     {
         return this->Handle;
