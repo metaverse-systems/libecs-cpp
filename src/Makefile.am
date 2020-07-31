@@ -7,7 +7,8 @@ pkginclude_HEADERS = \
 	../include/libecs-cpp/System.hpp \
 	../include/libecs-cpp/Component.hpp \
         ../include/libecs-cpp/Entity.hpp \
-    ../include/libecs-cpp/Uuid.hpp
+	../include/libecs-cpp/Uuid.hpp \
+	../include/libecs-cpp/Resource.hpp
 
 libecs_cpp_la_CXXFLAGS = -std=c++17 -I../include $(UUID_CFLAGS) $(JSONCPP_CFLAGS)
 libecs_cpp_la_LIBADD = -lpthread $(UUID_LIBS) $(JSONCPP_LIBS)
