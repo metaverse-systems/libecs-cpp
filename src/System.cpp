@@ -27,6 +27,11 @@ namespace ecs
         this->Container = container;
     }
 
+    ecs::Container *System::ContainerGet()
+    {
+        return this->Container;
+    }
+
     void System::ComponentRequest(std::string component)
     {
         for(auto &s : this->RequestedComponents)

@@ -14,6 +14,7 @@ namespace ecs
         System(std::string Handle);
         virtual void Init();
         void ContainerSet(ecs::Container *Container);
+        ecs::Container *ContainerGet();
         std::string HandleGet();
         virtual void Update() {};
         std::string Handle;
