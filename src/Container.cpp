@@ -199,5 +199,7 @@ namespace ecs
             auto err = "Attempted to access non-existent resource: " + name;
             throw std::runtime_error(err);
         }
+
+        return this->resources[name];
     }
 }
