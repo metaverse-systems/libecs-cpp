@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['entity_85',['Entity',['../classecs_1_1Entity.html',1,'ecs']]]
+  ['manager_74',['Manager',['../classecs_1_1Manager.html',1,'ecs']]]
 ];

@@ -1,7 +1,3 @@
-# Build environment
-
-Setup build environment as described in ```build-environment.md```
-
 # Install dependencies
 
 ## jsoncpp
