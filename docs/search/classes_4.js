@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['physicssystem_87',['PhysicsSystem',['../classPhysicsSystem.html',1,'']]],
-  ['positioncomponent_88',['PositionComponent',['../classPositionComponent.html',1,'']]]
+  ['system_76',['System',['../classecs_1_1System.html',1,'ecs']]]
 ];

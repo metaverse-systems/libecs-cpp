@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libecs-cpp
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">0.2.1</span>
    </div>
   </td>
  </tr>
@@ -93,13 +93,8 @@ $(function() {
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="namespaceecs.html#a3f67428b1b86a128329937cc394cb406">   22</a></span>&#160;    <span class="keyword">typedef</span> std::unordered_map&lt;std::string, std::shared_ptr&lt;ecs::Component&gt;&gt; <a class="code" href="namespaceecs.html#a3f67428b1b86a128329937cc394cb406">EntityComponentList</a>;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classecs_1_1__TypeEntityComponentList.html">   24</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classecs_1_1__TypeEntityComponentList.html">_TypeEntityComponentList</a></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classecs_1_1__TypeEntityComponentList.html#aa89d0b22fdd912cff3dceae8cf3964ed">   27</a></span>&#160;        std::unordered_map&lt;std::string, ecs::EntityComponentList&gt; <a class="code" href="classecs_1_1__TypeEntityComponentList.html#aa89d0b22fdd912cff3dceae8cf3964ed">type_entity_component_list</a>;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    };</div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="namespaceecs.html#afd37fd3311d4f828b035751c6312b41e">   29</a></span>&#160;    <span class="keyword">typedef</span> std::unordered_map&lt;std::string, ecs::EntityComponentList&gt; <a class="code" href="namespaceecs.html#afd37fd3311d4f828b035751c6312b41e">TypeEntityComponentList</a>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="namespaceecs.html#afd37fd3311d4f828b035751c6312b41e">   24</a></span>&#160;    <span class="keyword">typedef</span> std::unordered_map&lt;std::string, ecs::EntityComponentList&gt; <a class="code" href="namespaceecs.html#afd37fd3311d4f828b035751c6312b41e">TypeEntityComponentList</a>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespaceecs_html_a3f67428b1b86a128329937cc394cb406"><div class="ttname"><a href="namespaceecs.html#a3f67428b1b86a128329937cc394cb406">ecs::EntityComponentList</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::shared_ptr&lt; ecs::Component &gt; &gt; EntityComponentList</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00022">Component.hpp:22</a></div></div>
 <div class="ttc" id="aclassecs_1_1Component_html_ad956fbbcfaeb3f5b093b263128f1da0e"><div class="ttname"><a href="classecs_1_1Component.html#ad956fbbcfaeb3f5b093b263128f1da0e">ecs::Component::Component</a></div><div class="ttdeci">Component(Json::Value)</div></div>
@@ -107,16 +102,14 @@ $(function() {
 <div class="ttc" id="aclassecs_1_1Component_html"><div class="ttname"><a href="classecs_1_1Component.html">ecs::Component</a></div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00010">Component.hpp:11</a></div></div>
 <div class="ttc" id="aclassecs_1_1Component_html_a8dd3a09572435aaca6b85f6461eb28a5"><div class="ttname"><a href="classecs_1_1Component.html#a8dd3a09572435aaca6b85f6461eb28a5">ecs::Component::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00016">Component.hpp:16</a></div></div>
 <div class="ttc" id="aclassecs_1_1Component_html_ab82d70af7f262f76fb0fcd4ce90a5647"><div class="ttname"><a href="classecs_1_1Component.html#ab82d70af7f262f76fb0fcd4ce90a5647">ecs::Component::~Component</a></div><div class="ttdeci">virtual ~Component()=0</div><div class="ttdef"><b>Definition:</b> <a href="Component_8cpp_source.html#l00010">Component.cpp:10</a></div></div>
-<div class="ttc" id="aclassecs_1_1__TypeEntityComponentList_html"><div class="ttname"><a href="classecs_1_1__TypeEntityComponentList.html">ecs::_TypeEntityComponentList</a></div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00024">Component.hpp:25</a></div></div>
 <div class="ttc" id="aclassecs_1_1Component_html_a98d0cb9184cefc653e4b66dc289c7ee0"><div class="ttname"><a href="classecs_1_1Component.html#a98d0cb9184cefc653e4b66dc289c7ee0">ecs::Component::Type</a></div><div class="ttdeci">std::string Type</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00017">Component.hpp:17</a></div></div>
 <div class="ttc" id="aclassecs_1_1Component_html_a360731c977527185a632394e53cf7f2d"><div class="ttname"><a href="classecs_1_1Component.html#a360731c977527185a632394e53cf7f2d">ecs::Component::Export</a></div><div class="ttdeci">virtual Json::Value Export()=0</div></div>
-<div class="ttc" id="aclassecs_1_1__TypeEntityComponentList_html_aa89d0b22fdd912cff3dceae8cf3964ed"><div class="ttname"><a href="classecs_1_1__TypeEntityComponentList.html#aa89d0b22fdd912cff3dceae8cf3964ed">ecs::_TypeEntityComponentList::type_entity_component_list</a></div><div class="ttdeci">std::unordered_map&lt; std::string, ecs::EntityComponentList &gt; type_entity_component_list</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00027">Component.hpp:27</a></div></div>
 <div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00008">Component.hpp:9</a></div></div>
-<div class="ttc" id="anamespaceecs_html_afd37fd3311d4f828b035751c6312b41e"><div class="ttname"><a href="namespaceecs.html#afd37fd3311d4f828b035751c6312b41e">ecs::TypeEntityComponentList</a></div><div class="ttdeci">std::unordered_map&lt; std::string, ecs::EntityComponentList &gt; TypeEntityComponentList</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00029">Component.hpp:29</a></div></div>
+<div class="ttc" id="anamespaceecs_html_afd37fd3311d4f828b035751c6312b41e"><div class="ttname"><a href="namespaceecs.html#afd37fd3311d4f828b035751c6312b41e">ecs::TypeEntityComponentList</a></div><div class="ttdeci">std::unordered_map&lt; std::string, ecs::EntityComponentList &gt; TypeEntityComponentList</div><div class="ttdef"><b>Definition:</b> <a href="Component_8hpp_source.html#l00024">Component.hpp:24</a></div></div>
 <div class="ttc" id="aclassecs_1_1Component_html_a90368789c17bd4fdcf0485ee3b477773"><div class="ttname"><a href="classecs_1_1Component.html#a90368789c17bd4fdcf0485ee3b477773">ecs::Component::Component</a></div><div class="ttdeci">Component()</div><div class="ttdef"><b>Definition:</b> <a href="Component_8cpp_source.html#l00005">Component.cpp:5</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Sep 5 2020 16:22:15 for libecs-cpp by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Sep 5 2020 17:12:30 for libecs-cpp by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.18
 </small></address>
