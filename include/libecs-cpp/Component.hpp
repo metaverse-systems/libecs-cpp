@@ -21,10 +21,5 @@ namespace ecs
 
     typedef std::unordered_map<std::string, std::shared_ptr<ecs::Component>> EntityComponentList;
 
-    class _TypeEntityComponentList
-    {
-      private:
-        std::unordered_map<std::string, ecs::EntityComponentList> type_entity_component_list;
-    };
     typedef std::unordered_map<std::string, ecs::EntityComponentList> TypeEntityComponentList;
 }
