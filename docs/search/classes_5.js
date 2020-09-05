@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['system_83',['System',['../classecs_1_1System.html',1,'ecs']]]
+  ['resource_89',['Resource',['../structecs_1_1Resource.html',1,'ecs']]]
 ];
