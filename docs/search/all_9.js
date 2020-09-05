@@ -1,6 +1,10 @@
 var searchData=
 [
-  ['physicssystem_47',['PhysicsSystem',['../classPhysicsSystem.html',1,'PhysicsSystem'],['../classPhysicsSystem.html#a4960fbd046fb332a5faa36fb5028e7c5',1,'PhysicsSystem::PhysicsSystem()']]],
-  ['positioncomponent_48',['PositionComponent',['../classPositionComponent.html',1,'PositionComponent'],['../classPositionComponent.html#a1e433ab514b0d76ee4595cb7040e8035',1,'PositionComponent::PositionComponent()']]],
-  ['ptr_49',['ptr',['../structecs_1_1Resource.html#a30c82cb7caf600e099ca684cb53ef543',1,'ecs::Resource']]]
+  ['requestedcomponents_45',['RequestedComponents',['../classecs_1_1System.html#af932447df790f96d13e47a6bbcc0fd93',1,'ecs::System']]],
+  ['resource_46',['Resource',['../structecs_1_1Resource.html',1,'ecs::Resource'],['../namespaceecs.html#a797846e22b82e52034fdb6c9524908aa',1,'ecs::Resource()']]],
+  ['resource_2ehpp_47',['Resource.hpp',['../Resource_8hpp.html',1,'']]],
+  ['resourceadd_48',['ResourceAdd',['../classecs_1_1Container.html#ac8d15d2314041fd05ee35ae2d644c9e1',1,'ecs::Container']]],
+  ['resourceget_49',['ResourceGet',['../classecs_1_1Container.html#a6e637431fd696d2d3f5975d06d3b6b7d',1,'ecs::Container']]],
+  ['resources_50',['resources',['../classecs_1_1Container.html#a44ac4283019ce42096c9cf0fda14e65b',1,'ecs::Container']]],
+  ['running_51',['Running',['../classecs_1_1Manager.html#ad7da3ae18d48d971de855290f7893016',1,'ecs::Manager']]]
 ];
