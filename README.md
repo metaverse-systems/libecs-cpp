@@ -3,6 +3,14 @@
 
 See ```src/example.cpp``` for a minimal example.
 
-See ```build-native.md``` for Linux/MacOS build instructions.
+To build and install:
 
-See ```build-win64.md``` for Windows cross-compile build instructions.
+  * Setup build environment as described in ```build-environment.md```.
+
+then
+
+  * See ```build-native.md``` for Linux/MacOS build instructions.
+
+or
+
+  * See ```build-win64.md``` for Windows cross-compile build instructions.
