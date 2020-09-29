@@ -52,7 +52,9 @@ https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.mutex.h
 exit
 ```
 
-## Build and install libecs-cpp
+## Build library
+
+* Build and install libecs-cpp
 
 ```
 cd libecs-cpp
@@ -68,7 +70,7 @@ sudo make install
 ./src/example
 ```
 
-### Build and install libecs-cpp for Windows
+### Build library for Windows
 
 
 * Build and install jsoncpp
