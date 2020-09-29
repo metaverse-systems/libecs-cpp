@@ -13,17 +13,6 @@ if you want to build on Windows you will need to use Windows Subsystem for Linux
 sudo apt install build-essential libtool pkg-config curl git jsoncpp cmake
 ```
 
-* Add Node repository
-
-```
-sudo su -
-curl -sL https://deb.nodesource.com/setup_13.x | bash -
-apt install nodejs
-exit
-```
-
-### Add Windows support
-
 * Install wine and Windows dev packages
 
 ```
@@ -71,7 +60,6 @@ sudo make install
 ```
 
 ### Build library for Windows
-
 
 * Build and install jsoncpp
 
