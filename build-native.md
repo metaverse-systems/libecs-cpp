@@ -8,10 +8,10 @@ sudo apt install jsoncpp
 
 # Install libecs-cpp
 
-## libecs-cpp - https://github.com/metaversesystems/libecs-cpp.git
+## libecs-cpp - https://github.com/metaverse-systems/libecs-cpp.git
 
 ```
-git clone https://github.com/metaversesystems/libecs-cpp.git
+git clone https://github.com/metaverse-systems/libecs-cpp.git
 cd libecs-cpp
 ./autogen.sh
 ./configure
