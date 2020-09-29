@@ -52,10 +52,60 @@ https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.mutex.h
 exit
 ```
 
-then
+## Build and install libecs-cpp
 
-  * See ```build-native.md``` for Linux/MacOS build instructions.
+```
+cd libecs-cpp
+./autogen.sh
+./configure
+make
+sudo make install
+```
 
-or
+* Test
 
-  * See ```build-win64.md``` for Windows cross-compile build instructions.
+```
+./src/example
+```
+
+### Build and install libecs-cpp for Windows
+
+
+* Build and install jsoncpp
+
+```
+cd libecs-cpp
+cp mingw64.cmake ~
+cd ..
+export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig/
+export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep win32|head -n1`
+git clone https://github.com/open-source-parsers/jsoncpp.git
+cd jsoncpp
+mkdir build
+cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=~/mingw64.cmake -DCMAKE_INSTALL_PREFIX=/usr/x86_64-w64-mingw32 ..
+WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib" make
+sudo make install
+unset PKG_CONFIG_PATH
+unset MING_LIB
+cd ../..
+```
+
+* Build and install libecs-cpp
+
+```
+export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig/
+cd libecs-cpp
+./autogen.sh
+./configure --host=x86_64-w64-mingw32 --prefix=/usr/x86_64-w64-mingw32
+make
+sudo make install
+unset PKG_CONFIG_PATH
+```
+
+* Test
+
+```
+export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep win32|head -n1`
+WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib" wine64 src/example.exe
+```
