@@ -22,7 +22,7 @@ namespace ecs
         {
             for(auto &[entity, component] : entity_component_list)
             {
-                config["Components"][type].append(component->Export()); 
+                config["Components"][type] = component->Export(); 
             }
         }
 
