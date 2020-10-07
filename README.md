@@ -87,6 +87,7 @@ cd ../..
 export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig/
 cd libecs-cpp
 ./autogen.sh
+make distclean
 ./configure --host=x86_64-w64-mingw32 --prefix=/usr/x86_64-w64-mingw32
 make
 sudo make install
