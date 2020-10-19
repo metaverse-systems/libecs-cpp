@@ -56,6 +56,12 @@ namespace ecs
         return c;
     }
 
+    void Entity::ComponentDestroy(std::string Type)
+    {
+        this->Components.erase(Type);
+        this->Container->ComponentDestroy(this->Handle, Type);
+    }
+
     void Entity::destroy()
     {
         this->Container->EntityDestroy(this->Handle);
