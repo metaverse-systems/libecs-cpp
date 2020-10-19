@@ -36,6 +36,7 @@ namespace ecs
         ecs::System *System(ecs::System *);
         std::vector<std::string> SystemsGet();
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
+        void ComponentDestroy(std::string entity, std::string Type);
         ecs::TypeEntityComponentList ComponentsGet();
         ecs::TypeEntityComponentList ComponentsGet(std::vector<std::string>);
         ecs::Entity *Entity(std::string);
@@ -46,6 +47,8 @@ namespace ecs
         void MessageSubmit(Json::Value);
         void ResourceAdd(std::string, ecs::Resource);
         ecs::Resource ResourceGet(std::string);
+        std::unordered_map<std::string, ecs::Entity *> Entities;
+
       private:
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleep_interval = 1000000 / 30;
@@ -59,7 +62,6 @@ namespace ecs
         void ThreadFunc();
         bool ThreadRunning = true;
         ecs::Entity *EntityCreate(std::string);
-        std::unordered_map<std::string, ecs::Entity *> Entities;
 
         std::unordered_map<std::string, ecs::Resource> resources;
     };

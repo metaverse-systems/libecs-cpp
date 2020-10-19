@@ -202,4 +202,9 @@ namespace ecs
 
         return this->resources[name];
     }
+
+    void Container::ComponentDestroy(std::string entity, std::string Type)
+    {
+         this->Components[Type].erase(entity);
+    }
 }
