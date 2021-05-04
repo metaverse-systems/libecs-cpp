@@ -10,7 +10,7 @@ if you want to build on Windows you will need to use Windows Subsystem for Linux
 * Install base packages
 
 ```
-sudo apt install build-essential libtool pkg-config curl git jsoncpp cmake
+sudo apt install build-essential libtool pkg-config curl git jsoncpp cmake gawk
 ```
 
 * Install wine and Windows dev packages
@@ -20,7 +20,8 @@ sudo su -
 dpkg --add-architecture i386
 apt update
 apt install libz-mingw-w64-dev mingw-w64-x86-64-dev binutils-mingw-w64-x86-64 \
-g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 wine wine32 wine64 wixl osslsigncode
+g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 wine wine32 wine64 wixl osslsigncode \
+mingw-w64-tools
 exit
 ```
 
