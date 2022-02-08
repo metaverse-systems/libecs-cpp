@@ -55,3 +55,6 @@ Makefile
 *.exe
 libtool
 src/example
+config.h.in~
+configure.ac~
+configure~
