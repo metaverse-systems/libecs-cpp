@@ -30,21 +30,21 @@ namespace ecs
 
     Json::Value Container::Export()
     {
-        Json::Value data;
+        Json::Value config;
 
-        data["Handle"] = this->Handle;
+        config["Handle"] = this->Handle;
 
         for(auto &[name, entity] : this->Entities)
         {
-            data["Entities"][name] = entity->Export();
+            config["Entities"][name] = entity->Export();
         }
 
         for(auto &[name, system] : this->Systems)
         {
-            data["Systems"][name] = system->Export();
+            config["Systems"][name] = system->Export();
         }
 
-        return data;
+        return config;
     }
 
     ecs::System *Container::System(ecs::System *system)
@@ -68,19 +68,6 @@ namespace ecs
     std::shared_ptr<ecs::Component> Container::Component(std::shared_ptr<ecs::Component> c)
     {
         this->Components[c->Type][c->EntityHandle] = c; 
-        return c;
-    }
-
-    ecs::TypeEntityComponentList Container::ComponentsGet()
-    {
-        return this->Components;
-    }
-
-    ecs::TypeEntityComponentList Container::ComponentsGet(std::vector<std::string> Types)
-    {
-        ecs::TypeEntityComponentList c;
-
-        for(auto &t : Types) c[t] = this->Components[t];
         return c;
     }
 

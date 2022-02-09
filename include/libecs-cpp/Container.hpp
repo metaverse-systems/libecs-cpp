@@ -34,8 +34,6 @@ namespace ecs
         std::vector<std::string> SystemsGet();
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
         void ComponentDestroy(std::string entity, std::string Type);
-        ecs::TypeEntityComponentList ComponentsGet();
-        ecs::TypeEntityComponentList ComponentsGet(std::vector<std::string>);
         ecs::Entity *Entity(std::string);
         ecs::Entity *Entity();
         void EntityDestroy(std::string);
