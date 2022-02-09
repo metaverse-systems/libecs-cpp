@@ -3,34 +3,15 @@
 
 namespace ecs
 {
-    System::System()
-    {
-        this->Handle = ecs::Uuid().Get();
-    }
+    System::System():
+        Handle(ecs::Uuid().Get()) {}
 
-    System::System(std::string Handle)
-    {
-        this->Handle = Handle;
-    }
+    System::System(std::string Handle):
+        Handle(Handle) {}
 
-    void System::Init()
-    {
-    }
+    void System::Init() {}
 
-    std::string System::HandleGet()
-    {
-        return this->Handle;
-    }
-
-    void System::ContainerSet(ecs::Container *container)
-    {
-        this->Container = container;
-    }
-
-    ecs::Container *System::ContainerGet()
-    {
-        return this->Container;
-    }
+    void System::Configure(Json::Value config) {}
 
     void System::ComponentRequest(std::string component)
     {
