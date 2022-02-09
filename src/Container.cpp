@@ -86,14 +86,14 @@ namespace ecs
         ecs::Entity *e;
         if(uuid.size() == 0)
         {
-            e = new ecs::Entity();
-            this->Entities[e->HandleGet()] = e;
+            e = new ecs::Entity(this);
+            this->Entities[e->Handle] = e;
         }
         else
         {
             if(this->Entities.count(uuid) == 0)
             {
-                e = new ecs::Entity(uuid);
+                e = new ecs::Entity(this, uuid);
                 this->Entities[uuid] = e;
             }
             else
@@ -102,7 +102,6 @@ namespace ecs
             }
         }
 
-        e->ContainerSet(this);
         return e;
     }
 
