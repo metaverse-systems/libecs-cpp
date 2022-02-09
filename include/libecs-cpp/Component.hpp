@@ -2,7 +2,6 @@
 
 #include <json/json.h>
 #include <unordered_map>
-#include <memory>
 #include <string>
 
 namespace ecs
@@ -13,7 +12,7 @@ namespace ecs
         Component();
         Component(Json::Value);
         virtual Json::Value Export() = 0;
-        std::string Handle;
+        const std::string Handle;
         std::string Type;
         std::string EntityHandle;
         virtual ~Component() = 0;
