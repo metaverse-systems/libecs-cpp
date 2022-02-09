@@ -69,15 +69,15 @@ class PhysicsSystem : public ecs::System
 
         std::cout << "Last run " << dt << "ms ago" << std::endl;
 
-        // Get components specified with this->ComponentRequest()...
-        // ...and cycle through them
+        // Iterate over PositionComponents
         for(auto &[entity, pcomponent] : (*this->Components)["PositionComponent"])
         {
             // Cast to PositionComponent class
             auto pos = std::dynamic_pointer_cast<PositionComponent>(pcomponent);
 
-            // Get related VelocityComponent
+            // Get related Component
             auto vcomponent = (*this->Components)["VelocityComponent"][entity];
+            // Cast to VelocityComponent
             auto vel = std::dynamic_pointer_cast<VelocityComponent>(vcomponent);
                 
             // scale velocity

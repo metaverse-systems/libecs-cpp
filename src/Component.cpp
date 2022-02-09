@@ -2,10 +2,11 @@
 
 namespace ecs
 {
-    Component::Component()
-    {
-        this->Handle = ecs::Uuid().Get();
-    }
+    Component::Component():
+        Handle(ecs::Uuid().Get()) {}
+
+    Component::Component(Json::Value config):
+        Handle(ecs::Uuid().Get()) {}
 
     Component::~Component() {};
 }
