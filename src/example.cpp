@@ -53,8 +53,6 @@ class PhysicsSystem : public ecs::System
     PhysicsSystem():
         System("PhysicsSystem")
     {
-        this->ComponentRequest("PositionComponent");
-        this->ComponentRequest("VelocityComponent");
     }
 
     Json::Value Export()
@@ -72,16 +70,14 @@ class PhysicsSystem : public ecs::System
         std::cout << "Last run " << dt << "ms ago" << std::endl;
 
         // Get components specified with this->ComponentRequest()...
-        auto Components = this->ComponentsGet();
-
         // ...and cycle through them
-        for(auto &[entity, pcomponent] : Components["PositionComponent"])
+        for(auto &[entity, pcomponent] : (*this->Components)["PositionComponent"])
         {
             // Cast to PositionComponent class
             auto pos = std::dynamic_pointer_cast<PositionComponent>(pcomponent);
 
             // Get related VelocityComponent
-            auto vcomponent = Components["VelocityComponent"][entity];
+            auto vcomponent = (*this->Components)["VelocityComponent"][entity];
             auto vel = std::dynamic_pointer_cast<VelocityComponent>(vcomponent);
                 
             // scale velocity
