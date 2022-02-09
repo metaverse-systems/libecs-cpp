@@ -45,13 +45,13 @@ namespace ecs
         std::unordered_map<std::string, ecs::Entity *> Entities;
         const ecs::Manager *Manager = nullptr;
         const std::string Handle;
+        ecs::TypeEntityComponentList Components;
       private:
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleep_interval = 1000000 / 30;
 
         /*! A unique ID for the container */
         std::unordered_map <std::string, ecs::System *> Systems;
-        ecs::TypeEntityComponentList Components;
         std::thread ContainerThread;
         void ThreadFunc();
         bool ThreadRunning = true;

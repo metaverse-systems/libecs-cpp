@@ -13,12 +13,10 @@ namespace ecs
     class Entity
     {
       public:
-        Entity();
-        Entity(std::string uuid);
+        Entity(ecs::Container *Container);
+        Entity(ecs::Container *Container, std::string Handle);
         Json::Value Export();
-        void ContainerSet(ecs::Container *Container);
-        std::string Handle;
-        std::string HandleGet();
+        const std::string Handle;
         ecs::Container *Container = nullptr;
         ecs::TypeEntityComponentList ComponentsGet();
         ecs::TypeEntityComponentList ComponentGet(std::string Type);

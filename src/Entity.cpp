@@ -3,21 +3,21 @@
 
 namespace ecs
 {
-    Entity::Entity()
+    Entity::Entity(ecs::Container *Container):
+        Handle(ecs::Uuid().Get()), Container(Container)
     {
-        this->Handle = ecs::Uuid().Get();
     }
 
-    Entity::Entity(std::string uuid)
+    Entity::Entity(ecs::Container *Container, std::string Handle):
+        Handle(Handle), Container(Container)
     {
-        this->Handle = uuid;
     }
 
     Json::Value Entity::Export()
     {
         Json::Value config;
 
-        config["Handle"] = this->HandleGet();
+        config["Handle"] = this->Handle;
         for(auto &[type, entity_component_list] : this->Components)
         {
             for(auto &[entity, component] : entity_component_list)
@@ -27,11 +27,6 @@ namespace ecs
         }
 
         return config;
-    }
-
-    void Entity::ContainerSet(ecs::Container *container)
-    {
-        this->Container = container;
     }
 
     ecs::TypeEntityComponentList Entity::ComponentsGet()
@@ -65,10 +60,5 @@ namespace ecs
     void Entity::destroy()
     {
         this->Container->EntityDestroy(this->Handle);
-    }
-
-    std::string Entity::HandleGet()
-    {
-        return this->Handle;
     }
 }
