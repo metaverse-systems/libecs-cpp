@@ -57,7 +57,7 @@ namespace ecs
         this->Container->ComponentDestroy(this->Handle, Type);
     }
 
-    void Entity::destroy()
+    void Entity::Destroy()
     {
         this->Container->EntityDestroy(this->Handle);
     }
