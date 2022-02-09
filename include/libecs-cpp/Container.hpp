@@ -25,14 +25,11 @@ namespace ecs
     class Container
     {
       public:
-        Container();
-        Container(std::string Handle);
+        Container(ecs::Manager *Manager);
+        Container(ecs::Manager *Manager, std::string Handle);
         void Start();
         void Start(uint32_t);
         void SystemsInit();
-        void ManagerSet(ecs::Manager *Manager);
-        ecs::Manager *ManagerGet();
-        std::string HandleGet();
         ecs::System *System(ecs::System *);
         std::vector<std::string> SystemsGet();
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
@@ -48,14 +45,13 @@ namespace ecs
         void ResourceAdd(std::string, ecs::Resource);
         ecs::Resource ResourceGet(std::string);
         std::unordered_map<std::string, ecs::Entity *> Entities;
-
+        const ecs::Manager *Manager = nullptr;
+        const std::string Handle;
       private:
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleep_interval = 1000000 / 30;
 
         /*! A unique ID for the container */
-        std::string Handle;
-        ecs::Manager *Manager = nullptr;
         std::unordered_map <std::string, ecs::System *> Systems;
         ecs::TypeEntityComponentList Components;
         std::thread ContainerThread;
