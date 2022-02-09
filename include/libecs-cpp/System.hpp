@@ -13,11 +13,9 @@ namespace ecs
         System();
         System(std::string Handle);
         virtual void Init();
-        void ContainerSet(ecs::Container *Container);
-        ecs::Container *ContainerGet();
-        std::string HandleGet();
+        virtual void Configure(Json::Value config);
         virtual void Update() {};
-        std::string Handle;
+        const std::string Handle;
         ecs::Container *Container = nullptr;
         ecs::TypeEntityComponentList ComponentsGet();
         void ComponentRequest(std::string);

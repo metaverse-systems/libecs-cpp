@@ -50,9 +50,9 @@ class VelocityComponent : public ecs::Component
 class PhysicsSystem : public ecs::System
 {
   public:
-    PhysicsSystem()
+    PhysicsSystem():
+        System("PhysicsSystem")
     {
-        this->Handle = "PhysicsSystem";
         this->ComponentRequest("PositionComponent");
         this->ComponentRequest("VelocityComponent");
     }
@@ -60,6 +60,7 @@ class PhysicsSystem : public ecs::System
     Json::Value Export()
     {
         Json::Value config;
+        config["Handle"] = this->Handle;
         return config;
     }
 
