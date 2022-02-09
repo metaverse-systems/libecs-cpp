@@ -17,12 +17,10 @@ namespace ecs
         virtual void Update() {};
         const std::string Handle;
         ecs::Container *Container = nullptr;
-        ecs::TypeEntityComponentList ComponentsGet();
-        void ComponentRequest(std::string);
         void MessageSubmit(Json::Value);
         virtual Json::Value Export() = 0;
+        ecs::TypeEntityComponentList *Components = nullptr;
       protected:
-        std::vector<std::string> RequestedComponents;
         std::queue<Json::Value> messages;
         std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
         uint32_t DeltaTimeGet();

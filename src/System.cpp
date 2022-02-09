@@ -13,20 +13,6 @@ namespace ecs
 
     void System::Configure(Json::Value config) {}
 
-    void System::ComponentRequest(std::string component)
-    {
-        for(auto &s : this->RequestedComponents)
-        {
-            if(s == component) return;
-        }
-        RequestedComponents.push_back(component);
-    }
-
-    ecs::TypeEntityComponentList System::ComponentsGet()
-    {
-        return this->Container->ComponentsGet(this->RequestedComponents);
-    }
-
     void System::MessageSubmit(Json::Value message)
     {
         this->messages.push(message);

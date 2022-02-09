@@ -50,6 +50,7 @@ namespace ecs
     ecs::System *Container::System(ecs::System *system)
     {
         system->Container = this;
+        system->Components = &(this->Components);
         this->Systems[system->Handle] = system;
         return system;
     }
