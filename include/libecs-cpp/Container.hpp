@@ -43,7 +43,7 @@ namespace ecs
         void ResourceAdd(std::string, ecs::Resource);
         ecs::Resource ResourceGet(std::string);
         std::unordered_map<std::string, ecs::Entity *> Entities;
-        const ecs::Manager *Manager = nullptr;
+        ecs::Manager *Manager = nullptr;
         const std::string Handle;
         ecs::TypeEntityComponentList Components;
       private:
