@@ -24,8 +24,7 @@ namespace ecs
     void Container::Start(uint32_t interval)
     {
         this->sleep_interval = interval;
-        this->ContainerThread = std::thread(&Container::ThreadFunc, this);
-        this->ContainerThread.detach();
+        this->Start();
     }
 
     Json::Value Container::Export()
@@ -59,8 +58,8 @@ namespace ecs
     {
         std::vector<std::string> Handles;
 
-        for(auto &system : this->Systems)
-            Handles.push_back(system.first);
+        for(auto &[name, system] : this->Systems)
+            Handles.push_back(name);
 
         return Handles;
     }
@@ -71,38 +70,24 @@ namespace ecs
         return c;
     }
 
-    ecs::Entity *Container::Entity(std::string uuid)
+    ecs::Entity *Container::Entity(std::string Handle)
     {
-        return this->EntityCreate(uuid);
+        return this->EntityCreate(Handle);
     }
 
     ecs::Entity *Container::Entity()
     {
-        return this->EntityCreate("");
+        return this->EntityCreate(ecs::Uuid().Get());
     }
 
-    ecs::Entity *Container::EntityCreate(std::string uuid)
+    ecs::Entity *Container::EntityCreate(std::string Handle)
     {
-        ecs::Entity *e;
-        if(uuid.size() == 0)
+        if(this->Entities.count(Handle) == 0)
         {
-            e = new ecs::Entity(this);
-            this->Entities[e->Handle] = e;
-        }
-        else
-        {
-            if(this->Entities.count(uuid) == 0)
-            {
-                e = new ecs::Entity(this, uuid);
-                this->Entities[uuid] = e;
-            }
-            else
-            {
-                e = this->Entities[uuid];
-            }
+            this->Entities[Handle] = new ecs::Entity(this, Handle);
         }
 
-        return e;
+        return this->Entities[Handle];
     }
 
     void Container::SystemsInit()
@@ -117,17 +102,11 @@ namespace ecs
     {
         this->SystemsInit();
 
-#ifdef WITHGPERFTOOLS
-       ProfilerStart("container_update.log");
-#endif
         while(this->ThreadRunning)
         {
             usleep(this->sleep_interval);	
             this->Update();
         }
-#ifdef WITHGPERFTOOLS
-       ProfilerStop();
-#endif
     }
 
     void Container::Update()
@@ -150,13 +129,13 @@ namespace ecs
         this->Systems[dest_system]->MessageSubmit(message);
     }
 
-    void Container::EntityDestroy(std::string uuid)
+    void Container::EntityDestroy(std::string Handle)
     {
-        for(auto &t : this->Components)
+        for(auto &[type, components] : this->Components)
         {
-            t.second.erase(uuid);
+            components.erase(Handle);
         }
-        this->Entities.erase(uuid);
+        this->Entities.erase(Handle);
     }
 
     void Container::ResourceAdd(std::string name, ecs::Resource r)
