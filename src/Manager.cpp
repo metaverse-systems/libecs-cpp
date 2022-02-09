@@ -15,7 +15,7 @@ namespace ecs
 
     ecs::Container *Manager::Container()
     {
-        return this->ContainerCreate("");
+        return this->ContainerCreate(ecs::Uuid().Get());
     }
 
     bool Manager::IsRunning()
@@ -30,28 +30,15 @@ namespace ecs
 
     ecs::Container *Manager::ContainerCreate(std::string handle)
     {
-        ecs::Container *c;
         this->mutex_containers.lock();
         {
-            if(handle.size() == 0)
+            if(this->containers.count(handle) == 0)
             {
-                c = new ecs::Container();
-                this->containers[c->HandleGet()] = c;
+                this->containers[handle] = new ecs::Container(this, handle);
             }
-            else
-            {
-                if(this->containers.count(handle) == 0)
-                {
-                    c = new ecs::Container(handle);
-                    this->containers[handle] = c;
-                }
-                else c = this->containers[handle];
-            }
-
-            c->ManagerSet(this);
         }
         this->mutex_containers.unlock();
-        return c;
+        return this->containers[handle];
     }
 
     std::vector<std::string> Manager::ContainersGet()

@@ -5,14 +5,14 @@
 
 namespace ecs
 {
-    Container::Container()
+    Container::Container(ecs::Manager *Manager):
+        Manager(Manager), Handle(ecs::Uuid().Get())
     {
-        this->Handle = ecs::Uuid().Get();
     }
 
-    Container::Container(std::string Handle)
+    Container::Container(ecs::Manager *manager, std::string Handle):
+        Manager(manager), Handle(Handle)
     {
-        this->Handle = Handle;
     }
 
     void Container::Start()
@@ -45,21 +45,6 @@ namespace ecs
         }
 
         return data;
-    }
-
-    void Container::ManagerSet(ecs::Manager *Manager)
-    {
-        this->Manager = Manager;
-    }
-
-    ecs::Manager *Container::ManagerGet()
-    {
-        return this->Manager;
-    }
-
-    std::string Container::HandleGet()
-    {
-        return this->Handle;
     }
 
     ecs::System *Container::System(ecs::System *system)
