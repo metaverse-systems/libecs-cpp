@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['size_147',['size',['../structecs_1_1Resource.html#abac8a28d80a3bb0f18b681e57dfff479',1,'ecs::Resource']]],
-  ['sleep_5finterval_148',['sleep_interval',['../classecs_1_1Container.html#ac40dcbd113942ca2000c368155722aea',1,'ecs::Container']]],
-  ['systems_149',['Systems',['../classecs_1_1Container.html#aa91d0d51b741039bea8815b94ec598e2',1,'ecs::Container']]]
+  ['handle_1509',['Handle',['../classecs_1_1Component.html#a1c50d76636f1b23c3a255fec600df45f',1,'ecs::Component::Handle()'],['../classecs_1_1Container.html#aa4449c537d73fb29c969c7d2aceb58f1',1,'ecs::Container::Handle()'],['../classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599',1,'ecs::Entity::Handle()'],['../classecs_1_1System.html#a9295b089d5a624f604da4330d510f19b',1,'ecs::System::Handle()']]]
 ];
