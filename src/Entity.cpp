@@ -14,9 +14,9 @@ namespace ecs
     {
     }
 
-    Json::Value Entity::Export()
+    nlohmann::json Entity::Export()
     {
-        Json::Value config;
+        nlohmann::json config;
 
         config["Handle"] = this->Handle;
         for(auto &[type, entity_component_list] : this->Container->Components)

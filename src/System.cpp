@@ -11,9 +11,9 @@ namespace ecs
 
     void System::Init() {}
 
-    void System::Configure(Json::Value config) {}
+    void System::Configure(nlohmann::json config) {}
 
-    void System::MessageSubmit(Json::Value message)
+    void System::MessageSubmit(nlohmann::json message)
     {
         this->messages.push(message);
     }

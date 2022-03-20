@@ -17,7 +17,6 @@ AC_CHECK_HEADER(
   [UUID_LIBS="-lrpcrt4 $LIBS"; AC_SUBST([UUID_REQUIRE], "")],
   [PKG_CHECK_MODULES([UUID], uuid, AC_SUBST([UUID_REQUIRE], "uuid"))]
 )
-PKG_CHECK_MODULES([JSONCPP], jsoncpp)
 
 AC_CONFIG_FILES([Doxyfile])
 AC_CONFIG_FILES([ecs-cpp.pc])

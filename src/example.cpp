@@ -6,16 +6,16 @@ class PositionComponent : public ecs::Component
   public:
     float x, y;
 
-    PositionComponent(Json::Value config)
+    PositionComponent(nlohmann::json config)
     {
         this->Type = "PositionComponent";
-        this->x = config["x"].asFloat();
-        this->y = config["y"].asFloat();
+        this->x = config["x"].get<float>();
+        this->y = config["y"].get<float>();
     }
 
-    Json::Value Export()
+    nlohmann::json Export()
     {
-        Json::Value config;
+        nlohmann::json config;
         config["x"] = this->x;
         config["y"] = this->y;
         return config;
@@ -29,16 +29,16 @@ class VelocityComponent : public ecs::Component
   public:
     float x, y;
 
-    VelocityComponent(Json::Value config)
+    VelocityComponent(nlohmann::json config)
     {
         this->Type = "VelocityComponent";
-        this->x = config["x"].asFloat();
-        this->y = config["y"].asFloat();
+        this->x = config["x"].get<float>();
+        this->y = config["y"].get<float>();
     }
 
-    Json::Value Export()
+    nlohmann::json Export()
     {
-        Json::Value config;
+        nlohmann::json config;
         config["x"] = this->x;
         config["y"] = this->y;
         return config;
@@ -55,9 +55,9 @@ class PhysicsSystem : public ecs::System
     {
     }
 
-    Json::Value Export()
+    nlohmann::json Export()
     {
-        Json::Value config;
+        nlohmann::json config;
         config["Handle"] = this->Handle;
         return config;
     }
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
     auto e = world->Entity();
 
     /* Initialize a PositionComponent and add it to the Entity 'e' */
-    Json::Value config;
+    nlohmann::json config;
     config["x"] = 1;
     config["y"] = 1;
     e->Component(new PositionComponent(config));

@@ -13,15 +13,15 @@ namespace ecs
         System();
         System(std::string Handle);
         virtual void Init();
-        virtual void Configure(Json::Value config);
+        virtual void Configure(nlohmann::json config);
         virtual void Update() {};
         const std::string Handle;
         ecs::Container *Container = nullptr;
-        void MessageSubmit(Json::Value);
-        virtual Json::Value Export() = 0;
+        void MessageSubmit(nlohmann::json);
+        virtual nlohmann::json Export() = 0;
         ecs::TypeEntityComponentList *Components = nullptr;
       protected:
-        std::queue<Json::Value> messages;
+        std::queue<nlohmann::json> messages;
         std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
         uint32_t DeltaTimeGet();
     };

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <json/json.h>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -12,6 +11,7 @@
 #endif
 
 #include <unistd.h>
+#include <libecs-cpp/json.hpp>
 #include <libecs-cpp/Resource.hpp>
 #include <libecs-cpp/Component.hpp>
 
@@ -37,9 +37,9 @@ namespace ecs
         ecs::Entity *Entity(std::string);
         ecs::Entity *Entity();
         void EntityDestroy(std::string);
-        Json::Value Export();
+        nlohmann::json Export();
         void Update();
-        void MessageSubmit(Json::Value);
+        void MessageSubmit(nlohmann::json);
         void ResourceAdd(std::string, ecs::Resource);
         ecs::Resource ResourceGet(std::string);
         std::unordered_map<std::string, ecs::Entity *> Entities;
