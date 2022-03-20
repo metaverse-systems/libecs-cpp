@@ -73,7 +73,7 @@ Build environment setup</h1>
 <ul>
 <li>Install base packages</li>
 </ul>
-<div class="fragment"><div class="line">sudo apt install build-essential libtool pkg-config curl git jsoncpp cmake gawk</div>
+<div class="fragment"><div class="line">sudo apt install build-essential libtool pkg-config curl git gawk</div>
 </div><!-- fragment --><ul>
 <li>Install wine and Windows dev packages</li>
 </ul>
@@ -116,24 +116,6 @@ Build library</h1>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
 Build library for Windows</h2>
 <ul>
-<li>Build and install jsoncpp</li>
-</ul>
-<div class="fragment"><div class="line">cd libecs-cpp</div>
-<div class="line">cp mingw64.cmake ~</div>
-<div class="line">cd ..</div>
-<div class="line">export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig/</div>
-<div class="line">export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep win32|head -n1`</div>
-<div class="line">git clone https://github.com/open-source-parsers/jsoncpp.git</div>
-<div class="line">cd jsoncpp</div>
-<div class="line">mkdir build</div>
-<div class="line">cd build</div>
-<div class="line">cmake -DCMAKE_TOOLCHAIN_FILE=~/mingw64.cmake -DCMAKE_INSTALL_PREFIX=/usr/x86_64-w64-mingw32 ..</div>
-<div class="line">WINEPATH=&quot;/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib&quot; make</div>
-<div class="line">sudo make install</div>
-<div class="line">unset PKG_CONFIG_PATH</div>
-<div class="line">unset MING_LIB</div>
-<div class="line">cd ../..</div>
-</div><!-- fragment --><ul>
 <li>Build and install libecs-cpp</li>
 </ul>
 <div class="fragment"><div class="line">export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig/</div>
@@ -153,7 +135,7 @@ Build library for Windows</h2>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Mar 20 2022 03:05:16 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Mar 20 2022 03:11:46 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

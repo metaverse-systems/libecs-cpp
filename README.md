@@ -10,7 +10,7 @@ if you want to build on Windows you will need to use Windows Subsystem for Linux
 * Install base packages
 
 ```
-sudo apt install build-essential libtool pkg-config curl git jsoncpp cmake gawk
+sudo apt install build-essential libtool pkg-config curl git gawk
 ```
 
 * Install wine and Windows dev packages
@@ -61,26 +61,6 @@ sudo make install
 ```
 
 ### Build library for Windows
-
-* Build and install jsoncpp
-
-```
-cd libecs-cpp
-cp mingw64.cmake ~
-cd ..
-export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig/
-export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep win32|head -n1`
-git clone https://github.com/open-source-parsers/jsoncpp.git
-cd jsoncpp
-mkdir build
-cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=~/mingw64.cmake -DCMAKE_INSTALL_PREFIX=/usr/x86_64-w64-mingw32 ..
-WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib" make
-sudo make install
-unset PKG_CONFIG_PATH
-unset MING_LIB
-cd ../..
-```
 
 * Build and install libecs-cpp
 
