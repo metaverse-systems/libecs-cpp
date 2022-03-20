@@ -5,31 +5,22 @@ namespace ecs
 {
     Uuid::Uuid()
     {
-        this->uuid.resize(36);
-
-#ifdef _WIN32
-        UUID id;
-        UuidCreate(&id);
-        RPC_CSTR szUuid = NULL;
-        if(UuidToString(&id, &szUuid) == RPC_S_OK)
-        {
-            this->uuid = (char*) szUuid;
-            RpcStringFree(&szUuid);
-        }
-#else
-        uuid_t id;
-        uuid_generate(id);
-        uuid_unparse(id, &this->uuid[0]);
-#endif
+        std::random_device rd;
+        auto seed_data = std::array<int, std::mt19937::state_size> {};
+        std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
+        std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+        std::mt19937 generator(seq);
+        uuids::uuid_random_generator gen{generator};
+        this->id = gen();
     }
 
     Uuid::Uuid(std::string id)
     {
-        this->uuid = id;
+        this->id = uuids::uuid::from_string(id).value();
     }
 
     std::string Uuid::Get()
     {
-        return this->uuid;
+        return uuids::to_string(this->id);
     }
 }

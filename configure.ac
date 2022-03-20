@@ -12,12 +12,6 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CXX
 AM_INIT_AUTOMAKE([subdir-objects])
 
-AC_CHECK_HEADER(
-  [windows.h],
-  [UUID_LIBS="-lrpcrt4 $LIBS"; AC_SUBST([UUID_REQUIRE], "")],
-  [PKG_CHECK_MODULES([UUID], uuid, AC_SUBST([UUID_REQUIRE], "uuid"))]
-)
-
 AC_CONFIG_FILES([Doxyfile])
 AC_CONFIG_FILES([ecs-cpp.pc])
 AC_CONFIG_FILES([Makefile src/Makefile])

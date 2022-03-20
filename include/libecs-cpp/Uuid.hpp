@@ -1,11 +1,7 @@
 #pragma once
 #include <string>
 
-#ifdef _WIN32
-  #include <rpc.h>
-#else
-  #include <uuid/uuid.h>
-#endif
+#include <libecs-cpp/uuid.h>
 
 namespace ecs
 {
@@ -16,6 +12,6 @@ namespace ecs
         Uuid(std::string);
         std::string Get();
       private:
-        std::string uuid;
+        uuids::uuid id;
     };
 }

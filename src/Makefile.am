@@ -10,12 +10,12 @@ pkginclude_HEADERS = \
 	../include/libecs-cpp/Uuid.hpp \
 	../include/libecs-cpp/Resource.hpp
 
-libecs_cpp_la_CXXFLAGS = -std=c++17 -I../include $(UUID_CFLAGS)
-libecs_cpp_la_LIBADD = -lpthread $(UUID_LIBS)
+libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall
+libecs_cpp_la_LIBADD = -lpthread
 libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Component.cpp Entity.cpp Uuid.cpp
 libecs_cpp_la_LDFLAGS = -no-undefined
 
 bin_PROGRAMS = example
 example_SOURCES = example.cpp
-example_CXXFLAGS = -std=c++17 -I../include -Werror -Wall $(UUID_CFLAGS)
-example_LDADD = -lpthread libecs-cpp.la $(UUID_LIBS)
+example_CXXFLAGS = -std=c++20 -I../include -Werror -Wall
+example_LDADD = -lpthread libecs-cpp.la
