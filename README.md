@@ -78,6 +78,6 @@ unset PKG_CONFIG_PATH
 * Test
 
 ```
-export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep win32|head -n1`
+export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep posix|head -n1`
 WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib" wine64 src/example.exe
 ```
