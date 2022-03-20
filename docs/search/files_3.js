@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['readme_2emd_90',['README.md',['../README_8md.html',1,'']]],
-  ['resource_2ehpp_91',['Resource.hpp',['../Resource_8hpp.html',1,'']]]
+  ['manager_2ecpp_1113',['Manager.cpp',['../Manager_8cpp.html',1,'']]],
+  ['manager_2ehpp_1114',['Manager.hpp',['../Manager_8hpp.html',1,'']]]
 ];
