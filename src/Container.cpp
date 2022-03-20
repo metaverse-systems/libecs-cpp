@@ -27,9 +27,9 @@ namespace ecs
         this->Start();
     }
 
-    Json::Value Container::Export()
+    nlohmann::json Container::Export()
     {
-        Json::Value config;
+        nlohmann::json config;
 
         config["Handle"] = this->Handle;
 
@@ -117,12 +117,13 @@ namespace ecs
         }
     }
 
-    void Container::MessageSubmit(Json::Value message)
+    void Container::MessageSubmit(nlohmann::json message)
     {
-        auto dest_system = message["destination"]["system"].asString();
+        auto dest_system = message["destination"]["system"].get<std::string>();
         if(!this->Systems[dest_system])
         {
-            auto err = "ecs::Container(\"" + message["destination"]["container"].asString() + "\")::MessageSubmit(): System " + dest_system + " not found.";
+            auto err = "ecs::Container(\"" + message["destination"]["container"].get<std::string>() +
+                       "\")::MessageSubmit(): System " + dest_system + " not found.";
             throw std::runtime_error(err);
         }
 

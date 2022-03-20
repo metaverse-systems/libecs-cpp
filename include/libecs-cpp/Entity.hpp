@@ -1,9 +1,9 @@
 #pragma once
 
-#include <json/json.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <libecs-cpp/json.hpp>
 
 namespace ecs
 {
@@ -15,7 +15,7 @@ namespace ecs
       public:
         Entity(ecs::Container *Container);
         Entity(ecs::Container *Container, std::string Handle);
-        Json::Value Export();
+        nlohmann::json Export();
         const std::string Handle;
         ecs::Container *Container = nullptr;
         std::shared_ptr<ecs::Component> Component(ecs::Component *component);

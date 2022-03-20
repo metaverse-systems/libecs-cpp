@@ -1,8 +1,8 @@
 #pragma once
 
-#include <json/json.h>
 #include <unordered_map>
 #include <string>
+#include <libecs-cpp/json.hpp>
 
 namespace ecs
 {
@@ -10,8 +10,8 @@ namespace ecs
     {
       public:
         Component();
-        Component(Json::Value);
-        virtual Json::Value Export() = 0;
+        Component(nlohmann::json);
+        virtual nlohmann::json Export() = 0;
         const std::string Handle;
         std::string Type;
         std::string EntityHandle;
