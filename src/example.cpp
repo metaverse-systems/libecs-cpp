@@ -132,6 +132,10 @@ int main(int argc, char *argv[])
     threaded = false;
 #endif
 
+#if __EMSCRIPTEN__
+    threaded = false;
+#endif
+
     if(threaded) world->Start();
     else world->SystemsInit();
 

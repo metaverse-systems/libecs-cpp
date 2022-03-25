@@ -2,12 +2,14 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libecs-cpp.la
 pkginclude_HEADERS = \
 	../include/libecs-cpp/ecs.hpp \
+	../include/libecs-cpp/json.hpp \
         ../include/libecs-cpp/Manager.hpp \
 	../include/libecs-cpp/Container.hpp \
 	../include/libecs-cpp/System.hpp \
 	../include/libecs-cpp/Component.hpp \
         ../include/libecs-cpp/Entity.hpp \
 	../include/libecs-cpp/Uuid.hpp \
+	../include/libecs-cpp/uuid.h \
 	../include/libecs-cpp/Resource.hpp
 
 libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall
