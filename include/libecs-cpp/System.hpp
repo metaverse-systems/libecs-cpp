@@ -15,7 +15,7 @@ namespace ecs
         virtual void Init();
         virtual void Configure(nlohmann::json config);
         virtual void Update() {};
-        const std::string Handle;
+        std::string Handle;
         ecs::Container *Container = nullptr;
         void MessageSubmit(nlohmann::json);
         virtual nlohmann::json Export() = 0;
