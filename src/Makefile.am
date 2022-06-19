@@ -19,5 +19,5 @@ libecs_cpp_la_LDFLAGS = -no-undefined
 
 bin_PROGRAMS = example
 example_SOURCES = example.cpp
-example_CXXFLAGS = -std=c++20 -I../include -Werror -Wall
+example_CXXFLAGS = -std=c++20 -I../include -Wall
 example_LDADD = -lpthread libecs-cpp.la
