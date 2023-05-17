@@ -36,6 +36,7 @@ namespace ecs
         void ComponentDestroy(std::string entity, std::string Type);
         ecs::Entity *Entity(std::string);
         ecs::Entity *Entity();
+        ecs::Entity *Entity(ecs::Entity *);
         void EntityDestroy(std::string);
         nlohmann::json Export();
         void Update();
@@ -46,6 +47,7 @@ namespace ecs
         ecs::Manager *Manager = nullptr;
         const std::string Handle;
         ecs::TypeEntityComponentList Components;
+        ecs::Uuid UuidGet();
       private:
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleep_interval = 1000000 / 30;
@@ -58,5 +60,6 @@ namespace ecs
         ecs::Entity *EntityCreate(std::string);
 
         std::unordered_map<std::string, ecs::Resource> resources;
+        UUIDv4::UUIDGenerator<std::mt19937_64> uuidGenerator;
     };
 }

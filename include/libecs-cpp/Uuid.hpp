@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#include <libecs-cpp/uuid.h>
+#include <libecs-cpp/uuid_v4.h>
 
 namespace ecs
 {
@@ -9,9 +9,10 @@ namespace ecs
     {
       public:
         Uuid();
+        Uuid(UUIDv4::UUID);
         Uuid(std::string);
         std::string Get();
       private:
-        uuids::uuid id;
+        UUIDv4::UUID id;
     };
 }
