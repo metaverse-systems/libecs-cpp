@@ -80,6 +80,12 @@ namespace ecs
         return this->EntityCreate(ecs::Uuid().Get());
     }
 
+    ecs::Entity *Container::Entity(ecs::Entity *e)
+    {
+        this->Entities[e->Handle] = e;
+        return e;
+    }
+
     ecs::Entity *Container::EntityCreate(std::string Handle)
     {
         if(this->Entities.count(Handle) == 0)
@@ -158,5 +164,10 @@ namespace ecs
     void Container::ComponentDestroy(std::string entity, std::string Type)
     {
          this->Components[Type].erase(entity);
+    }
+
+    ecs::Uuid Container::UuidGet()
+    {
+        return ecs::Uuid(this->uuidGenerator.getUUID());
     }
 }

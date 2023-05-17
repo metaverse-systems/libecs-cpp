@@ -5,22 +5,22 @@ namespace ecs
 {
     Uuid::Uuid()
     {
-        std::random_device rd;
-        auto seed_data = std::array<int, std::mt19937::state_size> {};
-        std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
-        std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
-        std::mt19937 generator(seq);
-        uuids::uuid_random_generator gen{generator};
-        this->id = gen();
+        UUIDv4::UUIDGenerator<std::mt19937_64> uuidGenerator; 
+        this->id = uuidGenerator.getUUID();
     }
 
     Uuid::Uuid(std::string id)
     {
-        this->id = uuids::uuid::from_string(id).value();
+        this->id = UUIDv4::UUID(id); 
+    }
+
+    Uuid::Uuid(UUIDv4::UUID id)
+    {
+        this->id = id;
     }
 
     std::string Uuid::Get()
     {
-        return uuids::to_string(this->id);
+        return this->id.str();
     }
 }

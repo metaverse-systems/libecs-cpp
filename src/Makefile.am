@@ -9,10 +9,11 @@ pkginclude_HEADERS = \
 	../include/libecs-cpp/Component.hpp \
         ../include/libecs-cpp/Entity.hpp \
 	../include/libecs-cpp/Uuid.hpp \
-	../include/libecs-cpp/uuid.h \
+	../include/libecs-cpp/uuid_v4.h \
+	../include/libecs-cpp/endianness.h \
 	../include/libecs-cpp/Resource.hpp
 
-libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall
+libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall -Wno-psabi -mssse3 -mavx2
 libecs_cpp_la_LIBADD = -lpthread
 libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Component.cpp Entity.cpp Uuid.cpp
 libecs_cpp_la_LDFLAGS = -no-undefined
