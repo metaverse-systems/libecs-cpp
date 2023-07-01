@@ -29,7 +29,7 @@ namespace ecs
         Container(ecs::Manager *Manager, std::string Handle);
         void Start();
         void Start(uint32_t);
-        void SystemsInit();
+        void SystemsInitialize();
         ecs::System *System(ecs::System *);
         std::vector<std::string> SystemsGet();
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);

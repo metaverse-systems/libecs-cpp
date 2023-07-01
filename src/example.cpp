@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 #endif
 
     if(threaded) world->Start();
-    else world->SystemsInit();
+    else world->SystemsInitialize();
 
     std::cout << world->Export() << std::endl;
 

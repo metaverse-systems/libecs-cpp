@@ -9,7 +9,7 @@ namespace ecs
     System::System(std::string Handle):
         Handle(Handle) {}
 
-    void System::Init() {}
+    void System::Initialize() {}
 
     void System::Configure(nlohmann::json config) {}
 
