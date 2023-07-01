@@ -96,17 +96,17 @@ namespace ecs
         return this->Entities[Handle];
     }
 
-    void Container::SystemsInit()
+    void Container::SystemsInitialize()
     {
         for(auto &Handle : this->SystemsGet())
         {
-            this->Systems[Handle]->Init();
+            this->Systems[Handle]->Initialize();
         }
     }
 
     void Container::ThreadFunc()
     {
-        this->SystemsInit();
+        this->SystemsInitialize();
 
         while(this->ThreadRunning)
         {

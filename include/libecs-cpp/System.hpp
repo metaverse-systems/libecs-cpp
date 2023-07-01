@@ -12,7 +12,7 @@ namespace ecs
       public:
         System();
         System(std::string Handle);
-        virtual void Init();
+        virtual void Initialize();
         virtual void Configure(nlohmann::json config);
         virtual void Update() {};
         std::string Handle;
