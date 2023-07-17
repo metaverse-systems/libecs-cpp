@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.2.3</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.3.0</span>
    </div>
   </td>
  </tr>
@@ -94,8 +94,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac70fac6ddc7d1816617fd04888dccdc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abeea1820ec340a2755efd87589f18eb4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#abeea1820ec340a2755efd87589f18eb4">System</a> (std::string <a class="el" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a>)</td></tr>
 <tr class="separator:abeea1820ec340a2755efd87589f18eb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77c805df79ae308a479cbc7063f52769"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a77c805df79ae308a479cbc7063f52769">Init</a> ()</td></tr>
-<tr class="separator:a77c805df79ae308a479cbc7063f52769"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dc551c609a3286de5739d6685ca4961"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a3dc551c609a3286de5739d6685ca4961">Initialize</a> ()</td></tr>
+<tr class="separator:a3dc551c609a3286de5739d6685ca4961"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8842e0dcfe6d2c867a2728fea23864fd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a8842e0dcfe6d2c867a2728fea23864fd">Configure</a> (<a class="el" href="namespacenlohmann.html#a2bfd99e845a2e5cd90aeaf1b1431f474">nlohmann::json</a> config)</td></tr>
 <tr class="separator:a8842e0dcfe6d2c867a2728fea23864fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad78d3d7857d167a85aa93a9a3d44b7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">Update</a> ()</td></tr>
@@ -149,7 +149,7 @@ Protected Attributes</h2></td></tr>
 <div class="fragment"><div class="line"><span class="lineno">    6</span>                  :</div>
 <div class="line"><span class="lineno">    7</span>        <a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a>(<a class="code hl_class" href="classecs_1_1Uuid.html">ecs::Uuid</a>().Get()) {}</div>
 <div class="ttc" id="aclassecs_1_1System_html_a4255ae181870f88cc73fae39991d8be5"><div class="ttname"><a href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">ecs::System::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition:</b> <a href="System_8hpp_source.html#l00018">System.hpp:18</a></div></div>
-<div class="ttc" id="aclassecs_1_1Uuid_html"><div class="ttname"><a href="classecs_1_1Uuid.html">ecs::Uuid</a></div><div class="ttdef"><b>Definition:</b> <a href="Uuid_8hpp_source.html#l00008">Uuid.hpp:9</a></div></div>
+<div class="ttc" id="aclassecs_1_1Uuid_html"><div class="ttname"><a href="classecs_1_1Uuid.html">ecs::Uuid</a></div><div class="ttdef"><b>Definition:</b> <a href="Uuid_8hpp_source.html#l00033">Uuid.hpp:34</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -266,8 +266,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a77c805df79ae308a479cbc7063f52769" name="a77c805df79ae308a479cbc7063f52769"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77c805df79ae308a479cbc7063f52769">&#9670;&nbsp;</a></span>Init()</h2>
+<a id="a3dc551c609a3286de5739d6685ca4961" name="a3dc551c609a3286de5739d6685ca4961"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dc551c609a3286de5739d6685ca4961">&#9670;&nbsp;</a></span>Initialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -276,7 +276,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void ecs::System::Init </td>
+          <td class="memname">void ecs::System::Initialize </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -462,7 +462,7 @@ Protected Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 17 2023 00:09:37 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
+Generated on Sun Jul 16 2023 21:19:33 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
 </small></address>
 </body>
 </html>

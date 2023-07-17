@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.2.3</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.3.0</span>
    </div>
   </td>
  </tr>
@@ -157,7 +157,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   18</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#a4931d80c5a9e63281197bcc4dfae50d1">ContainerCreate</a>(<a class="code hl_class" href="classecs_1_1Uuid.html">ecs::Uuid</a>().Get());</div>
 <div class="line"><span class="lineno">   19</span>    }</div>
 <div class="ttc" id="aclassecs_1_1Manager_html_a4931d80c5a9e63281197bcc4dfae50d1"><div class="ttname"><a href="classecs_1_1Manager.html#a4931d80c5a9e63281197bcc4dfae50d1">ecs::Manager::ContainerCreate</a></div><div class="ttdeci">ecs::Container * ContainerCreate(std::string handle)</div><div class="ttdef"><b>Definition:</b> <a href="Manager_8cpp_source.html#l00031">Manager.cpp:31</a></div></div>
-<div class="ttc" id="aclassecs_1_1Uuid_html"><div class="ttname"><a href="classecs_1_1Uuid.html">ecs::Uuid</a></div><div class="ttdef"><b>Definition:</b> <a href="Uuid_8hpp_source.html#l00008">Uuid.hpp:9</a></div></div>
+<div class="ttc" id="aclassecs_1_1Uuid_html"><div class="ttname"><a href="classecs_1_1Uuid.html">ecs::Uuid</a></div><div class="ttdef"><b>Definition:</b> <a href="Uuid_8hpp_source.html#l00033">Uuid.hpp:34</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00031">ContainerCreate()</a>.</p>
 
@@ -224,7 +224,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   40</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#aa9873c03e516627c17fbc3f2486c5431">mutex_containers</a>.unlock();</div>
 <div class="line"><span class="lineno">   41</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a193b532824dd0dc5e11a82790c6be07d">containers</a>[handle];</div>
 <div class="line"><span class="lineno">   42</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition:</b> <a href="Container_8hpp_source.html#l00025">Container.hpp:26</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition:</b> <a href="Container_8hpp_source.html#l00026">Container.hpp:27</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_a193b532824dd0dc5e11a82790c6be07d"><div class="ttname"><a href="classecs_1_1Manager.html#a193b532824dd0dc5e11a82790c6be07d">ecs::Manager::containers</a></div><div class="ttdeci">std::unordered_map&lt; std::string, ecs::Container * &gt; containers</div><div class="ttdef"><b>Definition:</b> <a href="Manager_8hpp_source.html#l00033">Manager.hpp:33</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_aa9873c03e516627c17fbc3f2486c5431"><div class="ttname"><a href="classecs_1_1Manager.html#aa9873c03e516627c17fbc3f2486c5431">ecs::Manager::mutex_containers</a></div><div class="ttdeci">std::mutex mutex_containers</div><div class="ttdef"><b>Definition:</b> <a href="Manager_8hpp_source.html#l00034">Manager.hpp:34</a></div></div>
 </div><!-- fragment -->
@@ -471,7 +471,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 17 2023 00:09:37 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
+Generated on Sun Jul 16 2023 21:19:33 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
 </small></address>
 </body>
 </html>

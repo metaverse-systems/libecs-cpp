@@ -30,5 +30,5 @@ var searchData=
   ['switch_27',['switch',['../classnlohmann_1_1detail_1_1iter__impl.html#abc2f80067020fae59d7fbccf39f1547a',1,'nlohmann::detail::iter_impl']]],
   ['system_28',['System',['../classecs_1_1Container.html#af116a65d191332d17d0df9b91bf60ec1',1,'ecs::Container::System()'],['../classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8',1,'ecs::System::System()'],['../classecs_1_1System.html#abeea1820ec340a2755efd87589f18eb4',1,'ecs::System::System(std::string Handle)']]],
   ['systemsget_29',['SystemsGet',['../classecs_1_1Container.html#adc6c340f2c1f92c26b0517e9b5e23067',1,'ecs::Container']]],
-  ['systemsinit_30',['SystemsInit',['../classecs_1_1Container.html#a771167b30d05079ea3db91d668101fb9',1,'ecs::Container']]]
+  ['systemsinitialize_30',['SystemsInitialize',['../classecs_1_1Container.html#ab5fdff438639973f98be934c27f9c089',1,'ecs::Container']]]
 ];
