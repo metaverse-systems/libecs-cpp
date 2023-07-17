@@ -52,5 +52,5 @@ var searchData=
   ['system_2ehpp_49',['System.hpp',['../System_8hpp.html',1,'']]],
   ['systems_50',['Systems',['../classecs_1_1Container.html#aa91d0d51b741039bea8815b94ec598e2',1,'ecs::Container']]],
   ['systemsget_51',['SystemsGet',['../classecs_1_1Container.html#adc6c340f2c1f92c26b0517e9b5e23067',1,'ecs::Container']]],
-  ['systemsinit_52',['SystemsInit',['../classecs_1_1Container.html#a771167b30d05079ea3db91d668101fb9',1,'ecs::Container']]]
+  ['systemsinitialize_52',['SystemsInitialize',['../classecs_1_1Container.html#ab5fdff438639973f98be934c27f9c089',1,'ecs::Container']]]
 ];

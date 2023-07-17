@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.2.3</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.3.0</span>
    </div>
   </td>
  </tr>
@@ -80,27 +80,28 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:acf8b43f1d9056f48f0c3eb24d3dad5a5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#acf8b43f1d9056f48f0c3eb24d3dad5a5">Uuid</a> ()</td></tr>
 <tr class="separator:acf8b43f1d9056f48f0c3eb24d3dad5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add72b5bc43b0c934303b966b8bc8e435"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#add72b5bc43b0c934303b966b8bc8e435">Uuid</a> (UUIDv4::UUID)</td></tr>
-<tr class="separator:add72b5bc43b0c934303b966b8bc8e435"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d5b24a95c49df6beb72507c1bbce2d2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#a9d5b24a95c49df6beb72507c1bbce2d2">Uuid</a> (std::string)</td></tr>
-<tr class="separator:a9d5b24a95c49df6beb72507c1bbce2d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58c0f5f90eeea7a0adab707bcf065c60"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#a58c0f5f90eeea7a0adab707bcf065c60">Uuid</a> (std::string <a class="el" href="classecs_1_1Uuid.html#af6f71b32c40464c296a68d9582a543fa">id</a>)</td></tr>
+<tr class="separator:a58c0f5f90eeea7a0adab707bcf065c60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2aff11019a4e7cdf9f1b63e4537d68d0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#a2aff11019a4e7cdf9f1b63e4537d68d0">Get</a> ()</td></tr>
 <tr class="separator:a2aff11019a4e7cdf9f1b63e4537d68d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ab9eab5e6c8b8ae6593e3e8dab031e1ae"><td class="memItemLeft" align="right" valign="top">UUIDv4::UUID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#ab9eab5e6c8b8ae6593e3e8dab031e1ae">id</a></td></tr>
-<tr class="separator:ab9eab5e6c8b8ae6593e3e8dab031e1ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6f71b32c40464c296a68d9582a543fa"><td class="memItemLeft" align="right" valign="top">uuid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#af6f71b32c40464c296a68d9582a543fa">id</a></td></tr>
+<tr class="separator:af6f71b32c40464c296a68d9582a543fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00008">8</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00033">33</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acf8b43f1d9056f48f0c3eb24d3dad5a5" name="acf8b43f1d9056f48f0c3eb24d3dad5a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf8b43f1d9056f48f0c3eb24d3dad5a5">&#9670;&nbsp;</a></span>Uuid() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acf8b43f1d9056f48f0c3eb24d3dad5a5">&#9670;&nbsp;</a></span>Uuid() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">ecs::Uuid::Uuid </td>
@@ -109,47 +110,28 @@ Private Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00006">6</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">    7</span>    {</div>
-<div class="line"><span class="lineno">    8</span>        UUIDv4::UUIDGenerator&lt;std::mt19937_64&gt; uuidGenerator; </div>
-<div class="line"><span class="lineno">    9</span>        this-&gt;<span class="keywordtype">id</span> = uuidGenerator.getUUID();</div>
-<div class="line"><span class="lineno">   10</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00036">36</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   37</span>          {</div>
+<div class="line"><span class="lineno">   38</span>              uuid_generate(this-&gt;<span class="keywordtype">id</span>);</div>
+<div class="line"><span class="lineno">   39</span>          }</div>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="add72b5bc43b0c934303b966b8bc8e435" name="add72b5bc43b0c934303b966b8bc8e435"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add72b5bc43b0c934303b966b8bc8e435">&#9670;&nbsp;</a></span>Uuid() <span class="overload">[2/3]</span></h2>
+<a id="a58c0f5f90eeea7a0adab707bcf065c60" name="a58c0f5f90eeea7a0adab707bcf065c60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58c0f5f90eeea7a0adab707bcf065c60">&#9670;&nbsp;</a></span>Uuid() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">ecs::Uuid::Uuid </td>
-          <td>(</td>
-          <td class="paramtype">UUIDv4::UUID&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00017">17</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   18</span>    {</div>
-<div class="line"><span class="lineno">   19</span>        this-&gt;<span class="keywordtype">id</span> = <a class="code hl_variable" href="classecs_1_1Uuid.html#ab9eab5e6c8b8ae6593e3e8dab031e1ae">id</a>;</div>
-<div class="line"><span class="lineno">   20</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Uuid_html_ab9eab5e6c8b8ae6593e3e8dab031e1ae"><div class="ttname"><a href="classecs_1_1Uuid.html#ab9eab5e6c8b8ae6593e3e8dab031e1ae">ecs::Uuid::id</a></div><div class="ttdeci">UUIDv4::UUID id</div><div class="ttdef"><b>Definition:</b> <a href="Uuid_8hpp_source.html#l00016">Uuid.hpp:16</a></div></div>
-</div><!-- fragment -->
-<p class="reference">References <a class="el" href="Uuid_8hpp_source.html#l00016">id</a>.</p>
-
-</div>
-</div>
-<a id="a9d5b24a95c49df6beb72507c1bbce2d2" name="a9d5b24a95c49df6beb72507c1bbce2d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d5b24a95c49df6beb72507c1bbce2d2">&#9670;&nbsp;</a></span>Uuid() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">ecs::Uuid::Uuid </td>
@@ -159,12 +141,17 @@ Private Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00012">12</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   13</span>    {</div>
-<div class="line"><span class="lineno">   14</span>        this-&gt;<span class="keywordtype">id</span> = UUIDv4::UUID(<span class="keywordtype">id</span>); </div>
-<div class="line"><span class="lineno">   15</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00040">40</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   41</span>          {</div>
+<div class="line"><span class="lineno">   42</span>              uuid_parse(<span class="keywordtype">id</span>.c_str(), this-&gt;<span class="keywordtype">id</span>);</div>
+<div class="line"><span class="lineno">   43</span>          }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -174,6 +161,9 @@ Private Attributes</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::string ecs::Uuid::Get </td>
@@ -182,18 +172,25 @@ Private Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00022">22</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   23</span>    {</div>
-<div class="line"><span class="lineno">   24</span>        <span class="keywordflow">return</span> this-&gt;<span class="keywordtype">id</span>.str();</div>
-<div class="line"><span class="lineno">   25</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00044">44</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   45</span>          {</div>
+<div class="line"><span class="lineno">   46</span>              <span class="keywordtype">char</span> str_id[37] = {0};</div>
+<div class="line"><span class="lineno">   47</span>              uuid_unparse(this-&gt;<span class="keywordtype">id</span>, str_id);</div>
+<div class="line"><span class="lineno">   48</span>              <span class="keywordflow">return</span> std::string(str_id);</div>
+<div class="line"><span class="lineno">   49</span>          }</div>
 </div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ab9eab5e6c8b8ae6593e3e8dab031e1ae" name="ab9eab5e6c8b8ae6593e3e8dab031e1ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab9eab5e6c8b8ae6593e3e8dab031e1ae">&#9670;&nbsp;</a></span>id</h2>
+<a id="af6f71b32c40464c296a68d9582a543fa" name="af6f71b32c40464c296a68d9582a543fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6f71b32c40464c296a68d9582a543fa">&#9670;&nbsp;</a></span>id</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -202,7 +199,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">UUIDv4::UUID ecs::Uuid::id</td>
+          <td class="memname">uuid_t ecs::Uuid::id</td>
         </tr>
       </table>
   </td>
@@ -212,20 +209,17 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00016">16</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="Uuid_8cpp_source.html#l00017">Uuid()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00051">51</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/libecs-cpp/<a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a></li>
-<li>src/<a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 17 2023 00:09:37 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
+Generated on Sun Jul 16 2023 21:19:33 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
 </small></address>
 </body>
 </html>
