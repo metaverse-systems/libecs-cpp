@@ -80,12 +80,6 @@ namespace ecs
         return this->EntityCreate(ecs::Uuid().Get());
     }
 
-    ecs::Entity *Container::Entity(ecs::Entity *e)
-    {
-        this->Entities[e->Handle] = e;
-        return e;
-    }
-
     ecs::Entity *Container::EntityCreate(std::string Handle)
     {
         if(this->Entities.count(Handle) == 0)
@@ -168,6 +162,10 @@ namespace ecs
 
     ecs::Uuid Container::UuidGet()
     {
-        return ecs::Uuid(this->uuidGenerator.getUUID());
+#if USE_BUILTIN_UUID
+        return ecs::Uuid(this->uuidGenerator.getUUID().str());
+#else
+        return ecs::Uuid();
+#endif
     }
 }
