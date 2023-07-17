@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include "../../config.h"
 
 #if _WIN32
   #include <mingw.thread.h>
@@ -60,6 +61,8 @@ namespace ecs
         ecs::Entity *EntityCreate(std::string);
 
         std::unordered_map<std::string, ecs::Resource> resources;
+#ifdef USE_BUILTIN_UUID
         UUIDv4::UUIDGenerator<std::mt19937_64> uuidGenerator;
+#endif
     };
 }
