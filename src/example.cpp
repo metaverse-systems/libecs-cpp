@@ -1,14 +1,6 @@
 #include <libecs-cpp/ecs.hpp>
 #include <iostream>
 
-#if __EMSCRIPTEN__
-#include <emscripten.h>
-void RenderLoopCallback(void *container)
-{
-  static_cast<ecs::Container *>(container)->Update();
-}
-#endif
-
 class PositionComponent : public ecs::Component
 {
   public:
@@ -132,24 +124,16 @@ int main(int argc, char *argv[])
     threaded = false;
 #endif
 
-#if __EMSCRIPTEN__
-    threaded = false;
-#endif
-
     if(threaded) world->Start();
     else world->SystemsInitialize();
 
     std::cout << world->Export() << std::endl;
 
-#if __EMSCRIPTEN__
-    emscripten_set_main_loop_arg(&RenderLoopCallback, world, -1, 1);
-#else
     while(ECS->IsRunning())
     {
         usleep(100000);
         if(!threaded) world->Update();
     }
-#endif
 
     return 0;
 }
