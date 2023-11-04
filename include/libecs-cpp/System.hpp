@@ -2,6 +2,7 @@
 
 #include <string>
 #include <queue>
+#include <libecs-cpp/Timing.hpp>
 
 namespace ecs
 {
@@ -20,6 +21,7 @@ namespace ecs
         void MessageSubmit(nlohmann::json);
         virtual nlohmann::json Export() = 0;
         ecs::TypeEntityComponentList *Components = nullptr;
+        ecs::Timing Timing;
       protected:
         std::queue<nlohmann::json> messages;
         std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
