@@ -80,19 +80,19 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:acf8b43f1d9056f48f0c3eb24d3dad5a5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#acf8b43f1d9056f48f0c3eb24d3dad5a5">Uuid</a> ()</td></tr>
 <tr class="separator:acf8b43f1d9056f48f0c3eb24d3dad5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58c0f5f90eeea7a0adab707bcf065c60"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#a58c0f5f90eeea7a0adab707bcf065c60">Uuid</a> (std::string <a class="el" href="classecs_1_1Uuid.html#af6f71b32c40464c296a68d9582a543fa">id</a>)</td></tr>
+<tr class="memitem:a58c0f5f90eeea7a0adab707bcf065c60"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#a58c0f5f90eeea7a0adab707bcf065c60">Uuid</a> (std::string <a class="el" href="classecs_1_1Uuid.html#ab9eab5e6c8b8ae6593e3e8dab031e1ae">id</a>)</td></tr>
 <tr class="separator:a58c0f5f90eeea7a0adab707bcf065c60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2aff11019a4e7cdf9f1b63e4537d68d0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#a2aff11019a4e7cdf9f1b63e4537d68d0">Get</a> ()</td></tr>
 <tr class="separator:a2aff11019a4e7cdf9f1b63e4537d68d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:af6f71b32c40464c296a68d9582a543fa"><td class="memItemLeft" align="right" valign="top">uuid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#af6f71b32c40464c296a68d9582a543fa">id</a></td></tr>
-<tr class="separator:af6f71b32c40464c296a68d9582a543fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9eab5e6c8b8ae6593e3e8dab031e1ae"><td class="memItemLeft" align="right" valign="top">UUIDv4::UUID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#ab9eab5e6c8b8ae6593e3e8dab031e1ae">id</a></td></tr>
+<tr class="separator:ab9eab5e6c8b8ae6593e3e8dab031e1ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00033">33</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00008">8</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acf8b43f1d9056f48f0c3eb24d3dad5a5" name="acf8b43f1d9056f48f0c3eb24d3dad5a5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acf8b43f1d9056f48f0c3eb24d3dad5a5">&#9670;&nbsp;</a></span>Uuid() <span class="overload">[1/2]</span></h2>
@@ -117,10 +117,11 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00036">36</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   37</span>          {</div>
-<div class="line"><span class="lineno">   38</span>              uuid_generate(this-&gt;<span class="keywordtype">id</span>);</div>
-<div class="line"><span class="lineno">   39</span>          }</div>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00011">11</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   12</span>          {</div>
+<div class="line"><span class="lineno">   13</span>              UUIDv4::UUIDGenerator&lt;std::mt19937_64&gt; uuidGenerator;</div>
+<div class="line"><span class="lineno">   14</span>              this-&gt;<span class="keywordtype">id</span> = uuidGenerator.getUUID();</div>
+<div class="line"><span class="lineno">   15</span>          }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -148,10 +149,10 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00040">40</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   41</span>          {</div>
-<div class="line"><span class="lineno">   42</span>              uuid_parse(<span class="keywordtype">id</span>.c_str(), this-&gt;<span class="keywordtype">id</span>);</div>
-<div class="line"><span class="lineno">   43</span>          }</div>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00016">16</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   17</span>          {</div>
+<div class="line"><span class="lineno">   18</span>              this-&gt;<span class="keywordtype">id</span> = UUIDv4::UUID(<span class="keywordtype">id</span>);</div>
+<div class="line"><span class="lineno">   19</span>          }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -179,18 +180,16 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00044">44</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   45</span>          {</div>
-<div class="line"><span class="lineno">   46</span>              <span class="keywordtype">char</span> str_id[37] = {0};</div>
-<div class="line"><span class="lineno">   47</span>              uuid_unparse(this-&gt;<span class="keywordtype">id</span>, str_id);</div>
-<div class="line"><span class="lineno">   48</span>              <span class="keywordflow">return</span> std::string(str_id);</div>
-<div class="line"><span class="lineno">   49</span>          }</div>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00020">20</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   21</span>          {</div>
+<div class="line"><span class="lineno">   22</span>              <span class="keywordflow">return</span> this-&gt;<span class="keywordtype">id</span>.str();</div>
+<div class="line"><span class="lineno">   23</span>          }</div>
 </div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="af6f71b32c40464c296a68d9582a543fa" name="af6f71b32c40464c296a68d9582a543fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6f71b32c40464c296a68d9582a543fa">&#9670;&nbsp;</a></span>id</h2>
+<a id="ab9eab5e6c8b8ae6593e3e8dab031e1ae" name="ab9eab5e6c8b8ae6593e3e8dab031e1ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9eab5e6c8b8ae6593e3e8dab031e1ae">&#9670;&nbsp;</a></span>id</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -199,7 +198,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uuid_t ecs::Uuid::id</td>
+          <td class="memname">UUIDv4::UUID ecs::Uuid::id</td>
         </tr>
       </table>
   </td>
@@ -209,7 +208,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00051">51</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00025">25</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
 
 </div>
 </div>
@@ -219,7 +218,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jul 18 2023 15:26:07 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
+Generated on Sat Nov 4 2023 03:58:55 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
 </small></address>
 </body>
 </html>
