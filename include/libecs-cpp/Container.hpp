@@ -3,14 +3,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "../../config.h"
-
-#if _WIN32
-  #include <mingw.thread.h>
-#else
-  #include <thread>
-#endif
-
+#include <thread>
 #include <unistd.h>
 #include <libecs-cpp/json.hpp>
 #include <libecs-cpp/Resource.hpp>
