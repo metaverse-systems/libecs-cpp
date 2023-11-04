@@ -4,11 +4,7 @@
 #include <unordered_map>
 #include <vector>
 #include <thread>
-#ifdef _WIN32
-    #include <mingw.mutex.h>
-#else
-    #include <mutex>
-#endif
+#include <mutex>
 #include <libecs-cpp/json.hpp>
 
 namespace ecs

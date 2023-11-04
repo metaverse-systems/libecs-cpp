@@ -10,20 +10,21 @@ pkginclude_HEADERS = \
 	../include/libecs-cpp/Uuid.hpp \
 	../include/libecs-cpp/Resource.hpp \
 	../include/libecs-cpp/uuid_v4.h \
-	../include/libecs-cpp/endianness.h
+	../include/libecs-cpp/endianness.h \
+	../include/libecs-cpp/json.hpp
 
 if BUILTIN_UUID
 libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall -Wno-psabi -mssse3 -mavx2
-libecs_cpp_la_LIBADD = -lpthread
 else
-libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall -Wno-psabi ${UUID_CFLAGS}
-libecs_cpp_la_LIBADD = -lpthread ${UUID_LIBS}
+libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall -Wno-psabi ${UUID_CFLAGS} -DDISABLE_BUILTIN_UUID
+libecs_cpp_la_LIBADD = ${UUID_LIBS}
 endif
 
 libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Component.cpp Entity.cpp
-libecs_cpp_la_LDFLAGS = -no-undefined
+libecs_cpp_la_LDFLAGS = -no-undefined -pthread
 
 bin_PROGRAMS = example
 example_SOURCES = example.cpp
 example_CXXFLAGS = -std=c++20 -I../include -Werror -Wall
-example_LDADD = -lpthread libecs-cpp.la
+example_LDADD = libecs-cpp.la
+example_LDFLAGS = -pthread

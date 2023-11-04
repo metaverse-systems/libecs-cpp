@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
-#include "../../config.h"
 
-#ifdef USE_BUILTIN_UUID
+#ifndef DISABLE_BUILTIN_UUID
   #include <libecs-cpp/uuid_v4.h>
   namespace ecs
   {
