@@ -1,5 +1,5 @@
 AC_PREREQ([2.71])
-AC_INIT([libecs-cpp],[0.3.1],[tim@metaverse.systems],[libecs-cpp],[https://metaverse.systems])
+AC_INIT([libecs-cpp],[0.4.0],[tim@metaverse.systems],[libecs-cpp],[https://metaverse.systems])
 LT_INIT
 AC_CONFIG_SRCDIR([src/Manager.cpp])
 AC_CONFIG_HEADERS([config.h])

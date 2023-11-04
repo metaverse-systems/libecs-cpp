@@ -1,6 +1,6 @@
 {
   "name": "@metaverse-systems/libecs-cpp",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Entity Component System library",
   "directories": {
     "doc": "docs"
