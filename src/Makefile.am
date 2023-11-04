@@ -11,7 +11,8 @@ pkginclude_HEADERS = \
 	../include/libecs-cpp/Resource.hpp \
 	../include/libecs-cpp/uuid_v4.h \
 	../include/libecs-cpp/endianness.h \
-	../include/libecs-cpp/json.hpp
+	../include/libecs-cpp/json.hpp \
+	../include/libecs-cpp/Timing.hpp
 
 if BUILTIN_UUID
 libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall -Wno-psabi -mssse3 -mavx2
