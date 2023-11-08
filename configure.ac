@@ -24,9 +24,10 @@ AS_IF([test "$builtin_uuid" != "no" ], [
 ])
 
 PKG_CHECK_MODULES([UUID], uuid, [], [dont_abort_configure="yes"])
+PKG_CHECK_MODULES([CATCH2], catch2)
 
 AC_CONFIG_FILES([Doxyfile])
 AC_CONFIG_FILES([ecs-cpp.pc])
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
 AC_OUTPUT
 
