@@ -137,6 +137,7 @@ namespace ecs
         {
             components.erase(Handle);
         }
+        delete this->Entities[Handle];
         this->Entities.erase(Handle);
     }
 

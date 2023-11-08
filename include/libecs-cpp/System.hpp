@@ -22,9 +22,10 @@ namespace ecs
         virtual nlohmann::json Export() = 0;
         ecs::TypeEntityComponentList *Components = nullptr;
         ecs::Timing Timing;
+        const size_t MessagesWaiting();
+        const uint32_t DeltaTimeGet();
       protected:
         std::queue<nlohmann::json> messages;
         std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
-        uint32_t DeltaTimeGet();
     };
 }

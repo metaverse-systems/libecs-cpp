@@ -18,7 +18,12 @@ namespace ecs
         this->messages.push(message);
     }
 
-    uint32_t System::DeltaTimeGet()
+    const size_t System::MessagesWaiting()
+    {
+        return this->messages.size();
+    }
+
+    const uint32_t System::DeltaTimeGet()
     {
         std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
         uint32_t dt = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->LastTime).count();
