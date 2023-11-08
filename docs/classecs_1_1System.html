@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.3.1</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.4.0</span>
    </div>
   </td>
  </tr>
@@ -69,7 +69,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classecs_1_1System-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ecs::System Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
@@ -77,6 +76,15 @@ $(function() {
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="System_8hpp_source.html">System.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for ecs::System:</div>
+<div class="dyncontent">
+<div class="center"><img src="classecs_1_1System__inherit__graph.png" border="0" usemap="#aecs_1_1System_inherit__map" alt="Inheritance graph"/></div>
+<map name="aecs_1_1System_inherit__map" id="aecs_1_1System_inherit__map">
+<area shape="rect" title=" " alt="" coords="5,5,107,32"/>
+<area shape="rect" href="classTestSystem.html" title=" " alt="" coords="7,80,105,107"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for ecs::System:</div>
 <div class="dyncontent">
@@ -105,6 +113,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa0938b4bb3a266191a6074ae35375dee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6dbfb1fc3aeef7702f6c3431c7a7380"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacenlohmann.html#a2bfd99e845a2e5cd90aeaf1b1431f474">nlohmann::json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#aa6dbfb1fc3aeef7702f6c3431c7a7380">Export</a> ()=0</td></tr>
 <tr class="separator:aa6dbfb1fc3aeef7702f6c3431c7a7380"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14166f497f9df0f23978f42c3ce57b87"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a14166f497f9df0f23978f42c3ce57b87">MessagesWaiting</a> ()</td></tr>
+<tr class="separator:a14166f497f9df0f23978f42c3ce57b87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3397257c366a3229ed43a4d34d66af17"><td class="memItemLeft" align="right" valign="top">const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a3397257c366a3229ed43a4d34d66af17">DeltaTimeGet</a> ()</td></tr>
+<tr class="separator:a3397257c366a3229ed43a4d34d66af17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -116,11 +128,6 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a813b866fec507d824409bc0c0cb667e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1a961fcfde782c0cb9ead6700dc6e48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#ac1a961fcfde782c0cb9ead6700dc6e48">Timing</a></td></tr>
 <tr class="separator:ac1a961fcfde782c0cb9ead6700dc6e48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a3ed351192c824237e9b277b36be5171d"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">DeltaTimeGet</a> ()</td></tr>
-<tr class="separator:a3ed351192c824237e9b277b36be5171d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -208,39 +215,33 @@ Protected Attributes</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a3ed351192c824237e9b277b36be5171d" name="a3ed351192c824237e9b277b36be5171d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ed351192c824237e9b277b36be5171d">&#9670;&nbsp;</a></span>DeltaTimeGet()</h2>
+<a id="a3397257c366a3229ed43a4d34d66af17" name="a3397257c366a3229ed43a4d34d66af17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3397257c366a3229ed43a4d34d66af17">&#9670;&nbsp;</a></span>DeltaTimeGet()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t ecs::System::DeltaTimeGet </td>
+          <td class="memname">const uint32_t ecs::System::DeltaTimeGet </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="System_8cpp_source.html#l00021">21</a> of file <a class="el" href="System_8cpp_source.html">System.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   22</span>    {</div>
-<div class="line"><span class="lineno">   23</span>        std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();</div>
-<div class="line"><span class="lineno">   24</span>        uint32_t dt = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(now - this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">LastTime</a>).count();</div>
-<div class="line"><span class="lineno">   25</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">LastTime</a> = now;</div>
-<div class="line"><span class="lineno">   26</span>        <span class="keywordflow">return</span> dt;</div>
-<div class="line"><span class="lineno">   27</span>    }</div>
-<div class="ttc" id="aclassecs_1_1System_html_a859a89e39e0c8a947d9ef4bd167d65fb"><div class="ttname"><a href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">ecs::System::LastTime</a></div><div class="ttdeci">std::chrono::steady_clock::time_point LastTime</div><div class="ttdef"><b>Definition:</b> <a href="System_8hpp_source.html#l00027">System.hpp:27</a></div></div>
+<p class="definition">Definition at line <a class="el" href="System_8cpp_source.html#l00026">26</a> of file <a class="el" href="System_8cpp_source.html">System.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   27</span>    {</div>
+<div class="line"><span class="lineno">   28</span>        std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();</div>
+<div class="line"><span class="lineno">   29</span>        uint32_t dt = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(now - this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">LastTime</a>).count();</div>
+<div class="line"><span class="lineno">   30</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">LastTime</a> = now;</div>
+<div class="line"><span class="lineno">   31</span>        <span class="keywordflow">return</span> dt;</div>
+<div class="line"><span class="lineno">   32</span>    }</div>
+<div class="ttc" id="aclassecs_1_1System_html_a859a89e39e0c8a947d9ef4bd167d65fb"><div class="ttname"><a href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">ecs::System::LastTime</a></div><div class="ttdeci">std::chrono::steady_clock::time_point LastTime</div><div class="ttdef"><b>Definition:</b> <a href="System_8hpp_source.html#l00029">System.hpp:29</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="System_8hpp_source.html#l00027">LastTime</a>.</p>
+<p class="reference">References <a class="el" href="System_8hpp_source.html#l00029">LastTime</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="test__System_8cpp_source.html#l00049">TEST_CASE()</a>.</p>
 
 </div>
 </div>
@@ -266,6 +267,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classTestSystem.html#aae62599ddd0d439c18faf1fe493fda35">TestSystem</a>, and <a class="el" href="classTestSystem.html#aae62599ddd0d439c18faf1fe493fda35">TestSystem</a>.</p>
 
 </div>
 </div>
@@ -317,9 +320,37 @@ Protected Attributes</h2></td></tr>
 <div class="fragment"><div class="line"><span class="lineno">   17</span>    {</div>
 <div class="line"><span class="lineno">   18</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#adf82230cf65627c6a611722e1e365164">messages</a>.push(message);</div>
 <div class="line"><span class="lineno">   19</span>    }</div>
-<div class="ttc" id="aclassecs_1_1System_html_adf82230cf65627c6a611722e1e365164"><div class="ttname"><a href="classecs_1_1System.html#adf82230cf65627c6a611722e1e365164">ecs::System::messages</a></div><div class="ttdeci">std::queue&lt; nlohmann::json &gt; messages</div><div class="ttdef"><b>Definition:</b> <a href="System_8hpp_source.html#l00026">System.hpp:26</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_adf82230cf65627c6a611722e1e365164"><div class="ttname"><a href="classecs_1_1System.html#adf82230cf65627c6a611722e1e365164">ecs::System::messages</a></div><div class="ttdeci">std::queue&lt; nlohmann::json &gt; messages</div><div class="ttdef"><b>Definition:</b> <a href="System_8hpp_source.html#l00028">System.hpp:28</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="System_8hpp_source.html#l00026">messages</a>.</p>
+<p class="reference">References <a class="el" href="System_8hpp_source.html#l00028">messages</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="test__System_8cpp_source.html#l00042">TEST_CASE()</a>.</p>
+
+</div>
+</div>
+<a id="a14166f497f9df0f23978f42c3ce57b87" name="a14166f497f9df0f23978f42c3ce57b87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14166f497f9df0f23978f42c3ce57b87">&#9670;&nbsp;</a></span>MessagesWaiting()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t ecs::System::MessagesWaiting </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="System_8cpp_source.html#l00021">21</a> of file <a class="el" href="System_8cpp_source.html">System.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   22</span>    {</div>
+<div class="line"><span class="lineno">   23</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#adf82230cf65627c6a611722e1e365164">messages</a>.size();</div>
+<div class="line"><span class="lineno">   24</span>    }</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="System_8hpp_source.html#l00028">messages</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="test__System_8cpp_source.html#l00037">TEST_CASE()</a>.</p>
 
 </div>
 </div>
@@ -402,7 +433,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00019">19</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00049">ecs::Container::System()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00049">ecs::Container::System()</a>, <a class="el" href="test__System_8cpp_source.html#l00026">TEST_CASE()</a>, and <a class="el" href="test__Manager_8cpp_source.html#l00008">TestSystem::TestSystem()</a>.</p>
 
 </div>
 </div>
@@ -426,9 +457,9 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00027">27</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00029">29</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="System_8cpp_source.html#l00021">DeltaTimeGet()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="System_8cpp_source.html#l00026">DeltaTimeGet()</a>.</p>
 
 </div>
 </div>
@@ -452,9 +483,9 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00026">26</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00028">28</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="System_8cpp_source.html#l00016">MessageSubmit()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="System_8cpp_source.html#l00016">MessageSubmit()</a>, and <a class="el" href="System_8cpp_source.html#l00021">MessagesWaiting()</a>.</p>
 
 </div>
 </div>
@@ -481,7 +512,7 @@ Protected Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Nov 4 2023 04:04:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
+Generated on Wed Nov 8 2023 01:16:04 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
 </small></address>
 </body>
 </html>
