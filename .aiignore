@@ -1,0 +1,13 @@
+.git
+missing
+config.sub
+Makefile.in
+depcomp
+configure~
+configure
+aclocal.m4
+config.guess
+compile
+install-sh
+config.h.in~
+docs
