@@ -51,7 +51,6 @@ TEST_CASE("Entity can add and retrieve a component", "[Entity]") {
     auto entity = container->Entity();
     nlohmann::json config;
     config["value"] = 5;
-    //auto component = std::make_shared<TestComponent>(config);
     entity->Component(new TestComponent(config));
     auto retrievedComponent = container->Components["TestComponent"][entity->Handle];
     REQUIRE(retrievedComponent != nullptr);
@@ -73,6 +72,5 @@ TEST_CASE("Entity can be destroyed", "[Entity]") {
     auto entity = container->Entity();
     std::string handle = entity->Handle;
     entity->Destroy();
-    // Assuming there is a way to check if an entity has been destroyed, e.g.:
     REQUIRE(container->Entities[handle] == nullptr);
 }
