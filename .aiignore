@@ -11,3 +11,4 @@ compile
 install-sh
 config.h.in~
 docs
+*.Po
