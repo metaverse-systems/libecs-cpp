@@ -1,5 +1,7 @@
 <map id="ecs::Entity" name="ecs::Entity">
-<area shape="rect" id="node1" title=" " alt="" coords="17,184,108,211"/>
-<area shape="rect" id="node2" href="$classecs_1_1Container.html" title=" " alt="" coords="5,95,120,121"/>
-<area shape="rect" id="node3" href="$classecs_1_1Manager.html" title=" " alt="" coords="8,5,117,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="17,181,108,207"/>
+<area shape="rect" id="Node000002" href="$classecs_1_1Container.html" title=" " alt="" coords="5,93,120,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="65,133,65,181,60,181,60,133"/>
+<area shape="rect" id="Node000003" href="$classecs_1_1Manager.html" title=" " alt="" coords="8,5,117,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="65,45,65,93,60,93,60,45"/>
 </map>

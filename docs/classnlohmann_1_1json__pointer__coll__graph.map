@@ -1,4 +1,6 @@
 <map id="nlohmann::json_pointer&lt; BasicJsonType &gt;" name="nlohmann::json_pointer&lt; BasicJsonType &gt;">
-<area shape="rect" id="node1" title="JSON Pointer defines a string syntax for identifying a specific value within a JSON document." alt="" coords="5,109,180,151"/>
-<area shape="rect" id="node2" href="$classnlohmann_1_1json__pointer.html" title="JSON Pointer defines a string syntax for identifying a specific value within a JSON document." alt="" coords="5,5,180,47"/>
+<area shape="rect" id="Node000001" title="JSON Pointer defines a string syntax for identifying a specific value within a JSON document." alt="" coords="5,108,180,148"/>
+<area shape="rect" id="Node000002" href="$classnlohmann_1_1json__pointer.html" title="JSON Pointer defines a string syntax for identifying a specific value within a JSON document." alt="" coords="5,5,180,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,59,95,108,90,108,90,59"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="196,16,207,25,199,33,181,37,180,31,196,29,201,25,193,21"/>
 </map>
