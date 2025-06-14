@@ -1,0 +1,41 @@
+name: Generate Doxygen Documentation
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  doxygen:
+    name: Build & Deploy Doxygen Docs
+    runs-on: ubuntu-latest
+    # Skip CI on generated commits
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # so we can push back to repo
+          fetch-depth: 0            # needed to push commits
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz
+
+      - name: Prepare Doxyfile
+        # Use configure script to generate Doxyfile (Doxyfile.in must exist)
+        run: ./configure
+
+      - name: Generate documentation
+        run: doxygen Doxyfile
+
+      - name: Commit and push docs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git commit -m "chore: update Doxygen docs [skip ci]" || echo "No changes to commit"
+          git push origin HEAD:master
