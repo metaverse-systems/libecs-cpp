@@ -1,4 +1,5 @@
 <map id="nlohmann::detail::dtoa_impl::boundaries" name="nlohmann::detail::dtoa_impl::boundaries">
-<area shape="rect" id="node1" title=" " alt="" coords="5,139,175,180"/>
-<area shape="rect" id="node2" href="$structnlohmann_1_1detail_1_1dtoa__impl_1_1diyfp.html" title=" " alt="" coords="5,5,175,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,137,175,177"/>
+<area shape="rect" id="Node000002" href="$structnlohmann_1_1detail_1_1dtoa__impl_1_1diyfp.html" title=" " alt="" coords="5,5,175,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,59,93,137,87,137,87,59"/>
 </map>
