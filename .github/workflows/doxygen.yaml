@@ -27,7 +27,9 @@ jobs:
 
       - name: Prepare Doxyfile
         # Use configure script to generate Doxyfile (Doxyfile.in must exist)
-        run: ./configure
+        run: |
+          ./autogen.sh
+          ./configure
 
       - name: Generate documentation
         run: doxygen Doxyfile
