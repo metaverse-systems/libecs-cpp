@@ -2,7 +2,7 @@ var searchData=
 [
   ['name_0',['name',['../classnlohmann_1_1detail_1_1exception.html#abf41a7e9178356314082284e6cfea278',1,'nlohmann::detail::exception']]],
   ['next_5fbyte_5fin_5frange_1',['next_byte_in_range',['../classnlohmann_1_1detail_1_1lexer.html#af6fe701b8b3ca5f4a1b58db4658bdf87',1,'nlohmann::detail::lexer']]],
-  ['nlohmann_5fcan_5fcall_5fstd_5ffunc_5fimpl_2',['NLOHMANN_CAN_CALL_STD_FUNC_IMPL',['../namespacenlohmann.html#a2fe3cfce480685121828a64e2da31eb4',1,'nlohmann::NLOHMANN_CAN_CALL_STD_FUNC_IMPL(end)'],['../namespacenlohmann.html#a6ea7ce1fcdd8c94f6c3221c63356f39b',1,'nlohmann::NLOHMANN_CAN_CALL_STD_FUNC_IMPL(begin)']]],
+  ['nlohmann_5fcan_5fcall_5fstd_5ffunc_5fimpl_2',['nlohmann_can_call_std_func_impl',['../namespacenlohmann.html#a2fe3cfce480685121828a64e2da31eb4',1,'nlohmann::NLOHMANN_CAN_CALL_STD_FUNC_IMPL(end)'],['../namespacenlohmann.html#a6ea7ce1fcdd8c94f6c3221c63356f39b',1,'nlohmann::NLOHMANN_CAN_CALL_STD_FUNC_IMPL(begin)']]],
   ['nonesuch_3',['nonesuch',['../structnlohmann_1_1detail_1_1nonesuch.html#ad7719f7d2a00263be8b8d123870217d8',1,'nlohmann::detail::nonesuch::nonesuch(nonesuch const &amp;&amp;)=delete'],['../structnlohmann_1_1detail_1_1nonesuch.html#a6fe87da966856c6cb06617940d90f010',1,'nlohmann::detail::nonesuch::nonesuch()=delete'],['../structnlohmann_1_1detail_1_1nonesuch.html#a563462ef2d05fe60cdf1dc7f567dc276',1,'nlohmann::detail::nonesuch::nonesuch(nonesuch const &amp;)=delete']]],
   ['normalize_4',['normalize',['../structnlohmann_1_1detail_1_1dtoa__impl_1_1diyfp.html#a2246b5b40c7c6992153ef174063d6aa6',1,'nlohmann::detail::dtoa_impl::diyfp']]],
   ['normalize_5fto_5',['normalize_to',['../structnlohmann_1_1detail_1_1dtoa__impl_1_1diyfp.html#a6b6665e467ebabe0c0f7418d3fe4b118',1,'nlohmann::detail::dtoa_impl::diyfp']]],
