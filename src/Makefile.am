@@ -21,7 +21,7 @@ libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall -Wno-psabi ${UUID
 libecs_cpp_la_LIBADD = ${UUID_LIBS}
 endif
 
-libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Component.cpp Entity.cpp
+libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Component.cpp Entity.cpp Uuid.cpp
 libecs_cpp_la_LDFLAGS = -no-undefined -pthread
 
 bin_PROGRAMS = example
