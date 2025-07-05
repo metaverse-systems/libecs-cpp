@@ -76,6 +76,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classecs_1_1System-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ecs::System Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
@@ -141,12 +142,19 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ac1a961fcfde782c0cb9ead6700dc6e48" id="r_ac1a961fcfde782c0cb9ead6700dc6e48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#ac1a961fcfde782c0cb9ead6700dc6e48">Timing</a></td></tr>
 <tr class="separator:ac1a961fcfde782c0cb9ead6700dc6e48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a9fb032bad9236217720b75589306c495" id="r_a9fb032bad9236217720b75589306c495"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a9fb032bad9236217720b75589306c495">ComponentsClear</a> ()</td></tr>
+<tr class="separator:a9fb032bad9236217720b75589306c495"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:adf82230cf65627c6a611722e1e365164" id="r_adf82230cf65627c6a611722e1e365164"><td class="memItemLeft" align="right" valign="top">std::queue&lt; <a class="el" href="namespacenlohmann.html#a2bfd99e845a2e5cd90aeaf1b1431f474">nlohmann::json</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#adf82230cf65627c6a611722e1e365164">messages</a></td></tr>
 <tr class="separator:adf82230cf65627c6a611722e1e365164"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a859a89e39e0c8a947d9ef4bd167d65fb" id="r_a859a89e39e0c8a947d9ef4bd167d65fb"><td class="memItemLeft" align="right" valign="top">std::chrono::steady_clock::time_point&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">LastTime</a> = std::chrono::steady_clock::now()</td></tr>
 <tr class="separator:a859a89e39e0c8a947d9ef4bd167d65fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62166baf31aa62552b2c1cfbd666f9cb" id="r_a62166baf31aa62552b2c1cfbd666f9cb"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, std::vector&lt; std::string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html#a62166baf31aa62552b2c1cfbd666f9cb">ComponentsToDelete</a></td></tr>
+<tr class="separator:a62166baf31aa62552b2c1cfbd666f9cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
@@ -198,6 +206,48 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9fb032bad9236217720b75589306c495" name="a9fb032bad9236217720b75589306c495"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fb032bad9236217720b75589306c495">&#9670;&#160;</a></span>ComponentsClear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecs::System::ComponentsClear </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="System_8cpp_source.html#l00034">34</a> of file <a class="el" href="System_8cpp_source.html">System.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   35</span>    {</div>
+<div class="line"><span class="lineno">   36</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;[type, entities] : this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a62166baf31aa62552b2c1cfbd666f9cb">ComponentsToDelete</a>)</div>
+<div class="line"><span class="lineno">   37</span>        {</div>
+<div class="line"><span class="lineno">   38</span>            <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;entity : entities)</div>
+<div class="line"><span class="lineno">   39</span>            {</div>
+<div class="line"><span class="lineno">   40</span>                this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#af1f8e53e9dd5a4627dd6a2df5e4f2d3c">Container</a>-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">Components</a>[type].erase(entity);</div>
+<div class="line"><span class="lineno">   41</span>            }</div>
+<div class="line"><span class="lineno">   42</span>        }</div>
+<div class="line"><span class="lineno">   43</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a62166baf31aa62552b2c1cfbd666f9cb">ComponentsToDelete</a>.clear();</div>
+<div class="line"><span class="lineno">   44</span>    }</div>
+<div class="ttc" id="aclassecs_1_1Container_html_a6636742fd18a1acc8cfd040a2e9f73a7"><div class="ttname"><a href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">ecs::Container::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList Components</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00043">Container.hpp:43</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a62166baf31aa62552b2c1cfbd666f9cb"><div class="ttname"><a href="classecs_1_1System.html#a62166baf31aa62552b2c1cfbd666f9cb">ecs::System::ComponentsToDelete</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::vector&lt; std::string &gt; &gt; ComponentsToDelete</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00030">System.hpp:30</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_af1f8e53e9dd5a4627dd6a2df5e4f2d3c"><div class="ttname"><a href="classecs_1_1System.html#af1f8e53e9dd5a4627dd6a2df5e4f2d3c">ecs::System::Container</a></div><div class="ttdeci">ecs::Container * Container</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00020">System.hpp:20</a></div></div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00043">ecs::Container::Components</a>, and <a class="el" href="System_8hpp_source.html#l00030">ComponentsToDelete</a>.</p>
+
+</div>
+</div>
 <a id="a8842e0dcfe6d2c867a2728fea23864fd" name="a8842e0dcfe6d2c867a2728fea23864fd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8842e0dcfe6d2c867a2728fea23864fd">&#9670;&#160;</a></span>Configure()</h2>
 
@@ -413,6 +463,32 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a62166baf31aa62552b2c1cfbd666f9cb" name="a62166baf31aa62552b2c1cfbd666f9cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62166baf31aa62552b2c1cfbd666f9cb">&#9670;&#160;</a></span>ComponentsToDelete</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;std::string, std::vector&lt;std::string&gt; &gt; ecs::System::ComponentsToDelete</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00030">30</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="System_8cpp_source.html#l00034">ComponentsClear()</a>.</p>
+
+</div>
+</div>
 <a id="af1f8e53e9dd5a4627dd6a2df5e4f2d3c" name="af1f8e53e9dd5a4627dd6a2df5e4f2d3c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af1f8e53e9dd5a4627dd6a2df5e4f2d3c">&#9670;&#160;</a></span>Container</h2>
 
@@ -524,7 +600,7 @@ Protected Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jun 14 2025 00:58:00 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Jul 5 2025 11:46:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
