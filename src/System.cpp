@@ -30,4 +30,16 @@ namespace ecs
         this->LastTime = now;
         return dt;
     }
+
+    void System::ComponentsClear()
+    {
+        for(auto &[type, entities] : this->ComponentsToDelete)
+        {
+            for(const auto &entity : entities)
+            {
+                this->Container->Components[type].erase(entity);
+            }
+        }
+        this->ComponentsToDelete.clear();
+    }
 }

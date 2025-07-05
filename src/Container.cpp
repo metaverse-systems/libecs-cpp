@@ -159,7 +159,8 @@ namespace ecs
 
     void Container::ComponentDestroy(std::string entity, std::string Type)
     {
-         this->Components[Type].erase(entity);
+        if(this->Components.count(Type) == 0 || this->Components[Type].count(entity) == 0) return;
+        this->Components[Type].erase(entity);
     }
 
     ecs::Uuid Container::UuidGet()

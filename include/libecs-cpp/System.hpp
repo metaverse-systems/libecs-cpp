@@ -27,5 +27,7 @@ namespace ecs
       protected:
         std::queue<nlohmann::json> messages;
         std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
+        std::unordered_map<std::string, std::vector<std::string>> ComponentsToDelete;
+        void ComponentsClear();
     };
 }
