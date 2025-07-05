@@ -1,5 +1,7 @@
 <map id="nlohmann::detail::is_compatible_type&lt; BasicJsonType, CompatibleType &gt;" name="nlohmann::detail::is_compatible_type&lt; BasicJsonType, CompatibleType &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="467,13,681,69"/>
-<area shape="rect" id="node2" href="$structnlohmann_1_1detail_1_1is__compatible__type__impl.html" title=" " alt="" coords="172,5,419,76"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,27,124,54"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="467,13,681,67"/>
+<area shape="rect" id="Node000002" href="$structnlohmann_1_1detail_1_1is__compatible__type__impl.html" title=" " alt="" coords="172,5,419,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="432,37,467,37,467,43,432,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,27,124,53"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="138,37,172,37,172,43,138,43"/>
 </map>

@@ -1,5 +1,7 @@
 <map id="nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;" name="nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;">
-<area shape="rect" id="node1" title="a class to store JSON values" alt="" coords="5,185,280,285"/>
-<area shape="rect" id="node2" href="$classnlohmann_1_1byte__container__with__subtype.html" title="an internal type for a backed binary type" alt="" coords="33,81,252,123"/>
-<area shape="rect" id="node3" title=" " alt="" coords="95,5,190,32"/>
+<area shape="rect" id="Node000001" title="a class to store JSON values" alt="" coords="5,183,280,281"/>
+<area shape="rect" id="Node000002" href="$classnlohmann_1_1byte__container__with__subtype.html" title="an internal type for a backed binary type" alt="" coords="33,80,252,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,134,145,182,140,182,140,134"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="95,5,190,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="145,44,145,80,140,80,140,44"/>
 </map>
