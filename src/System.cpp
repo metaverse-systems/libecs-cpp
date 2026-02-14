@@ -1,15 +1,41 @@
 #include <libecs-cpp/Component.hpp>
 #include <libecs-cpp/ecs.hpp>
+#include <iostream>
+#include <vector>
 
 namespace ecs
 {
     System::System():
-        Handle(ecs::Uuid().Get()) {}
+        Handle(ecs::Uuid().Get()) 
+    {
+    }
 
     System::System(std::string Handle):
-        Handle(Handle) {}
+        Handle(Handle) 
+    {
+    }
 
     void System::Initialize() {}
+
+    void System::UpdateSystem()
+    {
+        std::vector<std::string> timersToRemove;
+        for(auto &timer : this->Timers)
+        {
+            if(timer.CallbackRun() && !timer.Repeat)
+            {
+                timersToRemove.push_back(timer.Name);
+            }
+        }
+
+        // Remove timers after iteration to avoid modifying container during iteration
+        for(const auto &timerName : timersToRemove)
+        {
+            this->TimerClear(timerName);
+        }
+
+        this->Update();
+    }
 
     void System::Configure(nlohmann::json config) {}
 
@@ -33,6 +59,12 @@ namespace ecs
 
     void System::ComponentsClear()
     {
+        if (!this->Container)
+        {
+            std::cout << "Warning: Container is null in ComponentsClear()" << std::endl;
+            return;
+        }
+
         for(auto &[type, entities] : this->ComponentsToDelete)
         {
             for(const auto &entity : entities)
@@ -41,5 +73,18 @@ namespace ecs
             }
         }
         this->ComponentsToDelete.clear();
+    }
+
+    void System::TimerClear(std::string name)
+    {
+        this->Timers.erase(
+            std::remove_if(this->Timers.begin(), this->Timers.end(),
+                [&name](const Timer &timer) { return timer.Name == name; }),
+            this->Timers.end());
+    }
+
+    void System::TimerAdd(Timer timer)
+    {
+        this->Timers.push_back(timer);
     }
 }
