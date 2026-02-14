@@ -114,7 +114,7 @@ namespace ecs
         for(auto &Handle : this->SystemsGet())
         {
             if(this->Systems[Handle]->Timing.ShouldUpdate())
-                this->Systems[Handle]->Update();
+                this->Systems[Handle]->UpdateSystem();
         }
     }
 
