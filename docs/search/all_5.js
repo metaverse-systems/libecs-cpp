@@ -4,7 +4,7 @@ var searchData=
   ['decimal_5fpoint_5fchar_1',['decimal_point_char',['../classnlohmann_1_1detail_1_1lexer.html#a6f2fd5b4b6b153f11fc8f77213350073',1,'nlohmann::detail::lexer']]],
   ['deltatimeget_2',['DeltaTimeGet',['../classecs_1_1System.html#a3397257c366a3229ed43a4d34d66af17',1,'ecs::System']]],
   ['deprecated_20list_3',['Deprecated List',['../deprecated.html',1,'']]],
-  ['destroy_4',['destroy',['../classecs_1_1Entity.html#ac842571fbdad74d5ed6525c42552e8bb',1,'ecs::Entity::Destroy()'],['../classnlohmann_1_1basic__json.html#a8a3796c85be443b2b9c1e5ee3ad57ef2',1,'nlohmann::basic_json::destroy(value_t t)']]],
+  ['destroy_4',['destroy',['../classnlohmann_1_1basic__json.html#a8a3796c85be443b2b9c1e5ee3ad57ef2',1,'nlohmann::basic_json::destroy()'],['../classecs_1_1Entity.html#ac842571fbdad74d5ed6525c42552e8bb',1,'ecs::Entity::Destroy()']]],
   ['detail_3a_3aexternal_5fconstructor_5',['external_constructor',['../classnlohmann_1_1basic__json.html#a6275ed57bae6866cdf5db5370a7ad47c',1,'nlohmann::basic_json']]],
   ['detected_5for_6',['detected_or',['../namespacenlohmann_1_1detail.html#a240ce21919ab08e8a6cb3a5cfa412bce',1,'nlohmann::detail']]],
   ['detected_5for_5ft_7',['detected_or_t',['../namespacenlohmann_1_1detail.html#a7ac5b8ef0363101275a2827b3b117dcf',1,'nlohmann::detail']]],
