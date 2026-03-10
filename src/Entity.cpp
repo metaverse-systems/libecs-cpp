@@ -21,7 +21,11 @@ namespace ecs
         config["Handle"] = this->Handle;
         for(auto &[type, entity_component_list] : this->Container->Components)
         {
-            config["Components"][type] = entity_component_list[this->Handle]->Export();
+            auto it = entity_component_list.find(this->Handle);
+            if(it != entity_component_list.end() && it->second)
+            {
+                config["Components"][type] = it->second->Export();
+            }
         }
 
         return config;
