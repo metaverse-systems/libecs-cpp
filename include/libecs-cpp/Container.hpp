@@ -42,12 +42,12 @@ namespace ecs
         const std::string Handle;
         ecs::TypeEntityComponentList Components;
         ecs::Uuid UuidGet();
+        std::unordered_map <std::string, ecs::System *> Systems;
+        
       private:
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleep_interval = 1000000 / 30;
 
-        /*! A unique ID for the container */
-        std::unordered_map <std::string, ecs::System *> Systems;
         std::thread ContainerThread;
         void ThreadFunc();
         bool ThreadRunning = true;
