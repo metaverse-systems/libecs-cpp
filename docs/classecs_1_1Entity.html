@@ -199,13 +199,13 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00030">30</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   31</span>    {</div>
-<div class="line"><span class="lineno">   32</span>        std::shared_ptr&lt;ecs::Component&gt; c(component);</div>
-<div class="line"><span class="lineno">   33</span>        c-&gt;EntityHandle = this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>;</div>
-<div class="line"><span class="lineno">   34</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a48068d982dcc73594f16598f14eafa08">Component</a>(c);</div>
-<div class="line"><span class="lineno">   35</span>        <span class="keywordflow">return</span> c;</div>
-<div class="line"><span class="lineno">   36</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00034">34</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   35</span>    {</div>
+<div class="line"><span class="lineno">   36</span>        std::shared_ptr&lt;ecs::Component&gt; c(component);</div>
+<div class="line"><span class="lineno">   37</span>        c-&gt;EntityHandle = this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>;</div>
+<div class="line"><span class="lineno">   38</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a48068d982dcc73594f16598f14eafa08">Component</a>(c);</div>
+<div class="line"><span class="lineno">   39</span>        <span class="keywordflow">return</span> c;</div>
+<div class="line"><span class="lineno">   40</span>    }</div>
 <div class="ttc" id="aclassecs_1_1Container_html_a48068d982dcc73594f16598f14eafa08"><div class="ttname"><a href="classecs_1_1Container.html#a48068d982dcc73594f16598f14eafa08">ecs::Container::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(std::shared_ptr&lt; ecs::Component &gt; c)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00067">Container.cpp:67</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="Container_8cpp_source.html#l00067">ecs::Container::Component()</a>, and <a class="el" href="Entity_8hpp_source.html#l00020">Handle</a>.</p>
@@ -228,10 +228,10 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00038">38</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   39</span>    {</div>
-<div class="line"><span class="lineno">   40</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#ad2f24ca54fdf261b505e40e4eb714749">ComponentDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>, Type);</div>
-<div class="line"><span class="lineno">   41</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00042">42</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   43</span>    {</div>
+<div class="line"><span class="lineno">   44</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#ad2f24ca54fdf261b505e40e4eb714749">ComponentDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>, Type);</div>
+<div class="line"><span class="lineno">   45</span>    }</div>
 <div class="ttc" id="aclassecs_1_1Container_html_ad2f24ca54fdf261b505e40e4eb714749"><div class="ttname"><a href="classecs_1_1Container.html#ad2f24ca54fdf261b505e40e4eb714749">ecs::Container::ComponentDestroy</a></div><div class="ttdeci">void ComponentDestroy(std::string entity, std::string Type)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00160">Container.cpp:160</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="Container_8cpp_source.html#l00160">ecs::Container::ComponentDestroy()</a>, and <a class="el" href="Entity_8hpp_source.html#l00020">Handle</a>.</p>
@@ -253,10 +253,10 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00043">43</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   44</span>    {</div>
-<div class="line"><span class="lineno">   45</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#ad724f524b9da0e0c176fd56e4516bce2">EntityDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>);</div>
-<div class="line"><span class="lineno">   46</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Entity_8cpp_source.html#l00047">47</a> of file <a class="el" href="Entity_8cpp_source.html">Entity.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   48</span>    {</div>
+<div class="line"><span class="lineno">   49</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#ad724f524b9da0e0c176fd56e4516bce2">EntityDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>);</div>
+<div class="line"><span class="lineno">   50</span>    }</div>
 <div class="ttc" id="aclassecs_1_1Container_html_ad724f524b9da0e0c176fd56e4516bce2"><div class="ttname"><a href="classecs_1_1Container.html#ad724f524b9da0e0c176fd56e4516bce2">ecs::Container::EntityDestroy</a></div><div class="ttdeci">void EntityDestroy(std::string)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00134">Container.cpp:134</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="Container_8cpp_source.html#l00134">ecs::Container::EntityDestroy()</a>, and <a class="el" href="Entity_8hpp_source.html#l00020">Handle</a>.</p>
@@ -285,14 +285,19 @@ Public Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   21</span>        config[<span class="stringliteral">&quot;Handle&quot;</span>] = this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>;</div>
 <div class="line"><span class="lineno">   22</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;[type, entity_component_list] : this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;Components)</div>
 <div class="line"><span class="lineno">   23</span>        {</div>
-<div class="line"><span class="lineno">   24</span>            config[<span class="stringliteral">&quot;Components&quot;</span>][type] = entity_component_list[this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>]-&gt;Export();</div>
-<div class="line"><span class="lineno">   25</span>        }</div>
-<div class="line"><span class="lineno">   26</span> </div>
-<div class="line"><span class="lineno">   27</span>        <span class="keywordflow">return</span> config;</div>
-<div class="line"><span class="lineno">   28</span>    }</div>
+<div class="line"><span class="lineno">   24</span>            <span class="keyword">auto</span> it = entity_component_list.<a class="code hl_function" href="classnlohmann_1_1basic__json.html#acdf9b3aab82dcf443dd91ca5ec06b80c">find</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>);</div>
+<div class="line"><span class="lineno">   25</span>            <span class="keywordflow">if</span>(it != entity_component_list.end() &amp;&amp; it-&gt;second)</div>
+<div class="line"><span class="lineno">   26</span>            {</div>
+<div class="line"><span class="lineno">   27</span>                config[<span class="stringliteral">&quot;Components&quot;</span>][type] = it-&gt;second-&gt;Export();</div>
+<div class="line"><span class="lineno">   28</span>            }</div>
+<div class="line"><span class="lineno">   29</span>        }</div>
+<div class="line"><span class="lineno">   30</span> </div>
+<div class="line"><span class="lineno">   31</span>        <span class="keywordflow">return</span> config;</div>
+<div class="line"><span class="lineno">   32</span>    }</div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html"><div class="ttname"><a href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a></div><div class="ttdoc">a class to store JSON values</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l17281">json.hpp:17282</a></div></div>
+<div class="ttc" id="aclassnlohmann_1_1basic__json_html_acdf9b3aab82dcf443dd91ca5ec06b80c"><div class="ttname"><a href="classnlohmann_1_1basic__json.html#acdf9b3aab82dcf443dd91ca5ec06b80c">nlohmann::basic_json::find</a></div><div class="ttdeci">iterator find(KeyT &amp;&amp;key)</div><div class="ttdoc">find an element in a JSON object</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l19600">json.hpp:19600</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00043">ecs::Container::Components</a>, and <a class="el" href="Entity_8hpp_source.html#l00020">Handle</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00043">ecs::Container::Components</a>, <a class="el" href="json_8hpp_source.html#l19600">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;::find()</a>, and <a class="el" href="Entity_8hpp_source.html#l00020">Handle</a>.</p>
 
 </div>
 </div>
@@ -327,7 +332,7 @@ Public Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="Entity_8hpp_source.html#l00020">20</a> of file <a class="el" href="Entity_8hpp_source.html">Entity.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Entity_8cpp_source.html#l00030">Component()</a>, <a class="el" href="Entity_8cpp_source.html#l00038">ComponentDestroy()</a>, <a class="el" href="Entity_8cpp_source.html#l00043">Destroy()</a>, <a class="el" href="Entity_8cpp_source.html#l00017">Export()</a>, and <a class="el" href="test__Entity_8cpp_source.html#l00070">TEST_CASE()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Entity_8cpp_source.html#l00034">Component()</a>, <a class="el" href="Entity_8cpp_source.html#l00042">ComponentDestroy()</a>, <a class="el" href="Entity_8cpp_source.html#l00047">Destroy()</a>, <a class="el" href="Entity_8cpp_source.html#l00017">Export()</a>, and <a class="el" href="test__Entity_8cpp_source.html#l00070">TEST_CASE()</a>.</p>
 
 </div>
 </div>
@@ -338,7 +343,7 @@ Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 15 2026 04:41:10 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Tue Mar 10 2026 14:46:32 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
