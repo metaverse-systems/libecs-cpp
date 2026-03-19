@@ -143,7 +143,15 @@ namespace ecs
 
     void Container::ResourceAdd(std::string name, ecs::Resource r)
     {
-        this->resources[name] = r;
+        this->resources[name] = std::make_shared<ecs::Resource>(r);
+    }
+
+    void Container::Resources(std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> resources)
+    {
+        for(auto &[name, resource] : resources)
+        {
+            this->resources[name] = resource;
+        }
     }
 
     ecs::Resource Container::ResourceGet(std::string name)
@@ -154,7 +162,7 @@ namespace ecs
             throw std::runtime_error(err);
         }
 
-        return this->resources[name];
+        return *(this->resources[name]);
     }
 
     void Container::ComponentDestroy(std::string entity, std::string Type)

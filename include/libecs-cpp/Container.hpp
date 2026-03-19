@@ -36,6 +36,7 @@ namespace ecs
         void Update();
         void MessageSubmit(nlohmann::json);
         void ResourceAdd(std::string, ecs::Resource);
+        void Resources(std::unordered_map<std::string, std::shared_ptr<ecs::Resource>>);
         ecs::Resource ResourceGet(std::string);
         std::unordered_map<std::string, ecs::Entity *> Entities;
         ecs::Manager *Manager = nullptr;
@@ -53,7 +54,7 @@ namespace ecs
         bool ThreadRunning = true;
         ecs::Entity *EntityCreate(std::string);
 
-        std::unordered_map<std::string, ecs::Resource> resources;
+        std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> resources;
 #ifdef USE_BUILTIN_UUID
         UUIDv4::UUIDGenerator<std::mt19937_64> uuidGenerator;
 #endif
