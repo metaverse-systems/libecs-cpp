@@ -1,3 +1,5 @@
+#pragma once
+
 #include <chrono>
 
 namespace ecs 
@@ -6,33 +8,33 @@ namespace ecs
     {
       public:
         Timing(uint32_t frequency = 1000000 / 30) // Default frequency: 30 updates per second
-          : update_frequency(frequency),
-            last_update_time(GetCurrentMicroseconds()) {}
+          : updateFrequency(frequency),
+            lastUpdateTime(getCurrentMicroseconds()) {}
 
         bool ShouldUpdate()
         {
-            uint64_t current_time = GetCurrentMicroseconds();
-            if(current_time - this->last_update_time >= this->update_frequency)
+            uint64_t current_time = getCurrentMicroseconds();
+            if(current_time - this->lastUpdateTime >= this->updateFrequency)
             {
-                this->last_update_time = current_time;
+                this->lastUpdateTime = current_time;
                 return true;
             }
             return false;
         }
 
         void SetFrequency(uint32_t frequency) {
-            this->update_frequency = frequency;
+            this->updateFrequency = frequency;
         }
 
         uint32_t GetFrequency() const {
-            return this->update_frequency;
+            return this->updateFrequency;
         }
 
       private:
-        uint32_t update_frequency;
-        uint64_t last_update_time;
+        uint32_t updateFrequency;
+        uint64_t lastUpdateTime;
 
-        static uint64_t GetCurrentMicroseconds() {
+        static uint64_t getCurrentMicroseconds() {
             using namespace std::chrono;
             return duration_cast<microseconds>(
                 steady_clock::now().time_since_epoch()

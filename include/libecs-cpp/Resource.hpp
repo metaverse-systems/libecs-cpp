@@ -1,12 +1,12 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 namespace ecs
 {
-    typedef struct Resource
+    struct Resource
     {
-        char *ptr;
-        uint64_t size = 0;
-    } Resource;
+        std::vector<uint8_t> Data;
+    };
 }

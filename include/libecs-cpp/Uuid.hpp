@@ -9,7 +9,7 @@
       {
         public:
           Uuid();
-          Uuid(std::string id);
+          Uuid(const std::string &id);
           std::string Get();
         private:
           UUIDv4::UUID id;
@@ -23,7 +23,7 @@
       {
         public:
           Uuid();
-          Uuid(std::string id);
+          Uuid(const std::string &id);
           std::string Get();
         private:
           uuid_t id;

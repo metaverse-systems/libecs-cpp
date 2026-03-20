@@ -5,8 +5,6 @@ namespace ecs
     Component::Component():
         Handle(ecs::Uuid().Get()) {}
 
-    Component::Component(nlohmann::json config):
+    Component::Component(const nlohmann::json &/* config */):
         Handle(ecs::Uuid().Get()) {}
-
-    Component::~Component() {};
 }

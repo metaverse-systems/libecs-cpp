@@ -44,26 +44,27 @@ namespace ecs
     {
       public:
         System();
-        System(std::string Handle);
+        System(const std::string &handle);
+        virtual ~System() = default;
         virtual void Initialize();
-        virtual void Configure(nlohmann::json config);
+        virtual void Configure(const nlohmann::json &config);
         virtual void Update() {};
         void UpdateSystem();
         std::string Handle;
         ecs::Container *Container = nullptr;
-        void MessageSubmit(nlohmann::json);
-        virtual nlohmann::json Export() = 0;
+        void MessageSubmit(const nlohmann::json &message);
+        virtual nlohmann::json Export() const = 0;
         ecs::TypeEntityComponentList *Components = nullptr;
         ecs::Timing Timing;
-        const size_t MessagesWaiting();
-        const uint32_t DeltaTimeGet();
-        void TimerClear(std::string name);
+        size_t MessagesWaiting();
+        uint32_t DeltaTimeGet();
+        void TimerClear(const std::string &name);
         void TimerAdd(Timer timer);
       protected:
         std::queue<nlohmann::json> messages;
-        std::chrono::steady_clock::time_point LastTime = std::chrono::steady_clock::now();
-        std::unordered_map<std::string, std::vector<std::string>> ComponentsToDelete;
-        void ComponentsClear();
-        std::vector<ecs::Timer> Timers;
+        std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
+        std::unordered_map<std::string, std::vector<std::string>> componentsToDelete;
+        void componentsClear();
+        std::vector<ecs::Timer> timers;
     };
 }

@@ -10,8 +10,8 @@ namespace ecs
     {
     }
 
-    System::System(std::string Handle):
-        Handle(Handle) 
+    System::System(const std::string &handle):
+        Handle(handle) 
     {
     }
 
@@ -20,7 +20,7 @@ namespace ecs
     void System::UpdateSystem()
     {
         std::vector<std::string> timersToRemove;
-        for(auto &timer : this->Timers)
+        for(auto &timer : this->timers)
         {
             if(timer.CallbackRun() && !timer.Repeat)
             {
@@ -37,54 +37,54 @@ namespace ecs
         this->Update();
     }
 
-    void System::Configure(nlohmann::json config) {}
+    void System::Configure(const nlohmann::json &/* config */) {}
 
-    void System::MessageSubmit(nlohmann::json message)
+    void System::MessageSubmit(const nlohmann::json &message)
     {
         this->messages.push(message);
     }
 
-    const size_t System::MessagesWaiting()
+    size_t System::MessagesWaiting()
     {
         return this->messages.size();
     }
 
-    const uint32_t System::DeltaTimeGet()
+    uint32_t System::DeltaTimeGet()
     {
         std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-        uint32_t dt = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->LastTime).count();
-        this->LastTime = now;
+        uint32_t dt = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->lastTime).count();
+        this->lastTime = now;
         return dt;
     }
 
-    void System::ComponentsClear()
+    void System::componentsClear()
     {
         if (!this->Container)
         {
-            std::cout << "Warning: Container is null in ComponentsClear()" << std::endl;
+            std::cout << "Warning: Container is null in componentsClear()" << std::endl;
             return;
         }
 
-        for(auto &[type, entities] : this->ComponentsToDelete)
+        for(auto &[type, entities] : this->componentsToDelete)
         {
             for(const auto &entity : entities)
             {
                 this->Container->Components[type].erase(entity);
             }
         }
-        this->ComponentsToDelete.clear();
+        this->componentsToDelete.clear();
     }
 
-    void System::TimerClear(std::string name)
+    void System::TimerClear(const std::string &name)
     {
-        this->Timers.erase(
-            std::remove_if(this->Timers.begin(), this->Timers.end(),
+        this->timers.erase(
+            std::remove_if(this->timers.begin(), this->timers.end(),
                 [&name](const Timer &timer) { return timer.Name == name; }),
-            this->Timers.end());
+            this->timers.end());
     }
 
     void System::TimerAdd(Timer timer)
     {
-        this->Timers.push_back(timer);
+        this->timers.push_back(timer);
     }
 }

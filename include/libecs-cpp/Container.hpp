@@ -3,8 +3,10 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <thread>
-#include <unistd.h>
+#include <memory>
+#include <iostream>
 #include <libecs-cpp/json.hpp>
 #include <libecs-cpp/Resource.hpp>
 #include <libecs-cpp/Component.hpp>
@@ -19,44 +21,40 @@ namespace ecs
     class Container
     {
       public:
-        Container(ecs::Manager *Manager);
-        Container(ecs::Manager *Manager, std::string Handle);
+        Container(ecs::Manager *manager);
+        Container(ecs::Manager *manager, const std::string &handle);
+        ~Container();
         void Start();
         void Start(uint32_t);
         void SystemsInitialize();
-        ecs::System *System(ecs::System *);
-        std::vector<std::string> SystemsGet();
+        ecs::System *System(std::unique_ptr<ecs::System> system);
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
-        void ComponentDestroy(std::string entity, std::string Type);
-        ecs::Entity *Entity(std::string);
+        void ComponentDestroy(const std::string &entity, const std::string &type);
+        ecs::Entity *Entity(const std::string &handle);
         ecs::Entity *Entity();
-        ecs::Entity *Entity(ecs::Entity *);
-        void EntityDestroy(std::string);
-        nlohmann::json Export();
+        void EntityDestroy(const std::string &handle);
+        nlohmann::json Export() const;
         void Update();
-        void MessageSubmit(nlohmann::json);
-        void ResourceAdd(std::string, ecs::Resource);
-        void Resources(std::unordered_map<std::string, std::shared_ptr<ecs::Resource>>);
-        ecs::Resource ResourceGet(std::string);
-        std::unordered_map<std::string, ecs::Entity *> Entities;
+        void MessageSubmit(const nlohmann::json &message);
+        void ResourceAdd(const std::string &name, ecs::Resource r);
+        void Resources(const std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> &resources);
+        ecs::Resource ResourceGet(const std::string &name);
+        std::unordered_map<std::string, std::unique_ptr<ecs::Entity>> Entities;
         ecs::Manager *Manager = nullptr;
         const std::string Handle;
         ecs::TypeEntityComponentList Components;
         ecs::Uuid UuidGet();
-        std::unordered_map <std::string, ecs::System *> Systems;
+        std::unordered_map<std::string, std::unique_ptr<ecs::System>> Systems;
         
       private:
         /*! Number of microseconds to sleep between Update() calls */
-        uint32_t sleep_interval = 1000000 / 30;
+        uint32_t sleepInterval = 1000000 / 30;
 
-        std::thread ContainerThread;
-        void ThreadFunc();
-        bool ThreadRunning = true;
-        ecs::Entity *EntityCreate(std::string);
+        std::jthread containerThread;
+        void threadFunc(std::stop_token stopToken);
+        ecs::Entity *entityCreate(const std::string &handle);
 
+        std::unordered_set<std::string> disabledSystems;
         std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> resources;
-#ifdef USE_BUILTIN_UUID
-        UUIDv4::UUIDGenerator<std::mt19937_64> uuidGenerator;
-#endif
     };
 }

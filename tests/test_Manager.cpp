@@ -1,6 +1,6 @@
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <libecs-cpp/ecs.hpp>
+#include <memory>
 
 class TestSystem : public ecs::System
 {
@@ -10,7 +10,7 @@ class TestSystem : public ecs::System
         this->Handle = "TestSystem";
     }
 
-    nlohmann::json Export()
+    nlohmann::json Export() const
     {
         nlohmann::json config;
         return config;
@@ -44,7 +44,7 @@ TEST_CASE("Manager can shut down", "[Manager]") {
 TEST_CASE("Manager can submit messages", "[Manager]") {
     ecs::Manager manager;
     std::string container_name = "Container 1";
-    manager.Container(container_name)->System(new TestSystem());
+    manager.Container(container_name)->System(std::make_unique<TestSystem>());
     nlohmann::json message;
     message["destination"]["container"] = container_name;
     message["destination"]["system"] = "TestSystem";

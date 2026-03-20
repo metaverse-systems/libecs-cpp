@@ -13,13 +13,13 @@ namespace ecs
     class Entity
     {
       public:
-        Entity(ecs::Container *Container);
-        Entity(ecs::Container *Container, std::string Handle);
-        nlohmann::json Export();
+        Entity(ecs::Container *container);
+        Entity(ecs::Container *container, const std::string &handle);
+        nlohmann::json Export() const;
         ecs::Container *Container;
         const std::string Handle;
         std::shared_ptr<ecs::Component> Component(ecs::Component *component);
         void Destroy();
-        void ComponentDestroy(std::string Type);
+        void ComponentDestroy(const std::string &type);
     };
 }

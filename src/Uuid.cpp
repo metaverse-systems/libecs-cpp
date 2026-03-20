@@ -3,11 +3,11 @@
 #ifndef DISABLE_BUILTIN_UUID
 ecs::Uuid::Uuid()
 {
-    UUIDv4::UUIDGenerator<std::mt19937_64> uuidGenerator;
+    static UUIDv4::UUIDGenerator<std::mt19937_64> uuidGenerator;
     this->id = uuidGenerator.getUUID();
 }
 
-ecs::Uuid::Uuid(std::string id)
+ecs::Uuid::Uuid(const std::string &id)
 {
     this->id = UUIDv4::UUID(id);
 }
@@ -22,7 +22,7 @@ ecs::Uuid::Uuid()
     uuid_generate(this->id);
 }
 
-ecs::Uuid::Uuid(std::string id)
+ecs::Uuid::Uuid(const std::string &id)
 {
     uuid_parse(id.c_str(), this->id);
 }

@@ -60,6 +60,26 @@ sudo make install
 ./src/example
 ```
 
+## Building with Sanitizers
+
+### AddressSanitizer (memory leaks, buffer overflows)
+
+```
+make distclean
+./configure CXXFLAGS="-fsanitize=address -fno-omit-frame-pointer -g"
+make
+make check
+```
+
+### ThreadSanitizer (data races)
+
+```
+make distclean
+./configure CXXFLAGS="-fsanitize=thread -g"
+make
+make check
+```
+
 ### Build library for Windows
 
 * Build and install libecs-cpp

@@ -5,6 +5,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <memory>
 #include <libecs-cpp/json.hpp>
 
 namespace ecs
@@ -17,17 +18,17 @@ namespace ecs
     {
       public:
         Manager();
-        ecs::Container *Container(std::string handle);
+        ~Manager();
+        ecs::Container *Container(const std::string &handle);
         ecs::Container *Container();
         std::vector<std::string> ContainersGet();
         bool IsRunning();
         void Shutdown();
-        void MessageSubmit(nlohmann::json);
+        void MessageSubmit(const nlohmann::json &message);
       private:
-        void ContainersKill(std::vector<std::string>);
-        ecs::Container *ContainerCreate(std::string handle);
-        std::unordered_map<std::string, ecs::Container *> containers;
-        std::mutex mutex_containers;
-        bool Running = true;
+        ecs::Container *containerCreate(const std::string &handle);
+        std::unordered_map<std::string, std::unique_ptr<ecs::Container>> containers;
+        std::mutex mutexContainers;
+        bool running = true;
     };
 }
