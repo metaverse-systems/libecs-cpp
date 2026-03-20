@@ -10,12 +10,12 @@ namespace ecs
     {
       public:
         Component();
-        Component(nlohmann::json);
-        virtual nlohmann::json Export() = 0;
+        Component(const nlohmann::json &config);
+        virtual nlohmann::json Export() const = 0;
         const std::string Handle;
         std::string Type;
         std::string EntityHandle;
-        virtual ~Component() = 0;
+        virtual ~Component() = default;
     };
 
     typedef std::unordered_map<std::string, std::shared_ptr<ecs::Component>> EntityComponentList;

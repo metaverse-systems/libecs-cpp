@@ -1,5 +1,5 @@
 AC_PREREQ([2.71])
-AC_INIT([libecs-cpp],[0.4.1],[tim@metaverse.systems],[libecs-cpp],[https://metaverse.systems])
+AC_INIT([libecs-cpp],[1.0.0],[tim@metaverse.systems],[libecs-cpp],[https://metaverse.systems])
 LT_INIT
 AC_CONFIG_SRCDIR([src/Manager.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -24,7 +24,7 @@ AS_IF([test "$builtin_uuid" != "no" ], [
 ])
 
 PKG_CHECK_MODULES([UUID], uuid, [], [dont_abort_configure="yes"])
-PKG_CHECK_MODULES([CATCH2], catch2)
+PKG_CHECK_MODULES([CATCH2], [catch2-with-main])
 
 AC_CONFIG_FILES([Doxyfile])
 AC_CONFIG_FILES([ecs-cpp.pc])

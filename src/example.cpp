@@ -1,5 +1,8 @@
 #include <libecs-cpp/ecs.hpp>
 #include <iostream>
+#include <memory>
+#include <chrono>
+#include <thread>
 
 class PositionComponent : public ecs::Component
 {
@@ -13,7 +16,7 @@ class PositionComponent : public ecs::Component
         this->y = config["y"].get<float>();
     }
 
-    nlohmann::json Export()
+    nlohmann::json Export() const
     {
         nlohmann::json config;
         config["x"] = this->x;
@@ -36,7 +39,7 @@ class VelocityComponent : public ecs::Component
         this->y = config["y"].get<float>();
     }
 
-    nlohmann::json Export()
+    nlohmann::json Export() const
     {
         nlohmann::json config;
         config["x"] = this->x;
@@ -55,7 +58,7 @@ class PhysicsSystem : public ecs::System
     {
     }
 
-    nlohmann::json Export()
+    nlohmann::json Export() const
     {
         nlohmann::json config;
         config["Handle"] = this->Handle;
@@ -92,11 +95,11 @@ class PhysicsSystem : public ecs::System
     }
 };
 
-int main(int argc, char *argv[])
+int main(int /* argc */, char * /* argv */[])
 {
     auto world = ECS->Container();
 
-    world->System(new PhysicsSystem());
+    world->System(std::make_unique<PhysicsSystem>());
 
     /* Create a new entity in the 'world' container */
     auto e = world->Entity();
@@ -131,7 +134,7 @@ int main(int argc, char *argv[])
 
     while(ECS->IsRunning())
     {
-        usleep(100000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         if(!threaded) world->Update();
     }
 

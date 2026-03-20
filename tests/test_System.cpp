@@ -1,5 +1,4 @@
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <libecs-cpp/ecs.hpp>
 
 class TestSystem : public ecs::System
@@ -10,12 +9,12 @@ class TestSystem : public ecs::System
         this->Handle = "TestSystem";
     }
 
-    TestSystem(std::string Handle)
+    TestSystem(std::string handle)
     {
-        this->Handle = Handle;
+        this->Handle = handle;
     }
 
-    nlohmann::json Export()
+    nlohmann::json Export() const
     {
         nlohmann::json config;
         return config;

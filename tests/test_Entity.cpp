@@ -1,5 +1,4 @@
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <libecs-cpp/ecs.hpp>
 
 class TestComponent : public ecs::Component
@@ -16,7 +15,7 @@ class TestComponent : public ecs::Component
         this->value = config["value"].get<uint64_t>();
     }
 
-    nlohmann::json Export()
+    nlohmann::json Export() const
     {
         nlohmann::json config;
         config["value"] = this->value;
@@ -72,5 +71,5 @@ TEST_CASE("Entity can be destroyed", "[Entity]") {
     auto entity = container->Entity();
     std::string handle = entity->Handle;
     entity->Destroy();
-    REQUIRE(container->Entities[handle] == nullptr);
+    REQUIRE_FALSE(container->Entities.contains(handle));
 }

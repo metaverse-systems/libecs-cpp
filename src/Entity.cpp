@@ -4,17 +4,17 @@
 
 namespace ecs
 {
-    Entity::Entity(ecs::Container *Container):
-        Container(Container), Handle(ecs::Uuid().Get())
+    Entity::Entity(ecs::Container *container):
+        Container(container), Handle(ecs::Uuid().Get())
     {
     }
 
-    Entity::Entity(ecs::Container *Container, std::string Handle):
-        Container(Container), Handle(Handle)
+    Entity::Entity(ecs::Container *container, const std::string &handle):
+        Container(container), Handle(handle)
     {
     }
 
-    nlohmann::json Entity::Export()
+    nlohmann::json Entity::Export() const
     {
         nlohmann::json config;
 
@@ -39,9 +39,9 @@ namespace ecs
         return c;
     }
 
-    void Entity::ComponentDestroy(std::string Type)
+    void Entity::ComponentDestroy(const std::string &type)
     {
-        this->Container->ComponentDestroy(this->Handle, Type);
+        this->Container->ComponentDestroy(this->Handle, type);
     }
 
     void Entity::Destroy()

@@ -8,37 +8,39 @@ namespace ecs
     {
     }
 
-    ecs::Container *Manager::Container(std::string handle)
+    Manager::~Manager()
     {
-        return this->ContainerCreate(handle);
+        this->running = false;
+    }
+
+    ecs::Container *Manager::Container(const std::string &handle)
+    {
+        return this->containerCreate(handle);
     }
 
     ecs::Container *Manager::Container()
     {
-        return this->ContainerCreate(ecs::Uuid().Get());
+        return this->containerCreate(ecs::Uuid().Get());
     }
 
     bool Manager::IsRunning()
     {
-        return Running;
+        return running;
     }
 
     void Manager::Shutdown()
     {
-        this->Running = false;
+        this->running = false;
     }
 
-    ecs::Container *Manager::ContainerCreate(std::string handle)
+    ecs::Container *Manager::containerCreate(const std::string &handle)
     {
-        this->mutex_containers.lock();
+        std::lock_guard<std::mutex> lock(this->mutexContainers);
+        if(!this->containers.contains(handle))
         {
-            if(this->containers.count(handle) == 0)
-            {
-                this->containers[handle] = new ecs::Container(this, handle);
-            }
+            this->containers[handle] = std::make_unique<ecs::Container>(this, handle);
         }
-        this->mutex_containers.unlock();
-        return this->containers[handle];
+        return this->containers[handle].get();
     }
 
     std::vector<std::string> Manager::ContainersGet()
@@ -51,22 +53,10 @@ namespace ecs
         return handles;
     }
 
-    void Manager::ContainersKill(std::vector<std::string> handles)
-    {
-        this->mutex_containers.lock();
-        {
-            for(auto &h : handles)
-            {
-                delete this->containers[h];
-            }
-        }
-        this->mutex_containers.unlock();
-    }
-
-    void Manager::MessageSubmit(nlohmann::json message)
+    void Manager::MessageSubmit(const nlohmann::json &message)
     {
         auto dest_container = message["destination"]["container"].get<std::string>();
-        if(!this->containers[dest_container])
+        if(!this->containers.contains(dest_container))
         {
             auto err = "ecs::Manager::MessageSubmit(): Container " + dest_container + " not found.";
             throw std::runtime_error(err);
