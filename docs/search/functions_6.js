@@ -49,7 +49,7 @@ var searchData=
   ['get_5fubjson_5fvalue_46',['get_ubjson_value',['../classnlohmann_1_1detail_1_1binary__reader.html#a7e5e0b71548d0649ce4f131280d06c33',1,'nlohmann::detail::binary_reader']]],
   ['get_5funchecked_47',['get_unchecked',['../classnlohmann_1_1json__pointer.html#aef65869da8f68d30b30021f3efdc54f8',1,'nlohmann::json_pointer::get_unchecked(BasicJsonType *ptr) const'],['../classnlohmann_1_1json__pointer.html#a40d7cc22db09eefce29ecba4c3000470',1,'nlohmann::json_pointer::get_unchecked(const BasicJsonType *ptr) const']]],
   ['get_5fvalue_48',['get_value',['../classnlohmann_1_1detail_1_1primitive__iterator__t.html#ae952990886ca1756229f916661a8af81',1,'nlohmann::detail::primitive_iterator_t']]],
-  ['getcurrentmicroseconds_49',['GetCurrentMicroseconds',['../classecs_1_1Timing.html#ab59be89e453fc6b1b1db4bc3891e220e',1,'ecs::Timing']]],
+  ['getcurrentmicroseconds_49',['getCurrentMicroseconds',['../classecs_1_1Timing.html#a6cd8942e211c4c5bef32cfec7b1a0144',1,'ecs::Timing']]],
   ['getfrequency_50',['GetFrequency',['../classecs_1_1Timing.html#a4b2a6ae91c978ef89aa85788f49b4c2f',1,'ecs::Timing']]],
   ['grisu2_51',['grisu2',['../namespacenlohmann_1_1detail_1_1dtoa__impl.html#a05b681dcb8569b9784c6dccfadb01633',1,'nlohmann::detail::dtoa_impl::grisu2(char *buf, int &amp;len, int &amp;decimal_exponent, diyfp m_minus, diyfp v, diyfp m_plus)'],['../namespacenlohmann_1_1detail_1_1dtoa__impl.html#aab7a9670a4f4704a5d0347ad7588576b',1,'nlohmann::detail::dtoa_impl::grisu2(char *buf, int &amp;len, int &amp;decimal_exponent, FloatType value)']]],
   ['grisu2_5fdigit_5fgen_52',['grisu2_digit_gen',['../namespacenlohmann_1_1detail_1_1dtoa__impl.html#a9b899c72b0e1e3dd46d75c2b4e6bcdfb',1,'nlohmann::detail::dtoa_impl']]],

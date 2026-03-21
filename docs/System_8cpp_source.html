@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.4.1</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -96,8 +96,8 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
 <div class="foldopen" id="foldopen00013" data-start="{" data-end="}">
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#abeea1820ec340a2755efd87589f18eb4">   13</a></span>    <a class="code hl_function" href="classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8">System::System</a>(std::string Handle):</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>        Handle(Handle) </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#ad9f3bd9e989107cf189520537af8906f">   13</a></span>    <a class="code hl_function" href="classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8">System::System</a>(<span class="keyword">const</span> std::string &amp;handle):</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>        Handle(handle) </div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    {</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    }</div>
 </div>
@@ -108,7 +108,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#a971a64b959c20f6231af39e9518195bb">   20</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#a971a64b959c20f6231af39e9518195bb">System::UpdateSystem</a>()</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    {</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        std::vector&lt;std::string&gt; timersToRemove;</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;timer : this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#aca642d3cada02eb8299c70d43eaf8034">Timers</a>)</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;timer : this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#aab2df444b7cd664e5737d9ae16534989">timers</a>)</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        {</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>            <span class="keywordflow">if</span>(timer.CallbackRun() &amp;&amp; !timer.Repeat)</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>            {</div>
@@ -119,93 +119,93 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        <span class="comment">// Remove timers after iteration to avoid modifying container during iteration</span></div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;timerName : timersToRemove)</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        {</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            this-&gt;<a class="code hl_function" href="classecs_1_1System.html#aeff74b689f13a04ecd1fa20d094687a0">TimerClear</a>(timerName);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            this-&gt;<a class="code hl_function" href="classecs_1_1System.html#aa013125444120fab5516fe5e85e3c096">TimerClear</a>(timerName);</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        }</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        this-&gt;<a class="code hl_function" href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">Update</a>();</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    }</div>
 </div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#a8842e0dcfe6d2c867a2728fea23864fd">   40</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#a8842e0dcfe6d2c867a2728fea23864fd">System::Configure</a>(<a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> config) {}</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#ad565bd109a83adfaaf4f3e3184aac4da">   40</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#ad565bd109a83adfaaf4f3e3184aac4da">System::Configure</a>(<span class="keyword">const</span> <a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> &amp;<span class="comment">/* config */</span>) {}</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
 <div class="foldopen" id="foldopen00042" data-start="{" data-end="}">
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#aa0938b4bb3a266191a6074ae35375dee">   42</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#aa0938b4bb3a266191a6074ae35375dee">System::MessageSubmit</a>(<a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> message)</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#adbc9839d08a6ea3059a24a748e6dea00">   42</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#adbc9839d08a6ea3059a24a748e6dea00">System::MessageSubmit</a>(<span class="keyword">const</span> <a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> &amp;message)</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    {</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#adf82230cf65627c6a611722e1e365164">messages</a>.push(message);</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    }</div>
 </div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
 <div class="foldopen" id="foldopen00047" data-start="{" data-end="}">
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#a14166f497f9df0f23978f42c3ce57b87">   47</a></span>    <span class="keyword">const</span> <span class="keywordtype">size_t</span> <a class="code hl_function" href="classecs_1_1System.html#a14166f497f9df0f23978f42c3ce57b87">System::MessagesWaiting</a>()</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">   47</a></span>    <span class="keywordtype">size_t</span> <a class="code hl_function" href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">System::MessagesWaiting</a>()</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    {</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#adf82230cf65627c6a611722e1e365164">messages</a>.size();</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    }</div>
 </div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
 <div class="foldopen" id="foldopen00052" data-start="{" data-end="}">
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#a3397257c366a3229ed43a4d34d66af17">   52</a></span>    <span class="keyword">const</span> uint32_t <a class="code hl_function" href="classecs_1_1System.html#a3397257c366a3229ed43a4d34d66af17">System::DeltaTimeGet</a>()</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">   52</a></span>    uint32_t <a class="code hl_function" href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">System::DeltaTimeGet</a>()</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    {</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        uint32_t dt = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(now - this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">LastTime</a>).count();</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">LastTime</a> = now;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        uint32_t dt = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(now - this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a9df065d4fd246f5631bf532312ba76e2">lastTime</a>).count();</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a9df065d4fd246f5631bf532312ba76e2">lastTime</a> = now;</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keywordflow">return</span> dt;</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    }</div>
 </div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
 <div class="foldopen" id="foldopen00060" data-start="{" data-end="}">
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#a9fb032bad9236217720b75589306c495">   60</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#a9fb032bad9236217720b75589306c495">System::ComponentsClear</a>()</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#ad1e6d63176dc8d66823a617edcde01ba">   60</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#ad1e6d63176dc8d66823a617edcde01ba">System::componentsClear</a>()</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    {</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        <span class="keywordflow">if</span> (!this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>)</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        {</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Warning: Container is null in ComponentsClear()&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Warning: Container is null in componentsClear()&quot;</span> &lt;&lt; std::endl;</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>            <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        }</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;[type, entities] : this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a62166baf31aa62552b2c1cfbd666f9cb">ComponentsToDelete</a>)</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;[type, entities] : this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a7c34dacac7e95f6d95aa3461341ea34e">componentsToDelete</a>)</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        {</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;entity : entities)</div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            {</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">Components</a>[type].erase(entity);</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            }</div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        }</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a62166baf31aa62552b2c1cfbd666f9cb">ComponentsToDelete</a>.clear();</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a7c34dacac7e95f6d95aa3461341ea34e">componentsToDelete</a>.clear();</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    }</div>
 </div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
 <div class="foldopen" id="foldopen00078" data-start="{" data-end="}">
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#aeff74b689f13a04ecd1fa20d094687a0">   78</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#aeff74b689f13a04ecd1fa20d094687a0">System::TimerClear</a>(std::string name)</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#aa013125444120fab5516fe5e85e3c096">   78</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#aa013125444120fab5516fe5e85e3c096">System::TimerClear</a>(<span class="keyword">const</span> std::string &amp;name)</div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    {</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#aca642d3cada02eb8299c70d43eaf8034">Timers</a>.erase(</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>            std::remove_if(this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#aca642d3cada02eb8299c70d43eaf8034">Timers</a>.begin(), this-&gt;Timers.end(),</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#aab2df444b7cd664e5737d9ae16534989">timers</a>.erase(</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>            std::remove_if(this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#aab2df444b7cd664e5737d9ae16534989">timers</a>.begin(), this-&gt;timers.end(),</div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>                [&amp;name](<span class="keyword">const</span> <a class="code hl_class" href="classecs_1_1Timer.html">Timer</a> &amp;timer) { return timer.Name == name; }),</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            this-&gt;Timers.end());</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            this-&gt;timers.end());</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    }</div>
 </div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
 <div class="foldopen" id="foldopen00086" data-start="{" data-end="}">
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#afada1d6256fb7265e563befdc779e47e">   86</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#afada1d6256fb7265e563befdc779e47e">System::TimerAdd</a>(<a class="code hl_class" href="classecs_1_1Timer.html">Timer</a> timer)</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    {</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#aca642d3cada02eb8299c70d43eaf8034">Timers</a>.push_back(timer);</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#aab2df444b7cd664e5737d9ae16534989">timers</a>.push_back(timer);</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    }</div>
 </div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>}</div>
 <div class="ttc" id="aComponent_8hpp_html"><div class="ttname"><a href="Component_8hpp.html">Component.hpp</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00019">Container.hpp:20</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a6636742fd18a1acc8cfd040a2e9f73a7"><div class="ttname"><a href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">ecs::Container::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList Components</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00043">Container.hpp:43</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a14166f497f9df0f23978f42c3ce57b87"><div class="ttname"><a href="classecs_1_1System.html#a14166f497f9df0f23978f42c3ce57b87">ecs::System::MessagesWaiting</a></div><div class="ttdeci">const size_t MessagesWaiting()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00047">System.cpp:47</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a3397257c366a3229ed43a4d34d66af17"><div class="ttname"><a href="classecs_1_1System.html#a3397257c366a3229ed43a4d34d66af17">ecs::System::DeltaTimeGet</a></div><div class="ttdeci">const uint32_t DeltaTimeGet()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00052">System.cpp:52</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a3ad78d3d7857d167a85aa93a9a3d44b7"><div class="ttname"><a href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">ecs::System::Update</a></div><div class="ttdeci">virtual void Update()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00050">System.hpp:50</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00021">Container.hpp:22</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a6636742fd18a1acc8cfd040a2e9f73a7"><div class="ttname"><a href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">ecs::Container::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList Components</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00045">Container.hpp:45</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a3ad78d3d7857d167a85aa93a9a3d44b7"><div class="ttname"><a href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">ecs::System::Update</a></div><div class="ttdeci">virtual void Update()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00051">System.hpp:51</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a3dc551c609a3286de5739d6685ca4961"><div class="ttname"><a href="classecs_1_1System.html#a3dc551c609a3286de5739d6685ca4961">ecs::System::Initialize</a></div><div class="ttdeci">virtual void Initialize()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00018">System.cpp:18</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a62166baf31aa62552b2c1cfbd666f9cb"><div class="ttname"><a href="classecs_1_1System.html#a62166baf31aa62552b2c1cfbd666f9cb">ecs::System::ComponentsToDelete</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::vector&lt; std::string &gt; &gt; ComponentsToDelete</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00065">System.hpp:65</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a859a89e39e0c8a947d9ef4bd167d65fb"><div class="ttname"><a href="classecs_1_1System.html#a859a89e39e0c8a947d9ef4bd167d65fb">ecs::System::LastTime</a></div><div class="ttdeci">std::chrono::steady_clock::time_point LastTime</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00064">System.hpp:64</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a8842e0dcfe6d2c867a2728fea23864fd"><div class="ttname"><a href="classecs_1_1System.html#a8842e0dcfe6d2c867a2728fea23864fd">ecs::System::Configure</a></div><div class="ttdeci">virtual void Configure(nlohmann::json config)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00040">System.cpp:40</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a3ed351192c824237e9b277b36be5171d"><div class="ttname"><a href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">ecs::System::DeltaTimeGet</a></div><div class="ttdeci">uint32_t DeltaTimeGet()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00052">System.cpp:52</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a7c34dacac7e95f6d95aa3461341ea34e"><div class="ttname"><a href="classecs_1_1System.html#a7c34dacac7e95f6d95aa3461341ea34e">ecs::System::componentsToDelete</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::vector&lt; std::string &gt; &gt; componentsToDelete</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00066">System.hpp:66</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a971a64b959c20f6231af39e9518195bb"><div class="ttname"><a href="classecs_1_1System.html#a971a64b959c20f6231af39e9518195bb">ecs::System::UpdateSystem</a></div><div class="ttdeci">void UpdateSystem()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00020">System.cpp:20</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a9fb032bad9236217720b75589306c495"><div class="ttname"><a href="classecs_1_1System.html#a9fb032bad9236217720b75589306c495">ecs::System::ComponentsClear</a></div><div class="ttdeci">void ComponentsClear()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00060">System.cpp:60</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_aa0938b4bb3a266191a6074ae35375dee"><div class="ttname"><a href="classecs_1_1System.html#aa0938b4bb3a266191a6074ae35375dee">ecs::System::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(nlohmann::json)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00042">System.cpp:42</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a9df065d4fd246f5631bf532312ba76e2"><div class="ttname"><a href="classecs_1_1System.html#a9df065d4fd246f5631bf532312ba76e2">ecs::System::lastTime</a></div><div class="ttdeci">std::chrono::steady_clock::time_point lastTime</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00065">System.hpp:65</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_aa013125444120fab5516fe5e85e3c096"><div class="ttname"><a href="classecs_1_1System.html#aa013125444120fab5516fe5e85e3c096">ecs::System::TimerClear</a></div><div class="ttdeci">void TimerClear(const std::string &amp;name)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00078">System.cpp:78</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_aab2df444b7cd664e5737d9ae16534989"><div class="ttname"><a href="classecs_1_1System.html#aab2df444b7cd664e5737d9ae16534989">ecs::System::timers</a></div><div class="ttdeci">std::vector&lt; ecs::Timer &gt; timers</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00068">System.hpp:68</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_ac70fac6ddc7d1816617fd04888dccdc8"><div class="ttname"><a href="classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8">ecs::System::System</a></div><div class="ttdeci">System()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00008">System.cpp:8</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_aca642d3cada02eb8299c70d43eaf8034"><div class="ttname"><a href="classecs_1_1System.html#aca642d3cada02eb8299c70d43eaf8034">ecs::System::Timers</a></div><div class="ttdeci">std::vector&lt; ecs::Timer &gt; Timers</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00067">System.hpp:67</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_adf82230cf65627c6a611722e1e365164"><div class="ttname"><a href="classecs_1_1System.html#adf82230cf65627c6a611722e1e365164">ecs::System::messages</a></div><div class="ttdeci">std::queue&lt; nlohmann::json &gt; messages</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00063">System.hpp:63</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_aeff74b689f13a04ecd1fa20d094687a0"><div class="ttname"><a href="classecs_1_1System.html#aeff74b689f13a04ecd1fa20d094687a0">ecs::System::TimerClear</a></div><div class="ttdeci">void TimerClear(std::string name)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00078">System.cpp:78</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_ad1e6d63176dc8d66823a617edcde01ba"><div class="ttname"><a href="classecs_1_1System.html#ad1e6d63176dc8d66823a617edcde01ba">ecs::System::componentsClear</a></div><div class="ttdeci">void componentsClear()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00060">System.cpp:60</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_ad565bd109a83adfaaf4f3e3184aac4da"><div class="ttname"><a href="classecs_1_1System.html#ad565bd109a83adfaaf4f3e3184aac4da">ecs::System::Configure</a></div><div class="ttdeci">virtual void Configure(const nlohmann::json &amp;config)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00040">System.cpp:40</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_adbc9839d08a6ea3059a24a748e6dea00"><div class="ttname"><a href="classecs_1_1System.html#adbc9839d08a6ea3059a24a748e6dea00">ecs::System::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00042">System.cpp:42</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_adf82230cf65627c6a611722e1e365164"><div class="ttname"><a href="classecs_1_1System.html#adf82230cf65627c6a611722e1e365164">ecs::System::messages</a></div><div class="ttdeci">std::queue&lt; nlohmann::json &gt; messages</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00064">System.hpp:64</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_ae5a9adaed132a1265bd68cea438ba569"><div class="ttname"><a href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">ecs::System::MessagesWaiting</a></div><div class="ttdeci">size_t MessagesWaiting()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00047">System.cpp:47</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_afada1d6256fb7265e563befdc779e47e"><div class="ttname"><a href="classecs_1_1System.html#afada1d6256fb7265e563befdc779e47e">ecs::System::TimerAdd</a></div><div class="ttdeci">void TimerAdd(Timer timer)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00086">System.cpp:86</a></div></div>
 <div class="ttc" id="aclassecs_1_1Timer_html"><div class="ttname"><a href="classecs_1_1Timer.html">ecs::Timer</a></div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00012">System.hpp:13</a></div></div>
 <div class="ttc" id="aclassecs_1_1Uuid_html"><div class="ttname"><a href="classecs_1_1Uuid.html">ecs::Uuid</a></div><div class="ttdef"><b>Definition</b> <a href="Uuid_8hpp_source.html#l00008">Uuid.hpp:9</a></div></div>
@@ -215,7 +215,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 11 2026 20:19:14 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Mar 21 2026 19:50:15 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
