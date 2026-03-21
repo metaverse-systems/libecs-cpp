@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.4.1</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -81,95 +81,94 @@ $(document).ready(function() { init_codefold(0); });
   <div class="headertitle"><div class="title">test_System.cpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="test__System_8cpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#a656eb5868e824d59f489f910db438420">    1</a></span><span class="preprocessor">#define CATCH_CONFIG_MAIN</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;catch2/catch.hpp&gt;</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;<a class="code" href="ecs_8hpp.html">libecs-cpp/ecs.hpp</a>&gt;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="keyword">class </span><a class="code hl_class" href="classTestSystem.html">TestSystem</a> : <span class="keyword">public</span> <a class="code hl_class" href="classecs_1_1System.html">ecs::System</a></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span>{</div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>  <span class="keyword">public</span>:</div>
-<div class="foldopen" id="foldopen00008" data-start="{" data-end="}">
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="classTestSystem.html#a6736bfe38a42761e6cd95f8697e85418">    8</a></span>    <a class="code hl_function" href="classTestSystem.html#a6736bfe38a42761e6cd95f8697e85418">TestSystem</a>()</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    {</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a> = <span class="stringliteral">&quot;TestSystem&quot;</span>;</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    }</div>
+<a href="test__System_8cpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &lt;catch2/catch_all.hpp&gt;</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;<a class="code" href="ecs_8hpp.html">libecs-cpp/ecs.hpp</a>&gt;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="keyword">class </span><a class="code hl_class" href="classTestSystem.html">TestSystem</a> : <span class="keyword">public</span> <a class="code hl_class" href="classecs_1_1System.html">ecs::System</a></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span>{</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span>  <span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00007" data-start="{" data-end="}">
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="classTestSystem.html#a6736bfe38a42761e6cd95f8697e85418">    7</a></span>    <a class="code hl_function" href="classTestSystem.html#a6736bfe38a42761e6cd95f8697e85418">TestSystem</a>()</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>    {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a> = <span class="stringliteral">&quot;TestSystem&quot;</span>;</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    }</div>
 </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="foldopen" id="foldopen00013" data-start="{" data-end="}">
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classTestSystem.html#a13fbb0cc097c9d7207626bb818567c6c">   13</a></span>    <a class="code hl_function" href="classTestSystem.html#a13fbb0cc097c9d7207626bb818567c6c">TestSystem</a>(std::string <a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a>)</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    {</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>        this-&gt;Handle = <a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a>;</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    }</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="foldopen" id="foldopen00012" data-start="{" data-end="}">
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="classTestSystem.html#a008bde3c9b79bc1c9f5df07133761cdf">   12</a></span>    <a class="code hl_function" href="classTestSystem.html#a008bde3c9b79bc1c9f5df07133761cdf">TestSystem</a>(std::string handle)</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    {</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a> = handle;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    }</div>
 </div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="foldopen" id="foldopen00018" data-start="{" data-end="}">
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="classTestSystem.html#aae62599ddd0d439c18faf1fe493fda35">   18</a></span>    <a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> <a class="code hl_function" href="classTestSystem.html#aae62599ddd0d439c18faf1fe493fda35">Export</a>()</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    {</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        <a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> config;</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        <span class="keywordflow">return</span> config;</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    }</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="foldopen" id="foldopen00017" data-start="{" data-end="}">
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classTestSystem.html#ac9b35dcffc7f5bd74da3f34a26005b59">   17</a></span>    <a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> <a class="code hl_function" href="classTestSystem.html#ac9b35dcffc7f5bd74da3f34a26005b59">Export</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        <a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> config;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        <span class="keywordflow">return</span> config;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    }</div>
 </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>};</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="foldopen" id="foldopen00026" data-start="{" data-end="}">
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">   26</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System is initialized with a valid handle&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    REQUIRE_FALSE(system.<a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a>.empty());</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>}</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>};</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="foldopen" id="foldopen00025" data-start="{" data-end="}">
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">   25</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System is initialized with a valid handle&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    REQUIRE_FALSE(system.<a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a>.empty());</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>}</div>
 </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="foldopen" id="foldopen00031" data-start="{" data-end="}">
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#aca1cd26fd9da561f57b2cf4b5a42884e">   31</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System can be initialized with a custom handle&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    std::string customHandle = <span class="stringliteral">&quot;custom_handle&quot;</span>;</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system(customHandle);</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    REQUIRE(system.<a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a> == customHandle);</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>}</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="foldopen" id="foldopen00030" data-start="{" data-end="}">
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#aca1cd26fd9da561f57b2cf4b5a42884e">   30</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System can be initialized with a custom handle&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    std::string customHandle = <span class="stringliteral">&quot;custom_handle&quot;</span>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system(customHandle);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    REQUIRE(system.<a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a> == customHandle);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>}</div>
 </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="foldopen" id="foldopen00037" data-start="{" data-end="}">
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#ae18a06ec02b4332fc5d72b4938ff5458">   37</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System starts with no messages&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    REQUIRE(system.<a class="code hl_function" href="classecs_1_1System.html#a14166f497f9df0f23978f42c3ce57b87">MessagesWaiting</a>() == 0);</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>}</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="foldopen" id="foldopen00036" data-start="{" data-end="}">
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#ae18a06ec02b4332fc5d72b4938ff5458">   36</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System starts with no messages&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    REQUIRE(system.<a class="code hl_function" href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">MessagesWaiting</a>() == 0);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>}</div>
 </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="foldopen" id="foldopen00042" data-start="{" data-end="}">
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#a6a9ce7a813381f0acf3dbe6f74e2a611">   42</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System can submit messages&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system;</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> message = {{<span class="stringliteral">&quot;key&quot;</span>, <span class="stringliteral">&quot;value&quot;</span>}};</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    system.<a class="code hl_function" href="classecs_1_1System.html#aa0938b4bb3a266191a6074ae35375dee">MessageSubmit</a>(message);</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    REQUIRE(system.<a class="code hl_function" href="classecs_1_1System.html#a14166f497f9df0f23978f42c3ce57b87">MessagesWaiting</a>() == 1);</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>}</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="foldopen" id="foldopen00041" data-start="{" data-end="}">
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#a6a9ce7a813381f0acf3dbe6f74e2a611">   41</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System can submit messages&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> message = {{<span class="stringliteral">&quot;key&quot;</span>, <span class="stringliteral">&quot;value&quot;</span>}};</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    system.<a class="code hl_function" href="classecs_1_1System.html#adbc9839d08a6ea3059a24a748e6dea00">MessageSubmit</a>(message);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    REQUIRE(system.<a class="code hl_function" href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">MessagesWaiting</a>() == 1);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>}</div>
 </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="foldopen" id="foldopen00049" data-start="{" data-end="}">
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#a8f2d20930d84a3bcd7080feec26682b5">   49</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System can calculate delta time&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system;</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="comment">// First call to initialize LastTime</span></div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    system.<a class="code hl_function" href="classecs_1_1System.html#a3397257c366a3229ed43a4d34d66af17">DeltaTimeGet</a>(); </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="comment">// Small sleep to simulate passage of time</span></div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    std::this_thread::sleep_for(std::chrono::milliseconds(10));</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    uint32_t deltaTime = system.<a class="code hl_function" href="classecs_1_1System.html#a3397257c366a3229ed43a4d34d66af17">DeltaTimeGet</a>();</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    REQUIRE(deltaTime &gt;= 10); <span class="comment">// Check if at least 10ms have passed</span></div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>}</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
+<div class="foldopen" id="foldopen00048" data-start="{" data-end="}">
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="test__System_8cpp.html#a8f2d20930d84a3bcd7080feec26682b5">   48</a></span><a class="code hl_function" href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a>(<span class="stringliteral">&quot;System can calculate delta time&quot;</span>, <span class="stringliteral">&quot;[System]&quot;</span>) {</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <a class="code hl_class" href="classTestSystem.html">TestSystem</a> system;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="comment">// First call to initialize LastTime</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    system.<a class="code hl_function" href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">DeltaTimeGet</a>(); </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="comment">// Small sleep to simulate passage of time</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    std::this_thread::sleep_for(std::chrono::milliseconds(10));</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    uint32_t deltaTime = system.<a class="code hl_function" href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">DeltaTimeGet</a>();</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    REQUIRE(deltaTime &gt;= 10); <span class="comment">// Check if at least 10ms have passed</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>}</div>
 </div>
-<div class="ttc" id="aclassTestSystem_html"><div class="ttname"><a href="classTestSystem.html">TestSystem</a></div><div class="ttdef"><b>Definition</b> <a href="test__Manager_8cpp_source.html#l00005">test_Manager.cpp:6</a></div></div>
-<div class="ttc" id="aclassTestSystem_html_a13fbb0cc097c9d7207626bb818567c6c"><div class="ttname"><a href="classTestSystem.html#a13fbb0cc097c9d7207626bb818567c6c">TestSystem::TestSystem</a></div><div class="ttdeci">TestSystem(std::string Handle)</div><div class="ttdef"><b>Definition</b> <a href="test__System_8cpp_source.html#l00013">test_System.cpp:13</a></div></div>
-<div class="ttc" id="aclassTestSystem_html_a6736bfe38a42761e6cd95f8697e85418"><div class="ttname"><a href="classTestSystem.html#a6736bfe38a42761e6cd95f8697e85418">TestSystem::TestSystem</a></div><div class="ttdeci">TestSystem()</div><div class="ttdef"><b>Definition</b> <a href="test__System_8cpp_source.html#l00008">test_System.cpp:8</a></div></div>
-<div class="ttc" id="aclassTestSystem_html_aae62599ddd0d439c18faf1fe493fda35"><div class="ttname"><a href="classTestSystem.html#aae62599ddd0d439c18faf1fe493fda35">TestSystem::Export</a></div><div class="ttdeci">nlohmann::json Export()</div><div class="ttdef"><b>Definition</b> <a href="test__System_8cpp_source.html#l00018">test_System.cpp:18</a></div></div>
+<div class="ttc" id="aclassTestSystem_html"><div class="ttname"><a href="classTestSystem.html">TestSystem</a></div><div class="ttdef"><b>Definition</b> <a href="test__Container_8cpp_source.html#l00008">test_Container.cpp:9</a></div></div>
+<div class="ttc" id="aclassTestSystem_html_a008bde3c9b79bc1c9f5df07133761cdf"><div class="ttname"><a href="classTestSystem.html#a008bde3c9b79bc1c9f5df07133761cdf">TestSystem::TestSystem</a></div><div class="ttdeci">TestSystem(std::string handle)</div><div class="ttdef"><b>Definition</b> <a href="test__System_8cpp_source.html#l00012">test_System.cpp:12</a></div></div>
+<div class="ttc" id="aclassTestSystem_html_a6736bfe38a42761e6cd95f8697e85418"><div class="ttname"><a href="classTestSystem.html#a6736bfe38a42761e6cd95f8697e85418">TestSystem::TestSystem</a></div><div class="ttdeci">TestSystem()</div><div class="ttdef"><b>Definition</b> <a href="test__System_8cpp_source.html#l00007">test_System.cpp:7</a></div></div>
+<div class="ttc" id="aclassTestSystem_html_ac9b35dcffc7f5bd74da3f34a26005b59"><div class="ttname"><a href="classTestSystem.html#ac9b35dcffc7f5bd74da3f34a26005b59">TestSystem::Export</a></div><div class="ttdeci">nlohmann::json Export() const</div><div class="ttdef"><b>Definition</b> <a href="test__System_8cpp_source.html#l00017">test_System.cpp:17</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html"><div class="ttname"><a href="classecs_1_1System.html">ecs::System</a></div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00043">System.hpp:44</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a14166f497f9df0f23978f42c3ce57b87"><div class="ttname"><a href="classecs_1_1System.html#a14166f497f9df0f23978f42c3ce57b87">ecs::System::MessagesWaiting</a></div><div class="ttdeci">const size_t MessagesWaiting()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00047">System.cpp:47</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a3397257c366a3229ed43a4d34d66af17"><div class="ttname"><a href="classecs_1_1System.html#a3397257c366a3229ed43a4d34d66af17">ecs::System::DeltaTimeGet</a></div><div class="ttdeci">const uint32_t DeltaTimeGet()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00052">System.cpp:52</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a4255ae181870f88cc73fae39991d8be5"><div class="ttname"><a href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">ecs::System::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00052">System.hpp:52</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_aa0938b4bb3a266191a6074ae35375dee"><div class="ttname"><a href="classecs_1_1System.html#aa0938b4bb3a266191a6074ae35375dee">ecs::System::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(nlohmann::json)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00042">System.cpp:42</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a3ed351192c824237e9b277b36be5171d"><div class="ttname"><a href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">ecs::System::DeltaTimeGet</a></div><div class="ttdeci">uint32_t DeltaTimeGet()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00052">System.cpp:52</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a4255ae181870f88cc73fae39991d8be5"><div class="ttname"><a href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">ecs::System::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00053">System.hpp:53</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_adbc9839d08a6ea3059a24a748e6dea00"><div class="ttname"><a href="classecs_1_1System.html#adbc9839d08a6ea3059a24a748e6dea00">ecs::System::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00042">System.cpp:42</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_ae5a9adaed132a1265bd68cea438ba569"><div class="ttname"><a href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">ecs::System::MessagesWaiting</a></div><div class="ttdeci">size_t MessagesWaiting()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00047">System.cpp:47</a></div></div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html"><div class="ttname"><a href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a></div><div class="ttdoc">a class to store JSON values</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l17281">json.hpp:17282</a></div></div>
 <div class="ttc" id="aecs_8hpp_html"><div class="ttname"><a href="ecs_8hpp.html">ecs.hpp</a></div></div>
-<div class="ttc" id="atest__System_8cpp_html_aeb38356af19bafdbb8489d986d275a55"><div class="ttname"><a href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a></div><div class="ttdeci">TEST_CASE(&quot;System is initialized with a valid handle&quot;, &quot;[System]&quot;)</div><div class="ttdef"><b>Definition</b> <a href="test__System_8cpp_source.html#l00026">test_System.cpp:26</a></div></div>
+<div class="ttc" id="atest__System_8cpp_html_aeb38356af19bafdbb8489d986d275a55"><div class="ttname"><a href="test__System_8cpp.html#aeb38356af19bafdbb8489d986d275a55">TEST_CASE</a></div><div class="ttdeci">TEST_CASE(&quot;System is initialized with a valid handle&quot;, &quot;[System]&quot;)</div><div class="ttdef"><b>Definition</b> <a href="test__System_8cpp_source.html#l00025">test_System.cpp:25</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 11 2026 20:19:14 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Mar 21 2026 19:50:15 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
