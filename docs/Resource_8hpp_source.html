@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;0.4.1</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -84,25 +84,24 @@ $(document).ready(function() { init_codefold(0); });
 <a href="Resource_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceecs.html">ecs</a></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span>{</div>
-<div class="foldopen" id="foldopen00007" data-start="{" data-end="};">
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="structecs_1_1Resource.html">    7</a></span>    <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structecs_1_1Resource.html">Resource</a></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>    {</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="structecs_1_1Resource.html#a30c82cb7caf600e099ca684cb53ef543">    9</a></span>        <span class="keywordtype">char</span> *<a class="code hl_variable" href="structecs_1_1Resource.html#a30c82cb7caf600e099ca684cb53ef543">ptr</a>;</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="structecs_1_1Resource.html#abac8a28d80a3bb0f18b681e57dfff479">   10</a></span>        uint64_t <a class="code hl_variable" href="structecs_1_1Resource.html#abac8a28d80a3bb0f18b681e57dfff479">size</a> = 0;</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="namespaceecs.html#a797846e22b82e52034fdb6c9524908aa">   11</a></span>    } Resource;</div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceecs.html">ecs</a></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>{</div>
+<div class="foldopen" id="foldopen00008" data-start="{" data-end="};">
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="structecs_1_1Resource.html">    8</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structecs_1_1Resource.html">Resource</a></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    {</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="structecs_1_1Resource.html#a866988851cc52ba8e52e8afdd0396577">   10</a></span>        std::vector&lt;uint8_t&gt; <a class="code hl_variable" href="structecs_1_1Resource.html#a866988851cc52ba8e52e8afdd0396577">Data</a>;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    };</div>
 </div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>}</div>
 <div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00007">Component.hpp:8</a></div></div>
-<div class="ttc" id="astructecs_1_1Resource_html"><div class="ttname"><a href="structecs_1_1Resource.html">ecs::Resource</a></div><div class="ttdef"><b>Definition</b> <a href="Resource_8hpp_source.html#l00007">Resource.hpp:8</a></div></div>
-<div class="ttc" id="astructecs_1_1Resource_html_a30c82cb7caf600e099ca684cb53ef543"><div class="ttname"><a href="structecs_1_1Resource.html#a30c82cb7caf600e099ca684cb53ef543">ecs::Resource::ptr</a></div><div class="ttdeci">char * ptr</div><div class="ttdef"><b>Definition</b> <a href="Resource_8hpp_source.html#l00009">Resource.hpp:9</a></div></div>
-<div class="ttc" id="astructecs_1_1Resource_html_abac8a28d80a3bb0f18b681e57dfff479"><div class="ttname"><a href="structecs_1_1Resource.html#abac8a28d80a3bb0f18b681e57dfff479">ecs::Resource::size</a></div><div class="ttdeci">uint64_t size</div><div class="ttdef"><b>Definition</b> <a href="Resource_8hpp_source.html#l00010">Resource.hpp:10</a></div></div>
+<div class="ttc" id="astructecs_1_1Resource_html"><div class="ttname"><a href="structecs_1_1Resource.html">ecs::Resource</a></div><div class="ttdef"><b>Definition</b> <a href="Resource_8hpp_source.html#l00008">Resource.hpp:9</a></div></div>
+<div class="ttc" id="astructecs_1_1Resource_html_a866988851cc52ba8e52e8afdd0396577"><div class="ttname"><a href="structecs_1_1Resource.html#a866988851cc52ba8e52e8afdd0396577">ecs::Resource::Data</a></div><div class="ttdeci">std::vector&lt; uint8_t &gt; Data</div><div class="ttdef"><b>Definition</b> <a href="Resource_8hpp_source.html#l00010">Resource.hpp:10</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 11 2026 20:19:14 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Mar 21 2026 19:50:15 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

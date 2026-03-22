@@ -1,6 +1,7 @@
 <map id="TestSystem" name="TestSystem">
 <area shape="rect" id="Node000001" title=" " alt="" coords="7,79,105,104"/>
 <area shape="rect" id="Node000002" href="$classecs_1_1System.html" title=" " alt="" coords="5,5,107,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="50,44,52,78,46,79,45,45"/>
-<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="67,45,66,79,60,78,62,44"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="41,44,41,62,45,78,40,79,36,63,36,44"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="59,44,59,79,53,79,53,44"/>
+<area shape="poly" id="edge3_Node000001_Node000002" title=" " alt="" coords="76,44,76,63,72,79,67,78,71,62,71,44"/>
 </map>
