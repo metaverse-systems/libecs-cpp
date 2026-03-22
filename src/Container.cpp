@@ -62,6 +62,7 @@ namespace ecs
         system->Components = &(this->Components);
         auto handle = system->Handle;
         this->Systems[handle] = std::move(system);
+        this->system_order_.push_back(handle);
         return this->Systems[handle].get();
     }
 
@@ -93,12 +94,14 @@ namespace ecs
 
     void Container::SystemsInitialize()
     {
-        for(auto &[handle, system] : this->Systems)
+        for(const auto &handle : this->system_order_)
         {
             if(this->disabledSystems.contains(handle)) continue;
+            auto it = this->Systems.find(handle);
+            if(it == this->Systems.end()) continue;
             try
             {
-                system->Initialize();
+                it->second->Initialize();
             }
             catch(const std::exception &e)
             {
@@ -130,13 +133,15 @@ namespace ecs
 
     void Container::Update()
     {
-        for(auto &[handle, system] : this->Systems)
+        for(const auto &handle : this->system_order_)
         {
             if(this->disabledSystems.contains(handle)) continue;
+            auto it = this->Systems.find(handle);
+            if(it == this->Systems.end()) continue;
             try
             {
-                if(system->Timing.ShouldUpdate())
-                    system->UpdateSystem();
+                if(it->second->Timing.ShouldUpdate())
+                    it->second->UpdateSystem();
             }
             catch(const std::exception &e)
             {
