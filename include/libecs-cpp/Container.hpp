@@ -7,6 +7,7 @@
 #include <thread>
 #include <memory>
 #include <iostream>
+#include <functional>
 #include <libecs-cpp/json.hpp>
 #include <libecs-cpp/Resource.hpp>
 #include <libecs-cpp/Component.hpp>
@@ -45,8 +46,11 @@ namespace ecs
         ecs::TypeEntityComponentList Components;
         ecs::Uuid UuidGet();
         std::unordered_map<std::string, std::unique_ptr<ecs::System>> Systems;
+        void Log(const std::string &message, const std::string &level = "info");
+        void LoggerSet(std::function<void(const std::string &, const std::string &)> fn);
         
       private:
+        std::function<void(const std::string &, const std::string &)> logger;
         std::vector<std::string> system_order_;
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleepInterval = 1000000 / 30;

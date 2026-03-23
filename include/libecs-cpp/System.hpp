@@ -60,6 +60,7 @@ namespace ecs
         uint32_t DeltaTimeGet();
         void TimerClear(const std::string &name);
         void TimerAdd(Timer timer);
+        void Log(const std::string &message, const std::string &level);
       protected:
         std::queue<nlohmann::json> messages;
         std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();

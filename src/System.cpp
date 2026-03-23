@@ -87,4 +87,9 @@ namespace ecs
     {
         this->timers.push_back(timer);
     }
+
+    void System::Log(const std::string &message, const std::string &level)
+    {
+        this->Container->Log("[" + this->Handle + "] " + message, level);
+    }
 }

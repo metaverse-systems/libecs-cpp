@@ -5,16 +5,36 @@
 #include <chrono>
 #include <iostream>
 
+auto loggerFunction = [](const std::string &message, const std::string &level) {
+    if(level == "error")
+    {
+        std::cerr << "\033[91m[" << level << "]\033[0m " << message << std::endl;
+        return;
+    }
+    if(level == "warning")
+    {
+        std::cerr << "\033[93m[" << level << "]\033[0m " << message << std::endl;
+        return;
+    }
+    if(level == "debug")
+    {
+        std::cout << "\033[97m[" << level << "]\033[0m " << message << std::endl;
+        return;
+    }
+    std::cout << "\033[92m[" << level << "]\033[0m " << message << std::endl;
+};
 namespace ecs
 {
     Container::Container(ecs::Manager *manager):
         Manager(manager), Handle(ecs::Uuid().Get())
     {
+        this->logger = loggerFunction;
     }
 
     Container::Container(ecs::Manager *manager, const std::string &handle):
         Manager(manager), Handle(handle)
     {
+        this->logger = loggerFunction;
     }
 
     Container::~Container()
@@ -105,16 +125,12 @@ namespace ecs
             }
             catch(const std::exception &e)
             {
-                std::cerr << "ecs::Container(\"" << this->Handle
-                          << "\")::SystemsInitialize(): System \"" << handle
-                          << "\" threw during Initialize(): " << e.what() << std::endl;
+                this->Log("[" + handle + "] threw during Initialize(): " + e.what(), "error");
                 this->disabledSystems.insert(handle);
             }
             catch(...)
             {
-                std::cerr << "ecs::Container(\"" << this->Handle
-                          << "\")::SystemsInitialize(): System \"" << handle
-                          << "\" threw unknown exception during Initialize()" << std::endl;
+                this->Log("[" + handle + "] threw unknown exception during Initialize()", "error");
                 this->disabledSystems.insert(handle);
             }
         }
@@ -145,16 +161,12 @@ namespace ecs
             }
             catch(const std::exception &e)
             {
-                std::cerr << "ecs::Container(\"" << this->Handle
-                          << "\")::Update(): System \"" << handle
-                          << "\" threw during Update(): " << e.what() << std::endl;
+                this->Log("[" + handle + "] threw during Update(): " + e.what(), "error");
                 this->disabledSystems.insert(handle);
             }
             catch(...)
             {
-                std::cerr << "ecs::Container(\"" << this->Handle
-                          << "\")::Update(): System \"" << handle
-                          << "\" threw unknown exception during Update()" << std::endl;
+                this->Log("[" + handle + "] threw unknown exception during Update()", "error");
                 this->disabledSystems.insert(handle);
             }
         }
@@ -217,5 +229,18 @@ namespace ecs
     ecs::Uuid Container::UuidGet()
     {
         return ecs::Uuid();
+    }
+
+    void Container::Log(const std::string &message, const std::string &level)
+    {
+        if(this->logger)
+        {
+            this->logger(message, level);
+        }
+    }
+
+    void Container::LoggerSet(std::function<void(const std::string &, const std::string &)> fn)
+    {
+        this->logger = std::move(fn);
     }
 }
