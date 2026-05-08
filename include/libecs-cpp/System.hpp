@@ -67,5 +67,6 @@ namespace ecs
         std::unordered_map<std::string, std::vector<std::string>> componentsToDelete;
         void componentsClear();
         std::vector<ecs::Timer> timers;
+        std::vector<std::pair<std::string, std::string>> bufferedLogMessages;
     };
 }
