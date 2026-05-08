@@ -90,6 +90,18 @@ namespace ecs
 
     void System::Log(const std::string &message, const std::string &level)
     {
+        if (!this->Container)
+        {
+            this->bufferedLogMessages.emplace_back(message, level);
+            return;
+        }
+
+        for(const auto &[msg, lvl] : this->bufferedLogMessages)
+        {
+            this->Container->Log("[" + this->Handle + "] " + msg, lvl);
+        }
+        this->bufferedLogMessages.clear();
+        
         this->Container->Log("[" + this->Handle + "] " + message, level);
     }
 }
