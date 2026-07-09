@@ -157,9 +157,10 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#a7c34dacac7e95f6d95aa3461341ea34e">   67</a></span>        std::unordered_map&lt;std::string, std::vector&lt;std::string&gt;&gt; <a class="code hl_variable" href="classecs_1_1System.html#a7c34dacac7e95f6d95aa3461341ea34e">componentsToDelete</a>;</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#ad1e6d63176dc8d66823a617edcde01ba">componentsClear</a>();</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#aab2df444b7cd664e5737d9ae16534989">   69</a></span>        std::vector&lt;ecs::Timer&gt; <a class="code hl_variable" href="classecs_1_1System.html#aab2df444b7cd664e5737d9ae16534989">timers</a>;</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    };</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="classecs_1_1System.html#a9ac1d05f24a7b8c7e0e1d0fd65a5afa0">   70</a></span>        std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; <a class="code hl_variable" href="classecs_1_1System.html#a9ac1d05f24a7b8c7e0e1d0fd65a5afa0">bufferedLogMessages</a>;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    };</div>
 </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>}</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>}</div>
 <div class="ttc" id="aTiming_8hpp_html"><div class="ttname"><a href="Timing_8hpp.html">Timing.hpp</a></div></div>
 <div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00022">Container.hpp:23</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html"><div class="ttname"><a href="classecs_1_1System.html">ecs::System</a></div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00043">System.hpp:44</a></div></div>
@@ -172,6 +173,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassecs_1_1System_html_a813b866fec507d824409bc0c0cb667e6"><div class="ttname"><a href="classecs_1_1System.html#a813b866fec507d824409bc0c0cb667e6">ecs::System::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList * Components</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00057">System.hpp:57</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a971a64b959c20f6231af39e9518195bb"><div class="ttname"><a href="classecs_1_1System.html#a971a64b959c20f6231af39e9518195bb">ecs::System::UpdateSystem</a></div><div class="ttdeci">void UpdateSystem()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00020">System.cpp:20</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a9a07420a3b75f90051f4635cc0fad529"><div class="ttname"><a href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">ecs::System::Export</a></div><div class="ttdeci">virtual nlohmann::json Export() const =0</div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a9ac1d05f24a7b8c7e0e1d0fd65a5afa0"><div class="ttname"><a href="classecs_1_1System.html#a9ac1d05f24a7b8c7e0e1d0fd65a5afa0">ecs::System::bufferedLogMessages</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt; bufferedLogMessages</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00070">System.hpp:70</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a9df065d4fd246f5631bf532312ba76e2"><div class="ttname"><a href="classecs_1_1System.html#a9df065d4fd246f5631bf532312ba76e2">ecs::System::lastTime</a></div><div class="ttdeci">std::chrono::steady_clock::time_point lastTime</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00066">System.hpp:66</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_aa013125444120fab5516fe5e85e3c096"><div class="ttname"><a href="classecs_1_1System.html#aa013125444120fab5516fe5e85e3c096">ecs::System::TimerClear</a></div><div class="ttdeci">void TimerClear(const std::string &amp;name)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00078">System.cpp:78</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_aab2df444b7cd664e5737d9ae16534989"><div class="ttname"><a href="classecs_1_1System.html#aab2df444b7cd664e5737d9ae16534989">ecs::System::timers</a></div><div class="ttdeci">std::vector&lt; ecs::Timer &gt; timers</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00069">System.hpp:69</a></div></div>
@@ -200,7 +202,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Mar 23 2026 20:46:32 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri May 8 2026 20:19:40 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
