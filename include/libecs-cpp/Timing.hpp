@@ -1,9 +1,14 @@
 #pragma once
 
 #include <chrono>
+#include <algorithm>
 
-namespace ecs 
+namespace ecs
 {
+    // Maximum number of intervals to catch up after a stall.
+    // Beyond this, snap forward to avoid burst execution.
+    constexpr uint32_t MAX_CATCHUP = 2;
+
     class Timing
     {
       public:
@@ -13,10 +18,27 @@ namespace ecs
 
         bool ShouldUpdate()
         {
+            // Frequency 0 means "always fire" (test fixture path).
+            if (this->updateFrequency == 0)
+                return true;
+
             uint64_t current_time = getCurrentMicroseconds();
-            if(current_time - this->lastUpdateTime >= this->updateFrequency)
+            uint64_t elapsed = current_time - this->lastUpdateTime;
+
+            if (elapsed >= this->updateFrequency)
             {
-                this->lastUpdateTime = current_time;
+                // Remainder-carry: advance by the largest multiple of
+                // updateFrequency that fits, so the average rate is exact
+                // and drift-free under jittered sampling.
+                uint64_t intervals = elapsed / this->updateFrequency;
+
+                // MAX_CATCHUP clamp: if stalled for too long, snap forward
+                // instead of catching up (prevents burst after suspend/GC).
+                if (intervals > MAX_CATCHUP)
+                    this->lastUpdateTime = current_time;
+                else
+                    this->lastUpdateTime += intervals * this->updateFrequency;
+
                 return true;
             }
             return false;

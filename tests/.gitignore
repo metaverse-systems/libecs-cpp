@@ -4,3 +4,4 @@ test_Entity
 test_Container
 bench_entity_creation
 bench_uuid_comparison
+test_Timing
