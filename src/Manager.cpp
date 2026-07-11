@@ -10,7 +10,7 @@ namespace ecs
 
     Manager::~Manager()
     {
-        this->running = false;
+        this->Shutdown();
     }
 
     ecs::Container *Manager::Container(const std::string &handle)
