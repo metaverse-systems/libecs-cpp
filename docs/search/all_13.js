@@ -20,7 +20,7 @@ var searchData=
   ['setfrequency_17',['SetFrequency',['../classecs_1_1Timing.html#a29f8f3635d3868cde9af2343ff01a04f',1,'ecs::Timing']]],
   ['setup_18',['Build environment setup',['../index.html#autotoc_md1',1,'']]],
   ['shouldupdate_19',['ShouldUpdate',['../classecs_1_1Timing.html#a2e79ef06cf5ce82f9dedf40891b45934',1,'ecs::Timing']]],
-  ['shutdown_20',['Shutdown',['../classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a',1,'ecs::Manager']]],
+  ['shutdown_20',['shutdown',['../classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a',1,'ecs::Manager::Shutdown()'],['../classecs_1_1System.html#ad1a106d9cef7169e7a69a1e6efa2b0ea',1,'ecs::System::Shutdown()']]],
   ['size_21',['size',['../structnlohmann_1_1detail_1_1integer__sequence.html#a6024bae596d01193397a7396af3aa19a',1,'nlohmann::detail::integer_sequence::size()'],['../classnlohmann_1_1basic__json.html#a33c7c8638bb0b12e6d1b69d8106dd2e0',1,'nlohmann::basic_json::size()']]],
   ['size_5ftype_22',['size_type',['../structnlohmann_1_1ordered__map.html#ab5044ef3fc07cf7aee67241c4d10ce9d',1,'nlohmann::ordered_map::size_type'],['../classnlohmann_1_1basic__json.html#a3ada29bca70b4965f6fd37ec1c8f85f7',1,'nlohmann::basic_json::size_type']]],
   ['skip_5fbom_23',['skip_bom',['../classnlohmann_1_1detail_1_1lexer.html#a7cd7d55de2cd398660bc243c7229caf9',1,'nlohmann::detail::lexer']]],
