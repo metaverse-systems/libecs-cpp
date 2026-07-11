@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.1.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.1.1</span>
    </div>
   </td>
  </tr>
@@ -121,6 +121,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab0403893171d14f657280d98f283b803"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fb9378c11ac55f929249d52a0fdd066" id="r_a7fb9378c11ac55f929249d52a0fdd066"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html#a7fb9378c11ac55f929249d52a0fdd066">EntityDestroy</a> (const std::string &amp;handle)</td></tr>
 <tr class="separator:a7fb9378c11ac55f929249d52a0fdd066"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ef87273b785d954b705bbf997bba18d" id="r_a1ef87273b785d954b705bbf997bba18d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html#a1ef87273b785d954b705bbf997bba18d">SystemDestroy</a> (const std::string &amp;handle)</td></tr>
+<tr class="separator:a1ef87273b785d954b705bbf997bba18d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1e7fc66c9e6863b51b4252bbc967077" id="r_ad1e7fc66c9e6863b51b4252bbc967077"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacenlohmann.html#a2bfd99e845a2e5cd90aeaf1b1431f474">nlohmann::json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html#ad1e7fc66c9e6863b51b4252bbc967077">Export</a> () const</td></tr>
 <tr class="separator:ad1e7fc66c9e6863b51b4252bbc967077"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5864d8fa020129153b2037d68c577073" id="r_a5864d8fa020129153b2037d68c577073"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">Update</a> ()</td></tr>
@@ -164,8 +166,8 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a838fc3fdee69e4035660c02c43cd4349" id="r_a838fc3fdee69e4035660c02c43cd4349"><td class="memItemLeft" align="right" valign="top">std::function&lt; void(const std::string &amp;, const std::string &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">logger</a></td></tr>
 <tr class="separator:a838fc3fdee69e4035660c02c43cd4349"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31d18970dcc5b2034015c563a191ebb8" id="r_a31d18970dcc5b2034015c563a191ebb8"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html#a31d18970dcc5b2034015c563a191ebb8">system_order_</a></td></tr>
-<tr class="separator:a31d18970dcc5b2034015c563a191ebb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa274b0e6d59b9d654da1e057580e2cc7" id="r_aa274b0e6d59b9d654da1e057580e2cc7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html#aa274b0e6d59b9d654da1e057580e2cc7">system_order</a></td></tr>
+<tr class="separator:aa274b0e6d59b9d654da1e057580e2cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cbfbdfeb4b0054e8573758be916001b" id="r_a6cbfbdfeb4b0054e8573758be916001b"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html#a6cbfbdfeb4b0054e8573758be916001b">sleepInterval</a> = 1000000 / 30</td></tr>
 <tr class="separator:a6cbfbdfeb4b0054e8573758be916001b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53e7bf491a97a1dd1deda5dcf4de7fe6" id="r_a53e7bf491a97a1dd1deda5dcf4de7fe6"><td class="memItemLeft" align="right" valign="top">std::jthread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html#a53e7bf491a97a1dd1deda5dcf4de7fe6">containerThread</a></td></tr>
@@ -202,12 +204,12 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   31</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">logger</a> = <a class="code hl_variable" href="Container_8cpp.html#a9323b43fc30d5dfd704846c67a38ebae">loggerFunction</a>;</div>
 <div class="line"><span class="lineno">   32</span>    }</div>
 <div class="ttc" id="aContainer_8cpp_html_a9323b43fc30d5dfd704846c67a38ebae"><div class="ttname"><a href="Container_8cpp.html#a9323b43fc30d5dfd704846c67a38ebae">loggerFunction</a></div><div class="ttdeci">auto loggerFunction</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00008">Container.cpp:8</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a6f4a6fe2647a8bb067402a7827f59e1c"><div class="ttname"><a href="classecs_1_1Container.html#a6f4a6fe2647a8bb067402a7827f59e1c">ecs::Container::Manager</a></div><div class="ttdeci">ecs::Manager * Manager</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00044">Container.hpp:44</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a838fc3fdee69e4035660c02c43cd4349"><div class="ttname"><a href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">ecs::Container::logger</a></div><div class="ttdeci">std::function&lt; void(const std::string &amp;, const std::string &amp;)&gt; logger</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00053">Container.hpp:53</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_aa4449c537d73fb29c969c7d2aceb58f1"><div class="ttname"><a href="classecs_1_1Container.html#aa4449c537d73fb29c969c7d2aceb58f1">ecs::Container::Handle</a></div><div class="ttdeci">const std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00045">Container.hpp:45</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a6f4a6fe2647a8bb067402a7827f59e1c"><div class="ttname"><a href="classecs_1_1Container.html#a6f4a6fe2647a8bb067402a7827f59e1c">ecs::Container::Manager</a></div><div class="ttdeci">ecs::Manager * Manager</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00045">Container.hpp:45</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a838fc3fdee69e4035660c02c43cd4349"><div class="ttname"><a href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">ecs::Container::logger</a></div><div class="ttdeci">std::function&lt; void(const std::string &amp;, const std::string &amp;)&gt; logger</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00054">Container.hpp:54</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aa4449c537d73fb29c969c7d2aceb58f1"><div class="ttname"><a href="classecs_1_1Container.html#aa4449c537d73fb29c969c7d2aceb58f1">ecs::Container::Handle</a></div><div class="ttdeci">const std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00046">Container.hpp:46</a></div></div>
 <div class="ttc" id="aclassecs_1_1Uuid_html"><div class="ttname"><a href="classecs_1_1Uuid.html">ecs::Uuid</a></div><div class="ttdef"><b>Definition</b> <a href="Uuid_8hpp_source.html#l00008">Uuid.hpp:9</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00053">logger</a>, and <a class="el" href="Container_8cpp_source.html#l00008">loggerFunction</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00054">logger</a>, and <a class="el" href="Container_8cpp_source.html#l00008">loggerFunction</a>.</p>
 
 </div>
 </div>
@@ -244,7 +246,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   37</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">logger</a> = <a class="code hl_variable" href="Container_8cpp.html#a9323b43fc30d5dfd704846c67a38ebae">loggerFunction</a>;</div>
 <div class="line"><span class="lineno">   38</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00053">logger</a>, and <a class="el" href="Container_8cpp_source.html#l00008">loggerFunction</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00054">logger</a>, and <a class="el" href="Container_8cpp_source.html#l00008">loggerFunction</a>.</p>
 
 </div>
 </div>
@@ -271,9 +273,9 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   45</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a53e7bf491a97a1dd1deda5dcf4de7fe6">containerThread</a>.join();</div>
 <div class="line"><span class="lineno">   46</span>        }</div>
 <div class="line"><span class="lineno">   47</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a53e7bf491a97a1dd1deda5dcf4de7fe6"><div class="ttname"><a href="classecs_1_1Container.html#a53e7bf491a97a1dd1deda5dcf4de7fe6">ecs::Container::containerThread</a></div><div class="ttdeci">std::jthread containerThread</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00058">Container.hpp:58</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a53e7bf491a97a1dd1deda5dcf4de7fe6"><div class="ttname"><a href="classecs_1_1Container.html#a53e7bf491a97a1dd1deda5dcf4de7fe6">ecs::Container::containerThread</a></div><div class="ttdeci">std::jthread containerThread</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00059">Container.hpp:59</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00058">containerThread</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00059">containerThread</a>.</p>
 
 </div>
 </div>
@@ -299,9 +301,9 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   91</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">Components</a>[c-&gt;Type][c-&gt;EntityHandle] = c; </div>
 <div class="line"><span class="lineno">   92</span>        <span class="keywordflow">return</span> c;</div>
 <div class="line"><span class="lineno">   93</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a6636742fd18a1acc8cfd040a2e9f73a7"><div class="ttname"><a href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">ecs::Container::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList Components</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00046">Container.hpp:46</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a6636742fd18a1acc8cfd040a2e9f73a7"><div class="ttname"><a href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">ecs::Container::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList Components</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00047">Container.hpp:47</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00046">Components</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00047">Components</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Entity_8cpp_source.html#l00034">ecs::Entity::Component()</a>.</p>
 
@@ -339,7 +341,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">  226</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">Components</a>[type].erase(entity);</div>
 <div class="line"><span class="lineno">  227</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00046">Components</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00047">Components</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Entity_8cpp_source.html#l00042">ecs::Entity::ComponentDestroy()</a>.</p>
 
@@ -430,9 +432,9 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">  111</span> </div>
 <div class="line"><span class="lineno">  112</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a4520c7b8e15fb0c54d578d98be36d7df">Entities</a>[handle].get();</div>
 <div class="line"><span class="lineno">  113</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a4520c7b8e15fb0c54d578d98be36d7df"><div class="ttname"><a href="classecs_1_1Container.html#a4520c7b8e15fb0c54d578d98be36d7df">ecs::Container::Entities</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::unique_ptr&lt; ecs::Entity &gt; &gt; Entities</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00043">Container.hpp:43</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a4520c7b8e15fb0c54d578d98be36d7df"><div class="ttname"><a href="classecs_1_1Container.html#a4520c7b8e15fb0c54d578d98be36d7df">ecs::Container::Entities</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::unique_ptr&lt; ecs::Entity &gt; &gt; Entities</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00044">Container.hpp:44</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00043">Entities</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00044">Entities</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00100">Entity()</a>, and <a class="el" href="Container_8cpp_source.html#l00095">Entity()</a>.</p>
 
@@ -465,7 +467,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">  196</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a4520c7b8e15fb0c54d578d98be36d7df">Entities</a>.erase(handle);</div>
 <div class="line"><span class="lineno">  197</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00046">Components</a>, and <a class="el" href="Container_8hpp_source.html#l00043">Entities</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00047">Components</a>, and <a class="el" href="Container_8hpp_source.html#l00044">Entities</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Entity_8cpp_source.html#l00047">ecs::Entity::Destroy()</a>.</p>
 
@@ -504,10 +506,10 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   75</span> </div>
 <div class="line"><span class="lineno">   76</span>        <span class="keywordflow">return</span> config;</div>
 <div class="line"><span class="lineno">   77</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a257c63a8a2fcef68ffcc7d938910b486"><div class="ttname"><a href="classecs_1_1Container.html#a257c63a8a2fcef68ffcc7d938910b486">ecs::Container::Systems</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::unique_ptr&lt; ecs::System &gt; &gt; Systems</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00048">Container.hpp:48</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a257c63a8a2fcef68ffcc7d938910b486"><div class="ttname"><a href="classecs_1_1Container.html#a257c63a8a2fcef68ffcc7d938910b486">ecs::Container::Systems</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::unique_ptr&lt; ecs::System &gt; &gt; Systems</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00049">Container.hpp:49</a></div></div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html"><div class="ttname"><a href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a></div><div class="ttdoc">a class to store JSON values</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l17281">json.hpp:17282</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00043">Entities</a>, <a class="el" href="Container_8hpp_source.html#l00045">Handle</a>, and <a class="el" href="Container_8hpp_source.html#l00048">Systems</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00044">Entities</a>, <a class="el" href="Container_8hpp_source.html#l00046">Handle</a>, and <a class="el" href="Container_8hpp_source.html#l00049">Systems</a>.</p>
 
 </div>
 </div>
@@ -537,15 +539,15 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8cpp_source.html#l00234">234</a> of file <a class="el" href="Container_8cpp_source.html">Container.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  235</span>    {</div>
-<div class="line"><span class="lineno">  236</span>        <span class="keywordflow">if</span>(this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">logger</a>)</div>
-<div class="line"><span class="lineno">  237</span>        {</div>
-<div class="line"><span class="lineno">  238</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">logger</a>(message, level);</div>
-<div class="line"><span class="lineno">  239</span>        }</div>
-<div class="line"><span class="lineno">  240</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Container_8cpp_source.html#l00247">247</a> of file <a class="el" href="Container_8cpp_source.html">Container.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  248</span>    {</div>
+<div class="line"><span class="lineno">  249</span>        <span class="keywordflow">if</span>(this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">logger</a>)</div>
+<div class="line"><span class="lineno">  250</span>        {</div>
+<div class="line"><span class="lineno">  251</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">logger</a>(message, level);</div>
+<div class="line"><span class="lineno">  252</span>        }</div>
+<div class="line"><span class="lineno">  253</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00053">logger</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00054">logger</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="System_8cpp_source.html#l00089">ecs::System::Log()</a>, <a class="el" href="Container_8cpp_source.html#l00115">SystemsInitialize()</a>, and <a class="el" href="Container_8cpp_source.html#l00150">Update()</a>.</p>
 
@@ -567,12 +569,12 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8cpp_source.html#l00242">242</a> of file <a class="el" href="Container_8cpp_source.html">Container.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  243</span>    {</div>
-<div class="line"><span class="lineno">  244</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">logger</a> = std::move(fn);</div>
-<div class="line"><span class="lineno">  245</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Container_8cpp_source.html#l00255">255</a> of file <a class="el" href="Container_8cpp_source.html">Container.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  256</span>    {</div>
+<div class="line"><span class="lineno">  257</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a838fc3fdee69e4035660c02c43cd4349">logger</a> = std::move(fn);</div>
+<div class="line"><span class="lineno">  258</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00053">logger</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00054">logger</a>.</p>
 
 </div>
 </div>
@@ -606,7 +608,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">  186</span>    }</div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html_af1650e004db368459b3c0db041b32adc"><div class="ttname"><a href="classnlohmann_1_1basic__json.html#af1650e004db368459b3c0db041b32adc">nlohmann::basic_json::get</a></div><div class="ttdeci">auto get() const noexcept(noexcept(std::declval&lt; const basic_json_t &amp; &gt;().template get_impl&lt; ValueType &gt;(detail::priority_tag&lt; 4 &gt; {}))) -&gt; decltype(std::declval&lt; const basic_json_t &amp; &gt;().template get_impl&lt; ValueType &gt;(detail::priority_tag&lt; 4 &gt; {}))</div><div class="ttdoc">get a (pointer) value (explicit)</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l18898">json.hpp:18898</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="json_8hpp_source.html#l18898">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;::get()</a>, and <a class="el" href="Container_8hpp_source.html#l00048">Systems</a>.</p>
+<p class="reference">References <a class="el" href="json_8hpp_source.html#l18898">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;::get()</a>, and <a class="el" href="Container_8hpp_source.html#l00049">Systems</a>.</p>
 
 </div>
 </div>
@@ -640,9 +642,9 @@ Private Attributes</h2></td></tr>
 <div class="fragment"><div class="line"><span class="lineno">  200</span>    {</div>
 <div class="line"><span class="lineno">  201</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#ad7de763451c141706efc6d639eba91dc">resources</a>[name] = std::make_shared&lt;ecs::Resource&gt;(r);</div>
 <div class="line"><span class="lineno">  202</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_ad7de763451c141706efc6d639eba91dc"><div class="ttname"><a href="classecs_1_1Container.html#ad7de763451c141706efc6d639eba91dc">ecs::Container::resources</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::shared_ptr&lt; ecs::Resource &gt; &gt; resources</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00063">Container.hpp:63</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_ad7de763451c141706efc6d639eba91dc"><div class="ttname"><a href="classecs_1_1Container.html#ad7de763451c141706efc6d639eba91dc">ecs::Container::resources</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::shared_ptr&lt; ecs::Resource &gt; &gt; resources</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00064">Container.hpp:64</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00063">resources</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00064">resources</a>.</p>
 
 </div>
 </div>
@@ -673,7 +675,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">  220</span>        <span class="keywordflow">return</span> *(this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#ad7de763451c141706efc6d639eba91dc">resources</a>[name]);</div>
 <div class="line"><span class="lineno">  221</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00063">resources</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00064">resources</a>.</p>
 
 </div>
 </div>
@@ -701,7 +703,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">  209</span>        }</div>
 <div class="line"><span class="lineno">  210</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00063">resources</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00064">resources</a>.</p>
 
 </div>
 </div>
@@ -726,7 +728,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   52</span>    }</div>
 <div class="ttc" id="aclassecs_1_1Container_html_ae0c5923988a1651f6ee855e939a3e024"><div class="ttname"><a href="classecs_1_1Container.html#ae0c5923988a1651f6ee855e939a3e024">ecs::Container::threadFunc</a></div><div class="ttdeci">void threadFunc(std::stop_token stopToken)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00139">Container.cpp:139</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00058">containerThread</a>, and <a class="el" href="Container_8cpp_source.html#l00139">threadFunc()</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00059">containerThread</a>, and <a class="el" href="Container_8cpp_source.html#l00139">threadFunc()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00054">Start()</a>.</p>
 
@@ -753,10 +755,10 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   56</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a6cbfbdfeb4b0054e8573758be916001b">sleepInterval</a> = interval;</div>
 <div class="line"><span class="lineno">   57</span>        this-&gt;<a class="code hl_function" href="classecs_1_1Container.html#abfb8bcfb8b652b6938ebe463cb646f0f">Start</a>();</div>
 <div class="line"><span class="lineno">   58</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a6cbfbdfeb4b0054e8573758be916001b"><div class="ttname"><a href="classecs_1_1Container.html#a6cbfbdfeb4b0054e8573758be916001b">ecs::Container::sleepInterval</a></div><div class="ttdeci">uint32_t sleepInterval</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00056">Container.hpp:56</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a6cbfbdfeb4b0054e8573758be916001b"><div class="ttname"><a href="classecs_1_1Container.html#a6cbfbdfeb4b0054e8573758be916001b">ecs::Container::sleepInterval</a></div><div class="ttdeci">uint32_t sleepInterval</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00057">Container.hpp:57</a></div></div>
 <div class="ttc" id="aclassecs_1_1Container_html_abfb8bcfb8b652b6938ebe463cb646f0f"><div class="ttname"><a href="classecs_1_1Container.html#abfb8bcfb8b652b6938ebe463cb646f0f">ecs::Container::Start</a></div><div class="ttdeci">void Start()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00049">Container.cpp:49</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00056">sleepInterval</a>, and <a class="el" href="Container_8cpp_source.html#l00049">Start()</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00057">sleepInterval</a>, and <a class="el" href="Container_8cpp_source.html#l00049">Start()</a>.</p>
 
 </div>
 </div>
@@ -782,14 +784,48 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   82</span>        system-&gt;Components = &amp;(this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">Components</a>);</div>
 <div class="line"><span class="lineno">   83</span>        <span class="keyword">auto</span> handle = system-&gt;Handle;</div>
 <div class="line"><span class="lineno">   84</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a257c63a8a2fcef68ffcc7d938910b486">Systems</a>[handle] = std::move(system);</div>
-<div class="line"><span class="lineno">   85</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a31d18970dcc5b2034015c563a191ebb8">system_order_</a>.push_back(handle);</div>
+<div class="line"><span class="lineno">   85</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#aa274b0e6d59b9d654da1e057580e2cc7">system_order</a>.push_back(handle);</div>
 <div class="line"><span class="lineno">   86</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a257c63a8a2fcef68ffcc7d938910b486">Systems</a>[handle].get();</div>
 <div class="line"><span class="lineno">   87</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a31d18970dcc5b2034015c563a191ebb8"><div class="ttname"><a href="classecs_1_1Container.html#a31d18970dcc5b2034015c563a191ebb8">ecs::Container::system_order_</a></div><div class="ttdeci">std::vector&lt; std::string &gt; system_order_</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00054">Container.hpp:54</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aa274b0e6d59b9d654da1e057580e2cc7"><div class="ttname"><a href="classecs_1_1Container.html#aa274b0e6d59b9d654da1e057580e2cc7">ecs::Container::system_order</a></div><div class="ttdeci">std::vector&lt; std::string &gt; system_order</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00055">Container.hpp:55</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00046">Components</a>, <a class="el" href="System_8hpp_source.html#l00055">ecs::System::Container</a>, <a class="el" href="Container_8hpp_source.html#l00054">system_order_</a>, and <a class="el" href="Container_8hpp_source.html#l00048">Systems</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00047">Components</a>, <a class="el" href="System_8hpp_source.html#l00055">ecs::System::Container</a>, <a class="el" href="Container_8hpp_source.html#l00055">system_order</a>, and <a class="el" href="Container_8hpp_source.html#l00049">Systems</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="test__Container_8cpp_source.html#l00074">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00177">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00044">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00164">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00125">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00139">TEST_CASE()</a>, and <a class="el" href="test__Container_8cpp_source.html#l00152">TEST_CASE()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="test__Container_8cpp_source.html#l00074">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00177">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00044">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00164">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00125">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00139">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00152">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00215">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00199">TEST_CASE()</a>, and <a class="el" href="test__Container_8cpp_source.html#l00256">TEST_CASE()</a>.</p>
+
+</div>
+</div>
+<a id="a1ef87273b785d954b705bbf997bba18d" name="a1ef87273b785d954b705bbf997bba18d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ef87273b785d954b705bbf997bba18d">&#9670;&#160;</a></span>SystemDestroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecs::Container::SystemDestroy </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>handle</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="Container_8cpp_source.html#l00229">229</a> of file <a class="el" href="Container_8cpp_source.html">Container.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  230</span>    {</div>
+<div class="line"><span class="lineno">  231</span>        <span class="keywordflow">if</span>(!this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a257c63a8a2fcef68ffcc7d938910b486">Systems</a>.contains(handle)) <span class="keywordflow">return</span>;</div>
+<div class="line"><span class="lineno">  232</span> </div>
+<div class="line"><span class="lineno">  233</span>        <span class="comment">// Remove from all three collections</span></div>
+<div class="line"><span class="lineno">  234</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a257c63a8a2fcef68ffcc7d938910b486">Systems</a>.erase(handle);</div>
+<div class="line"><span class="lineno">  235</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a03cbd768ef09aefd1eb335dd48965e11">disabledSystems</a>.erase(handle);</div>
+<div class="line"><span class="lineno">  236</span>        <span class="keyword">auto</span> it = std::find(this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#aa274b0e6d59b9d654da1e057580e2cc7">system_order</a>.begin(), this-&gt;system_order.end(), handle);</div>
+<div class="line"><span class="lineno">  237</span>        <span class="keywordflow">if</span>(it != this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#aa274b0e6d59b9d654da1e057580e2cc7">system_order</a>.end()) {</div>
+<div class="line"><span class="lineno">  238</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#aa274b0e6d59b9d654da1e057580e2cc7">system_order</a>.erase(it);</div>
+<div class="line"><span class="lineno">  239</span>        }</div>
+<div class="line"><span class="lineno">  240</span>    }</div>
+<div class="ttc" id="aclassecs_1_1Container_html_a03cbd768ef09aefd1eb335dd48965e11"><div class="ttname"><a href="classecs_1_1Container.html#a03cbd768ef09aefd1eb335dd48965e11">ecs::Container::disabledSystems</a></div><div class="ttdeci">std::unordered_set&lt; std::string &gt; disabledSystems</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00063">Container.hpp:63</a></div></div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00063">disabledSystems</a>, <a class="el" href="Container_8hpp_source.html#l00055">system_order</a>, and <a class="el" href="Container_8hpp_source.html#l00049">Systems</a>.</p>
 
 </div>
 </div>
@@ -810,7 +846,7 @@ Private Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="Container_8cpp_source.html#l00115">115</a> of file <a class="el" href="Container_8cpp_source.html">Container.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  116</span>    {</div>
-<div class="line"><span class="lineno">  117</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;handle : this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a31d18970dcc5b2034015c563a191ebb8">system_order_</a>)</div>
+<div class="line"><span class="lineno">  117</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;handle : this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#aa274b0e6d59b9d654da1e057580e2cc7">system_order</a>)</div>
 <div class="line"><span class="lineno">  118</span>        {</div>
 <div class="line"><span class="lineno">  119</span>            <span class="keywordflow">if</span>(this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a03cbd768ef09aefd1eb335dd48965e11">disabledSystems</a>.contains(handle)) <span class="keywordflow">continue</span>;</div>
 <div class="line"><span class="lineno">  120</span>            <span class="keyword">auto</span> it = this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a257c63a8a2fcef68ffcc7d938910b486">Systems</a>.find(handle);</div>
@@ -831,10 +867,9 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">  135</span>            }</div>
 <div class="line"><span class="lineno">  136</span>        }</div>
 <div class="line"><span class="lineno">  137</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a03cbd768ef09aefd1eb335dd48965e11"><div class="ttname"><a href="classecs_1_1Container.html#a03cbd768ef09aefd1eb335dd48965e11">ecs::Container::disabledSystems</a></div><div class="ttdeci">std::unordered_set&lt; std::string &gt; disabledSystems</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00062">Container.hpp:62</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_aa7061f5e141da1b29822967e2efd6267"><div class="ttname"><a href="classecs_1_1Container.html#aa7061f5e141da1b29822967e2efd6267">ecs::Container::Log</a></div><div class="ttdeci">void Log(const std::string &amp;message, const std::string &amp;level=&quot;info&quot;)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00234">Container.cpp:234</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aa7061f5e141da1b29822967e2efd6267"><div class="ttname"><a href="classecs_1_1Container.html#aa7061f5e141da1b29822967e2efd6267">ecs::Container::Log</a></div><div class="ttdeci">void Log(const std::string &amp;message, const std::string &amp;level=&quot;info&quot;)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00247">Container.cpp:247</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00062">disabledSystems</a>, <a class="el" href="Container_8cpp_source.html#l00234">Log()</a>, <a class="el" href="Container_8hpp_source.html#l00054">system_order_</a>, and <a class="el" href="Container_8hpp_source.html#l00048">Systems</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00063">disabledSystems</a>, <a class="el" href="Container_8cpp_source.html#l00247">Log()</a>, <a class="el" href="Container_8hpp_source.html#l00055">system_order</a>, and <a class="el" href="Container_8hpp_source.html#l00049">Systems</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00139">threadFunc()</a>.</p>
 
@@ -877,7 +912,7 @@ Private Attributes</h2></td></tr>
 <div class="ttc" id="aclassecs_1_1Container_html_a5864d8fa020129153b2037d68c577073"><div class="ttname"><a href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">ecs::Container::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00150">Container.cpp:150</a></div></div>
 <div class="ttc" id="aclassecs_1_1Container_html_ab5fdff438639973f98be934c27f9c089"><div class="ttname"><a href="classecs_1_1Container.html#ab5fdff438639973f98be934c27f9c089">ecs::Container::SystemsInitialize</a></div><div class="ttdeci">void SystemsInitialize()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00115">Container.cpp:115</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00056">sleepInterval</a>, <a class="el" href="Container_8cpp_source.html#l00115">SystemsInitialize()</a>, and <a class="el" href="Container_8cpp_source.html#l00150">Update()</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00057">sleepInterval</a>, <a class="el" href="Container_8cpp_source.html#l00115">SystemsInitialize()</a>, and <a class="el" href="Container_8cpp_source.html#l00150">Update()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00049">Start()</a>.</p>
 
@@ -900,7 +935,7 @@ Private Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="Container_8cpp_source.html#l00150">150</a> of file <a class="el" href="Container_8cpp_source.html">Container.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">  151</span>    {</div>
-<div class="line"><span class="lineno">  152</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;handle : this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a31d18970dcc5b2034015c563a191ebb8">system_order_</a>)</div>
+<div class="line"><span class="lineno">  152</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;handle : this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#aa274b0e6d59b9d654da1e057580e2cc7">system_order</a>)</div>
 <div class="line"><span class="lineno">  153</span>        {</div>
 <div class="line"><span class="lineno">  154</span>            <span class="keywordflow">if</span>(this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a03cbd768ef09aefd1eb335dd48965e11">disabledSystems</a>.contains(handle)) <span class="keywordflow">continue</span>;</div>
 <div class="line"><span class="lineno">  155</span>            <span class="keyword">auto</span> it = this-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a257c63a8a2fcef68ffcc7d938910b486">Systems</a>.find(handle);</div>
@@ -923,7 +958,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">  172</span>        }</div>
 <div class="line"><span class="lineno">  173</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00062">disabledSystems</a>, <a class="el" href="Container_8cpp_source.html#l00234">Log()</a>, <a class="el" href="Container_8hpp_source.html#l00054">system_order_</a>, and <a class="el" href="Container_8hpp_source.html#l00048">Systems</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00063">disabledSystems</a>, <a class="el" href="Container_8cpp_source.html#l00247">Log()</a>, <a class="el" href="Container_8hpp_source.html#l00055">system_order</a>, and <a class="el" href="Container_8hpp_source.html#l00049">Systems</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00139">threadFunc()</a>.</p>
 
@@ -944,10 +979,10 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8cpp_source.html#l00229">229</a> of file <a class="el" href="Container_8cpp_source.html">Container.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  230</span>    {</div>
-<div class="line"><span class="lineno">  231</span>        <span class="keywordflow">return</span> <a class="code hl_class" href="classecs_1_1Uuid.html">ecs::Uuid</a>();</div>
-<div class="line"><span class="lineno">  232</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Container_8cpp_source.html#l00242">242</a> of file <a class="el" href="Container_8cpp_source.html">Container.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  243</span>    {</div>
+<div class="line"><span class="lineno">  244</span>        <span class="keywordflow">return</span> <a class="code hl_class" href="classecs_1_1Uuid.html">ecs::Uuid</a>();</div>
+<div class="line"><span class="lineno">  245</span>    }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -964,7 +999,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00046">46</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00047">47</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00089">Component()</a>, <a class="el" href="Container_8cpp_source.html#l00223">ComponentDestroy()</a>, <a class="el" href="System_8cpp_source.html#l00058">ecs::System::componentsClear()</a>, <a class="el" href="Container_8cpp_source.html#l00188">EntityDestroy()</a>, <a class="el" href="Entity_8cpp_source.html#l00017">ecs::Entity::Export()</a>, and <a class="el" href="Container_8cpp_source.html#l00079">System()</a>.</p>
 
@@ -990,7 +1025,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00058">58</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00059">59</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00049">Start()</a>, and <a class="el" href="Container_8cpp_source.html#l00040">~Container()</a>.</p>
 
@@ -1016,9 +1051,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00062">62</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00063">63</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00115">SystemsInitialize()</a>, and <a class="el" href="Container_8cpp_source.html#l00150">Update()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00229">SystemDestroy()</a>, <a class="el" href="Container_8cpp_source.html#l00115">SystemsInitialize()</a>, and <a class="el" href="Container_8cpp_source.html#l00150">Update()</a>.</p>
 
 </div>
 </div>
@@ -1034,7 +1069,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00043">43</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00044">44</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00105">entityCreate()</a>, <a class="el" href="Container_8cpp_source.html#l00188">EntityDestroy()</a>, and <a class="el" href="Container_8cpp_source.html#l00060">Export()</a>.</p>
 
@@ -1052,7 +1087,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00045">45</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00046">46</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00060">Export()</a>.</p>
 
@@ -1078,9 +1113,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00053">53</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00054">54</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00028">Container()</a>, <a class="el" href="Container_8cpp_source.html#l00034">Container()</a>, <a class="el" href="Container_8cpp_source.html#l00234">Log()</a>, and <a class="el" href="Container_8cpp_source.html#l00242">LoggerSet()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00028">Container()</a>, <a class="el" href="Container_8cpp_source.html#l00034">Container()</a>, <a class="el" href="Container_8cpp_source.html#l00247">Log()</a>, and <a class="el" href="Container_8cpp_source.html#l00255">LoggerSet()</a>.</p>
 
 </div>
 </div>
@@ -1096,7 +1131,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00044">44</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00045">45</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
 </div>
 </div>
@@ -1120,7 +1155,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00063">63</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00064">64</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00199">ResourceAdd()</a>, <a class="el" href="Container_8cpp_source.html#l00212">ResourceGet()</a>, and <a class="el" href="Container_8cpp_source.html#l00204">Resources()</a>.</p>
 
@@ -1147,14 +1182,14 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Number of microseconds to sleep between <a class="el" href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">Update()</a> calls </p>
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00056">56</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00057">57</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00054">Start()</a>, and <a class="el" href="Container_8cpp_source.html#l00139">threadFunc()</a>.</p>
 
 </div>
 </div>
-<a id="a31d18970dcc5b2034015c563a191ebb8" name="a31d18970dcc5b2034015c563a191ebb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31d18970dcc5b2034015c563a191ebb8">&#9670;&#160;</a></span>system_order_</h2>
+<a id="aa274b0e6d59b9d654da1e057580e2cc7" name="aa274b0e6d59b9d654da1e057580e2cc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa274b0e6d59b9d654da1e057580e2cc7">&#9670;&#160;</a></span>system_order</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1163,7 +1198,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::string&gt; ecs::Container::system_order_</td>
+          <td class="memname">std::vector&lt;std::string&gt; ecs::Container::system_order</td>
         </tr>
       </table>
   </td>
@@ -1173,9 +1208,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00054">54</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00055">55</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00079">System()</a>, <a class="el" href="Container_8cpp_source.html#l00115">SystemsInitialize()</a>, and <a class="el" href="Container_8cpp_source.html#l00150">Update()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00079">System()</a>, <a class="el" href="Container_8cpp_source.html#l00229">SystemDestroy()</a>, <a class="el" href="Container_8cpp_source.html#l00115">SystemsInitialize()</a>, and <a class="el" href="Container_8cpp_source.html#l00150">Update()</a>.</p>
 
 </div>
 </div>
@@ -1191,9 +1226,9 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00048">48</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Container_8hpp_source.html#l00049">49</a> of file <a class="el" href="Container_8hpp_source.html">Container.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00060">Export()</a>, <a class="el" href="Container_8cpp_source.html#l00175">MessageSubmit()</a>, <a class="el" href="Container_8cpp_source.html#l00079">System()</a>, <a class="el" href="Container_8cpp_source.html#l00115">SystemsInitialize()</a>, and <a class="el" href="Container_8cpp_source.html#l00150">Update()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Container_8cpp_source.html#l00060">Export()</a>, <a class="el" href="Container_8cpp_source.html#l00175">MessageSubmit()</a>, <a class="el" href="Container_8cpp_source.html#l00079">System()</a>, <a class="el" href="Container_8cpp_source.html#l00229">SystemDestroy()</a>, <a class="el" href="Container_8cpp_source.html#l00115">SystemsInitialize()</a>, and <a class="el" href="Container_8cpp_source.html#l00150">Update()</a>.</p>
 
 </div>
 </div>
@@ -1204,7 +1239,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 11 2026 09:34:38 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Jul 11 2026 09:55:53 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
