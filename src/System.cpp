@@ -15,8 +15,6 @@ namespace ecs
     {
     }
 
-    void System::Initialize() {}
-
     void System::UpdateSystem()
     {
         std::vector<std::string> timersToRemove;

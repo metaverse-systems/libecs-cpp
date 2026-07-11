@@ -46,8 +46,8 @@ namespace ecs
         System();
         System(const std::string &handle);
         virtual ~System() = default;
-        virtual void Initialize();
-        virtual void Shutdown();
+        virtual void Initialize() {};
+        virtual void Shutdown() {};
         virtual void Configure(const nlohmann::json &config);
         virtual void Update() {};
         void UpdateSystem();
