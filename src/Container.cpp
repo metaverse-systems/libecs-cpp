@@ -82,7 +82,7 @@ namespace ecs
         system->Components = &(this->Components);
         auto handle = system->Handle;
         this->Systems[handle] = std::move(system);
-        this->system_order_.push_back(handle);
+        this->system_order.push_back(handle);
         return this->Systems[handle].get();
     }
 
@@ -114,7 +114,7 @@ namespace ecs
 
     void Container::SystemsInitialize()
     {
-        for(const auto &handle : this->system_order_)
+        for(const auto &handle : this->system_order)
         {
             if(this->disabledSystems.contains(handle)) continue;
             auto it = this->Systems.find(handle);
@@ -149,7 +149,7 @@ namespace ecs
 
     void Container::Update()
     {
-        for(const auto &handle : this->system_order_)
+        for(const auto &handle : this->system_order)
         {
             if(this->disabledSystems.contains(handle)) continue;
             auto it = this->Systems.find(handle);
@@ -224,6 +224,19 @@ namespace ecs
     {
         if(!this->Components.contains(type) || !this->Components[type].contains(entity)) return;
         this->Components[type].erase(entity);
+    }
+
+    void Container::SystemDestroy(const std::string &handle)
+    {
+        if(!this->Systems.contains(handle)) return;
+
+        // Remove from all three collections
+        this->Systems.erase(handle);
+        this->disabledSystems.erase(handle);
+        auto it = std::find(this->system_order.begin(), this->system_order.end(), handle);
+        if(it != this->system_order.end()) {
+            this->system_order.erase(it);
+        }
     }
 
     ecs::Uuid Container::UuidGet()

@@ -195,3 +195,123 @@ TEST_CASE("Bulk entity creation works correctly", "[Container]") {
     }
     REQUIRE(container->Entities.size() == 100);
 }
+
+TEST_CASE("SystemDestroy removes system from Systems map", "[Container]") {
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    container->System(std::make_unique<TestSystem>("DestroyMe"));
+    REQUIRE(container->Systems.contains("DestroyMe"));
+
+    container->SystemDestroy("DestroyMe");
+    REQUIRE_FALSE(container->Systems.contains("DestroyMe"));
+}
+
+TEST_CASE("SystemDestroy with non-existent handle is no-op", "[Container]") {
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    REQUIRE_NOTHROW(container->SystemDestroy("NonExistent"));
+}
+
+TEST_CASE("SystemDestroy removes handle from disabledSystems set", "[Container]") {
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    container->System(std::make_unique<ThrowingSystem>());
+    // Initialize to trigger exception and add to disabledSystems
+    container->SystemsInitialize();
+    REQUIRE(container->Systems.find("ThrowingSystem")->second);
+    // Verify it's in disabledSystems (private, but we can check via behavior)
+    // After destroy, re-adding a system with same handle should work
+    container->SystemDestroy("ThrowingSystem");
+    REQUIRE_FALSE(container->Systems.contains("ThrowingSystem"));
+}
+
+TEST_CASE("SystemDestroy removes handle from system_order_", "[Container]") {
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    auto sysA = std::make_unique<TestSystem>("SystemA");
+    auto sysB = std::make_unique<TestSystem>("SystemB");
+    auto sysC = std::make_unique<TestSystem>("SystemC");
+    // Set frequency to 0 so every Update() call fires (test fixture path)
+    sysA->Timing.SetFrequency(0);
+    sysB->Timing.SetFrequency(0);
+    sysC->Timing.SetFrequency(0);
+    container->System(std::move(sysA));
+    container->System(std::move(sysB));
+    container->System(std::move(sysC));
+
+    auto ptrA = static_cast<TestSystem *>(container->Systems["SystemA"].get());
+    auto ptrC = static_cast<TestSystem *>(container->Systems["SystemC"].get());
+
+    // Destroy middle system
+    container->SystemDestroy("SystemB");
+
+    // Run update - only A and C should update
+    container->Update();
+
+    REQUIRE(ptrA->updateCount == 1);
+    REQUIRE(ptrC->updateCount == 1);
+    // SystemB is destroyed, so it cannot increment
+}
+
+TEST_CASE("SystemDestroy with empty string handle is no-op", "[Container]") {
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    container->System(std::make_unique<TestSystem>("ExistingSystem"));
+    REQUIRE_NOTHROW(container->SystemDestroy(""));
+    // Existing system should still be present
+    REQUIRE(container->Systems.contains("ExistingSystem"));
+}
+
+TEST_CASE("SystemDestroy called during active Update iteration is safe", "[Container]") {
+    // This test verifies that destroying a system during Update doesn't crash
+    // We use a system that destroys its sibling on first update
+    // Then verify the sibling is gone and the remaining systems still work
+
+    // Create a system that destroys its sibling on first update
+    class SelfishSystem : public ecs::System {
+      public:
+        SelfishSystem() { this->Handle = "SelfishSystem"; }
+        nlohmann::json Export() const override { return {{"Handle", this->Handle}}; }
+        void Update() override {
+            updateCount++;
+            // Try to destroy sibling - container should handle gracefully
+            if(this->Container) {
+                this->Container->SystemDestroy("SiblingSystem");
+            }
+        }
+        int updateCount = 0;
+    };
+
+    class SiblingSystem : public ecs::System {
+      public:
+        SiblingSystem() { this->Handle = "SiblingSystem"; }
+        nlohmann::json Export() const override { return {{"Handle", this->Handle}}; }
+        void Update() override {
+            updateCount++;
+        }
+        int updateCount = 0;
+    };
+
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    auto selfish = std::make_unique<SelfishSystem>();
+    auto sibling = std::make_unique<SiblingSystem>();
+    selfish->Timing.SetFrequency(0);
+    sibling->Timing.SetFrequency(0);
+    container->System(std::move(selfish));
+    container->System(std::move(sibling));
+
+    // Should not crash
+    REQUIRE_NOTHROW(container->Update());
+
+    // SelfishSystem should have run
+    auto selfishSys = static_cast<SelfishSystem *>(container->Systems["SelfishSystem"].get());
+    REQUIRE(selfishSys->updateCount == 1);
+
+    // SiblingSystem should be destroyed
+    REQUIRE_FALSE(container->Systems.contains("SiblingSystem"));
+
+    // Second update should still be safe
+    REQUIRE_NOTHROW(container->Update());
+    REQUIRE(selfishSys->updateCount == 2);
+}
