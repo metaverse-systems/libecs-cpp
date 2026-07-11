@@ -34,6 +34,7 @@ namespace ecs
         ecs::Entity *Entity(const std::string &handle);
         ecs::Entity *Entity();
         void EntityDestroy(const std::string &handle);
+        void SystemDestroy(const std::string &handle);
         nlohmann::json Export() const;
         void Update();
         void MessageSubmit(const nlohmann::json &message);
@@ -51,7 +52,7 @@ namespace ecs
         
       private:
         std::function<void(const std::string &, const std::string &)> logger;
-        std::vector<std::string> system_order_;
+        std::vector<std::string> system_order;
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleepInterval = 1000000 / 30;
 
