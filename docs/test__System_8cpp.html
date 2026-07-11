@@ -309,9 +309,9 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   54</span>    uint32_t deltaTime = system.<a class="code hl_function" href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">DeltaTimeGet</a>();</div>
 <div class="line"><span class="lineno">   55</span>    REQUIRE(deltaTime &gt;= 10); <span class="comment">// Check if at least 10ms have passed</span></div>
 <div class="line"><span class="lineno">   56</span>}</div>
-<div class="ttc" id="aclassecs_1_1System_html_a3ed351192c824237e9b277b36be5171d"><div class="ttname"><a href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">ecs::System::DeltaTimeGet</a></div><div class="ttdeci">uint32_t DeltaTimeGet()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00052">System.cpp:52</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a3ed351192c824237e9b277b36be5171d"><div class="ttname"><a href="classecs_1_1System.html#a3ed351192c824237e9b277b36be5171d">ecs::System::DeltaTimeGet</a></div><div class="ttdeci">uint32_t DeltaTimeGet()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00050">System.cpp:50</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="System_8cpp_source.html#l00052">ecs::System::DeltaTimeGet()</a>.</p>
+<p class="reference">References <a class="el" href="System_8cpp_source.html#l00050">ecs::System::DeltaTimeGet()</a>.</p>
 
 </div>
 </div>
@@ -348,11 +348,11 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   44</span>    system.<a class="code hl_function" href="classecs_1_1System.html#adbc9839d08a6ea3059a24a748e6dea00">MessageSubmit</a>(message);</div>
 <div class="line"><span class="lineno">   45</span>    REQUIRE(system.<a class="code hl_function" href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">MessagesWaiting</a>() == 1);</div>
 <div class="line"><span class="lineno">   46</span>}</div>
-<div class="ttc" id="aclassecs_1_1System_html_adbc9839d08a6ea3059a24a748e6dea00"><div class="ttname"><a href="classecs_1_1System.html#adbc9839d08a6ea3059a24a748e6dea00">ecs::System::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00042">System.cpp:42</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_ae5a9adaed132a1265bd68cea438ba569"><div class="ttname"><a href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">ecs::System::MessagesWaiting</a></div><div class="ttdeci">size_t MessagesWaiting()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00047">System.cpp:47</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_adbc9839d08a6ea3059a24a748e6dea00"><div class="ttname"><a href="classecs_1_1System.html#adbc9839d08a6ea3059a24a748e6dea00">ecs::System::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00040">System.cpp:40</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_ae5a9adaed132a1265bd68cea438ba569"><div class="ttname"><a href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">ecs::System::MessagesWaiting</a></div><div class="ttdeci">size_t MessagesWaiting()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00045">System.cpp:45</a></div></div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html"><div class="ttname"><a href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a></div><div class="ttdoc">a class to store JSON values</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l17281">json.hpp:17282</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="System_8cpp_source.html#l00042">ecs::System::MessageSubmit()</a>, and <a class="el" href="System_8cpp_source.html#l00047">ecs::System::MessagesWaiting()</a>.</p>
+<p class="reference">References <a class="el" href="System_8cpp_source.html#l00040">ecs::System::MessageSubmit()</a>, and <a class="el" href="System_8cpp_source.html#l00045">ecs::System::MessagesWaiting()</a>.</p>
 
 </div>
 </div>
@@ -425,14 +425,14 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   38</span>    REQUIRE(system.<a class="code hl_function" href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">MessagesWaiting</a>() == 0);</div>
 <div class="line"><span class="lineno">   39</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="System_8cpp_source.html#l00047">ecs::System::MessagesWaiting()</a>.</p>
+<p class="reference">References <a class="el" href="System_8cpp_source.html#l00045">ecs::System::MessagesWaiting()</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 11 2026 09:25:08 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Jul 11 2026 09:34:38 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
