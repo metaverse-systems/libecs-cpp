@@ -26,15 +26,68 @@ namespace ecs
         ~Container();
         void Start();
         void Start(uint32_t);
+        /*! Calls Initialize() on every registered system, in registration order.
+         *
+         * This is a walk. A system registered during it does not get Initialize() from this call and is
+         * updated from the next Update(). A system removed during it is not initialized if it has not
+         * been reached yet. Systems removed during the walk are released when it returns, normally or
+         * because a system threw. If Initialize() throws, the error is logged with the system's
+         * identifier and rethrown after every change requested so far has completed.
+         */
         void SystemsInitialize();
+        /*! Registers a system. It is found in Systems as soon as the call returns.
+         *
+         * Called during a walk, the new system is not updated or initialized in that walk. It is updated
+         * from the next pass, after every system registered before it. Registering under the identifier
+         * of a system removed earlier in the same walk creates a new system that goes to the end of the
+         * order and is not affected when the removed one is released. The outcome of registering a second
+         * system under an identifier that is still in use is unspecified, but memory safe.
+         */
         ecs::System *System(std::unique_ptr<ecs::System> system);
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
+        /*! Removes a component. The identifiers may be fields of the component being removed. An
+         *  unknown entity or type is a silent no-op. */
         void ComponentDestroy(const std::string &entity, const std::string &type);
         ecs::Entity *Entity(const std::string &handle);
         ecs::Entity *Entity();
+        /*! Removes an entity and its components. The identifier may be the entity's own Handle. An
+         *  unknown identifier, including an empty one, is a silent no-op. */
         void EntityDestroy(const std::string &handle);
+        /*! Removes a system.
+         *
+         * The identifier may be the system's own Handle. An unknown identifier, including an empty one,
+         * is a silent no-op, so removing a system twice releases it once. When the call returns the
+         * system is no longer part of the world: it is not in Systems, is not exported, cannot receive
+         * messages, and is never started, updated or timer-walked again, even later in the same pass. Its
+         * identifier may be registered again at once.
+         *
+         * Called outside a walk, the system is destroyed at once. Called during a walk, or from inside
+         * the system's own timer walk, the system stays in memory until the walk returns, so code running
+         * inside it may finish, but must not use the system after the walk ends. If the removal happens
+         * in a direct System::UpdateSystem() call made outside a walk, the system stays in memory until
+         * the end of the next walk or until the container is destroyed.
+         */
         void SystemDestroy(const std::string &handle);
+        /*! Describes the world as JSON. This is a const query: overrides of System::Export() must not add
+         *  or remove systems, entities or components. */
         nlohmann::json Export() const;
+        /*! Runs one update pass: calls System::UpdateSystem() on each system in registration order, each at
+         *  most once. This is a walk.
+         *
+         * Adding or removing systems never changes the relative order of the others. A system removed
+         * earlier in the pass is skipped. A system added during the pass is first updated in the next one.
+         * A pass in which nothing is added or removed allocates no memory and does not copy the system
+         * list. Systems removed during the pass are released when it returns, which is the point where
+         * the changes take effect for memory.
+         *
+         * If a system throws, the error is logged at level "error" with the system's identifier and
+         * rethrown to the caller. Before it leaves, every change requested in the pass completes: removed
+         * systems are released exactly once, added systems stay registered, and the timer changes made
+         * before the failure are kept. A caller that catches the exception and calls Update() again finds
+         * a consistent world. Calling Update() or SystemsInitialize() from inside a walk of the same
+         * container is memory safe, but its outcome is not defined. All changes to a world must come from
+         * the thread that drives its walks.
+         */
         void Update();
         void MessageSubmit(const nlohmann::json &message);
         void ResourceAdd(const std::string &name, ecs::Resource r);

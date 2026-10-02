@@ -60,6 +60,111 @@ sudo make install
 ./src/example
 ```
 
+## Changing systems and timers while they run
+
+Systems and timers can be added, removed and cleared from inside `Initialize()`, `Update()` and timer
+callbacks. The rules below describe what happens.
+
+### Terms
+
+* A **walk** is the start-up sequence (`Container::SystemsInitialize()`), an update pass
+  (`Container::Update()`), or one system's timer walk (the part of `System::UpdateSystem()` that fires
+  due timers before the system's own `Update()`).
+* The **effect point** of a container walk is the moment it returns, normally or because a system threw.
+
+### Removing systems
+
+* `SystemDestroy`, `EntityDestroy` and `ComponentDestroy` accept any identifier, including a field of the
+  object being removed, such as `SystemDestroy(system->Handle)`.
+* An identifier that is not registered, including `""`, is a silent no-op. Removing a system twice
+  releases it once.
+* A removed system stops being part of the world when the call returns: it is not in `Systems`, is not
+  exported, cannot receive messages, and is never started, updated or timer-walked again, even later in
+  the same pass. Its identifier may be registered again at once.
+* A system removed during a walk, or from inside its own timer walk, stays in memory until the effect
+  point. Code running inside it may finish, but must not use the system after the walk ends. A system
+  removed from its own timer walk in a direct `UpdateSystem()` call stays in memory until the end of the
+  next container walk or until the container is destroyed. A system removed outside any walk is destroyed
+  at once.
+* If a timer callback removes its own system, no further timers of that system fire and its `Update()`
+  does not run in that pass.
+
+### Adding systems
+
+* `Container::System()` registers the system at once; it is in `Systems` when the call returns.
+* A system registered during an update pass is not updated in that pass. A system registered during
+  start-up does not get `Initialize()` from that sequence. In both cases it is updated from the next pass,
+  after every system registered before it.
+* A system registered under the identifier of a system removed in the same pass is a new system. It goes
+  to the end of the order, is not updated in that pass, and is not affected when the removed system is
+  released.
+
+### Order
+
+* Systems are updated in registration order, each at most once per pass. Adding or removing systems never
+  changes the relative order of the others.
+* An update pass in which nothing is added or removed allocates no memory and does not copy the system
+  list.
+
+### Timers
+
+* A timer callback may call `TimerAdd` on its own system or on any other system of the same world. A timer
+  added to a system during that system's timer walk does not fire in that walk; it is considered from the
+  system's next update.
+* A timer callback may call `TimerClear(name)` on its own system, including for its own name. Every timer
+  with that name is cancelled, and a cancelled timer that has not been reached yet does not fire.
+* After a timer walk, exactly the one-shot timers that fired in it are removed. A one-shot timer that adds
+  a new timer with its own name keeps the new timer.
+* Cancelling and then adding the same name in one callback leaves exactly the new timer. Adding and then
+  cancelling removes both.
+* Timer changes made by a callback take effect before the system's own `Update()` runs in the same pass.
+  `TimerAdd` and `TimerClear` called from `Update()` itself take effect at once.
+
+### Failures
+
+* If `Initialize()`, `Update()` or a timer callback throws, the error is logged at level `error` with the
+  system's registered identifier and rethrown to the caller of `Update()` or `SystemsInitialize()`. On a
+  world's own thread the exception is caught at the thread boundary and the manager is asked to shut down.
+* Before the exception leaves the walk, every change requested in it completes. Timer additions and
+  cancellations made before the failure are kept, every one-shot timer that fired (including the one
+  whose callback threw) is removed, timers not yet reached do not fire, systems removed earlier stay
+  removed and are released once, and systems added earlier stay registered. A caller that catches the
+  exception and calls `Update()` again sees a consistent world.
+
+### Examples
+
+* **One-shot re-arm under the same name.** A one-shot timer named `retry` fires and calls
+  `TimerAdd` with a new timer named `retry`. After the walk the fired timer is removed and the new one is
+  kept, so `retry` fires again later.
+* **Removing a system twice in one pass.** A system calls `SystemDestroy` on itself, and a second system
+  also calls `SystemDestroy` with the same identifier later in the pass. The first call removes it, the
+  second is a no-op, and the system is released once when the pass returns.
+* **Removing and re-registering an identifier in one pass.** A system `a` is removed and a new system is
+  registered as `a` in the same pass. The new system is not updated in that pass, goes to the end of the
+  order, and is updated from the next pass. Releasing the old one at the end of the pass does not touch it.
+* **A callback that changes timers and then throws.** A callback calls `TimerAdd` for a timer `x`,
+  `TimerClear` for a timer `y`, and then throws. The exception reaches the caller of `Update()`, but
+  `x` is kept, `y` is gone, the callback's own one-shot timer is removed, and timers after it did not fire.
+
+### Not covered
+
+* Changing a world from any thread other than the one driving its walks.
+* `Container::Export()` and the `System::Export()` overrides it calls are a `const` query. They must not
+  add or remove systems, entities or components.
+* Calling `Update()` or `SystemsInitialize()` from inside a walk of the same container is memory safe, but
+  no outcome is defined.
+* Notifying systems when they are removed, and starting systems that are added late.
+* Registering a second system under an identifier that is still in use. The previous outcome is kept and
+  is memory safe.
+
+### Release notes
+
+#### 1.2.0
+
+The rules above are now guaranteed. The object layout of `ecs::Container`, `ecs::System` and
+`ecs::Timer` changed (private members only, no public signature changed), so plugins must be rebuilt
+against the new headers. `the-seed build` does this.
+
 ## Running the tests
 
 ```
