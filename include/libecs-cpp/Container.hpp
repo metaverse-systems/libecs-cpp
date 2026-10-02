@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <unordered_set>
 #include <thread>
 #include <memory>
 #include <iostream>
@@ -60,7 +59,6 @@ namespace ecs
         void threadFunc(std::stop_token stopToken);
         ecs::Entity *entityCreate(const std::string &handle);
 
-        std::unordered_set<std::string> disabledSystems;
         std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> resources;
     };
 }

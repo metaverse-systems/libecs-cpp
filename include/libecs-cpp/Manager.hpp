@@ -6,6 +6,7 @@
 #include <thread>
 #include <mutex>
 #include <memory>
+#include <atomic>
 #include <libecs-cpp/json.hpp>
 
 namespace ecs
@@ -29,6 +30,6 @@ namespace ecs
         ecs::Container *containerCreate(const std::string &handle);
         std::unordered_map<std::string, std::unique_ptr<ecs::Container>> containers;
         std::mutex mutexContainers;
-        bool running = true;
+        std::atomic<bool> running = true;
     };
 }

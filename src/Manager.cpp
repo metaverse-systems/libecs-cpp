@@ -25,7 +25,7 @@ namespace ecs
 
     bool Manager::IsRunning()
     {
-        return running;
+        return this->running;
     }
 
     void Manager::Shutdown()

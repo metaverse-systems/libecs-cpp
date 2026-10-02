@@ -116,7 +116,6 @@ namespace ecs
     {
         for(const auto &handle : this->system_order)
         {
-            if(this->disabledSystems.contains(handle)) continue;
             auto it = this->Systems.find(handle);
             if(it == this->Systems.end()) continue;
             try
@@ -126,24 +125,33 @@ namespace ecs
             catch(const std::exception &e)
             {
                 this->Log("[" + handle + "] threw during Initialize(): " + e.what(), "error");
-                this->disabledSystems.insert(handle);
+                throw;
             }
             catch(...)
             {
                 this->Log("[" + handle + "] threw unknown exception during Initialize()", "error");
-                this->disabledSystems.insert(handle);
+                throw;
             }
         }
     }
 
     void Container::threadFunc(std::stop_token stopToken)
     {
-        this->SystemsInitialize();
-
-        while(!stopToken.stop_requested())
+        try
         {
-            std::this_thread::sleep_for(std::chrono::microseconds(this->sleepInterval));
-            this->Update();
+            this->SystemsInitialize();
+
+            while(!stopToken.stop_requested())
+            {
+                std::this_thread::sleep_for(std::chrono::microseconds(this->sleepInterval));
+                this->Update();
+            }
+        }
+        catch(...)
+        {
+            // Already logged. An exception leaving the thread would call
+            // std::terminate, so ask the application to shut down instead.
+            if(this->Manager) this->Manager->Shutdown();
         }
     }
 
@@ -151,7 +159,6 @@ namespace ecs
     {
         for(const auto &handle : std::vector<std::string>(this->system_order))
         {
-            if(this->disabledSystems.contains(handle)) continue;
             auto it = this->Systems.find(handle);
             if(it == this->Systems.end()) continue;
             try
@@ -162,12 +169,12 @@ namespace ecs
             catch(const std::exception &e)
             {
                 this->Log("[" + handle + "] threw during Update(): " + e.what(), "error");
-                this->disabledSystems.insert(handle);
+                throw;
             }
             catch(...)
             {
                 this->Log("[" + handle + "] threw unknown exception during Update()", "error");
-                this->disabledSystems.insert(handle);
+                throw;
             }
         }
     }
@@ -230,9 +237,8 @@ namespace ecs
     {
         if(!this->Systems.contains(handle)) return;
 
-        // Remove from all three collections
+        // Remove from both collections
         this->Systems.erase(handle);
-        this->disabledSystems.erase(handle);
         auto it = std::find(this->system_order.begin(), this->system_order.end(), handle);
         if(it != this->system_order.end()) {
             this->system_order.erase(it);

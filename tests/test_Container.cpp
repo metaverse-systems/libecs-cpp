@@ -136,29 +136,39 @@ TEST_CASE("MessageSubmit does not corrupt Systems map", "[Container]") {
     REQUIRE_FALSE(container->Systems.contains("NonExistentSystem"));
 }
 
-TEST_CASE("System exception during Initialize disables system", "[Container]") {
+TEST_CASE("System exception during Initialize propagates to caller", "[Container]") {
     ecs::Manager manager;
     auto container = manager.Container("test-container");
     container->System(std::make_unique<ThrowingSystem>());
-    container->System(std::make_unique<TestSystem>("GoodSystem"));
 
-    // SystemsInitialize should catch the exception and disable the throwing system
-    REQUIRE_NOTHROW(container->SystemsInitialize());
-
-    // The good system should still be accessible
-    REQUIRE(container->Systems.contains("GoodSystem"));
+    REQUIRE_THROWS_AS(container->SystemsInitialize(), std::runtime_error);
 }
 
-TEST_CASE("System exception during Update disables system", "[Container]") {
+TEST_CASE("System exception during Update propagates to caller", "[Container]") {
     ecs::Manager manager;
     auto container = manager.Container("test-container");
-    container->System(std::make_unique<ThrowOnUpdateSystem>());
-    container->System(std::make_unique<TestSystem>("GoodSystem"));
+    auto thrower = std::make_unique<ThrowOnUpdateSystem>();
+    // Set frequency to 0 so every Update() call fires (test fixture path)
+    thrower->Timing.SetFrequency(0);
+    container->System(std::move(thrower));
 
-    // First update - ThrowOnUpdateSystem should throw and get disabled
-    REQUIRE_NOTHROW(container->Update());
-    // Second update - should succeed with only GoodSystem running
-    REQUIRE_NOTHROW(container->Update());
+    REQUIRE_THROWS_AS(container->Update(), std::runtime_error);
+    // The system is not disabled - it runs, and throws, again
+    REQUIRE_THROWS_AS(container->Update(), std::runtime_error);
+}
+
+TEST_CASE("System exception in container thread shuts down Manager", "[Container]") {
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    auto thrower = std::make_unique<ThrowOnUpdateSystem>();
+    thrower->Timing.SetFrequency(0);
+    container->System(std::move(thrower));
+    container->Start(1000); // 1ms interval
+
+    for(int i = 0; i < 200 && manager.IsRunning(); i++) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    REQUIRE_FALSE(manager.IsRunning());
 }
 
 TEST_CASE("Manager shutdown joins all container threads", "[Container]") {
@@ -210,19 +220,6 @@ TEST_CASE("SystemDestroy with non-existent handle is no-op", "[Container]") {
     ecs::Manager manager;
     auto container = manager.Container("test-container");
     REQUIRE_NOTHROW(container->SystemDestroy("NonExistent"));
-}
-
-TEST_CASE("SystemDestroy removes handle from disabledSystems set", "[Container]") {
-    ecs::Manager manager;
-    auto container = manager.Container("test-container");
-    container->System(std::make_unique<ThrowingSystem>());
-    // Initialize to trigger exception and add to disabledSystems
-    container->SystemsInitialize();
-    REQUIRE(container->Systems.find("ThrowingSystem")->second);
-    // Verify it's in disabledSystems (private, but we can check via behavior)
-    // After destroy, re-adding a system with same handle should work
-    container->SystemDestroy("ThrowingSystem");
-    REQUIRE_FALSE(container->Systems.contains("ThrowingSystem"));
 }
 
 TEST_CASE("SystemDestroy removes handle from system_order_", "[Container]") {
