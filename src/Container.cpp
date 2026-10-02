@@ -149,7 +149,7 @@ namespace ecs
 
     void Container::Update()
     {
-        for(const auto &handle : this->system_order)
+        for(const auto &handle : std::vector<std::string>(this->system_order))
         {
             if(this->disabledSystems.contains(handle)) continue;
             auto it = this->Systems.find(handle);
