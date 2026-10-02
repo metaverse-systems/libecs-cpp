@@ -51,7 +51,17 @@ namespace ecs
         
       private:
         std::function<void(const std::string &, const std::string &)> logger;
-        std::vector<std::string> system_order;
+        /*! One position in the update order. A null system marks a system removed during the current walk. */
+        struct SystemSlot
+        {
+            std::string handle;
+            ecs::System *system;
+        };
+        class WalkScope;
+        std::vector<SystemSlot> system_order;
+        uint32_t walkDepth = 0;
+        bool orderHasGaps = false;
+        void walkFinish();
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleepInterval = 1000000 / 30;
 

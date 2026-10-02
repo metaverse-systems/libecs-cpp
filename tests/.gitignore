@@ -5,6 +5,7 @@ test_Container
 bench_entity_creation
 bench_uuid_comparison
 test_Timing
+test_UpdateAllocation
 *.log
 *.trs
 *.exe
