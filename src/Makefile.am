@@ -9,17 +9,10 @@ pkginclude_HEADERS = \
         ../include/libecs-cpp/Entity.hpp \
 	../include/libecs-cpp/Uuid.hpp \
 	../include/libecs-cpp/Resource.hpp \
-	../include/libecs-cpp/uuid_v4.h \
-	../include/libecs-cpp/endianness.h \
 	../include/libecs-cpp/json.hpp \
     ../include/libecs-cpp/Timing.hpp
 
-if BUILTIN_UUID
-libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall -Wno-psabi -mssse3 -mavx2 $(SANITIZER_CXXFLAGS)
-else
-libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall -Wno-psabi ${UUID_CFLAGS} -DDISABLE_BUILTIN_UUID $(SANITIZER_CXXFLAGS)
-libecs_cpp_la_LIBADD = ${UUID_LIBS}
-endif
+libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall $(SANITIZER_CXXFLAGS)
 
 libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Component.cpp Entity.cpp Uuid.cpp
 libecs_cpp_la_LDFLAGS = -no-undefined -pthread $(SANITIZER_LDFLAGS)
@@ -29,3 +22,10 @@ example_SOURCES = example.cpp
 example_CXXFLAGS = -std=c++20 -I../include -Werror -Wall $(SANITIZER_CXXFLAGS)
 example_LDADD = libecs-cpp.la
 example_LDFLAGS = -pthread $(SANITIZER_LDFLAGS)
+
+# Headers that earlier versions installed and this version no longer ships.
+# Removing them on install stops a consumer from picking up stale copies.
+retired_headers = uuid_v4.h endianness.h
+
+install-data-hook:
+	for h in $(retired_headers); do rm -f "$(DESTDIR)$(pkgincludedir)/$$h"; done
