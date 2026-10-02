@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.1.2</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.2.0</span>
    </div>
   </td>
  </tr>
@@ -76,7 +76,9 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classecs_1_1Timer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ecs::Timer Class Reference</div></div>
 </div><!--header-->
@@ -108,16 +110,32 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:adc22e07651981116a37a16f1315ebcde" id="r_adc22e07651981116a37a16f1315ebcde"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Timer.html#adc22e07651981116a37a16f1315ebcde">Repeat</a></td></tr>
 <tr class="separator:adc22e07651981116a37a16f1315ebcde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:af3851ced4fa0171446888050f9584127" id="r_af3851ced4fa0171446888050f9584127"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Timer.html#af3851ced4fa0171446888050f9584127">due</a> ()</td></tr>
+<tr class="separator:af3851ced4fa0171446888050f9584127"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36429005e7d9569ab72cc5f28cbe60a6" id="r_a36429005e7d9569ab72cc5f28cbe60a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Timer.html#a36429005e7d9569ab72cc5f28cbe60a6">fire</a> ()</td></tr>
+<tr class="separator:a36429005e7d9569ab72cc5f28cbe60a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
+<tr class="memitem:a7cd445c83e967ef0ce23ef47a9fb5bcf" id="r_a7cd445c83e967ef0ce23ef47a9fb5bcf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Timer.html#a7cd445c83e967ef0ce23ef47a9fb5bcf">discarded</a> = false</td></tr>
+<tr class="separator:a7cd445c83e967ef0ce23ef47a9fb5bcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9edb5c8acba41f27a61909022813d514" id="r_a9edb5c8acba41f27a61909022813d514"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514">timing</a></td></tr>
 <tr class="separator:a9edb5c8acba41f27a61909022813d514"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93846655ea8f3de5c69dc3d301935bfb" id="r_a93846655ea8f3de5c69dc3d301935bfb"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a> = nullptr</td></tr>
 <tr class="separator:a93846655ea8f3de5c69dc3d301935bfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:aede93b803be028a06b9d42179b0b8897" id="r_aede93b803be028a06b9d42179b0b8897"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Timer.html#aede93b803be028a06b9d42179b0b8897">ecs::System</a></td></tr>
+<tr class="separator:aede93b803be028a06b9d42179b0b8897"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00012">12</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<div class="textblock"><p>A callback that fires after an interval, owned by a <a class="el" href="classecs_1_1System.html">System</a>.</p>
+<p>A repeating timer (the default) fires every interval until it is cleared. A one-shot timer fires once and is then discarded; if its callback adds a new timer under the same name, the new timer is kept. </p>
+
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00019">19</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a25b2aaae7a897a4946af15e41585f401" name="a25b2aaae7a897a4946af15e41585f401"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a25b2aaae7a897a4946af15e41585f401">&#9670;&#160;</a></span>Timer()</h2>
@@ -165,20 +183,20 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00015">15</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   19</span>          : <a class="code hl_variable" href="classecs_1_1Timer.html#adc22e07651981116a37a16f1315ebcde">Repeat</a>(repeat)</div>
-<div class="line"><span class="lineno">   20</span>        {</div>
-<div class="line"><span class="lineno">   21</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a81899849b46416267cfa9fb188e0536a">Name</a> = name;</div>
-<div class="line"><span class="lineno">   22</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a> = <a class="code hl_variable" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a>;</div>
-<div class="line"><span class="lineno">   23</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514">timing</a>.<a class="code hl_function" href="classecs_1_1Timing.html#a29f8f3635d3868cde9af2343ff01a04f">SetFrequency</a>(1000000 * interval); <span class="comment">// Convert seconds to microseconds</span></div>
-<div class="line"><span class="lineno">   24</span>        }</div>
-<div class="ttc" id="aclassecs_1_1Timer_html_a81899849b46416267cfa9fb188e0536a"><div class="ttname"><a href="classecs_1_1Timer.html#a81899849b46416267cfa9fb188e0536a">ecs::Timer::Name</a></div><div class="ttdeci">std::string Name</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00035">System.hpp:35</a></div></div>
-<div class="ttc" id="aclassecs_1_1Timer_html_a93846655ea8f3de5c69dc3d301935bfb"><div class="ttname"><a href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">ecs::Timer::callback</a></div><div class="ttdeci">std::function&lt; void()&gt; callback</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00040">System.hpp:40</a></div></div>
-<div class="ttc" id="aclassecs_1_1Timer_html_a9edb5c8acba41f27a61909022813d514"><div class="ttname"><a href="classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514">ecs::Timer::timing</a></div><div class="ttdeci">ecs::Timing timing</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00039">System.hpp:39</a></div></div>
-<div class="ttc" id="aclassecs_1_1Timer_html_adc22e07651981116a37a16f1315ebcde"><div class="ttname"><a href="classecs_1_1Timer.html#adc22e07651981116a37a16f1315ebcde">ecs::Timer::Repeat</a></div><div class="ttdeci">bool Repeat</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00036">System.hpp:36</a></div></div>
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00022">22</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   26</span>          : <a class="code hl_variable" href="classecs_1_1Timer.html#adc22e07651981116a37a16f1315ebcde">Repeat</a>(repeat)</div>
+<div class="line"><span class="lineno">   27</span>        {</div>
+<div class="line"><span class="lineno">   28</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a81899849b46416267cfa9fb188e0536a">Name</a> = name;</div>
+<div class="line"><span class="lineno">   29</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a> = <a class="code hl_variable" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a>;</div>
+<div class="line"><span class="lineno">   30</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514">timing</a>.<a class="code hl_function" href="classecs_1_1Timing.html#a29f8f3635d3868cde9af2343ff01a04f">SetFrequency</a>(1000000 * interval); <span class="comment">// Convert seconds to microseconds</span></div>
+<div class="line"><span class="lineno">   31</span>        }</div>
+<div class="ttc" id="aclassecs_1_1Timer_html_a81899849b46416267cfa9fb188e0536a"><div class="ttname"><a href="classecs_1_1Timer.html#a81899849b46416267cfa9fb188e0536a">ecs::Timer::Name</a></div><div class="ttdeci">std::string Name</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00042">System.hpp:42</a></div></div>
+<div class="ttc" id="aclassecs_1_1Timer_html_a93846655ea8f3de5c69dc3d301935bfb"><div class="ttname"><a href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">ecs::Timer::callback</a></div><div class="ttdeci">std::function&lt; void()&gt; callback</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00057">System.hpp:57</a></div></div>
+<div class="ttc" id="aclassecs_1_1Timer_html_a9edb5c8acba41f27a61909022813d514"><div class="ttname"><a href="classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514">ecs::Timer::timing</a></div><div class="ttdeci">ecs::Timing timing</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00056">System.hpp:56</a></div></div>
+<div class="ttc" id="aclassecs_1_1Timer_html_adc22e07651981116a37a16f1315ebcde"><div class="ttname"><a href="classecs_1_1Timer.html#adc22e07651981116a37a16f1315ebcde">ecs::Timer::Repeat</a></div><div class="ttdeci">bool Repeat</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00043">System.hpp:43</a></div></div>
 <div class="ttc" id="aclassecs_1_1Timing_html_a29f8f3635d3868cde9af2343ff01a04f"><div class="ttname"><a href="classecs_1_1Timing.html#a29f8f3635d3868cde9af2343ff01a04f">ecs::Timing::SetFrequency</a></div><div class="ttdeci">void SetFrequency(uint32_t frequency)</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00047">Timing.hpp:47</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="System_8hpp_source.html#l00040">callback</a>, <a class="el" href="System_8hpp_source.html#l00035">Name</a>, <a class="el" href="Timing_8hpp_source.html#l00047">ecs::Timing::SetFrequency()</a>, and <a class="el" href="System_8hpp_source.html#l00039">timing</a>.</p>
+<p class="reference">References <a class="el" href="System_8hpp_source.html#l00057">callback</a>, <a class="el" href="System_8hpp_source.html#l00042">Name</a>, <a class="el" href="Timing_8hpp_source.html#l00047">ecs::Timing::SetFrequency()</a>, and <a class="el" href="System_8hpp_source.html#l00056">timing</a>.</p>
 
 </div>
 </div>
@@ -206,18 +224,107 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00026">26</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   27</span>        {</div>
-<div class="line"><span class="lineno">   28</span>            <span class="keywordflow">if</span> (this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514">timing</a>.<a class="code hl_function" href="classecs_1_1Timing.html#a2e79ef06cf5ce82f9dedf40891b45934">ShouldUpdate</a>() &amp;&amp; this-&gt;callback)</div>
-<div class="line"><span class="lineno">   29</span>            {</div>
-<div class="line"><span class="lineno">   30</span>                this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a>();</div>
-<div class="line"><span class="lineno">   31</span>                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><span class="lineno">   32</span>            }</div>
-<div class="line"><span class="lineno">   33</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><span class="lineno">   34</span>        }</div>
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00033">33</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   34</span>        {</div>
+<div class="line"><span class="lineno">   35</span>            <span class="keywordflow">if</span> (this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514">timing</a>.<a class="code hl_function" href="classecs_1_1Timing.html#a2e79ef06cf5ce82f9dedf40891b45934">ShouldUpdate</a>() &amp;&amp; this-&gt;callback)</div>
+<div class="line"><span class="lineno">   36</span>            {</div>
+<div class="line"><span class="lineno">   37</span>                this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a>();</div>
+<div class="line"><span class="lineno">   38</span>                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">   39</span>            }</div>
+<div class="line"><span class="lineno">   40</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">   41</span>        }</div>
 <div class="ttc" id="aclassecs_1_1Timing_html_a2e79ef06cf5ce82f9dedf40891b45934"><div class="ttname"><a href="classecs_1_1Timing.html#a2e79ef06cf5ce82f9dedf40891b45934">ecs::Timing::ShouldUpdate</a></div><div class="ttdeci">bool ShouldUpdate()</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00019">Timing.hpp:19</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="System_8hpp_source.html#l00040">callback</a>, <a class="el" href="Timing_8hpp_source.html#l00019">ecs::Timing::ShouldUpdate()</a>, and <a class="el" href="System_8hpp_source.html#l00039">timing</a>.</p>
+<p class="reference">References <a class="el" href="System_8hpp_source.html#l00057">callback</a>, <a class="el" href="Timing_8hpp_source.html#l00019">ecs::Timing::ShouldUpdate()</a>, and <a class="el" href="System_8hpp_source.html#l00056">timing</a>.</p>
+
+</div>
+</div>
+<a id="af3851ced4fa0171446888050f9584127" name="af3851ced4fa0171446888050f9584127"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3851ced4fa0171446888050f9584127">&#9670;&#160;</a></span>due()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ecs::Timer::due </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00048">48</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   49</span>        {</div>
+<div class="line"><span class="lineno">   50</span>            <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514">timing</a>.<a class="code hl_function" href="classecs_1_1Timing.html#a2e79ef06cf5ce82f9dedf40891b45934">ShouldUpdate</a>() &amp;&amp; this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a>;</div>
+<div class="line"><span class="lineno">   51</span>        }</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="System_8hpp_source.html#l00057">callback</a>, <a class="el" href="Timing_8hpp_source.html#l00019">ecs::Timing::ShouldUpdate()</a>, and <a class="el" href="System_8hpp_source.html#l00056">timing</a>.</p>
+
+</div>
+</div>
+<a id="a36429005e7d9569ab72cc5f28cbe60a6" name="a36429005e7d9569ab72cc5f28cbe60a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36429005e7d9569ab72cc5f28cbe60a6">&#9670;&#160;</a></span>fire()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecs::Timer::fire </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00052">52</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   53</span>        {</div>
+<div class="line"><span class="lineno">   54</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a>();</div>
+<div class="line"><span class="lineno">   55</span>        }</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="System_8hpp_source.html#l00057">callback</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Symbol Documentation</h2>
+<a id="aede93b803be028a06b9d42179b0b8897" name="aede93b803be028a06b9d42179b0b8897"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aede93b803be028a06b9d42179b0b8897">&#9670;&#160;</a></span>ecs::System</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classecs_1_1System.html">ecs::System</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00046">46</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
 
 </div>
 </div>
@@ -242,9 +349,35 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00040">40</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00057">57</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="System_8hpp_source.html#l00026">CallbackRun()</a>, and <a class="el" href="System_8hpp_source.html#l00015">Timer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="System_8hpp_source.html#l00033">CallbackRun()</a>, <a class="el" href="System_8hpp_source.html#l00048">due()</a>, <a class="el" href="System_8hpp_source.html#l00052">fire()</a>, and <a class="el" href="System_8hpp_source.html#l00022">Timer()</a>.</p>
+
+</div>
+</div>
+<a id="a7cd445c83e967ef0ce23ef47a9fb5bcf" name="a7cd445c83e967ef0ce23ef47a9fb5bcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7cd445c83e967ef0ce23ef47a9fb5bcf">&#9670;&#160;</a></span>discarded</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ecs::Timer::discarded = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00047">47</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="System_8cpp_source.html#l00100">ecs::System::TimerClear()</a>, and <a class="el" href="System_8cpp_source.html#l00045">ecs::System::timerWalkFinish()</a>.</p>
 
 </div>
 </div>
@@ -260,9 +393,9 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00035">35</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00042">42</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="System_8hpp_source.html#l00015">Timer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="System_8hpp_source.html#l00022">Timer()</a>, and <a class="el" href="System_8cpp_source.html#l00100">ecs::System::TimerClear()</a>.</p>
 
 </div>
 </div>
@@ -278,7 +411,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00036">36</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00043">43</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
 
 </div>
 </div>
@@ -302,9 +435,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00039">39</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="System_8hpp_source.html#l00056">56</a> of file <a class="el" href="System_8hpp_source.html">System.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="System_8hpp_source.html#l00026">CallbackRun()</a>, and <a class="el" href="System_8hpp_source.html#l00015">Timer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="System_8hpp_source.html#l00033">CallbackRun()</a>, <a class="el" href="System_8hpp_source.html#l00048">due()</a>, and <a class="el" href="System_8hpp_source.html#l00022">Timer()</a>.</p>
 
 </div>
 </div>
@@ -314,7 +447,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 2 2026 21:08:48 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Oct 2 2026 22:14:38 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

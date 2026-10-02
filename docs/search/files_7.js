@@ -5,5 +5,6 @@ var searchData=
   ['test_5fmanager_2ecpp_2',['test_Manager.cpp',['../test__Manager_8cpp.html',1,'']]],
   ['test_5fsystem_2ecpp_3',['test_System.cpp',['../test__System_8cpp.html',1,'']]],
   ['test_5ftiming_2ecpp_4',['test_Timing.cpp',['../test__Timing_8cpp.html',1,'']]],
-  ['timing_2ehpp_5',['Timing.hpp',['../Timing_8hpp.html',1,'']]]
+  ['test_5fupdateallocation_2ecpp_5',['test_UpdateAllocation.cpp',['../test__UpdateAllocation_8cpp.html',1,'']]],
+  ['timing_2ehpp_6',['Timing.hpp',['../Timing_8hpp.html',1,'']]]
 ];

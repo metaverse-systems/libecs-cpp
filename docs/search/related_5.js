@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wide_5fstring_5finput_5fhelper_0',['wide_string_input_helper',['../classnlohmann_1_1detail_1_1iterator__input__adapter.html#ab86106ba230f1542b94dcd96e6ab3221',1,'nlohmann::detail::iterator_input_adapter']]]
+  ['swap_0',['swap',['../classnlohmann_1_1basic__json.html#aee0ae36cbfb0336832ebc0374c3c7679',1,'nlohmann::basic_json']]]
 ];

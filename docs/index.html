@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.1.2</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.2.0</span>
    </div>
   </td>
  </tr>
@@ -120,6 +120,74 @@ Build library</h1>
 </ul>
 <div class="fragment"><div class="line">./src/example</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
+Changing systems and timers while they run</h1>
+<p>Systems and timers can be added, removed and cleared from inside <code>Initialize()</code>, <code>Update()</code> and timer callbacks. The rules below describe what happens.</p>
+<h2><a class="anchor" id="autotoc_md4"></a>
+Terms</h2>
+<ul>
+<li>A <b>walk</b> is the start-up sequence (<code>Container::SystemsInitialize()</code>), an update pass (<code>Container::Update()</code>), or one system's timer walk (the part of <code>System::UpdateSystem()</code> that fires due timers before the system's own <code>Update()</code>).</li>
+<li>The <b>effect point</b> of a container walk is the moment it returns, normally or because a system threw.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md5"></a>
+Removing systems</h2>
+<ul>
+<li><code>SystemDestroy</code>, <code>EntityDestroy</code> and <code>ComponentDestroy</code> accept any identifier, including a field of the object being removed, such as <code>SystemDestroy(system-&gt;Handle)</code>.</li>
+<li>An identifier that is not registered, including <code>""</code>, is a silent no-op. Removing a system twice releases it once.</li>
+<li>A removed system stops being part of the world when the call returns: it is not in <code>Systems</code>, is not exported, cannot receive messages, and is never started, updated or timer-walked again, even later in the same pass. Its identifier may be registered again at once.</li>
+<li>A system removed during a walk, or from inside its own timer walk, stays in memory until the effect point. Code running inside it may finish, but must not use the system after the walk ends. A system removed from its own timer walk in a direct <code>UpdateSystem()</code> call stays in memory until the end of the next container walk or until the container is destroyed. A system removed outside any walk is destroyed at once.</li>
+<li>If a timer callback removes its own system, no further timers of that system fire and its <code>Update()</code> does not run in that pass.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md6"></a>
+Adding systems</h2>
+<ul>
+<li><code>Container::System()</code> registers the system at once; it is in <code>Systems</code> when the call returns.</li>
+<li>A system registered during an update pass is not updated in that pass. A system registered during start-up does not get <code>Initialize()</code> from that sequence. In both cases it is updated from the next pass, after every system registered before it.</li>
+<li>A system registered under the identifier of a system removed in the same pass is a new system. It goes to the end of the order, is not updated in that pass, and is not affected when the removed system is released.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md7"></a>
+Order</h2>
+<ul>
+<li>Systems are updated in registration order, each at most once per pass. Adding or removing systems never changes the relative order of the others.</li>
+<li>An update pass in which nothing is added or removed allocates no memory and does not copy the system list.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md8"></a>
+Timers</h2>
+<ul>
+<li>A timer callback may call <code>TimerAdd</code> on its own system or on any other system of the same world. A timer added to a system during that system's timer walk does not fire in that walk; it is considered from the system's next update.</li>
+<li>A timer callback may call <code>TimerClear(name)</code> on its own system, including for its own name. Every timer with that name is cancelled, and a cancelled timer that has not been reached yet does not fire.</li>
+<li>After a timer walk, exactly the one-shot timers that fired in it are removed. A one-shot timer that adds a new timer with its own name keeps the new timer.</li>
+<li>Cancelling and then adding the same name in one callback leaves exactly the new timer. Adding and then cancelling removes both.</li>
+<li>Timer changes made by a callback take effect before the system's own <code>Update()</code> runs in the same pass. <code>TimerAdd</code> and <code>TimerClear</code> called from <code>Update()</code> itself take effect at once.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md9"></a>
+Failures</h2>
+<ul>
+<li>If <code>Initialize()</code>, <code>Update()</code> or a timer callback throws, the error is logged at level <code>error</code> with the system's registered identifier and rethrown to the caller of <code>Update()</code> or <code>SystemsInitialize()</code>. On a world's own thread the exception is caught at the thread boundary and the manager is asked to shut down.</li>
+<li>Before the exception leaves the walk, every change requested in it completes. Timer additions and cancellations made before the failure are kept, every one-shot timer that fired (including the one whose callback threw) is removed, timers not yet reached do not fire, systems removed earlier stay removed and are released once, and systems added earlier stay registered. A caller that catches the exception and calls <code>Update()</code> again sees a consistent world.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md10"></a>
+Examples</h2>
+<ul>
+<li><b>One-shot re-arm under the same name.</b> A one-shot timer named <code>retry</code> fires and calls <code>TimerAdd</code> with a new timer named <code>retry</code>. After the walk the fired timer is removed and the new one is kept, so <code>retry</code> fires again later.</li>
+<li><b>Removing a system twice in one pass.</b> A system calls <code>SystemDestroy</code> twice with the same identifier in one pass, either for a sibling or for itself. The first call removes it, the second is a no-op, and the system is released once when the pass returns.</li>
+<li><b>Removing and re-registering an identifier in one pass.</b> A system <code>a</code> is removed and a new system is registered as <code>a</code> in the same pass. The new system is not updated in that pass, goes to the end of the order, and is updated from the next pass. Releasing the old one at the end of the pass does not touch it.</li>
+<li><b>A callback that changes timers and then throws.</b> A callback calls <code>TimerAdd</code> for a timer <code>x</code>, <code>TimerClear</code> for a timer <code>y</code>, and then throws. The exception reaches the caller of <code>Update()</code>, but <code>x</code> is kept, <code>y</code> is gone, the callback's own one-shot timer is removed, and timers after it did not fire.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md11"></a>
+Not covered</h2>
+<ul>
+<li>Changing a world from any thread other than the one driving its walks.</li>
+<li><code>Container::Export()</code> and the <code>System::Export()</code> overrides it calls are a <code>const</code> query. They must not add or remove systems, entities or components.</li>
+<li>Calling <code>Update()</code> or <code>SystemsInitialize()</code> from inside a walk of the same container is memory safe, but no outcome is defined.</li>
+<li>Notifying systems when they are removed, and starting systems that are added late.</li>
+<li>Registering a second system under an identifier that is still in use. The previous outcome is kept and is memory safe.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md12"></a>
+Release notes</h2>
+<h3><a class="anchor" id="autotoc_md13"></a>
+1.2.0</h3>
+<p>The rules above are now guaranteed. The object layout of <code><a class="el" href="classecs_1_1Container.html">ecs::Container</a></code>, <code><a class="el" href="classecs_1_1System.html">ecs::System</a></code> and <code><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></code> changed (private members only, no public signature changed), so plugins must be rebuilt against the new headers. <code>the-seed build</code> does this.</p>
+<h1><a class="anchor" id="autotoc_md14"></a>
 Running the tests</h1>
 <div class="fragment"><div class="line">./autogen.sh</div>
 <div class="line">./configure</div>
@@ -127,7 +195,7 @@ Running the tests</h1>
 <div class="line">make check</div>
 </div><!-- fragment --><p><code>make check</code> builds and runs every test program in <code>tests/</code> and finishes in a few seconds. Each program prints one <code>PASS:</code> or <code>FAIL:</code> line, followed by a summary (<code># TOTAL</code>, <code># PASS</code>, <code># FAIL</code>, <code># ERROR</code>). The command exits non-zero if any program fails, crashes or cannot start, and the <code>FAIL:</code> line names the program. The full output of each program is in <code>tests/&lt;program&gt;.log</code>, and the combined output of a failing run is in <code>tests/test-suite.log</code>.</p>
 <p>The tests need Catch2 v3 (<code>catch2-with-main</code> in pkg-config), for example <code>sudo apt install catch2</code>.</p>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md15"></a>
 Sanitizer variants</h1>
 <p>Two opt-in variants run the same tests with a sanitizer built in:</p>
 <div class="fragment"><div class="line">make distclean</div>
@@ -139,15 +207,15 @@ Sanitizer variants</h1>
 <div class="line">make</div>
 <div class="line">make check</div>
 </div><!-- fragment --><p><code>address</code> enables AddressSanitizer together with UndefinedBehaviorSanitizer (memory errors, leaks and undefined behavior); <code>thread</code> enables ThreadSanitizer (data races). They correspond to the hosted <code>test (address+undefined)</code> and <code>test (thread)</code> checks. The sanitizer runtime options are fixed in <code>tests/Makefile.am</code>, so a local run behaves the same as the hosted one. Run <code>make distclean</code> before switching variants. Any other value for <code>--enable-sanitizer</code> stops <code>configure</code> with an error.</p>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md16"></a>
 Known gaps</h1>
 <p><code>tests/known-gaps.txt</code> lists sanitizer findings that are already understood and are waiting for a planned fix. Each entry names the sanitizer variant, the test program, the test case, a text that must appear in the failure output, the finding, and the roadmap task that fixes it. The file currently has no entries.</p>
 <p>When a listed test case fails with the listed text, the run passes and prints a <code>KNOWN GAP:</code> line. Any other failure, in a listed or unlisted test case, still fails the run. If a listed test case passes, the run prints a <code>STALE KNOWN GAP:</code> line: remove the entry. If an entry is malformed or names a test case that does not exist, the run fails with a <code>MALFORMED KNOWN GAP:</code> line. Entries are removed when the fix lands; the file is never used to hide a new defect.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md17"></a>
 Continuous integration</h1>
 <p>Every pull request to <code>master</code>, every push to <code>master</code> and every manual run builds the library and runs <code>make check</code> as three separate checks: <code>test (plain)</code>, <code>test (address+undefined)</code> and <code>test (thread)</code>. These runs have read-only access to the repository and no secrets, so proposals from forks are checked the same way as proposals from this repository. A manual run accepts a <code>repeat</code> count to run the tests several times in a row.</p>
 <p>The Doxygen documentation is regenerated and committed only by pushes to <code>master</code>, never by proposals.</p>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md18"></a>
 Build library for Windows</h1>
 <ul>
 <li>Build and install libecs-cpp</li>
@@ -170,7 +238,7 @@ Build library for Windows</h1>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 2 2026 21:08:48 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Oct 2 2026 22:14:38 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
