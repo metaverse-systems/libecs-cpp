@@ -54,33 +54,77 @@ make
 sudo make install
 ```
 
-* Test
+* Run the example
 
 ```
 ./src/example
 ```
 
-## Building with Sanitizers
-
-### AddressSanitizer (memory leaks, buffer overflows)
+## Running the tests
 
 ```
-make distclean
-./configure CXXFLAGS="-fsanitize=address -fno-omit-frame-pointer -g"
+./autogen.sh
+./configure
 make
 make check
 ```
 
-### ThreadSanitizer (data races)
+`make check` builds and runs every test program in `tests/` and finishes in a few seconds. Each
+program prints one `PASS:` or `FAIL:` line, followed by a summary (`# TOTAL`, `# PASS`, `# FAIL`,
+`# ERROR`). The command exits non-zero if any program fails, crashes or cannot start, and the
+`FAIL:` line names the program. The full output of each program is in `tests/<program>.log`, and the
+combined output of a failing run is in `tests/test-suite.log`.
+
+The tests need Catch2 v3 (`catch2-with-main` in pkg-config), for example `sudo apt install catch2`.
+
+## Sanitizer variants
+
+Two opt-in variants run the same tests with a sanitizer built in:
 
 ```
 make distclean
-./configure CXXFLAGS="-fsanitize=thread -g"
+./configure --enable-sanitizer=address
 make
 make check
 ```
 
-### Build library for Windows
+```
+make distclean
+./configure --enable-sanitizer=thread
+make
+make check
+```
+
+`address` enables AddressSanitizer together with UndefinedBehaviorSanitizer (memory errors, leaks and
+undefined behavior); `thread` enables ThreadSanitizer (data races). They correspond to the hosted
+`test (address+undefined)` and `test (thread)` checks. The sanitizer runtime options are fixed in
+`tests/Makefile.am`, so a local run behaves the same as the hosted one. Run `make distclean` before
+switching variants. Any other value for `--enable-sanitizer` stops `configure` with an error.
+
+## Known gaps
+
+`tests/known-gaps.txt` lists sanitizer findings that are already understood and are waiting for a
+planned fix. Each entry names the sanitizer variant, the test program, the test case, a text that must
+appear in the failure output, the finding, and the roadmap task that fixes it. The file currently has
+no entries.
+
+When a listed test case fails with the listed text, the run passes and prints a `KNOWN GAP:` line.
+Any other failure, in a listed or unlisted test case, still fails the run. If a listed test case
+passes, the run prints a `STALE KNOWN GAP:` line: remove the entry. If an entry is malformed or names a
+test case that does not exist, the run fails with a `MALFORMED KNOWN GAP:` line. Entries are removed
+when the fix lands; the file is never used to hide a new defect.
+
+## Continuous integration
+
+Every pull request to `master`, every push to `master` and every manual run builds the library and runs
+`make check` as three separate checks: `test (plain)`, `test (address+undefined)` and `test (thread)`.
+These runs have read-only access to the repository and no secrets, so proposals from forks are checked
+the same way as proposals from this repository. A manual run accepts a `repeat` count to run the tests
+several times in a row.
+
+The Doxygen documentation is regenerated and committed only by pushes to `master`, never by proposals.
+
+## Build library for Windows
 
 * Build and install libecs-cpp
 
@@ -101,3 +145,5 @@ unset PKG_CONFIG_PATH
 export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep posix|head -n1`
 WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib" wine64 src/example.exe
 ```
+
+`make check` in a Windows cross-build builds the test programs (`tests/*.exe`) but does not run them.
