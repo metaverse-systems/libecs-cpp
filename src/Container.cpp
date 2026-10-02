@@ -104,6 +104,33 @@ namespace ecs
             std::erase_if(this->system_order, [](const SystemSlot &slot) { return slot.system == nullptr; });
             this->orderHasGaps = false;
         }
+        if(this->walkDepth == 0 && !this->retiredSystems.empty())
+        {
+            // Release outside any walk, so a destructor that changes systems sees a settled container.
+            std::vector<std::unique_ptr<ecs::System>> released;
+            released.swap(this->retiredSystems);
+        }
+    }
+
+    void Container::systemRetire(std::unique_ptr<ecs::System> system)
+    {
+        ecs::System *ptr = system.get();
+        if(this->walkDepth > 0)
+        {
+            for(auto &slot : this->system_order)
+            {
+                if(slot.system == ptr)
+                {
+                    slot.system = nullptr;
+                    this->orderHasGaps = true;
+                }
+            }
+            this->retiredSystems.push_back(std::move(system));
+        }
+        else
+        {
+            std::erase_if(this->system_order, [ptr](const SystemSlot &slot) { return slot.system == ptr; });
+        }
     }
 
     ecs::System *Container::System(std::unique_ptr<ecs::System> system)
@@ -122,12 +149,12 @@ namespace ecs
                 if(slot.system == old.get()) slot.system = ptr;
             }
             existing->second = std::move(system);
-        }
-        else
-        {
-            this->Systems.emplace(handle, std::move(system));
+            this->system_order.push_back(SystemSlot{handle, ptr});
+            this->systemRetire(std::move(old));
+            return ptr;
         }
 
+        this->Systems.emplace(handle, std::move(system));
         this->system_order.push_back(SystemSlot{handle, ptr});
         return ptr;
     }
@@ -296,19 +323,7 @@ namespace ecs
         std::unique_ptr<ecs::System> removed = std::move(found->second);
         this->Systems.erase(found);
 
-        ecs::System *ptr = removed.get();
-        if(this->walkDepth > 0)
-        {
-            for(auto &slot : this->system_order)
-            {
-                if(slot.system == ptr) slot.system = nullptr;
-            }
-            this->orderHasGaps = true;
-        }
-        else
-        {
-            std::erase_if(this->system_order, [ptr](const SystemSlot &slot) { return slot.system == ptr; });
-        }
+        this->systemRetire(std::move(removed));
     }
 
     ecs::Uuid Container::UuidGet()

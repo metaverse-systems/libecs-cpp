@@ -4,6 +4,11 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
+#include <algorithm>
+#include <functional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 class TestSystem : public ecs::System
 {
@@ -336,4 +341,450 @@ TEST_CASE("SystemDestroy accepts the handle stored on the system itself", "[Cont
     // The counter lives outside the system because removed systems are released.
     REQUIRE_NOTHROW(container->Update());
     REQUIRE(b->updateCount == 1);
+}
+
+namespace
+{
+    // Everything the walk tests observe lives here, outside the systems,
+    // because removed systems are released while the test is still running.
+    struct WalkLog
+    {
+        std::vector<std::string> updates;
+        std::vector<std::string> inits;
+        std::unordered_map<std::string, int> destroyed;
+
+        int updateCount(const std::string &name) const { return (int)std::count(updates.begin(), updates.end(), name); }
+        int initCount(const std::string &name) const { return (int)std::count(inits.begin(), inits.end(), name); }
+        int destroyCount(const std::string &name) const
+        {
+            auto found = destroyed.find(name);
+            return found == destroyed.end() ? 0 : found->second;
+        }
+    };
+
+    std::string walkHandle(const std::string &name)
+    {
+        return "walk-system-handle-longer-than-32-chars-" + name;
+    }
+
+    class WalkSystem : public ecs::System
+    {
+      public:
+        WalkSystem(WalkLog *log, const std::string &name, const std::string &handle):
+            name(name), log(log)
+        {
+            this->Handle = handle;
+            this->Timing.SetFrequency(0);
+        }
+        ~WalkSystem() override { this->log->destroyed[this->name]++; }
+
+        nlohmann::json Export() const override { return {{"Handle", this->Handle}}; }
+        void Initialize() override
+        {
+            this->log->inits.push_back(this->name);
+            if(this->onInitialize) this->onInitialize(*this);
+        }
+        void Update() override
+        {
+            this->log->updates.push_back(this->name);
+            if(this->onUpdate) this->onUpdate(*this);
+        }
+
+        std::string name;
+        int scratch = 0;
+        std::function<void(WalkSystem &)> onUpdate;
+        std::function<void(WalkSystem &)> onInitialize;
+
+      private:
+        WalkLog *log;
+    };
+
+    WalkSystem *walkAdd(ecs::Container *container, WalkLog &log, const std::string &name,
+                        const std::string &handle = "")
+    {
+        auto system = std::make_unique<WalkSystem>(&log, name, handle.empty() ? walkHandle(name) : handle);
+        return static_cast<WalkSystem *>(container->System(std::move(system)));
+    }
+
+    std::vector<std::string> walkPass(ecs::Container *container, WalkLog &log)
+    {
+        log.updates.clear();
+        container->Update();
+        return log.updates;
+    }
+
+    using Names = std::vector<std::string>;
+}
+
+TEST_CASE("Removing a later system during Update skips it this pass", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    int removals = 0;
+    int destroyedWhileWalking = -1;
+
+    auto a = walkAdd(container, log, "A");
+    walkAdd(container, log, "B");
+    auto c = walkAdd(container, log, "C");
+    a->onUpdate = [&](WalkSystem &self) {
+        if(removals++ == 0) self.Container->SystemDestroy(walkHandle("B"));
+    };
+    c->onUpdate = [&](WalkSystem &) {
+        if(destroyedWhileWalking < 0) destroyedWhileWalking = log.destroyCount("B");
+    };
+
+    REQUIRE(walkPass(container, log) == Names{"A", "C"});
+    REQUIRE(log.updateCount("B") == 0);
+    // Release waits for the end of the pass.
+    REQUIRE(destroyedWhileWalking == 0);
+    REQUIRE(log.destroyCount("B") == 1);
+    REQUIRE_FALSE(container->Systems.contains(walkHandle("B")));
+
+    int allA = 1, allC = 1;
+    for(int i = 0; i < 2; i++)
+    {
+        auto names = walkPass(container, log);
+        allA += (int)std::count(names.begin(), names.end(), "A");
+        allC += (int)std::count(names.begin(), names.end(), "C");
+        REQUIRE(log.updateCount("B") == 0);
+    }
+    REQUIRE(allA == 3);
+    REQUIRE(allC == 3);
+    REQUIRE(log.destroyCount("B") == 1);
+}
+
+TEST_CASE("Removing an earlier system during Update keeps this pass's counts", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    bool removed = false;
+
+    walkAdd(container, log, "A");
+    walkAdd(container, log, "B");
+    auto c = walkAdd(container, log, "C");
+    c->onUpdate = [&](WalkSystem &self) {
+        if(!removed)
+        {
+            removed = true;
+            self.Container->SystemDestroy(walkHandle("A"));
+        }
+    };
+
+    REQUIRE(walkPass(container, log) == Names{"A", "B", "C"});
+    REQUIRE(log.destroyCount("A") == 1);
+    REQUIRE(walkPass(container, log) == Names{"B", "C"});
+    REQUIRE(log.destroyCount("A") == 1);
+}
+
+TEST_CASE("A system can remove itself during its own Update", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    bool removed = false;
+    bool goneInsideUpdate = false;
+    bool handleReadable = false;
+    int destroyedInsideUpdate = -1;
+
+    walkAdd(container, log, "A");
+    auto b = walkAdd(container, log, "B");
+    walkAdd(container, log, "C");
+    b->onUpdate = [&](WalkSystem &self) {
+        if(removed) return;
+        removed = true;
+        self.Container->SystemDestroy(self.Handle);
+        goneInsideUpdate = !self.Container->Systems.contains(walkHandle("B"));
+        handleReadable = (self.Handle == walkHandle("B"));
+        self.scratch = 7;
+        destroyedInsideUpdate = log.destroyCount("B");
+    };
+
+    REQUIRE(walkPass(container, log) == Names{"A", "B", "C"});
+    REQUIRE(goneInsideUpdate);
+    REQUIRE(handleReadable);
+    REQUIRE(destroyedInsideUpdate == 0);
+    REQUIRE(log.destroyCount("B") == 1);
+    REQUIRE_FALSE(container->Systems.contains(walkHandle("B")));
+
+    REQUIRE_FALSE(container->Export()["Systems"].contains(walkHandle("B")));
+    nlohmann::json message = {{"destination", {{"container", "test-container"}, {"system", walkHandle("B")}}}};
+    REQUIRE_THROWS_AS(container->MessageSubmit(message), std::runtime_error);
+
+    REQUIRE(walkPass(container, log) == Names{"A", "C"});
+    REQUIRE(walkPass(container, log) == Names{"A", "C"});
+    REQUIRE(log.updateCount("B") == 0);
+    REQUIRE(log.destroyCount("B") == 1);
+}
+
+TEST_CASE("Removing a system twice in one pass releases it once", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+
+    SECTION("a sibling removed twice") {
+        bool removed = false;
+        auto a = walkAdd(container, log, "A");
+        walkAdd(container, log, "B");
+        walkAdd(container, log, "C");
+        a->onUpdate = [&](WalkSystem &self) {
+            if(removed) return;
+            removed = true;
+            self.Container->SystemDestroy(walkHandle("B"));
+            self.Container->SystemDestroy(walkHandle("B"));
+        };
+
+        REQUIRE(walkPass(container, log) == Names{"A", "C"});
+        REQUIRE(log.destroyCount("B") == 1);
+        REQUIRE(walkPass(container, log) == Names{"A", "C"});
+        REQUIRE(walkPass(container, log) == Names{"A", "C"});
+        REQUIRE(log.updateCount("B") == 0);
+        REQUIRE(log.destroyCount("B") == 1);
+    }
+
+    SECTION("a system that removes itself twice") {
+        bool removed = false;
+        walkAdd(container, log, "A");
+        auto b = walkAdd(container, log, "B");
+        walkAdd(container, log, "C");
+        b->onUpdate = [&](WalkSystem &self) {
+            if(removed) return;
+            removed = true;
+            self.Container->SystemDestroy(self.Handle);
+            self.Container->SystemDestroy(self.Handle);
+        };
+
+        REQUIRE(walkPass(container, log) == Names{"A", "B", "C"});
+        REQUIRE(log.destroyCount("B") == 1);
+        REQUIRE(walkPass(container, log) == Names{"A", "C"});
+        REQUIRE(walkPass(container, log) == Names{"A", "C"});
+        REQUIRE(log.destroyCount("B") == 1);
+    }
+}
+
+TEST_CASE("Removing and re-registering an identifier in one pass", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    bool done = false;
+    bool pointerMatches = false;
+    int oldDestroyedInside = -1;
+
+    auto a = walkAdd(container, log, "A");
+    walkAdd(container, log, "B");
+    walkAdd(container, log, "C");
+    a->onUpdate = [&](WalkSystem &self) {
+        if(done) return;
+        done = true;
+        self.Container->SystemDestroy(walkHandle("B"));
+        auto *replacement = walkAdd(self.Container, log, "B2", walkHandle("B"));
+        pointerMatches = (self.Container->Systems.at(walkHandle("B")).get() == replacement);
+        oldDestroyedInside = log.destroyCount("B");
+    };
+
+    REQUIRE(walkPass(container, log) == Names{"A", "C"});
+    REQUIRE(pointerMatches);
+    REQUIRE(oldDestroyedInside == 0);
+    REQUIRE(log.destroyCount("B") == 1);
+    REQUIRE(log.destroyCount("B2") == 0);
+    REQUIRE(container->Systems.contains(walkHandle("B")));
+
+    REQUIRE(walkPass(container, log) == Names{"A", "C", "B2"});
+    REQUIRE(walkPass(container, log) == Names{"A", "C", "B2"});
+    REQUIRE(log.destroyCount("B") == 1);
+    REQUIRE(log.destroyCount("B2") == 0);
+}
+
+TEST_CASE("A system registered during Update runs from the next pass", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    bool done = false;
+    bool findable = false;
+    ecs::System *registered = nullptr;
+    ecs::System *found = nullptr;
+
+    auto a = walkAdd(container, log, "A");
+    walkAdd(container, log, "B");
+    a->onUpdate = [&](WalkSystem &self) {
+        if(done) return;
+        done = true;
+        registered = walkAdd(self.Container, log, "N");
+        auto it = self.Container->Systems.find(walkHandle("N"));
+        findable = (it != self.Container->Systems.end());
+        if(findable) found = it->second.get();
+    };
+
+    REQUIRE(walkPass(container, log) == Names{"A", "B"});
+    REQUIRE(findable);
+    REQUIRE(found == registered);
+    REQUIRE(walkPass(container, log) == Names{"A", "B", "N"});
+}
+
+TEST_CASE("A system that fails after removing a sibling", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    bool thrown = false;
+    std::vector<std::pair<std::string, std::string>> logged;
+    container->LoggerSet([&](const std::string &message, const std::string &level) {
+        logged.emplace_back(message, level);
+    });
+
+    auto a = walkAdd(container, log, "A");
+    walkAdd(container, log, "B");
+    walkAdd(container, log, "C");
+    a->onUpdate = [&](WalkSystem &self) {
+        if(thrown) return;
+        thrown = true;
+        self.Container->SystemDestroy(walkHandle("B"));
+        throw std::runtime_error("deliberate failure");
+    };
+
+    log.updates.clear();
+    REQUIRE_THROWS_AS(container->Update(), std::runtime_error);
+    bool errorLogged = false;
+    for(const auto &[message, level] : logged)
+    {
+        if(level == "error" && message.find(walkHandle("A")) != std::string::npos) errorLogged = true;
+    }
+    REQUIRE(errorLogged);
+    REQUIRE_FALSE(container->Systems.contains(walkHandle("B")));
+    REQUIRE(log.destroyCount("B") == 1);
+    REQUIRE(log.updates == Names{"A"});
+
+    REQUIRE_NOTHROW(walkPass(container, log));
+    REQUIRE(log.updates == Names{"A", "C"});
+    REQUIRE(log.destroyCount("B") == 1);
+}
+
+TEST_CASE("Duplicate registration stays memory safe during and outside a pass", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+
+    SECTION("outside a pass") {
+        walkAdd(container, log, "X1", walkHandle("X"));
+        auto *second = walkAdd(container, log, "X2", walkHandle("X"));
+        REQUIRE(log.destroyCount("X1") == 1);
+        REQUIRE(container->Systems.at(walkHandle("X")).get() == second);
+
+        // The handle has two update slots, so the replacement runs twice per pass.
+        walkPass(container, log);
+        REQUIRE(log.updateCount("X2") == 2);
+        walkPass(container, log);
+        REQUIRE(log.updateCount("X2") == 2);
+        REQUIRE(log.updateCount("X1") == 0);
+        REQUIRE(log.destroyCount("X1") == 1);
+        REQUIRE(log.destroyCount("X2") == 0);
+    }
+
+    SECTION("during a pass") {
+        bool done = false;
+        ecs::System *replacement = nullptr;
+        auto a = walkAdd(container, log, "A");
+        walkAdd(container, log, "B");
+        a->onUpdate = [&](WalkSystem &self) {
+            if(done) return;
+            done = true;
+            replacement = walkAdd(self.Container, log, "B2", walkHandle("B"));
+        };
+
+        REQUIRE_NOTHROW(container->Update());
+        REQUIRE(log.destroyCount("B") == 1);
+        REQUIRE(log.destroyCount("B2") == 0);
+        REQUIRE(container->Systems.at(walkHandle("B")).get() == replacement);
+        REQUIRE_NOTHROW(container->Update());
+        REQUIRE(log.destroyCount("B") == 1);
+    }
+}
+
+TEST_CASE("Systems can be added and removed during start-up", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+
+    auto a = walkAdd(container, log, "A");
+    walkAdd(container, log, "B");
+    walkAdd(container, log, "C");
+
+    SECTION("an initializer removes a later system") {
+        a->onInitialize = [](WalkSystem &self) { self.Container->SystemDestroy(walkHandle("B")); };
+
+        REQUIRE_NOTHROW(container->SystemsInitialize());
+        REQUIRE(log.inits == Names{"A", "C"});
+        REQUIRE(log.destroyCount("B") == 1);
+        REQUIRE_FALSE(container->Systems.contains(walkHandle("B")));
+    }
+
+    SECTION("an initializer removes itself") {
+        bool touched = false;
+        int destroyedInside = -1;
+        a->onInitialize = [&](WalkSystem &self) {
+            self.Container->SystemDestroy(self.Handle);
+            self.scratch = 3;
+            touched = (self.Handle == walkHandle("A"));
+            destroyedInside = log.destroyCount("A");
+        };
+
+        REQUIRE_NOTHROW(container->SystemsInitialize());
+        REQUIRE(touched);
+        REQUIRE(destroyedInside == 0);
+        REQUIRE(log.inits == Names{"A", "B", "C"});
+        REQUIRE(log.destroyCount("A") == 1);
+        REQUIRE_FALSE(container->Systems.contains(walkHandle("A")));
+    }
+
+    SECTION("an initializer registers a system") {
+        bool findable = false;
+        a->onInitialize = [&](WalkSystem &self) {
+            walkAdd(self.Container, log, "N");
+            findable = self.Container->Systems.contains(walkHandle("N"));
+        };
+
+        REQUIRE_NOTHROW(container->SystemsInitialize());
+        REQUIRE(findable);
+        REQUIRE(log.inits == Names{"A", "B", "C"});
+        REQUIRE(log.initCount("N") == 0);
+        REQUIRE(walkPass(container, log) == Names{"A", "B", "C", "N"});
+    }
+}
+
+TEST_CASE("A system that fails during start-up after removing a sibling", "[Container]") {
+    // Declared first so it outlives the manager and the systems it releases.
+    WalkLog log;
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+    std::vector<std::pair<std::string, std::string>> logged;
+    container->LoggerSet([&](const std::string &message, const std::string &level) {
+        logged.emplace_back(message, level);
+    });
+
+    auto a = walkAdd(container, log, "A");
+    walkAdd(container, log, "B");
+    walkAdd(container, log, "C");
+    a->onInitialize = [](WalkSystem &self) {
+        self.Container->SystemDestroy(walkHandle("B"));
+        throw std::runtime_error("deliberate failure");
+    };
+
+    REQUIRE_THROWS_AS(container->SystemsInitialize(), std::runtime_error);
+    bool errorLogged = false;
+    for(const auto &[message, level] : logged)
+    {
+        if(level == "error" && message.find(walkHandle("A")) != std::string::npos) errorLogged = true;
+    }
+    REQUIRE(errorLogged);
+    REQUIRE(log.inits == Names{"A"});
+    REQUIRE(log.destroyCount("B") == 1);
+    REQUIRE_FALSE(container->Systems.contains(walkHandle("B")));
+
+    REQUIRE(walkPass(container, log) == Names{"A", "C"});
 }

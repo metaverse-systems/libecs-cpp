@@ -62,6 +62,9 @@ namespace ecs
         uint32_t walkDepth = 0;
         bool orderHasGaps = false;
         void walkFinish();
+        /*! Systems removed during a walk. They are released when the outermost walk ends. Declared after Systems so they are destroyed first. */
+        std::vector<std::unique_ptr<ecs::System>> retiredSystems;
+        void systemRetire(std::unique_ptr<ecs::System> system);
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleepInterval = 1000000 / 30;
 
