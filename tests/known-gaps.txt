@@ -1,0 +1,29 @@
+# Sanitizer failures that are tolerated for now because a defect recorded in a
+# review causes them. Every entry is temporary: the roadmap task named in the
+# entry removes it when it fixes the defect.
+#
+# Format: one entry per line, six fields separated by " | " (space, bar, space).
+# Leading and trailing spaces of each field are trimmed. No field may contain "|".
+# Blank lines and lines starting with "#" are ignored.
+#
+# variant | program | test case | signature | finding | fixed by
+#
+# variant    address or thread ("plain" and anything else is malformed)
+# program    basename of a program in check_PROGRAMS
+# test case  exact Catch2 test-case name (escape Catch2 special characters with \)
+# signature  fixed substring expected in the sanitizer output, for example
+#            heap-use-after-free or data race; never empty and never a bare
+#            sanitizer name (AddressSanitizer, ThreadSanitizer, runtime error)
+# finding    review reference: <review file stem> finding <N>
+# fixed by   <roadmap file stem>: <task title>
+#
+# Policy:
+#  1. List only a failure that a test reproduces and that a defect already
+#     recorded in a review causes. Fix every other failure instead.
+#  2. (variant, program, test case) is unique.
+#  3. An entry covers one test case and one signature. The rest of the program,
+#     and any other error in that test case, still fails the run.
+#  4. A malformed entry, or one whose test case matches nothing, fails the run.
+#  5. When a run reports an entry as STALE, remove it in the change that fixed it.
+#  6. No suppression files, sanitizer blacklists, [!mayfail] tags or disabled
+#     test cases. This file is the only allowance.

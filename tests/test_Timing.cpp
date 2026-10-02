@@ -7,44 +7,32 @@
 
 using namespace ecs;
 
-// T1b: Remainder-carry keeps drift-free average under jittered steps.
-// Simulate a 30 Hz sampling grid (33333 µs) with a game cadence of ~109850 µs (9.10 Hz tier).
-// Without remainder-carry, the average fires would be ~17% slow on this grid.
+// With a 109850 us interval sampled on a 30 Hz grid (33333 us), each fire must
+// advance the schedule by whole intervals rather than reset it to the current
+// time. Sampling for about two seconds against absolute deadlines, the number
+// of fires must match the number of whole intervals that really elapsed (within
+// one). Losing the remainder on each fire would make the count about 17% low.
 TEST_CASE("Timing remainder-carry keeps drift-free average", "[timing][T1b]")
 {
-    // ~109850 µs ≈ 9.10 Hz (gameSpeed 4-6 tier)
     constexpr uint32_t freq = 109850;
+    constexpr int64_t step = 33333;
+    constexpr int steps = 60;
     Timing timing(freq);
 
-    // Simulate 30 Hz sampling: advance a fake clock by 33333 µs each step.
-    // We can't mock the clock, so we measure real behavior with small sleeps.
-    // Instead, we use a mathematical approach: check that the carry logic
-    // advances by multiples of freq, not to 'now'.
-
-    // Verify the core property: after a fire, lastUpdateTime advances by
-    // N * freq (where N = elapsed / freq), not to current_time.
-    // We can't inspect lastUpdateTime directly (private), but we can
-    // observe the behavior: with remainder-carry, the long-run average
-    // should be very close to the target frequency.
-
-    // Practical test: fire a known number of times and measure wall time.
-    constexpr int iterations = 50;
     auto start = std::chrono::steady_clock::now();
     int fires = 0;
-    for (int i = 0; i < iterations; ++i)
+    for (int i = 0; i < steps; ++i)
     {
+        std::this_thread::sleep_until(start + std::chrono::microseconds(i * step));
         if (timing.ShouldUpdate())
             ++fires;
-        std::this_thread::sleep_for(std::chrono::microseconds(freq));
     }
     auto end = std::chrono::steady_clock::now();
-    double elapsed_us = std::chrono::duration<double, std::micro>(end - start).count();
-    double actual_hz = fires / (elapsed_us / 1e6);
-    double target_hz = 1e6 / freq;
+    int64_t elapsed_us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    int64_t expected = elapsed_us / freq;
 
-    // Should be within 25% (generous bound for test environment jitter)
-    REQUIRE(actual_hz > target_hz * 0.75);
-    REQUIRE(actual_hz < target_hz * 1.25);
+    REQUIRE(fires >= expected - 1);
+    REQUIRE(fires <= expected + 1);
 }
 
 // T1c: Stall clamp fires once and snaps forward on a large gap.
