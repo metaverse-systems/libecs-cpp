@@ -147,3 +147,5 @@ WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/li
 ```
 
 `make check` in a Windows cross-build builds the test programs (`tests/*.exe`) but does not run them.
+For it to find the Windows build of Catch2, keep `PKG_CONFIG_PATH` set to the prefix's `lib/pkgconfig`
+and `share/pkgconfig` directories while running `configure` and `make check`.

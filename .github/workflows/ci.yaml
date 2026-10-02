@@ -100,7 +100,7 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
           if [ -f tests/test-suite.log ]; then
-            grep -E '^(FAIL|ERROR): ' tests/test-suite.log | sort -u | while read -r line; do
+            grep -E '^(FAIL|ERROR): [^ ]+$' tests/test-suite.log | sort -u | while read -r line; do
               echo "::error::$line"
               echo "- $line" >> "$GITHUB_STEP_SUMMARY"
             done
