@@ -114,13 +114,13 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a65d8e52ca4fcf97fb2a347667252da26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a393ffe8ba4eccbe8b844d34838511155" id="r_a393ffe8ba4eccbe8b844d34838511155"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">mutexContainers</a></td></tr>
 <tr class="separator:a393ffe8ba4eccbe8b844d34838511155"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a28dbb7d68a57baefe821666934f18d" id="r_a9a28dbb7d68a57baefe821666934f18d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Manager.html#a9a28dbb7d68a57baefe821666934f18d">running</a> = true</td></tr>
-<tr class="separator:a9a28dbb7d68a57baefe821666934f18d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a717de0ef5db5706cebae03ebe449773c" id="r_a717de0ef5db5706cebae03ebe449773c"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Manager.html#a717de0ef5db5706cebae03ebe449773c">running</a> = true</td></tr>
+<tr class="separator:a717de0ef5db5706cebae03ebe449773c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Manages containers. </p>
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00017">17</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00018">18</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a752c44853b64f2ae4807f882bc2e7cbe" name="a752c44853b64f2ae4807f882bc2e7cbe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a752c44853b64f2ae4807f882bc2e7cbe">&#9670;&#160;</a></span>Manager()</h2>
@@ -218,7 +218,7 @@ Private Attributes</h2></td></tr>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00036">containerCreate()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="bench__entity__creation_8cpp_source.html#l00005">main()</a>, <a class="el" href="test__Container_8cpp_source.html#l00189">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00074">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00084">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00097">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00177">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00048">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00034">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00069">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00058">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00041">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00028">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00108">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00026">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00044">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00164">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00125">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00114">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00139">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00152">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00265">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00215">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00228">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00199">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00256">TEST_CASE()</a>, and <a class="el" href="test__Container_8cpp_source.html#l00209">TEST_CASE()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="bench__entity__creation_8cpp_source.html#l00005">main()</a>, <a class="el" href="test__Container_8cpp_source.html#l00199">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00074">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00084">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00097">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00187">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00048">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00034">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00069">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00058">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00041">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00028">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00108">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00026">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00044">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00174">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00125">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00114">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00139">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00147">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00160">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00262">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00225">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00209">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00253">TEST_CASE()</a>, and <a class="el" href="test__Container_8cpp_source.html#l00219">TEST_CASE()</a>.</p>
 
 </div>
 </div>
@@ -255,10 +255,10 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   42</span>        }</div>
 <div class="line"><span class="lineno">   43</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>[handle].get();</div>
 <div class="line"><span class="lineno">   44</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a393ffe8ba4eccbe8b844d34838511155"><div class="ttname"><a href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">ecs::Manager::mutexContainers</a></div><div class="ttdeci">std::mutex mutexContainers</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00031">Manager.hpp:31</a></div></div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a65d8e52ca4fcf97fb2a347667252da26"><div class="ttname"><a href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">ecs::Manager::containers</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::unique_ptr&lt; ecs::Container &gt; &gt; containers</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00030">Manager.hpp:30</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a393ffe8ba4eccbe8b844d34838511155"><div class="ttname"><a href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">ecs::Manager::mutexContainers</a></div><div class="ttdeci">std::mutex mutexContainers</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00032">Manager.hpp:32</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a65d8e52ca4fcf97fb2a347667252da26"><div class="ttname"><a href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">ecs::Manager::containers</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::unique_ptr&lt; ecs::Container &gt; &gt; containers</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00031">Manager.hpp:31</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00030">containers</a>, and <a class="el" href="Manager_8hpp_source.html#l00031">mutexContainers</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00031">containers</a>, and <a class="el" href="Manager_8hpp_source.html#l00032">mutexContainers</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00021">Container()</a>, and <a class="el" href="Manager_8cpp_source.html#l00016">Container()</a>.</p>
 
@@ -289,7 +289,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   53</span>        <span class="keywordflow">return</span> handles;</div>
 <div class="line"><span class="lineno">   54</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00030">containers</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00031">containers</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="test__Manager_8cpp_source.html#l00026">TEST_CASE()</a>, and <a class="el" href="test__Manager_8cpp_source.html#l00021">TEST_CASE()</a>.</p>
 
@@ -312,13 +312,13 @@ Private Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00026">26</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   27</span>    {</div>
-<div class="line"><span class="lineno">   28</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classecs_1_1Manager.html#a9a28dbb7d68a57baefe821666934f18d">running</a>;</div>
+<div class="line"><span class="lineno">   28</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a717de0ef5db5706cebae03ebe449773c">running</a>;</div>
 <div class="line"><span class="lineno">   29</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a9a28dbb7d68a57baefe821666934f18d"><div class="ttname"><a href="classecs_1_1Manager.html#a9a28dbb7d68a57baefe821666934f18d">ecs::Manager::running</a></div><div class="ttdeci">bool running</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00032">Manager.hpp:32</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a717de0ef5db5706cebae03ebe449773c"><div class="ttname"><a href="classecs_1_1Manager.html#a717de0ef5db5706cebae03ebe449773c">ecs::Manager::running</a></div><div class="ttdeci">std::atomic&lt; bool &gt; running</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00033">Manager.hpp:33</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00032">running</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00033">running</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="test__Manager_8cpp_source.html#l00038">TEST_CASE()</a>, and <a class="el" href="test__Manager_8cpp_source.html#l00033">TEST_CASE()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="test__Manager_8cpp_source.html#l00038">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00033">TEST_CASE()</a>, and <a class="el" href="test__Container_8cpp_source.html#l00160">TEST_CASE()</a>.</p>
 
 </div>
 </div>
@@ -351,7 +351,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   66</span>    }</div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html_af1650e004db368459b3c0db041b32adc"><div class="ttname"><a href="classnlohmann_1_1basic__json.html#af1650e004db368459b3c0db041b32adc">nlohmann::basic_json::get</a></div><div class="ttdeci">auto get() const noexcept(noexcept(std::declval&lt; const basic_json_t &amp; &gt;().template get_impl&lt; ValueType &gt;(detail::priority_tag&lt; 4 &gt; {}))) -&gt; decltype(std::declval&lt; const basic_json_t &amp; &gt;().template get_impl&lt; ValueType &gt;(detail::priority_tag&lt; 4 &gt; {}))</div><div class="ttdoc">get a (pointer) value (explicit)</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l18898">json.hpp:18898</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00030">containers</a>, and <a class="el" href="json_8hpp_source.html#l18898">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;::get()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00031">containers</a>, and <a class="el" href="json_8hpp_source.html#l18898">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;::get()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="test__Manager_8cpp_source.html#l00044">TEST_CASE()</a>.</p>
 
@@ -374,12 +374,12 @@ Private Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00031">31</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   32</span>    {</div>
-<div class="line"><span class="lineno">   33</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a9a28dbb7d68a57baefe821666934f18d">running</a> = <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">   33</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a717de0ef5db5706cebae03ebe449773c">running</a> = <span class="keyword">false</span>;</div>
 <div class="line"><span class="lineno">   34</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00032">running</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00033">running</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="test__Manager_8cpp_source.html#l00038">TEST_CASE()</a>, and <a class="el" href="Manager_8cpp_source.html#l00011">~Manager()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="test__Manager_8cpp_source.html#l00038">TEST_CASE()</a>, <a class="el" href="Container_8cpp_source.html#l00138">ecs::Container::threadFunc()</a>, and <a class="el" href="Manager_8cpp_source.html#l00011">~Manager()</a>.</p>
 
 </div>
 </div>
@@ -404,7 +404,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00030">30</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00031">31</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00036">containerCreate()</a>, <a class="el" href="Manager_8cpp_source.html#l00046">ContainersGet()</a>, and <a class="el" href="Manager_8cpp_source.html#l00056">MessageSubmit()</a>.</p>
 
@@ -430,14 +430,14 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00031">31</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00032">32</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00036">containerCreate()</a>.</p>
 
 </div>
 </div>
-<a id="a9a28dbb7d68a57baefe821666934f18d" name="a9a28dbb7d68a57baefe821666934f18d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a28dbb7d68a57baefe821666934f18d">&#9670;&#160;</a></span>running</h2>
+<a id="a717de0ef5db5706cebae03ebe449773c" name="a717de0ef5db5706cebae03ebe449773c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a717de0ef5db5706cebae03ebe449773c">&#9670;&#160;</a></span>running</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -446,7 +446,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool ecs::Manager::running = true</td>
+          <td class="memname">std::atomic&lt;bool&gt; ecs::Manager::running = true</td>
         </tr>
       </table>
   </td>
@@ -456,7 +456,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00032">32</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00033">33</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00026">IsRunning()</a>, and <a class="el" href="Manager_8cpp_source.html#l00031">Shutdown()</a>.</p>
 
@@ -469,7 +469,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 2 2026 16:21:45 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Oct 2 2026 19:30:14 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
