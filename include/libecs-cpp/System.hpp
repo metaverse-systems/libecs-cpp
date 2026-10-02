@@ -47,7 +47,7 @@ namespace ecs
         bool discarded = false;
         bool due()
         {
-            return this->callback && this->timing.ShouldUpdate();
+            return this->timing.ShouldUpdate() && this->callback;
         }
         void fire()
         {
@@ -73,8 +73,9 @@ namespace ecs
          * not fire in it. A timer cleared during the walk and not yet reached does not fire. After the
          * walk, exactly the one-shot timers that fired are removed, and the timer changes made by
          * callbacks take effect before Update() runs. If a callback removes its own system, no further
-         * timers fire and Update() is not called. If a callback throws, the error is logged with the
-         * system's identifier and rethrown after the timer changes have completed.
+         * timers fire and Update() is not called. If a callback throws, the error is rethrown after the timer
+         * changes have completed. When the pass is run by Container::Update(), the container also logs it
+         * with the system's identifier.
          */
         void UpdateSystem();
         std::string Handle;

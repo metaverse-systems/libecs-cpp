@@ -136,9 +136,9 @@ callbacks. The rules below describe what happens.
 * **One-shot re-arm under the same name.** A one-shot timer named `retry` fires and calls
   `TimerAdd` with a new timer named `retry`. After the walk the fired timer is removed and the new one is
   kept, so `retry` fires again later.
-* **Removing a system twice in one pass.** A system calls `SystemDestroy` on itself, and a second system
-  also calls `SystemDestroy` with the same identifier later in the pass. The first call removes it, the
-  second is a no-op, and the system is released once when the pass returns.
+* **Removing a system twice in one pass.** A system calls `SystemDestroy` twice with the same identifier
+  in one pass, either for a sibling or for itself. The first call removes it, the second is a no-op, and
+  the system is released once when the pass returns.
 * **Removing and re-registering an identifier in one pass.** A system `a` is removed and a new system is
   registered as `a` in the same pass. The new system is not updated in that pass, goes to the end of the
   order, and is updated from the next pass. Releasing the old one at the end of the pass does not touch it.
