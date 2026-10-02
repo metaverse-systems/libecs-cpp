@@ -194,13 +194,15 @@ namespace ecs
 
     void Container::EntityDestroy(const std::string &handle)
     {
-        if(!this->Entities.contains(handle)) return;
+        // Copy first: the caller's string may be a field of the object being removed.
+        const std::string target = handle;
+        if(!this->Entities.contains(target)) return;
 
         for(auto &[type, components] : this->Components)
         {
-            components.erase(handle);
+            components.erase(target);
         }
-        this->Entities.erase(handle);
+        this->Entities.erase(target);
     }
 
     void Container::ResourceAdd(const std::string &name, ecs::Resource r)
@@ -229,17 +231,22 @@ namespace ecs
 
     void Container::ComponentDestroy(const std::string &entity, const std::string &type)
     {
-        if(!this->Components.contains(type) || !this->Components[type].contains(entity)) return;
-        this->Components[type].erase(entity);
+        // Copy first: the caller's strings may be fields of the component being removed.
+        const std::string target_entity = entity;
+        const std::string target_type = type;
+        if(!this->Components.contains(target_type) || !this->Components[target_type].contains(target_entity)) return;
+        this->Components[target_type].erase(target_entity);
     }
 
     void Container::SystemDestroy(const std::string &handle)
     {
-        if(!this->Systems.contains(handle)) return;
+        // Copy first: the caller's string may be a field of the system being removed.
+        const std::string target = handle;
+        if(!this->Systems.contains(target)) return;
 
         // Remove from both collections
-        this->Systems.erase(handle);
-        auto it = std::find(this->system_order.begin(), this->system_order.end(), handle);
+        this->Systems.erase(target);
+        auto it = std::find(this->system_order.begin(), this->system_order.end(), target);
         if(it != this->system_order.end()) {
             this->system_order.erase(it);
         }

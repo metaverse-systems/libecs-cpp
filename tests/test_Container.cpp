@@ -312,3 +312,28 @@ TEST_CASE("SystemDestroy called during active Update iteration is safe", "[Conta
     REQUIRE_NOTHROW(container->Update());
     REQUIRE(selfishSys->updateCount == 2);
 }
+
+TEST_CASE("SystemDestroy accepts the handle stored on the system itself", "[Container]") {
+    // Removal must not depend on statement order: the identifier lives inside
+    // the object being removed. This may already pass on older code.
+    ecs::Manager manager;
+    auto container = manager.Container("test-container");
+
+    auto sysA = std::make_unique<TestSystem>("system-a-handle-longer-than-thirty-two-characters");
+    auto sysB = std::make_unique<TestSystem>("system-b-handle-longer-than-thirty-two-characters");
+    sysA->Timing.SetFrequency(0);
+    sysB->Timing.SetFrequency(0);
+    auto a = static_cast<TestSystem *>(container->System(std::move(sysA)));
+    auto b = static_cast<TestSystem *>(container->System(std::move(sysB)));
+    const std::string handleA = a->Handle;
+    const std::string handleB = b->Handle;
+
+    container->SystemDestroy(a->Handle);
+
+    REQUIRE_FALSE(container->Systems.contains(handleA));
+    REQUIRE(container->Systems.contains(handleB));
+
+    // The counter lives outside the system because removed systems are released.
+    REQUIRE_NOTHROW(container->Update());
+    REQUIRE(b->updateCount == 1);
+}

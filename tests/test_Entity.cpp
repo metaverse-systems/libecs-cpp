@@ -73,3 +73,90 @@ TEST_CASE("Entity can be destroyed", "[Entity]") {
     entity->Destroy();
     REQUIRE_FALSE(container->Entities.contains(handle));
 }
+
+class OtherComponent : public ecs::Component
+{
+  public:
+    OtherComponent()
+    {
+        this->Type = "OtherComponent";
+    }
+
+    nlohmann::json Export() const
+    {
+        return nlohmann::json::object();
+    }
+};
+
+// The next three cases guard removal that must not depend on statement order.
+// They may already pass on older code.
+TEST_CASE("EntityDestroy accepts the handle stored on the entity itself", "[Entity]") {
+    auto container = ECS->Container();
+    auto entity = container->Entity("entity-one-handle-longer-than-thirty-two-characters");
+    auto other = container->Entity("entity-two-handle-longer-than-thirty-two-characters");
+    const std::string handle = entity->Handle;
+    const std::string otherHandle = other->Handle;
+    entity->Component(new TestComponent());
+    entity->Component(new OtherComponent());
+    other->Component(new TestComponent());
+
+    container->EntityDestroy(entity->Handle);
+
+    REQUIRE_FALSE(container->Entities.contains(handle));
+    REQUIRE_FALSE(container->Components["TestComponent"].contains(handle));
+    REQUIRE_FALSE(container->Components["OtherComponent"].contains(handle));
+    REQUIRE(container->Entities.contains(otherHandle));
+    REQUIRE(container->Components["TestComponent"].contains(otherHandle));
+}
+
+TEST_CASE("Entity Destroy removes the entity and its components", "[Entity]") {
+    auto container = ECS->Container();
+    auto entity = container->Entity("entity-one-handle-longer-than-thirty-two-characters");
+    auto other = container->Entity("entity-two-handle-longer-than-thirty-two-characters");
+    const std::string handle = entity->Handle;
+    const std::string otherHandle = other->Handle;
+    entity->Component(new TestComponent());
+    entity->Component(new OtherComponent());
+    other->Component(new TestComponent());
+
+    entity->Destroy();
+    // `entity` is not touched after this point.
+
+    REQUIRE_FALSE(container->Entities.contains(handle));
+    REQUIRE_FALSE(container->Components["TestComponent"].contains(handle));
+    REQUIRE_FALSE(container->Components["OtherComponent"].contains(handle));
+    REQUIRE(container->Entities.contains(otherHandle));
+    REQUIRE(container->Components["TestComponent"].contains(otherHandle));
+}
+
+TEST_CASE("ComponentDestroy accepts identifiers stored on the component itself", "[Entity]") {
+    auto container = ECS->Container();
+    auto entity = container->Entity("entity-one-handle-longer-than-thirty-two-characters");
+    const std::string handle = entity->Handle;
+
+    // Keep only a raw pointer so the container's map is the sole owner.
+    ecs::Component *c = entity->Component(new TestComponent()).get();
+    entity->Component(new OtherComponent());
+    REQUIRE(container->Components["TestComponent"][handle].get() == c);
+
+    container->ComponentDestroy(c->EntityHandle, c->Type);
+
+    REQUIRE_FALSE(container->Components["TestComponent"].contains(handle));
+    REQUIRE(container->Components["OtherComponent"].contains(handle));
+    REQUIRE(container->Entities.contains(handle));
+}
+
+TEST_CASE("Removing unregistered entities and components is a no-op", "[Entity]") {
+    auto container = ECS->Container();
+    auto entity = container->Entity("entity-one-handle-longer-than-thirty-two-characters");
+    const std::string handle = entity->Handle;
+    entity->Component(new TestComponent());
+
+    REQUIRE_NOTHROW(container->EntityDestroy(""));
+    REQUIRE_NOTHROW(container->ComponentDestroy("unknown-entity-handle-longer-than-thirty-two", "TestComponent"));
+    REQUIRE_NOTHROW(container->ComponentDestroy(handle, "UnknownComponentType"));
+    REQUIRE_NOTHROW(container->ComponentDestroy("", ""));
+
+    REQUIRE(container->Entities.contains(handle));
+    REQUIRE(container->Components["TestComponent"].contains(handle));
+}
