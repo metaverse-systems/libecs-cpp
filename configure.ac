@@ -1,5 +1,5 @@
 AC_PREREQ([2.71])
-AC_INIT([libecs-cpp],[1.1.1],[tim@metaverse.systems],[libecs-cpp],[https://metaverse.systems])
+AC_INIT([libecs-cpp],[1.1.2],[tim@metaverse.systems],[libecs-cpp],[https://metaverse.systems])
 LT_INIT
 AC_CONFIG_SRCDIR([src/Manager.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -25,6 +25,36 @@ AS_IF([test "$builtin_uuid" != "no" ], [
 
 PKG_CHECK_MODULES([UUID], uuid, [], [dont_abort_configure="yes"])
 PKG_CHECK_MODULES([CATCH2], [catch2-with-main])
+
+AC_ARG_ENABLE([sanitizer],
+	AS_HELP_STRING([--enable-sanitizer=@<:@no|address|thread@:>@],
+		[Build the library and tests with a sanitizer [default=no]]),
+	[sanitizer="${enableval}"],
+	[sanitizer="no"])
+
+AS_CASE(["$sanitizer"],
+	[no], [
+		SANITIZER=none
+		SANITIZER_CXXFLAGS=
+		SANITIZER_LDFLAGS=
+	],
+	[address], [
+		SANITIZER=address
+		SANITIZER_CXXFLAGS="-fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer -g -O1"
+		SANITIZER_LDFLAGS="-fsanitize=address,undefined"
+	],
+	[thread], [
+		SANITIZER=thread
+		SANITIZER_CXXFLAGS="-fsanitize=thread -g -O1"
+		SANITIZER_LDFLAGS="-fsanitize=thread"
+	],
+	[AC_MSG_ERROR([invalid value '$sanitizer' for --enable-sanitizer; accepted values are: no, address, thread])])
+
+AC_SUBST([SANITIZER])
+AC_SUBST([SANITIZER_CXXFLAGS])
+AC_SUBST([SANITIZER_LDFLAGS])
+
+AM_CONDITIONAL([CROSS_COMPILING], [test "$cross_compiling" = yes])
 
 AC_CONFIG_FILES([Doxyfile])
 AC_CONFIG_FILES([ecs-cpp.pc])
