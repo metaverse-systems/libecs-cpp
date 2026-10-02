@@ -8,6 +8,7 @@
 namespace ecs
 {
     class Container;
+    class System;
 
     class Timer
     {
@@ -36,6 +37,16 @@ namespace ecs
         bool Repeat;
 
       private:
+        friend class ecs::System;
+        bool discarded = false;
+        bool due()
+        {
+            return this->callback && this->timing.ShouldUpdate();
+        }
+        void fire()
+        {
+            this->callback();
+        }
         ecs::Timing timing;
         std::function<void()> callback = nullptr;
     };
@@ -62,6 +73,13 @@ namespace ecs
         void TimerClear(const std::string &name);
         void TimerAdd(Timer timer);
         void Log(const std::string &message, const std::string &level);
+      private:
+        friend class ecs::Container;
+        uint32_t timerWalkDepth = 0;
+        bool timersDiscarded = false;
+        std::vector<ecs::Timer> timersAdded;
+        bool removed = false;
+        void timerWalkFinish();
       protected:
         std::queue<nlohmann::json> messages;
         std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();

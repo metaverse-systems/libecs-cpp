@@ -125,11 +125,17 @@ namespace ecs
                     this->orderHasGaps = true;
                 }
             }
-            this->retiredSystems.push_back(std::move(system));
         }
         else
         {
             std::erase_if(this->system_order, [ptr](const SystemSlot &slot) { return slot.system == ptr; });
+        }
+
+        if(this->walkDepth > 0 || system->timerWalkDepth > 0)
+        {
+            // Its own timer walk may still be running, so keep it alive and tell that walk to stop.
+            system->removed = true;
+            this->retiredSystems.push_back(std::move(system));
         }
     }
 

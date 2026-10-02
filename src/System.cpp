@@ -17,22 +17,46 @@ namespace ecs
 
     void System::UpdateSystem()
     {
-        std::vector<std::string> timersToRemove;
-        for(auto &timer : this->timers)
+        this->timerWalkDepth++;
+        try
         {
-            if(timer.CallbackRun() && !timer.Repeat)
+            for(size_t i = 0, count = this->timers.size(); i < count && !this->removed; i++)
             {
-                timersToRemove.push_back(timer.Name);
+                // Callbacks may add or cancel timers, so never hold a reference across fire().
+                if(this->timers[i].discarded || !this->timers[i].due()) continue;
+                if(!this->timers[i].Repeat)
+                {
+                    this->timers[i].discarded = true;
+                    this->timersDiscarded = true;
+                }
+                this->timers[i].fire();
             }
         }
-
-        // Remove timers after iteration to avoid modifying container during iteration
-        for(const auto &timerName : timersToRemove)
+        catch(...)
         {
-            this->TimerClear(timerName);
+            this->timerWalkFinish();
+            throw;
         }
+        this->timerWalkFinish();
 
-        this->Update();
+        if(!this->removed) this->Update();
+    }
+
+    void System::timerWalkFinish()
+    {
+        this->timerWalkDepth--;
+        if(this->timerWalkDepth > 0) return;
+
+        if(this->timersDiscarded)
+        {
+            std::erase_if(this->timers, [](const Timer &timer) { return timer.discarded; });
+            this->timersDiscarded = false;
+        }
+        for(auto &timer : this->timersAdded)
+        {
+            this->timers.push_back(std::move(timer));
+        }
+        this->timersAdded.clear();
     }
 
     void System::Configure(const nlohmann::json &/* config */) {}
@@ -75,15 +99,36 @@ namespace ecs
 
     void System::TimerClear(const std::string &name)
     {
-        this->timers.erase(
-            std::remove_if(this->timers.begin(), this->timers.end(),
-                [&name](const Timer &timer) { return timer.Name == name; }),
-            this->timers.end());
+        // Copy first: the caller may pass the name of a timer that is erased here.
+        const std::string target = name;
+        std::erase_if(this->timersAdded, [&target](const Timer &timer) { return timer.Name == target; });
+        if(this->timerWalkDepth > 0)
+        {
+            for(auto &timer : this->timers)
+            {
+                if(timer.Name == target)
+                {
+                    timer.discarded = true;
+                    this->timersDiscarded = true;
+                }
+            }
+        }
+        else
+        {
+            std::erase_if(this->timers, [&target](const Timer &timer) { return timer.Name == target; });
+        }
     }
 
     void System::TimerAdd(Timer timer)
     {
-        this->timers.push_back(timer);
+        if(this->timerWalkDepth > 0)
+        {
+            this->timersAdded.push_back(std::move(timer));
+        }
+        else
+        {
+            this->timers.push_back(std::move(timer));
+        }
     }
 
     void System::Log(const std::string &message, const std::string &level)
