@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.1.1</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.1.2</span>
    </div>
   </td>
  </tr>
@@ -116,25 +116,39 @@ Build library</h1>
 <div class="line">make</div>
 <div class="line">sudo make install</div>
 </div><!-- fragment --><ul>
-<li>Test</li>
+<li>Run the example</li>
 </ul>
 <div class="fragment"><div class="line">./src/example</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
-Building with Sanitizers</h1>
-<h2><a class="anchor" id="autotoc_md4"></a>
-AddressSanitizer (memory leaks, buffer overflows)</h2>
-<div class="fragment"><div class="line">make distclean</div>
-<div class="line">./configure CXXFLAGS=&quot;-fsanitize=address -fno-omit-frame-pointer -g&quot;</div>
+Running the tests</h1>
+<div class="fragment"><div class="line">./autogen.sh</div>
+<div class="line">./configure</div>
 <div class="line">make</div>
 <div class="line">make check</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
-ThreadSanitizer (data races)</h2>
+</div><!-- fragment --><p><code>make check</code> builds and runs every test program in <code>tests/</code> and finishes in a few seconds. Each program prints one <code>PASS:</code> or <code>FAIL:</code> line, followed by a summary (<code># TOTAL</code>, <code># PASS</code>, <code># FAIL</code>, <code># ERROR</code>). The command exits non-zero if any program fails, crashes or cannot start, and the <code>FAIL:</code> line names the program. The full output of each program is in <code>tests/&lt;program&gt;.log</code>, and the combined output of a failing run is in <code>tests/test-suite.log</code>.</p>
+<p>The tests need Catch2 v3 (<code>catch2-with-main</code> in pkg-config), for example <code>sudo apt install catch2</code>.</p>
+<h1><a class="anchor" id="autotoc_md4"></a>
+Sanitizer variants</h1>
+<p>Two opt-in variants run the same tests with a sanitizer built in:</p>
 <div class="fragment"><div class="line">make distclean</div>
-<div class="line">./configure CXXFLAGS=&quot;-fsanitize=thread -g&quot;</div>
+<div class="line">./configure --enable-sanitizer=address</div>
 <div class="line">make</div>
 <div class="line">make check</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
-Build library for Windows</h2>
+</div><!-- fragment --><div class="fragment"><div class="line">make distclean</div>
+<div class="line">./configure --enable-sanitizer=thread</div>
+<div class="line">make</div>
+<div class="line">make check</div>
+</div><!-- fragment --><p><code>address</code> enables AddressSanitizer together with UndefinedBehaviorSanitizer (memory errors, leaks and undefined behavior); <code>thread</code> enables ThreadSanitizer (data races). They correspond to the hosted <code>test (address+undefined)</code> and <code>test (thread)</code> checks. The sanitizer runtime options are fixed in <code>tests/Makefile.am</code>, so a local run behaves the same as the hosted one. Run <code>make distclean</code> before switching variants. Any other value for <code>--enable-sanitizer</code> stops <code>configure</code> with an error.</p>
+<h1><a class="anchor" id="autotoc_md5"></a>
+Known gaps</h1>
+<p><code>tests/known-gaps.txt</code> lists sanitizer findings that are already understood and are waiting for a planned fix. Each entry names the sanitizer variant, the test program, the test case, a text that must appear in the failure output, the finding, and the roadmap task that fixes it. The file currently has no entries.</p>
+<p>When a listed test case fails with the listed text, the run passes and prints a <code>KNOWN GAP:</code> line. Any other failure, in a listed or unlisted test case, still fails the run. If a listed test case passes, the run prints a <code>STALE KNOWN GAP:</code> line: remove the entry. If an entry is malformed or names a test case that does not exist, the run fails with a <code>MALFORMED KNOWN GAP:</code> line. Entries are removed when the fix lands; the file is never used to hide a new defect.</p>
+<h1><a class="anchor" id="autotoc_md6"></a>
+Continuous integration</h1>
+<p>Every pull request to <code>master</code>, every push to <code>master</code> and every manual run builds the library and runs <code>make check</code> as three separate checks: <code>test (plain)</code>, <code>test (address+undefined)</code> and <code>test (thread)</code>. These runs have read-only access to the repository and no secrets, so proposals from forks are checked the same way as proposals from this repository. A manual run accepts a <code>repeat</code> count to run the tests several times in a row.</p>
+<p>The Doxygen documentation is regenerated and committed only by pushes to <code>master</code>, never by proposals.</p>
+<h1><a class="anchor" id="autotoc_md7"></a>
+Build library for Windows</h1>
 <ul>
 <li>Build and install libecs-cpp</li>
 </ul>
@@ -151,11 +165,12 @@ Build library for Windows</h2>
 </ul>
 <div class="fragment"><div class="line">export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep posix|head -n1`</div>
 <div class="line">WINEPATH=&quot;/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib&quot; wine64 src/example.exe</div>
-</div><!-- fragment --> </div></div><!-- PageDoc -->
+</div><!-- fragment --><p><code>make check</code> in a Windows cross-build builds the test programs (<code>tests/*.exe</code>) but does not run them. For it to find the Windows build of Catch2, keep <code>PKG_CONFIG_PATH</code> set to the prefix's <code>lib/pkgconfig</code> and <code>share/pkgconfig</code> directories while running <code>configure</code> and <code>make check</code>. </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 2 2026 19:30:14 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Oct 2 2026 21:08:48 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

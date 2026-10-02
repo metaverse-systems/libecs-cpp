@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['sanitizers_0',['Building with Sanitizers',['../index.html#autotoc_md3',1,'']]],
+  ['sanitizer_20variants_0',['Sanitizer variants',['../index.html#autotoc_md4',1,'']]],
   ['sax_1',['sax',['../classnlohmann_1_1detail_1_1binary__reader.html#aba4d89d9d38235f72f60332d6c385222',1,'nlohmann::detail::binary_reader']]],
   ['sax_5fparse_2',['sax_parse',['../classnlohmann_1_1detail_1_1binary__reader.html#ab4afd9ee276bbb15a0f898061aad94dd',1,'nlohmann::detail::binary_reader::sax_parse()'],['../classnlohmann_1_1detail_1_1parser.html#a073b8313a5194aac3a7d5da0d935788c',1,'nlohmann::detail::parser::sax_parse()'],['../classnlohmann_1_1basic__json.html#a12b382c6407da5543827ce4b24bb5008',1,'nlohmann::basic_json::sax_parse(InputType &amp;&amp;i, SAX *sax, input_format_t format=input_format_t::json, const bool strict=true, const bool ignore_comments=false)'],['../classnlohmann_1_1basic__json.html#ab62241c2694a054818edf2f66d72f113',1,'nlohmann::basic_json::sax_parse(IteratorType first, IteratorType last, SAX *sax, input_format_t format=input_format_t::json, const bool strict=true, const bool ignore_comments=false)'],['../classnlohmann_1_1basic__json.html#aef9ef0a817ecde8bf270653e8706c150',1,'nlohmann::basic_json::sax_parse(detail::span_input_adapter &amp;&amp;i, SAX *sax, input_format_t format=input_format_t::json, const bool strict=true, const bool ignore_comments=false)']]],
   ['sax_5fparse_5finternal_3',['sax_parse_internal',['../classnlohmann_1_1detail_1_1parser.html#a678fdebccc8ddd3242c67b6bce2f8f1a',1,'nlohmann::detail::parser']]],
