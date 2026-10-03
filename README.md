@@ -400,8 +400,9 @@ until the outermost walk ends, and raw pointers to it must not be used after the
 | `EntityHandle` is `""` (world call only) | `component entity handle is empty` | Unchanged. |
 | `EntityHandle` names no entity in the world (never created, destroyed, or misspelled) | `entity "<handle>" does not exist` | Unchanged. |
 
-`Entity::Component()` takes a raw pointer and owns it from the moment of the call, including when the call
-is rejected: the component is then deleted. A null pointer is reported with the entity's name
+Both functions take a `std::unique_ptr<ecs::Component>` by value and nothing else. The world owns the
+component from the moment of the call, including when the call is rejected: the component is then released
+exactly once and the caller's handle is empty. An empty handle is reported with the entity's name
 (`ecs::Entity("handle")::Component()`); the other rejections are made by the world and carry the world's
 name (`ecs::Container("world")::Component()`). Creating an `Entity` with a null container throws
 `ecs::Entity: container is missing`.
@@ -409,6 +410,69 @@ name (`ecs::Container("world")::Component()`). Creating an `Entity` with a null 
 A second component of the same `Type` on the same entity **replaces** the first, so an entity has exactly
 one component of each type. Code that holds a `shared_ptr` to the replaced component keeps a valid object.
 The same type on different entities is kept for each.
+
+## Component access and ownership
+
+The example in `src/example.cpp` is the one-page demonstration of everything in this section: a system
+that walks the positions, reads the velocity of each entity without creating anything, and skips an entity
+that has none.
+
+### Looking a component up
+
+```cpp
+const std::string positionType = "PositionComponent";
+const std::string velocityType = "VelocityComponent";
+
+// the component of one entity, as kind T; empty when there is none
+if(auto velocity = this->Container->ComponentGet<VelocityComponent>(entity, velocityType))
+{
+    velocity->Apply(delta);
+}
+// without a kind, any stored component
+std::shared_ptr<ecs::Component> any = world->ComponentGet(entity, velocityType);
+// the same two calls on an entity, without the entity argument
+bool has = e->ComponentHas(velocityType);
+```
+
+* `ComponentGet<T>(entity, type)` returns a `std::shared_ptr<T>`. It is empty when the entity has no
+  component of that type, when the type has never been used, when the entity is unknown, when either string
+  is empty, and when the stored component is not a `T`. It never throws and never changes the world.
+* `ComponentHas(entity, type)` answers whether a component is stored under that type name. Only the name is
+  compared, so the component's class does not matter. It never throws and never changes the world.
+* Both calls take no lock and, given existing `std::string` arguments, allocate nothing. A short string
+  literal (up to 15 characters) converts without allocating; a longer one allocates, so code that runs
+  every pass should keep its type names in `std::string` constants.
+* The result keeps its object valid if the component is later replaced or removed.
+* The public table `Components[type][entity]` is unchanged and still inserts an empty entry for a type or
+  entity it does not find, as `std::unordered_map::operator[]` does. To read without inserting, use
+  `ComponentGet`, or `find()` or `at()` on the table.
+
+### Attaching a component
+
+```cpp
+auto stored = e->Component(std::make_unique<PositionComponent>(config));
+world->Component(std::move(unique));      // the handle is empty afterwards
+```
+
+The world becomes the sole owner of the component at the call. Raw pointers, the address of an object the
+caller owns, `std::shared_ptr`s and copies of a handle that the caller keeps do not compile. A second
+component of a type replaces the first; holders of the old one keep a valid object. See "Attaching
+components" for the rejected inputs.
+
+### Resources
+
+```cpp
+world->ResourceAdd("tiles", std::move(bytes));   // moved, not copied
+if(auto tiles = world->ResourceGet("tiles"))     // empty when the name is unknown
+{
+    use(tiles->Data);                            // read-only, shared
+}
+```
+
+`ResourceGet` returns a `std::shared_ptr<const ecs::Resource>` that shares the stored bytes without a copy.
+An unknown name gives an empty pointer; nothing is created and nothing is thrown. The data stays valid for
+as long as the pointer is held, even after the resource is replaced or the world is destroyed. Treat a
+resource as read-only once it has been added.
 
 ## Threading
 
@@ -450,6 +514,7 @@ and the update order stay usable from the world thread exactly as before.
 | `Container::Update()`, `SystemsInitialize()` | World thread | One thread at a time. |
 | `Container::System()`, `SystemDestroy()` | World thread | Register with `System()`; routing by handle depends on it. A second system under a used identifier replaces the first. |
 | `Container::Entity()`, `EntityDestroy()`, `Component()`, `ComponentDestroy()` | World thread | |
+| `Container::ComponentGet()`, `ComponentHas()`, `Entity::ComponentGet()`, `Entity::ComponentHas()` | World thread | Take no lock and change nothing. |
 | `Container::ResourceAdd()`, `Resources()`, `ResourceGet()`, `Export()` | World thread | |
 | `Container::Entities`, `Components`, `Systems` | World thread | Public so systems can iterate them. |
 | `Container::~Container()` | Exclusive | Discards pending deferred changes unrun, stops and joins the thread, delivers `Shutdown()` to every started system. |
@@ -558,6 +623,44 @@ thread also stops every world that has its own thread and waits until it has end
 "Start-up, shutdown and stopping". It does not destroy worlds.
 
 ## Release notes
+
+### 1.7.0
+
+Component lookups that do not change the world, a sole-ownership attach and shared read-only resources.
+This is a minor release although several changes are source-incompatible, following the precedent of 1.4.0
+to 1.6.0; the migration of each is below. Plugins that call a changed function must be rebuilt
+(`the-seed build`); plugins that only define a component class and `create_component` keep working without
+a rebuild, because the changed functions are not part of what they call. This was checked by loading both
+kinds of plugin, built against 1.6.0, into 1.7.0: the factory-only plugin loaded and worked, and the plugin
+that called `Entity::Component(new ...)` failed with an undefined symbol.
+
+New:
+
+* `Container::ComponentGet<T>(entity, type)` and `ComponentHas(entity, type)`, and the same two on
+  `Entity` without the entity argument. See "Component access and ownership".
+* `src/example.cpp` no longer reads through the table: it looks velocities up with `ComponentGet` and
+  skips an entity that has none.
+
+Source-incompatible changes and their migration:
+
+| Old | New |
+|---|---|
+| `e->Component(new T(cfg))` | `e->Component(std::make_unique<T>(cfg))` |
+| `e->Component(loader.Create(...).release())` | `e->Component(loader.Create(...))`, passing the `std::unique_ptr` itself |
+| `world->Component(shared)` | `world->Component(std::move(unique))` |
+| `(*Components)["T"][entity]` to read a component | `Container->ComponentGet<T>(entity, "T")`, then test the result for empty |
+| `auto r = world->ResourceGet(name);` (a copy of the bytes, throws for an unknown name) | `auto r = world->ResourceGet(name);` is a `std::shared_ptr<const ecs::Resource>`: test it for empty and read through `->`; an unknown name no longer throws |
+
+* `Entity::Component()` and `Container::Component()` take a `std::unique_ptr<ecs::Component>` by value.
+  The overloads taking a raw pointer and a `std::shared_ptr` are removed, so those forms stop compiling.
+  The caller's handle is empty after the call, and a rejected component is released exactly once. The
+  error texts and the rule that a second component of a type replaces the first are unchanged.
+* `Container::ResourceGet()` is `const` and returns `std::shared_ptr<const ecs::Resource>` without
+  copying the bytes; an unknown name gives an empty pointer instead of an exception. A caller that
+  modified the returned copy must now add a changed resource with `ResourceAdd()`.
+* `Container::ResourceAdd()` moves its argument when it is given a temporary or a `std::move()`d value.
+
+No data member or virtual function was added to or removed from a public class.
 
 ### 1.6.0
 

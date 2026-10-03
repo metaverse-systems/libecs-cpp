@@ -36,7 +36,9 @@ namespace ecs
          *  component of that type or the stored one is not a T; with the default kind any stored
          *  component is returned. Never throws, never changes the world, takes no lock and never
          *  allocates given an existing std::string. The result stays valid if the component is later
-         *  replaced or removed. See Container::ComponentGet(). */
+         *  replaced or removed. A short string literal (up to 15 characters) does not allocate when
+         *  converted to std::string, a longer one does, so code that runs every pass should hold its
+         *  type names in std::string constants. See Container::ComponentGet(). */
         template <class T = ecs::Component>
         std::shared_ptr<T> ComponentGet(const std::string &type) const
         {
@@ -50,7 +52,8 @@ namespace ecs
                 return std::dynamic_pointer_cast<T>(found);
             }
         }
-        /*! True when this entity has a component of the given type, whatever its kind. Never throws,
+        /*! True when this entity has a component stored under the given type name, whatever its kind
+         *  (only the name is compared; an empty slot counts as no component). Never throws,
          *  never changes the world, takes no lock and never allocates given an existing std::string. */
         bool ComponentHas(const std::string &type) const;
         void Destroy();
