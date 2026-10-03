@@ -7,7 +7,7 @@ AM_LDFLAGS = $(SANITIZER_LDFLAGS)
 test_programs = test_Manager test_System test_Entity test_Container test_Timing test_Elapsed test_Compatibility test_UpdateAllocation test_Uuid test_Threading test_Validation test_Lifecycle test_ProcessManager test_Access test_Logging test_Resources test_Export
 
 # Script tests that do not depend on the host; they run on cross builds too.
-host_independent_tests = check-install.sh check-headers.sh
+host_independent_tests = check-install.sh check-headers.sh check-consumer.sh
 
 TEST_EXTENSIONS = .sh
 LOG_COMPILER = $(SHELL) $(srcdir)/run-test.sh
@@ -53,7 +53,7 @@ check-local:
 endif
 endif
 
-EXTRA_DIST = check-install.sh check-headers.sh run-test.sh run-test-selftest.sh run-example.sh run-logging.sh check-exports.sh check-exports-selftest.sh check-style.sh check-style-selftest.sh known-gaps.txt log_probe.cpp bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp bench_uuid.cpp
+EXTRA_DIST = check-install.sh check-headers.sh check-consumer.sh run-test.sh run-test-selftest.sh run-example.sh run-logging.sh check-exports.sh check-exports-selftest.sh check-style.sh check-style-selftest.sh known-gaps.txt log_probe.cpp bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp bench_uuid.cpp
 
 # Helper program for run-logging.sh. It is not a Catch2 program: it stays out of check_PROGRAMS, TESTS and
 # ECS_TEST_PROGRAMS, and is built before the script runs through the dependency on the script's log file.

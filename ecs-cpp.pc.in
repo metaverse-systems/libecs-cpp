@@ -5,7 +5,7 @@ includedir=@includedir@
  
 Name: @PACKAGE_NAME@
 Description: Entity Component System library in C++
+URL: @PACKAGE_URL@
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lecs-cpp -pthread
 Cflags: -I${includedir} -std=c++20 -pthread
-Requires:
