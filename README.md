@@ -159,10 +159,10 @@ callbacks. The rules below describe what happens.
 
 ## Identifiers
 
-Every container, entity, component, system and manager has an `ecs::Uuid` handle. `Get()` returns
-its text form: 36 lowercase hexadecimal characters with hyphens after the 8th, 12th, 16th and 20th,
-for example `550e8400-e29b-41d4-a716-446655440000`. Generated identifiers are version 4 with the
-standard variant.
+Every container, entity, component and system gets a text handle that the library generates from an
+`ecs::Uuid`. `Get()` returns the text form of an identifier: 36 lowercase hexadecimal characters with
+hyphens after the 8th, 12th, 16th and 20th, for example `550e8400-e29b-41d4-a716-446655440000`.
+Generated identifiers are version 4 with the standard variant.
 
 * **Thread safety.** `ecs::Uuid()` can be called from any number of threads at the same time, including
   threads the library did not create. Each thread has its own generator, seeded independently on that
@@ -177,7 +177,7 @@ standard variant.
 * **Rejected forms.** The empty string, text of any other length, leading or trailing whitespace, braces,
   a `urn:uuid:` prefix, the form without hyphens, and any character that is not a hexadecimal digit.
 * **Errors.** Rejected text throws `std::runtime_error`. The message is a single line of printable ASCII
-  and names the problem and the 1-based position of the first bad character. Long input is shortened to
+  and names the problem and, for a bad character, its 1-based position (the first one found). Long input is shortened to
   its first 64 characters and unprintable bytes are written as `\xNN`.
 
 ```
@@ -268,7 +268,8 @@ when the fix lands; the file is never used to hide a new defect.
 ## Continuous integration
 
 Every pull request to `master`, every push to `master` and every manual run builds the library and runs
-`make check` as three separate checks: `test (plain)`, `test (address+undefined)` and `test (thread)`.
+`make check` as four separate checks: `test (plain)`, `test (address+undefined)`, `test (thread)` and
+`test (plain (arm64))`, which runs the plain variant on a 64-bit ARM machine.
 These runs have read-only access to the repository and no secrets, so proposals from forks are checked
 the same way as proposals from this repository. A manual run accepts a `repeat` count to run the tests
 several times in a row.
