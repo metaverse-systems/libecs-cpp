@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['handle_0',['handle',['../structecs_1_1Container_1_1SystemSlot.html#ad8412e2032a8b9985afcd12e41490a49',1,'ecs::Container::SystemSlot::handle'],['../classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5',1,'ecs::System::Handle'],['../classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599',1,'ecs::Entity::Handle'],['../classecs_1_1Component.html#a1c50d76636f1b23c3a255fec600df45f',1,'ecs::Component::Handle'],['../classecs_1_1Container.html#aa4449c537d73fb29c969c7d2aceb58f1',1,'ecs::Container::Handle']]],
+  ['handle_0',['handle',['../structecs_1_1Container_1_1SystemSlot.html#ad8412e2032a8b9985afcd12e41490a49',1,'ecs::Container::SystemSlot::handle'],['../classecs_1_1System.html#a9295b089d5a624f604da4330d510f19b',1,'ecs::System::Handle'],['../classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599',1,'ecs::Entity::Handle'],['../classecs_1_1Container.html#aa4449c537d73fb29c969c7d2aceb58f1',1,'ecs::Container::Handle']]],
   ['handle_5fvalue_1',['handle_value',['../classnlohmann_1_1detail_1_1json__sax__dom__callback__parser.html#a40e8610f988876fc265d207f68a13000',1,'nlohmann::detail::json_sax_dom_callback_parser::handle_value()'],['../classnlohmann_1_1detail_1_1json__sax__dom__parser.html#a7e85f4268a41583d533893c15873abdb',1,'nlohmann::detail::json_sax_dom_parser::handle_value()']]],
   ['has_5ffrom_5fjson_2',['has_from_json',['../structnlohmann_1_1detail_1_1has__from__json.html',1,'nlohmann::detail']]],
   ['has_5ffrom_5fjson_3c_20basicjsontype_2c_20t_2c_20enable_5fif_5ft_3c_20_21is_5fbasic_5fjson_3c_20t_20_3e_3a_3avalue_20_3e_20_3e_3',['has_from_json&lt; BasicJsonType, T, enable_if_t&lt; !is_basic_json&lt; T &gt;::value &gt; &gt;',['../structnlohmann_1_1detail_1_1has__from__json_3_01BasicJsonType_00_01T_00_01enable__if__t_3_01_9is3ee028c64c76c768be45996bb13fc9c5.html',1,'nlohmann::detail']]],
@@ -9,7 +9,9 @@ var searchData=
   ['has_5fsubtype_6',['has_subtype',['../classnlohmann_1_1byte__container__with__subtype.html#a9fc42fb07003bf7048c2f1fc79478e02',1,'nlohmann::byte_container_with_subtype']]],
   ['has_5fto_5fjson_7',['has_to_json',['../structnlohmann_1_1detail_1_1has__to__json.html',1,'nlohmann::detail']]],
   ['has_5fto_5fjson_3c_20basicjsontype_2c_20t_2c_20enable_5fif_5ft_3c_20_21is_5fbasic_5fjson_3c_20t_20_3e_3a_3avalue_20_3e_20_3e_8',['has_to_json&lt; BasicJsonType, T, enable_if_t&lt; !is_basic_json&lt; T &gt;::value &gt; &gt;',['../structnlohmann_1_1detail_1_1has__to__json_3_01BasicJsonType_00_01T_00_01enable__if__t_3_01_9is__4a8838c1c30336126696a126041e661c.html',1,'nlohmann::detail']]],
-  ['hash_9',['hash',['../namespacenlohmann_1_1detail.html#a679e5e522ac6afa5d5923292fab450b8',1,'nlohmann::detail']]],
-  ['hash_3c_20nlohmann_3a_3anlohmann_5fbasic_5fjson_5ftpl_20_3e_10',['hash&lt; nlohmann::NLOHMANN_BASIC_JSON_TPL &gt;',['../structstd_1_1hash_3_01nlohmann_1_1NLOHMANN__BASIC__JSON__TPL_01_4.html',1,'std']]],
-  ['high_11',['high',['../classecs_1_1Uuid.html#a32b20df3f00277a06f628b18b94b8840',1,'ecs::Uuid']]]
+  ['hasentityhandleandtype_9',['HasEntityHandleAndType',['../conceptHasEntityHandleAndType.html',1,'']]],
+  ['hash_10',['hash',['../namespacenlohmann_1_1detail.html#a679e5e522ac6afa5d5923292fab450b8',1,'nlohmann::detail']]],
+  ['hash_3c_20nlohmann_3a_3anlohmann_5fbasic_5fjson_5ftpl_20_3e_11',['hash&lt; nlohmann::NLOHMANN_BASIC_JSON_TPL &gt;',['../structstd_1_1hash_3_01nlohmann_1_1NLOHMANN__BASIC__JSON__TPL_01_4.html',1,'std']]],
+  ['hashandle_12',['HasHandle',['../conceptHasHandle.html',1,'']]],
+  ['high_13',['high',['../classecs_1_1Uuid.html#a32b20df3f00277a06f628b18b94b8840',1,'ecs::Uuid']]]
 ];

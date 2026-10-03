@@ -3,7 +3,7 @@ var indexSectionsWithContent =
   0: "012345678:@_abcdefghijklmnoprstuvwx~",
   1: "abcdefghijlmnoprstuvw",
   2: "ens",
-  3: "bcejmrstuv",
+  3: "bcejlmrstuv",
   4: "abcdefghijklmnoprstuvw~",
   5: "_abcdefhijklmnoprstuvwx",
   6: "abcdefgijklmnoprstuv",
@@ -12,7 +12,7 @@ var indexSectionsWithContent =
   9: ":bdemosw",
   10: "ijn",
   11: "cdefls",
-  12: "@"
+  12: "@h"
 };
 
 var indexSectionNames =

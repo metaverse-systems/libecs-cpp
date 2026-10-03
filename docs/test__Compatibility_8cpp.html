@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.8.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;2.0.0</span>
    </div>
   </td>
  </tr>
@@ -388,13 +388,13 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  129</span>        REQUIRE(system-&gt;TimerTotal() == 0);</div>
 <div class="line"><span class="lineno">  130</span>    }</div>
 <div class="line"><span class="lineno">  131</span>}</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a8fb0e32d36721ea7088dce762e575851"><div class="ttname"><a href="classecs_1_1Container.html#a8fb0e32d36721ea7088dce762e575851">ecs::Container::ClockSet</a></div><div class="ttdeci">void ClockSet(const ecs::Clock *clock)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00328">Container.cpp:328</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a8fb0e32d36721ea7088dce762e575851"><div class="ttname"><a href="classecs_1_1Container.html#a8fb0e32d36721ea7088dce762e575851">ecs::Container::ClockSet</a></div><div class="ttdeci">void ClockSet(const ecs::Clock *clock)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00311">Container.cpp:311</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html"><div class="ttname"><a href="classecs_1_1Manager.html">ecs::Manager</a></div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00049">Manager.hpp:50</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_af96d2ee8eb88a8c35adfb6015acf59bd"><div class="ttname"><a href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">ecs::Manager::Container</a></div><div class="ttdeci">ecs::Container * Container(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00032">Manager.cpp:32</a></div></div>
 <div class="ttc" id="aclassecs_1_1ManualClock_html"><div class="ttname"><a href="classecs_1_1ManualClock.html">ecs::ManualClock</a></div><div class="ttdef"><b>Definition</b> <a href="Clock_8hpp_source.html#l00050">Clock.hpp:51</a></div></div>
 <div class="ttc" id="atest__Lifecycle_8cpp_html_a39886ebc661220842cca88183f03e1c6"><div class="ttname"><a href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a></div><div class="ttdeci">ecs::Manager manager</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01289">test_Lifecycle.cpp:1289</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Clock_8hpp_source.html#l00064">ecs::ManualClock::Advance()</a>, <a class="el" href="Container_8cpp_source.html#l00328">ecs::Container::ClockSet()</a>, <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="test__Lifecycle_8cpp_source.html#l01289">manager</a>.</p>
+<p class="reference">References <a class="el" href="Clock_8hpp_source.html#l00064">ecs::ManualClock::Advance()</a>, <a class="el" href="Container_8cpp_source.html#l00311">ecs::Container::ClockSet()</a>, <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="test__Lifecycle_8cpp_source.html#l01289">manager</a>.</p>
 
 </div>
 </div>
@@ -515,7 +515,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  183</span>        REQUIRE(system-&gt;values[i] == expected[i]);</div>
 <div class="line"><span class="lineno">  184</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Clock_8hpp_source.html#l00064">ecs::ManualClock::Advance()</a>, <a class="el" href="Container_8cpp_source.html#l00328">ecs::Container::ClockSet()</a>, <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01289">manager</a>, and <a class="el" href="Clock_8hpp_source.html#l00058">ecs::ManualClock::Now()</a>.</p>
+<p class="reference">References <a class="el" href="Clock_8hpp_source.html#l00064">ecs::ManualClock::Advance()</a>, <a class="el" href="Container_8cpp_source.html#l00311">ecs::Container::ClockSet()</a>, <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01289">manager</a>, and <a class="el" href="Clock_8hpp_source.html#l00058">ecs::ManualClock::Now()</a>.</p>
 
 </div>
 </div>
@@ -598,11 +598,11 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  221</span>    }</div>
 <div class="line"><span class="lineno">  222</span>    REQUIRE(count.load() &gt;= 3);</div>
 <div class="line"><span class="lineno">  223</span>}</div>
-<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00417">Container.cpp:417</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_ac1a961fcfde782c0cb9ead6700dc6e48"><div class="ttname"><a href="classecs_1_1System.html#ac1a961fcfde782c0cb9ead6700dc6e48">ecs::System::Timing</a></div><div class="ttdeci">ecs::Timing Timing</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00224">System.hpp:224</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00400">Container.cpp:400</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_ac1a961fcfde782c0cb9ead6700dc6e48"><div class="ttname"><a href="classecs_1_1System.html#ac1a961fcfde782c0cb9ead6700dc6e48">ecs::System::Timing</a></div><div class="ttdeci">ecs::Timing Timing</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00239">System.hpp:239</a></div></div>
 <div class="ttc" id="aclassecs_1_1Timing_html_a9d3b20c7d5b4032496535ad9ad03c8ca"><div class="ttname"><a href="classecs_1_1Timing.html#a9d3b20c7d5b4032496535ad9ad03c8ca">ecs::Timing::SetInterval</a></div><div class="ttdeci">void SetInterval(std::chrono::microseconds interval)</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00100">Timing.hpp:100</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01289">manager</a>, <a class="el" href="Timing_8hpp_source.html#l00100">ecs::Timing::SetInterval()</a>, <a class="el" href="Container_8cpp_source.html#l00417">ecs::Container::System()</a>, and <a class="el" href="System_8hpp_source.html#l00224">ecs::System::Timing</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01289">manager</a>, <a class="el" href="Timing_8hpp_source.html#l00100">ecs::Timing::SetInterval()</a>, <a class="el" href="Container_8cpp_source.html#l00400">ecs::Container::System()</a>, and <a class="el" href="System_8hpp_source.html#l00239">ecs::System::Timing</a>.</p>
 
 </div>
 </div>
@@ -654,7 +654,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 11:36:28 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 14:55:05 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

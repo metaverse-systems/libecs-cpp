@@ -10,9 +10,9 @@ var searchData=
   ['reference_7',['reference',['../structnlohmann_1_1detail_1_1iterator__types_3_01It_00_01void__t_3_01typename_01It_1_1difference_d2be8685966c97e00e99d4fd2366dc0b.html#a5e82d2d8dabd022b8ff916f2e83a82f2',1,'nlohmann::detail::iterator_types&lt; It, void_t&lt; typename It::difference_type, typename It::value_type, typename It::pointer, typename It::reference, typename It::iterator_category &gt; &gt;::reference'],['../classnlohmann_1_1basic__json.html#a220ae98554a76205fb7f8822d36b2d5a',1,'nlohmann::basic_json::reference'],['../classnlohmann_1_1detail_1_1json__reverse__iterator.html#a42f51a69bac7b2aebb613b2164e457f1',1,'nlohmann::detail::json_reverse_iterator::reference'],['../classnlohmann_1_1detail_1_1iter__impl.html#a5be8001be099c6b82310f4d387b953ce',1,'nlohmann::detail::iter_impl::reference'],['../classnlohmann_1_1detail_1_1iteration__proxy__value.html#a5bc7d3133daab5ec4797f3132e093af8',1,'nlohmann::detail::iteration_proxy_value::reference'],['../structnlohmann_1_1detail_1_1iterator__traits_3_01T_01_5_00_01enable__if__t_3_01std_1_1is__object_3_01T_01_4_1_1value_01_4_01_4.html#a0809c5949d22f08a993231d2fdf285f0',1,'nlohmann::detail::iterator_traits&lt; T *, enable_if_t&lt; std::is_object&lt; T &gt;::value &gt; &gt;::reference']]],
   ['reference_5ft_8',['reference_t',['../namespacenlohmann_1_1detail.html#a082bdafd3b4c61d9d1e92b35b8f75ee3',1,'nlohmann::detail']]],
   ['reference_5ftokens_9',['reference_tokens',['../classnlohmann_1_1json__pointer.html#a468dde132b1384d962c75eca7306f6cb',1,'nlohmann::json_pointer::reference_tokens'],['../classnlohmann_1_1json__pointer.html#a07a990a6838de4f38ee9d881e7b9fd61',1,'nlohmann::json_pointer::reference_tokens']]],
-  ['registering_20systems_10',['Registering systems',['../index.html#autotoc_md28',1,'']]],
+  ['registering_20systems_10',['Registering systems',['../index.html#autotoc_md31',1,'']]],
   ['reinterpret_5fbits_11',['reinterpret_bits',['../namespacenlohmann_1_1detail_1_1dtoa__impl.html#a1c5d30eb51e5e994a3f48bde104d2ce8',1,'nlohmann::detail::dtoa_impl']]],
-  ['release_20notes_12',['Release notes',['../index.html#autotoc_md41',1,'']]],
+  ['release_20notes_12',['Release notes',['../index.html#autotoc_md44',1,'']]],
   ['removed_13',['removed',['../classecs_1_1System.html#a472414d032dfb0c1bb2ff038be148396',1,'ecs::System']]],
   ['removing_20systems_14',['Removing systems',['../index.html#autotoc_md5',1,'']]],
   ['rend_15',['rend',['../classnlohmann_1_1basic__json.html#a2e4cbf41d593d41847b90aea55e5e84d',1,'nlohmann::basic_json::rend() const noexcept'],['../classnlohmann_1_1basic__json.html#a7a328b29b290cc300345376c54f618cb',1,'nlohmann::basic_json::rend() noexcept']]],
@@ -26,7 +26,7 @@ var searchData=
   ['resource_2ehpp_23',['Resource.hpp',['../Resource_8hpp.html',1,'']]],
   ['resourceadd_24',['ResourceAdd',['../classecs_1_1Container.html#a03940a5f57cdaeb85c8135fe69b0b989',1,'ecs::Container']]],
   ['resourceget_25',['ResourceGet',['../classecs_1_1Container.html#acc5cd3d693a9484c85f1bd4a2797fc22',1,'ecs::Container']]],
-  ['resources_26',['resources',['../classecs_1_1Container.html#aff4dfd03b745d91da95ed232e68850b8',1,'ecs::Container::Resources(const std::unordered_map&lt; std::string, std::shared_ptr&lt; ecs::Resource &gt; &gt; &amp;resources)'],['../classecs_1_1Container.html#ad7de763451c141706efc6d639eba91dc',1,'ecs::Container::resources'],['../index.html#autotoc_md33',1,'Resources']]],
+  ['resources_26',['resources',['../classecs_1_1Container.html#aff4dfd03b745d91da95ed232e68850b8',1,'ecs::Container::Resources(const std::unordered_map&lt; std::string, std::shared_ptr&lt; ecs::Resource &gt; &gt; &amp;resources)'],['../classecs_1_1Container.html#ad7de763451c141706efc6d639eba91dc',1,'ecs::Container::resources'],['../index.html#autotoc_md36',1,'Resources']]],
   ['restart_27',['Restart',['../classecs_1_1Timing.html#a54f68e412ecaf460560ee28e696c7934',1,'ecs::Timing']]],
   ['result_28',['result',['../classnlohmann_1_1json__pointer.html#ae3d35f4085faec07b87c88ba0dae457d',1,'nlohmann::json_pointer::result'],['../classnlohmann_1_1json__pointer.html#a8473b794a810d3fdb46cf985bfa9e2bb',1,'nlohmann::json_pointer::result']]],
   ['retiredrelease_29',['retiredRelease',['../classecs_1_1Container.html#ae79b73c1658c04ec30257609604c03a9',1,'ecs::Container']]],
@@ -37,5 +37,5 @@ var searchData=
   ['rules_34',['Rules',['../index.html#autotoc_md14',1,'']]],
   ['run_35',['Changing systems and timers while they run',['../index.html#autotoc_md3',1,'']]],
   ['running_36',['running',['../classecs_1_1Manager.html#a717de0ef5db5706cebae03ebe449773c',1,'ecs::Manager']]],
-  ['running_20the_20tests_37',['Running the tests',['../index.html#autotoc_md49',1,'']]]
+  ['running_20the_20tests_37',['Running the tests',['../index.html#autotoc_md53',1,'']]]
 ];
