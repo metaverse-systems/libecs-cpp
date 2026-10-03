@@ -62,7 +62,7 @@ namespace ecs
         bool ComponentHas(const std::string &type) const;
         void Destroy();
         void ComponentDestroy(const std::string &type);
-    
+
       private:
         const std::shared_ptr<ecs::Component> *componentFind(const std::string &type) const;
     };

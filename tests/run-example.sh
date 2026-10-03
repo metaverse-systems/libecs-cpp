@@ -1,7 +1,9 @@
 #!/bin/sh
 # Runs the shipped example for a second and checks that it ends by itself with a clean shutdown:
 # exit status 0, a start-up line for each system before its shutdown line, and no output after the
-# last shutdown line, and that the entity without a velocity is reported as skipped. A start-up line ends with " started" and a shutdown line with " shut down".
+# last shutdown line. It also checks that the entity without a velocity is reported as skipped and that
+# the output holds no runtime failure report. A start-up line ends with " started" and a shutdown line
+# with " shut down".
 
 example="$(dirname "$0")/../src/example"
 output="$(mktemp)"

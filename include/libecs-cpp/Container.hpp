@@ -210,8 +210,9 @@ namespace ecs
             }
         }
         /*! True when the given entity has a component stored under the given type name, whatever its kind;
-         *  only the name is compared (world thread only). Never throws, never changes the world, takes no lock and never allocates given existing
-         *  std::string arguments. An empty slot left by Components[type][entity] counts as no component. */
+         *  only the name is compared (world thread only). Never throws, never changes the world, takes no
+         *  lock and never allocates given existing std::string arguments. An empty slot left by
+         *  Components[type][entity] counts as no component. */
         bool ComponentHas(const std::string &entity, const std::string &type) const;
         /*! Removes a component (world thread only). The identifiers may be fields of the component being removed. An
          *  unknown entity or type is a silent no-op. */
