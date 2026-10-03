@@ -5,7 +5,7 @@
 # the output holds no runtime failure report. A start-up line ends with " started" and a shutdown line
 # with " shut down".
 
-example="$(dirname "$0")/../src/example"
+example="${ECS_EXAMPLE:-$(dirname "$0")/../src/example}"
 output="$(mktemp)"
 trap 'rm -f "$output"' EXIT INT TERM
 

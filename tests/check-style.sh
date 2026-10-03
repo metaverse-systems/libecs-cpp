@@ -24,7 +24,7 @@ if [ $# -gt 1 ]; then
     echo "usage: $0 [LIBRARY_ROOT]" >&2
     exit 2
 fi
-root="${1:-$(cd "$(dirname "$0")/.." && pwd)}"
+root="${1:-${ECS_SRCDIR:-$(cd "$(dirname "$0")/.." && pwd)}}"
 if [ ! -d "$root/include/libecs-cpp" ] || [ ! -d "$root/src" ]; then
     echo "check-style: no include/libecs-cpp or src in $root" >&2
     exit 2

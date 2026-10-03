@@ -27,6 +27,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CXX
 AM_INIT_AUTOMAKE([subdir-objects])
+AM_MAINTAINER_MODE([enable])
 
 PKG_CHECK_MODULES([CATCH2], [catch2-with-main])
 
@@ -54,6 +55,7 @@ AS_CASE(["$sanitizer"],
 	],
 	[AC_MSG_ERROR([invalid value '$sanitizer' for --enable-sanitizer; accepted values are: no, address, thread])])
 
+AC_SUBST([cross_compiling])
 AC_SUBST([SANITIZER])
 AC_SUBST([SANITIZER_CXXFLAGS])
 AC_SUBST([SANITIZER_LDFLAGS])

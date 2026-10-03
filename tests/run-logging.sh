@@ -13,7 +13,7 @@
 # escape character. Stanzas 9 and 10 run it on a pseudo-terminal (script or python3 pty) and expect colour,
 # and no colour with NO_COLOR=1; they are skipped, and the script still passes, when neither tool exists.
 
-root="$(cd "$(dirname "$0")/.." && pwd)"
+root="${ECS_SRCDIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 status=0
 
 # Prints "file:line:text" for every line outside a marked region that writes to the console.
@@ -46,7 +46,7 @@ else
     echo "PASS: no console writes outside the default destination"
 fi
 
-probe="$(dirname "$0")/log_probe"
+probe="${ECS_LOG_PROBE:-$(dirname "$0")/log_probe}"
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT INT TERM
 esc="$(printf '\033')"
