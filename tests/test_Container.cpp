@@ -76,14 +76,73 @@ class TestComponent : public ecs::Component
     int value = 42;
 };
 
+namespace
+{
+#if defined(__SANITIZE_ADDRESS__) || defined(__SANITIZE_THREAD__)
+    constexpr int kSanitizerFactor = 4;
+#elif defined(__has_feature)
+#if __has_feature(address_sanitizer) || __has_feature(thread_sanitizer)
+    constexpr int kSanitizerFactor = 4;
+#else
+    constexpr int kSanitizerFactor = 1;
+#endif
+#else
+    constexpr int kSanitizerFactor = 1;
+#endif
+
+    // Counts updates and shutdowns from the world's thread; the test reads the counters from its own thread.
+    class CountingSystem : public ecs::System
+    {
+      public:
+        CountingSystem(std::string handle) { this->Handle = std::move(handle); }
+
+        nlohmann::json Export() const { return nlohmann::json::object(); }
+
+        void Update() { this->updates.fetch_add(1); }
+        void Shutdown() { this->shutdowns.fetch_add(1); }
+
+        std::atomic<int> updates{0};
+        std::atomic<int> shutdowns{0};
+    };
+
+    // Polls until the condition holds or the bounded deadline passes; returns whether it held.
+    bool waitFor(const std::function<bool()> &condition)
+    {
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(20 * kSanitizerFactor);
+        while(!condition())
+        {
+            if(std::chrono::steady_clock::now() >= deadline) return false;
+            std::this_thread::yield();
+        }
+        return true;
+    }
+}
+
 TEST_CASE("Container can start and stop via jthread", "[Container]") {
     ecs::Manager manager;
     auto container = manager.Container("test-container");
-    container->System(std::make_unique<TestSystem>());
-    container->Start(100000); // 100ms interval
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    // Manager destructor will join threads
-    REQUIRE(true); // If we get here without hanging, the test passes
+    auto owned = std::make_unique<CountingSystem>("counter");
+    CountingSystem *counter = owned.get();
+    // Every pass updates the system, so the first update shows the thread is running.
+    owned->Timing.SetInterval(std::chrono::microseconds(0));
+    container->System(std::move(owned));
+    container->Start(1000);
+
+    REQUIRE(waitFor([&] { return counter->updates.load() >= 1; }));
+    REQUIRE(manager.IsRunning());
+    REQUIRE(counter->shutdowns.load() == 0);
+
+    // Stop() returns after the world's thread has ended and the shutdown has been delivered.
+    container->Stop();
+    REQUIRE(counter->shutdowns.load() == 1);
+
+    // Nothing runs after the join: the count read before and after a second Stop() is the same.
+    const int afterJoin = counter->updates.load();
+    container->Stop();
+    REQUIRE(counter->updates.load() == afterJoin);
+    REQUIRE(counter->shutdowns.load() == 1);
+    // Stopping the world does not stop the manager.
+    REQUIRE(manager.IsRunning());
 }
 
 TEST_CASE("Container creates and retrieves entities", "[Container]") {
@@ -180,13 +239,32 @@ TEST_CASE("Manager shutdown joins all container threads", "[Container]") {
     ecs::Manager manager;
     auto c1 = manager.Container("c1");
     auto c2 = manager.Container("c2");
-    c1->System(std::make_unique<TestSystem>("sys1"));
-    c2->System(std::make_unique<TestSystem>("sys2"));
-    c1->Start(100000);
-    c2->Start(100000);
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    // Manager destructor joins all threads - should not hang
-    REQUIRE(true);
+    auto o1 = std::make_unique<CountingSystem>("sys1");
+    auto o2 = std::make_unique<CountingSystem>("sys2");
+    CountingSystem *s1 = o1.get();
+    CountingSystem *s2 = o2.get();
+    o1->Timing.SetInterval(std::chrono::microseconds(0));
+    o2->Timing.SetInterval(std::chrono::microseconds(0));
+    c1->System(std::move(o1));
+    c2->System(std::move(o2));
+    c1->Start(1000);
+    c2->Start(1000);
+
+    REQUIRE(waitFor([&] { return s1->updates.load() >= 1 && s2->updates.load() >= 1; }));
+    REQUIRE(manager.IsRunning());
+
+    // Shutdown() returns after both world threads have ended and both systems were notified.
+    manager.Shutdown();
+    REQUIRE_FALSE(manager.IsRunning());
+    REQUIRE(s1->shutdowns.load() == 1);
+    REQUIRE(s2->shutdowns.load() == 1);
+
+    // After the join the counts no longer change.
+    const int first = s1->updates.load();
+    const int second = s2->updates.load();
+    manager.Shutdown();
+    REQUIRE(s1->updates.load() == first);
+    REQUIRE(s2->updates.load() == second);
 }
 
 TEST_CASE("Container Export includes entities and systems", "[Container]") {

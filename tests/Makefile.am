@@ -2,7 +2,7 @@ AM_CPPFLAGS = -I../include ${CATCH2_CFLAGS}
 AM_CXXFLAGS = -std=c++20 $(SANITIZER_CXXFLAGS)
 AM_LDFLAGS = $(SANITIZER_LDFLAGS)
 
-check_PROGRAMS = test_Manager test_System test_Entity test_Container test_Timing test_Elapsed test_Compatibility test_UpdateAllocation test_Uuid test_Threading test_Validation test_Lifecycle test_ProcessManager test_Access
+check_PROGRAMS = test_Manager test_System test_Entity test_Container test_Timing test_Elapsed test_Compatibility test_UpdateAllocation test_Uuid test_Threading test_Validation test_Lifecycle test_ProcessManager test_Access test_Logging test_Resources test_Export
 
 TEST_EXTENSIONS = .sh
 LOG_COMPILER = $(SHELL) $(srcdir)/run-test.sh
@@ -74,3 +74,15 @@ test_ProcessManager_LDFLAGS = $(AM_LDFLAGS) -pthread
 test_Access_SOURCES = test_Access.cpp
 test_Access_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
 test_Access_LDFLAGS = $(AM_LDFLAGS) -pthread
+
+test_Logging_SOURCES = test_Logging.cpp
+test_Logging_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
+test_Logging_LDFLAGS = $(AM_LDFLAGS) -pthread
+
+test_Resources_SOURCES = test_Resources.cpp
+test_Resources_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
+test_Resources_LDFLAGS = $(AM_LDFLAGS) -pthread
+
+test_Export_SOURCES = test_Export.cpp
+test_Export_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
+test_Export_LDFLAGS = $(AM_LDFLAGS) -pthread

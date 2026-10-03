@@ -61,9 +61,17 @@ TEST_CASE("Entity can destroy a component", "[Entity]") {
     nlohmann::json config;
     config["value"] = 5;
     entity->Component(std::make_unique<TestComponent>(config));
+    // The component is there before it is destroyed, so the null result below comes from the destroy.
+    REQUIRE(container->ComponentGet(entity->Handle, "TestComponent") != nullptr);
+    REQUIRE(entity->ComponentGet("TestComponent") != nullptr);
+
     entity->ComponentDestroy("TestComponent");
-    auto retrievedComponent = container->ComponentGet(entity->Handle, "TestComponent");
-    REQUIRE(retrievedComponent == nullptr);
+    REQUIRE(container->ComponentGet(entity->Handle, "TestComponent") == nullptr);
+    REQUIRE(entity->ComponentGet("TestComponent") == nullptr);
+
+    // Destroying it again changes nothing and does not throw.
+    REQUIRE_NOTHROW(entity->ComponentDestroy("TestComponent"));
+    REQUIRE(container->ComponentGet(entity->Handle, "TestComponent") == nullptr);
 }
 
 TEST_CASE("Entity can be destroyed", "[Entity]") {
