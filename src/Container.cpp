@@ -211,7 +211,26 @@ namespace ecs
 
     std::shared_ptr<ecs::Component> Container::Component(std::shared_ptr<ecs::Component> c)
     {
-        this->Components[c->Type][c->EntityHandle] = c; 
+        const std::string prefix = "ecs::Container(\"" + this->Handle + "\")::Component(): ";
+        if(!c)
+        {
+            throw std::runtime_error(prefix + "component is missing.");
+        }
+        if(c->Type.empty())
+        {
+            throw std::runtime_error(prefix + "component type is empty.");
+        }
+        if(c->EntityHandle.empty())
+        {
+            throw std::runtime_error(prefix + "component entity handle is empty (type \"" + c->Type + "\").");
+        }
+        if(this->Entities.find(c->EntityHandle) == this->Entities.end())
+        {
+            throw std::runtime_error(prefix + "entity \"" + c->EntityHandle + "\" does not exist (component type \"" + c->Type + "\").");
+        }
+
+        // A component of the same type already on this entity is replaced.
+        this->Components[c->Type][c->EntityHandle] = c;
         return c;
     }
 

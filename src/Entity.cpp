@@ -1,17 +1,26 @@
 #include <cstring>
 #include <libecs-cpp/ecs.hpp>
 #include <iostream>
+#include <stdexcept>
 
 namespace ecs
 {
     Entity::Entity(ecs::Container *container):
         Container(container), Handle(ecs::Uuid().Get())
     {
+        if(container == nullptr)
+        {
+            throw std::runtime_error("ecs::Entity: container is missing.");
+        }
     }
 
     Entity::Entity(ecs::Container *container, const std::string &handle):
         Container(container), Handle(handle)
     {
+        if(container == nullptr)
+        {
+            throw std::runtime_error("ecs::Entity: container is missing.");
+        }
     }
 
     nlohmann::json Entity::Export() const
@@ -33,6 +42,11 @@ namespace ecs
 
     std::shared_ptr<ecs::Component> Entity::Component(ecs::Component *component)
     {
+        if(component == nullptr)
+        {
+            throw std::runtime_error("ecs::Entity(\"" + this->Handle + "\")::Component(): component is missing.");
+        }
+        // The pointer is owned from here on, including when the world rejects it.
         std::shared_ptr<ecs::Component> c(component);
         c->EntityHandle = this->Handle;
         this->Container->Component(c);
