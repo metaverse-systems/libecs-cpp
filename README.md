@@ -157,13 +157,59 @@ callbacks. The rules below describe what happens.
 * Registering a second system under an identifier that is still in use. The previous outcome is kept and
   is memory safe.
 
-### Release notes
+## Identifiers
 
-#### 1.2.0
+Every container, entity, component, system and manager has an `ecs::Uuid` handle. `Get()` returns
+its text form: 36 lowercase hexadecimal characters with hyphens after the 8th, 12th, 16th and 20th,
+for example `550e8400-e29b-41d4-a716-446655440000`. Generated identifiers are version 4 with the
+standard variant.
 
-The rules above are now guaranteed. The object layout of `ecs::Container`, `ecs::System` and
-`ecs::Timer` changed (private members only, no public signature changed), so plugins must be rebuilt
-against the new headers. `the-seed build` does this.
+* **Thread safety.** `ecs::Uuid()` can be called from any number of threads at the same time, including
+  threads the library did not create. Each thread has its own generator, seeded independently on that
+  thread's first identifier, and no lock is taken.
+* **Not secret.** Identifiers are unique in practice but are not cryptographically unpredictable. Do not
+  use them as secrets or tokens.
+* **Fork.** A child process that forks after generating identifiers continues the parent's sequence, so
+  both processes can produce the same identifiers afterwards.
+* **Parsing.** `ecs::Uuid(text)` accepts exactly 36 characters in upper or lower case, with hyphens in
+  the standard places, and any version or variant (including the all-zero identifier). `Get()` always
+  returns lowercase. Text saved by earlier versions parses and round-trips unchanged.
+* **Rejected forms.** The empty string, text of any other length, leading or trailing whitespace, braces,
+  a `urn:uuid:` prefix, the form without hyphens, and any character that is not a hexadecimal digit.
+* **Errors.** Rejected text throws `std::runtime_error`. The message is a single line of printable ASCII
+  and names the problem and the 1-based position of the first bad character. Long input is shortened to
+  its first 64 characters and unprintable bytes are written as `\xNN`.
+
+```
+ecs::Uuid(""): text is empty
+ecs::Uuid("550e8400-e29b-41d4-a716-44665544000"): text is 35 characters long, expected 36
+ecs::Uuid("550e8400xe29b-41d4-a716-446655440000"): expected '-' at position 9, found 'x'
+ecs::Uuid("550e8400-e29b-41d4-a716-44665544000g"): invalid character 'g' at position 36, expected a hexadecimal digit
+```
+
+The installed `ecs-cpp.pc` provides `-std=c++20 -pthread` in its compile flags. A consumer that wants a
+later standard must put its own `-std=` after the pkg-config flags.
+
+## Release notes
+
+### 1.3.0
+
+* The object layout of `ecs::Uuid` changed (16 bytes, alignment 8), so plugins must be rebuilt against
+  the new headers. `the-seed build` does this.
+* `uuid_v4.h` and `endianness.h` are no longer installed, and installing removes any copies left in the
+  prefix by an earlier version.
+* `--disable-builtin-uuid` is retired. The library always uses its own identifier generator and no longer
+  needs libuuid.
+* Parsing identifier text is correct and strict, and throws `std::runtime_error` on malformed text.
+* `ecs::Uuid::Get()` is `const`.
+* `ecs-cpp.pc` carries `-std=c++20 -pthread`.
+* The library no longer needs processor extensions and builds on 64-bit ARM.
+
+### 1.2.0
+
+The rules in "Changing systems and timers while they run" are now guaranteed. The object layout of
+`ecs::Container`, `ecs::System` and `ecs::Timer` changed (private members only, no public signature
+changed), so plugins must be rebuilt against the new headers. `the-seed build` does this.
 
 ## Running the tests
 
