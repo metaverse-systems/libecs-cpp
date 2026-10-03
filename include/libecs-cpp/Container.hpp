@@ -8,16 +8,19 @@
 #include <type_traits>
 #include <mutex>
 #include <atomic>
-#include <iostream>
 #include <functional>
 #include <condition_variable>
 #include <libecs-cpp/json.hpp>
+#include <libecs-cpp/Uuid.hpp>
 #include <libecs-cpp/Resource.hpp>
 #include <libecs-cpp/Component.hpp>
 #include <libecs-cpp/Clock.hpp>
 #include <libecs-cpp/Timing.hpp>
 #include <chrono>
+#include <cstddef>
 #include <cstdint>
+#include <stdexcept>
+#include <utility>
 
 namespace ecs
 {

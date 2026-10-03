@@ -1,6 +1,12 @@
 #pragma once
 
 #include <string>
+#include <algorithm>
+#include <cstddef>
+#include <cstdint>
+#include <stdexcept>
+#include <unordered_map>
+#include <utility>
 #include <queue>
 #include <functional>
 #include <atomic>
@@ -10,6 +16,8 @@
 #include <chrono>
 #include <concepts>
 #include <type_traits>
+#include <libecs-cpp/json.hpp>
+#include <libecs-cpp/Component.hpp>
 #include <libecs-cpp/Clock.hpp>
 #include <libecs-cpp/Timing.hpp>
 

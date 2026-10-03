@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
-#include <vector>
 #include <memory>
 #include <type_traits>
 #include <libecs-cpp/Component.hpp>
