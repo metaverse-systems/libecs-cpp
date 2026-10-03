@@ -92,10 +92,10 @@ class PhysicsSystem : public ecs::System
 
     void Update()
     {
-        /* dt = number of milliseconds since last Update() */
-        auto dt = this->DeltaTimeGet();
+        /* Time that passed between the previous Update() and this one */
+        auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(this->ElapsedGet());
 
-        std::cout << "Last run " << dt << "ms ago" << std::endl;
+        std::cout << "Last run " << dt.count() << "ms ago" << std::endl;
 
         // Type names held in std::string constants so lookups do not allocate
         static const std::string positionType = "PositionComponent";
@@ -121,7 +121,7 @@ class PhysicsSystem : public ecs::System
             }
 
             // scale velocity
-            float multiplier = dt / 1000.0;
+            float multiplier = dt.count() / 1000.0;
 
             // Adjust position data
             pos->x += vel->x * multiplier;

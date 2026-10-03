@@ -30,7 +30,7 @@ namespace
           : received(std::move(received))
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -59,7 +59,7 @@ namespace
           : manager(manager), catching(catching)
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -819,7 +819,7 @@ namespace
           : trace(std::move(trace)), counters(std::move(counters))
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         ~CountingSystem() override

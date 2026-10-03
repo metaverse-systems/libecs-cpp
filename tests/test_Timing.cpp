@@ -11,17 +11,21 @@
 
 using namespace ecs;
 
+// These two real-time cases are tagged [smoke]. Their deterministic twins further down
+// ("Drift-free on a coarse grid" and the "...on explicit instants" cases) check the same
+// behaviour on explicit instants without sleeping.
+//
 // With a 109850 us interval sampled on a 30 Hz grid (33333 us), each fire must
 // advance the schedule by whole intervals rather than reset it to the current
 // time. Sampling for about two seconds against absolute deadlines, the number
 // of fires must match the number of whole intervals that really elapsed (within
 // one). Losing the remainder on each fire would make the count about 17% low.
-TEST_CASE("Timing remainder-carry keeps drift-free average", "[timing][T1b]")
+TEST_CASE("Timing remainder-carry keeps drift-free average", "[timing][T1b][smoke]")
 {
-    constexpr uint32_t freq = 109850;
+    constexpr int64_t freq = 109850;
     constexpr int64_t step = 33333;
     constexpr int steps = 60;
-    Timing timing(freq);
+    Timing timing{std::chrono::microseconds(freq)};
 
     auto start = std::chrono::steady_clock::now();
     int fires = 0;
@@ -40,19 +44,19 @@ TEST_CASE("Timing remainder-carry keeps drift-free average", "[timing][T1b]")
 }
 
 // T1c: Stall clamp fires once and snaps forward on a large gap.
-TEST_CASE("Timing stall clamp prevents burst after long stall", "[timing][T1c]")
+TEST_CASE("Timing stall clamp prevents burst after long stall", "[timing][T1c][smoke]")
 {
-    constexpr uint32_t freq = 100000; // 10 Hz, 100 ms intervals
-    Timing timing(freq);
+    constexpr int64_t freq = 100000; // 10 Hz, 100 ms intervals
+    Timing timing{std::chrono::microseconds(freq)};
 
-    // Let it fire once immediately (initialized in the past)
+    // A new schedule starts its first interval at creation, so it is not due yet.
     bool first = timing.ShouldUpdate();
-    (void)first;
+    REQUIRE(first == false);
 
     // Stall for longer than MAX_CATCHUP * freq (2 * 100ms = 200ms)
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
-    // Should fire once, then NOT fire again immediately (snapped forward)
+    // The stall is longer than one interval, so it fires once, then NOT again immediately (snapped forward)
     bool after_stall = timing.ShouldUpdate();
     REQUIRE(after_stall == true);
 
@@ -64,7 +68,7 @@ TEST_CASE("Timing stall clamp prevents burst after long stall", "[timing][T1c]")
 // T1d: Frequency 0 always fires (test fixture path preserved).
 TEST_CASE("Timing with frequency 0 always fires", "[timing][T1d]")
 {
-    Timing timing(0);
+    Timing timing(std::chrono::microseconds(0));
     for (int i = 0; i < 100; ++i)
     {
         REQUIRE(timing.ShouldUpdate() == true);
@@ -365,5 +369,45 @@ TEST_CASE("GetInterval round-trips", "[Timing]")
     {
         timing.SetInterval(us(value));
         REQUIRE(timing.GetInterval() == us(value));
+    }
+}
+
+TEST_CASE("Remainder carry keeps the average on explicit instants", "[Timing]")
+{
+    constexpr int64_t step = 33333;
+    constexpr int steps = 60;
+
+    for (int64_t interval : {int64_t(109850), int64_t(54926), int64_t(109851), int64_t(164777)})
+    {
+        INFO("interval " << interval << " us");
+        Timing timing(us(interval));
+        timing.Restart(us(0));
+
+        int fires = 0;
+        for (int i = 0; i < steps; ++i)
+        {
+            if (timing.ShouldUpdate(us(i * step)))
+                ++fires;
+        }
+        const int64_t whole = ((steps - 1) * step) / interval;
+        REQUIRE(fires >= whole - 1);
+        REQUIRE(fires <= whole + 1);
+    }
+}
+
+TEST_CASE("A long stall fires once on explicit instants", "[Timing]")
+{
+    for (int64_t interval : {int64_t(100000), int64_t(54926), int64_t(109851), int64_t(164777)})
+    {
+        INFO("interval " << interval << " us");
+        Timing timing(us(interval));
+        timing.Restart(us(0));
+
+        // Longer than the catch-up limit of whole intervals.
+        const int64_t stalled = (MAX_CATCHUP + 1) * interval + interval / 2;
+        REQUIRE(timing.ShouldUpdate(us(stalled)));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(stalled)));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(stalled + interval - 1)));
+        REQUIRE(timing.ShouldUpdate(us(stalled + interval)));
     }
 }

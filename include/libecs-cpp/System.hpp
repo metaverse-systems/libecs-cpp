@@ -49,8 +49,11 @@ namespace ecs
         }
 
         /*! The old form: a bare number of seconds. A negative number or one above the maximum is kept as an
-         *  out-of-range length, which System::TimerAdd() rejects; it never wraps around. */
+         *  out-of-range length, which System::TimerAdd() rejects; it never wraps around.
+         *  Deprecated: pass a std::chrono duration instead. It stays for at least the next minor release and
+         *  removal is not scheduled in this one. */
         template<std::integral T>
+        [[deprecated("pass a std::chrono duration such as std::chrono::seconds(n) instead of a bare number")]]
         Timer(std::string name,
           std::function<void()> callback,
           T seconds,
@@ -247,7 +250,10 @@ namespace ecs
         void ClockSet(const ecs::Clock *clock);
         /*! The whole milliseconds of this update's elapsed time, with the part of a millisecond that is
          *  left over carried into the next update, so the running total stays within a millisecond of the
-         *  true total. The same on every call during one update. World thread only. */
+         *  true total. The same on every call during one update. World thread only. Deprecated: use
+         *  ElapsedGet() or ElapsedSecondsGet(). It stays for at least the next minor release and removal is
+         *  not scheduled in this one. */
+        [[deprecated("use ElapsedGet() or ElapsedSecondsGet() instead")]]
         uint32_t DeltaTimeGet();
         /*! Cancels every timer with this name. World thread only. Safe to call from a timer callback, including for the
          *  callback's own name. Cancelling and then adding the same name leaves only the new timer; adding
@@ -283,6 +289,8 @@ namespace ecs
       protected:
         /*! Messages ready to read. World thread only. */
         std::queue<nlohmann::json> messages;
+        /*! Deprecated and no longer maintained by the library: use ElapsedGet() instead. */
+        [[deprecated("use ElapsedGet() or ElapsedSecondsGet() instead")]]
         std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
         std::unordered_map<std::string, std::vector<std::string>> componentsToDelete;
         void componentsClear();

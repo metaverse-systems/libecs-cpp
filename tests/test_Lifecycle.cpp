@@ -139,7 +139,7 @@ namespace
             : ecs::System(handle), log(log)
         {
             // Every pass updates this system.
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         ~CountingSystem()

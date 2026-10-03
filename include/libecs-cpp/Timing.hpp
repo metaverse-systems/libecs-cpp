@@ -43,7 +43,9 @@ namespace ecs
         {
         }
 
-        /*! The old form: the number is the interval in microseconds. */
+        /*! The old form: the number is the interval in microseconds. Deprecated; it stays for at least the
+         *  next minor release and removal is not scheduled in this one. */
+        [[deprecated("use Timing(std::chrono::microseconds) instead")]]
         Timing(uint32_t frequency)
           : updateInterval(static_cast<int64_t>(frequency)),
             lastUpdateTime(Timing::steadyNow())
@@ -106,14 +108,18 @@ namespace ecs
             return std::chrono::microseconds(this->updateInterval);
         }
 
-        /*! The old name of SetInterval(): the number is the interval in microseconds. */
+        /*! The old name of SetInterval(): the number is the interval in microseconds. Deprecated; it stays
+         *  for at least the next minor release and removal is not scheduled in this one. */
+        [[deprecated("use SetInterval(std::chrono::microseconds) instead")]]
         void SetFrequency(uint32_t frequency)
         {
             this->updateInterval = static_cast<int64_t>(frequency);
         }
 
         /*! The old name of GetInterval(): the interval in microseconds, or 4 294 967 295 if it is longer
-         *  than that number can hold. */
+         *  than that number can hold. Use GetInterval(). Deprecated; it stays for at least the next minor
+         *  release and removal is not scheduled in this one. */
+        [[deprecated("use GetInterval() instead")]]
         uint32_t GetFrequency() const
         {
             return static_cast<uint32_t>(std::min<int64_t>(this->updateInterval, UINT32_MAX));

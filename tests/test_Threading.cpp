@@ -41,7 +41,7 @@ namespace
           : recorded(std::move(recorded))
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -180,7 +180,7 @@ namespace
             inUpdate(inUpdate), errors(errors)
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -231,7 +231,7 @@ namespace
           : release(release), entered(entered), received(received)
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -272,7 +272,7 @@ namespace
           : clock(clock), targets(std::move(targets))
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -325,7 +325,7 @@ namespace
             completed(completed), errors(errors)
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -373,7 +373,7 @@ namespace
         ShutdownSystem(const std::string &handle, ecs::Manager *manager) : manager(manager)
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -1183,7 +1183,7 @@ namespace
           : calls(std::move(calls))
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -1395,7 +1395,7 @@ namespace
           : log(std::move(log)), onUpdate(std::move(onUpdate))
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -1426,7 +1426,7 @@ namespace
           : id(std::move(id))
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override
@@ -1458,7 +1458,7 @@ namespace
           : hold(std::move(hold))
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override

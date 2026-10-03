@@ -8,6 +8,10 @@
 
 namespace ecs
 {
+    // The constructors still initialise the deprecated lastTime member so that code built against it keeps
+    // its previous value; that is the only place the library names it.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     System::System():
         Handle(ecs::Uuid().Get()) 
     {
@@ -17,6 +21,7 @@ namespace ecs
         Handle(handle) 
     {
     }
+#pragma GCC diagnostic pop
 
     void System::UpdateSystem()
     {

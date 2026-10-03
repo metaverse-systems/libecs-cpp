@@ -154,7 +154,7 @@ TEST_CASE("System exception during Update propagates to caller", "[Container]") 
     auto container = manager.Container("test-container");
     auto thrower = std::make_unique<ThrowOnUpdateSystem>();
     // Set frequency to 0 so every Update() call fires (test fixture path)
-    thrower->Timing.SetFrequency(0);
+    thrower->Timing.SetInterval(std::chrono::microseconds(0));
     container->System(std::move(thrower));
 
     REQUIRE_THROWS_AS(container->Update(), std::runtime_error);
@@ -166,7 +166,7 @@ TEST_CASE("System exception in container thread shuts down Manager", "[Container
     ecs::Manager manager;
     auto container = manager.Container("test-container");
     auto thrower = std::make_unique<ThrowOnUpdateSystem>();
-    thrower->Timing.SetFrequency(0);
+    thrower->Timing.SetInterval(std::chrono::microseconds(0));
     container->System(std::move(thrower));
     container->Start(1000); // 1ms interval
 
@@ -234,9 +234,9 @@ TEST_CASE("SystemDestroy removes handle from system_order_", "[Container]") {
     auto sysB = std::make_unique<TestSystem>("SystemB");
     auto sysC = std::make_unique<TestSystem>("SystemC");
     // Set frequency to 0 so every Update() call fires (test fixture path)
-    sysA->Timing.SetFrequency(0);
-    sysB->Timing.SetFrequency(0);
-    sysC->Timing.SetFrequency(0);
+    sysA->Timing.SetInterval(std::chrono::microseconds(0));
+    sysB->Timing.SetInterval(std::chrono::microseconds(0));
+    sysC->Timing.SetInterval(std::chrono::microseconds(0));
     container->System(std::move(sysA));
     container->System(std::move(sysB));
     container->System(std::move(sysC));
@@ -298,8 +298,8 @@ TEST_CASE("SystemDestroy called during active Update iteration is safe", "[Conta
     auto container = manager.Container("test-container");
     auto selfish = std::make_unique<SelfishSystem>();
     auto sibling = std::make_unique<SiblingSystem>();
-    selfish->Timing.SetFrequency(0);
-    sibling->Timing.SetFrequency(0);
+    selfish->Timing.SetInterval(std::chrono::microseconds(0));
+    sibling->Timing.SetInterval(std::chrono::microseconds(0));
     container->System(std::move(selfish));
     container->System(std::move(sibling));
 
@@ -326,8 +326,8 @@ TEST_CASE("SystemDestroy accepts the handle stored on the system itself", "[Cont
 
     auto sysA = std::make_unique<TestSystem>("system-a-handle-longer-than-thirty-two-characters");
     auto sysB = std::make_unique<TestSystem>("system-b-handle-longer-than-thirty-two-characters");
-    sysA->Timing.SetFrequency(0);
-    sysB->Timing.SetFrequency(0);
+    sysA->Timing.SetInterval(std::chrono::microseconds(0));
+    sysB->Timing.SetInterval(std::chrono::microseconds(0));
     auto a = static_cast<TestSystem *>(container->System(std::move(sysA)));
     auto b = static_cast<TestSystem *>(container->System(std::move(sysB)));
     const std::string handleA = a->Handle;
@@ -374,7 +374,7 @@ namespace
             name(name), log(log)
         {
             this->Handle = handle;
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
         ~WalkSystem() override { this->log->destroyed[this->name]++; }
 

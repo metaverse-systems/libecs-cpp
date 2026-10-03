@@ -91,7 +91,7 @@ namespace
       public:
         explicit QuietSystem(const std::string &handle) : ecs::System(handle)
         {
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override {}
@@ -187,7 +187,7 @@ namespace
       public:
         explicit LookupSystem(const std::string &handle) : ecs::System(handle)
         {
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         void Update() override

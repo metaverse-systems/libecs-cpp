@@ -2,6 +2,7 @@
 #include <libecs-cpp/ecs.hpp>
 #include <atomic>
 #include <cstdlib>
+#include <chrono>
 #include <cstddef>
 #include <memory>
 #include <new>
@@ -119,7 +120,7 @@ namespace
       public:
         explicit CountingSystem(const std::string &handle) : ecs::System(handle)
         {
-            this->Timing = ecs::Timing(0);
+            this->Timing = ecs::Timing(std::chrono::microseconds(0));
         }
         nlohmann::json Export() const override { return nlohmann::json::object(); }
         void Update() override { this->updates++; }
@@ -128,7 +129,7 @@ namespace
         void AddTimer()
         {
             int *fires = &this->timerFires;
-            this->TimerAdd(ecs::Timer("tick", [fires]() { (*fires)++; }, 0, true));
+            this->TimerAdd(ecs::Timer("tick", [fires]() { (*fires)++; }, std::chrono::microseconds(0), true));
         }
     };
 
@@ -138,7 +139,7 @@ namespace
         RemovingSystem(const std::string &handle, std::string victim)
           : ecs::System(handle), victim(std::move(victim))
         {
-            this->Timing = ecs::Timing(0);
+            this->Timing = ecs::Timing(std::chrono::microseconds(0));
         }
         nlohmann::json Export() const override { return nlohmann::json::object(); }
         void Update() override

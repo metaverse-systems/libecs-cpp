@@ -42,7 +42,7 @@ namespace
         RecordingSystem(const std::string &handle, std::shared_ptr<Record> record)
             : ecs::System(handle), record(std::move(record))
         {
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
         nlohmann::json Export() const

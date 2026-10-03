@@ -1,5 +1,6 @@
 #include <catch2/catch_all.hpp>
 #include <libecs-cpp/ecs.hpp>
+#include <chrono>
 #include <functional>
 #include <map>
 #include <memory>
@@ -50,14 +51,23 @@ TEST_CASE("System can submit messages", "[System]") {
     REQUIRE(system.MessagesWaiting() == 1);
 }
 
-TEST_CASE("System can calculate delta time", "[System]") {
+TEST_CASE("System reports the time between updates", "[System]") {
+    ecs::ManualClock clock(std::chrono::microseconds(5000000));
     TestSystem system;
-    // First call to initialize LastTime
-    system.DeltaTimeGet(); 
-    // Small sleep to simulate passage of time
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    uint32_t deltaTime = system.DeltaTimeGet();
-    REQUIRE(deltaTime >= 10); // Check if at least 10ms have passed
+    system.ClockSet(&clock);
+    system.Timing.SetInterval(std::chrono::milliseconds(10));
+
+    // The first update reports the configured interval.
+    system.UpdateSystem();
+    REQUIRE(system.ElapsedGet() == std::chrono::milliseconds(10));
+
+    // Later updates report the gap on the clock, however often it is read.
+    clock.Advance(std::chrono::microseconds(12500));
+    system.UpdateSystem();
+    REQUIRE(system.ElapsedGet() == std::chrono::microseconds(12500));
+    REQUIRE(system.ElapsedGet() == std::chrono::microseconds(12500));
+    REQUIRE(system.ElapsedSecondsGet() == Catch::Approx(0.0125));
+    REQUIRE(system.ElapsedSecondsGet() == Catch::Approx(0.0125));
 }
 
 namespace
@@ -86,7 +96,7 @@ namespace
             name(name), log(log)
         {
             this->Handle = timerHandle(name);
-            this->Timing.SetFrequency(0);
+            this->Timing.SetInterval(std::chrono::microseconds(0));
         }
         ~TimerSystem() override { this->log->counts["destroyed:" + this->name]++; }
 
@@ -128,7 +138,7 @@ namespace
 
     void timerAdd(TimerSystem *system, const std::string &name, std::function<void()> callback, bool repeat = true)
     {
-        system->TimerAdd(ecs::Timer(name, callback, 0, repeat));
+        system->TimerAdd(ecs::Timer(name, callback, std::chrono::microseconds(0), repeat));
     }
 }
 
@@ -146,7 +156,7 @@ TEST_CASE("A timer callback can add timers", "[System]") {
             if(!added)
             {
                 added = true;
-                s->TimerAdd(ecs::Timer("C", fireCounter(log, "C"), 0));
+                s->TimerAdd(ecs::Timer("C", fireCounter(log, "C"), std::chrono::microseconds(0)));
             }
         });
         timerAdd(s, "B", fireCounter(log, "B"));
@@ -168,9 +178,9 @@ TEST_CASE("A timer callback can add timers", "[System]") {
     SECTION("a callback adds a timer while a sibling is still pending") {
         s->TimerAdd(ecs::Timer("a", [&] {
             log.counts["fire:a"]++;
-            s->TimerAdd(ecs::Timer("next", [] {}, 0));
-        }, 0));
-        s->TimerAdd(ecs::Timer("b", fireCounter(log, "b"), 0));
+            s->TimerAdd(ecs::Timer("next", [] {}, std::chrono::microseconds(0)));
+        }, std::chrono::microseconds(0)));
+        s->TimerAdd(ecs::Timer("b", fireCounter(log, "b"), std::chrono::microseconds(0)));
 
         container->Update();
         REQUIRE(log.count("fire:a") == 1);
@@ -196,7 +206,7 @@ TEST_CASE("A timer callback can add a timer to another system", "[System]") {
         timerAdd(s1, "A", [&] {
             if(added) return;
             added = true;
-            s2->TimerAdd(ecs::Timer("N", fireCounter(log, "N"), 0));
+            s2->TimerAdd(ecs::Timer("N", fireCounter(log, "N"), std::chrono::microseconds(0)));
         });
 
         container->Update();
@@ -213,7 +223,7 @@ TEST_CASE("A timer callback can add a timer to another system", "[System]") {
         timerAdd(s1, "A", [&] {
             if(added) return;
             added = true;
-            s0->TimerAdd(ecs::Timer("N", fireCounter(log, "N"), 0));
+            s0->TimerAdd(ecs::Timer("N", fireCounter(log, "N"), std::chrono::microseconds(0)));
         });
 
         container->Update();
@@ -289,9 +299,9 @@ TEST_CASE("A one-shot timer can re-arm itself under the same name", "[System]") 
     std::function<void()> callback;
     callback = [&] {
         log.counts["fire:A"]++;
-        s->TimerAdd(ecs::Timer("A", callback, 0, false));
+        s->TimerAdd(ecs::Timer("A", callback, std::chrono::microseconds(0), false));
     };
-    s->TimerAdd(ecs::Timer("A", callback, 0, false));
+    s->TimerAdd(ecs::Timer("A", callback, std::chrono::microseconds(0), false));
 
     for(int pass = 1; pass <= 3; pass++)
     {
@@ -317,7 +327,7 @@ TEST_CASE("Cancel then add under the same name leaves only the new timer", "[Sys
             if(replaced) return;
             replaced = true;
             s->TimerClear("A");
-            s->TimerAdd(ecs::Timer("A", fireCounter(log, "new"), 0));
+            s->TimerAdd(ecs::Timer("A", fireCounter(log, "new"), std::chrono::microseconds(0)));
         });
 
         container->Update();
@@ -335,7 +345,7 @@ TEST_CASE("Cancel then add under the same name leaves only the new timer", "[Sys
     SECTION("add then cancel removes both") {
         timerAdd(s, "A", [&] {
             log.counts["fire:A"]++;
-            s->TimerAdd(ecs::Timer("X", fireCounter(log, "X"), 0));
+            s->TimerAdd(ecs::Timer("X", fireCounter(log, "X"), std::chrono::microseconds(0)));
             s->TimerClear("X");
         }, false);
 
@@ -424,7 +434,7 @@ TEST_CASE("A timer callback that changes timers and then throws", "[System]") {
 
     timerAdd(s, "A", [&] {
         log.counts["fire:A"]++;
-        s->TimerAdd(ecs::Timer("C", fireCounter(log, "C"), 0));
+        s->TimerAdd(ecs::Timer("C", fireCounter(log, "C"), std::chrono::microseconds(0)));
         s->TimerClear("B");
         throw std::runtime_error("deliberate failure");
     }, false);
