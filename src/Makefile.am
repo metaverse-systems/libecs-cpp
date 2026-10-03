@@ -19,7 +19,18 @@ noinst_HEADERS = Validation.hpp ConsoleLog.hpp
 libecs_cpp_la_CXXFLAGS = -std=c++20 -I$(top_srcdir)/include -Wall $(WERROR_CXXFLAGS) $(SANITIZER_CXXFLAGS)
 
 libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Entity.cpp Uuid.cpp
-libecs_cpp_la_LDFLAGS = -no-undefined -pthread $(SANITIZER_LDFLAGS)
+# Binary-compatibility version, as current:revision:age.
+#   - Library code changed, interface unchanged: raise revision.
+#   - Interface added, old binaries still work: raise current and age, reset revision to zero.
+#   - Interface removed or changed incompatibly (a type layout, a signature, a removed
+#     name, an inline function that compiled code depends on): raise current, reset
+#     revision and age to zero.
+# The soname major is current minus age, so a binary built against an earlier
+# incompatible library is refused by the loader. The expected file names in
+# tests/check-install.sh change in the same commit as this value.
+# It starts at 2:0:0 because the 1.x and 2.0.0 releases all shipped soname 0 while
+# changing type layouts and removing names.
+libecs_cpp_la_LDFLAGS = -version-info 2:0:0 -no-undefined -pthread $(SANITIZER_LDFLAGS)
 
 noinst_PROGRAMS = example
 example_SOURCES = example.cpp

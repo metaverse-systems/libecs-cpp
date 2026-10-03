@@ -20,7 +20,9 @@ if [ -z "$host_os" ]; then
 fi
 
 # The files an installation holds, relative to the prefix, one per line, for each kind of host.
-# This is the install layout the consumers rely on.
+# This is the install layout the consumers rely on. The shared library carries the compatibility major
+# version 2 in its file name: libecs-cpp.so.2 (the soname) and libecs-cpp.so.2.0.0 on Linux, and
+# libecs-cpp-2.dll on Windows. Major version 0 was shipped by earlier releases and is never accepted.
 headers="include/libecs-cpp/Clock.hpp
 include/libecs-cpp/Component.hpp
 include/libecs-cpp/Container.hpp
@@ -37,13 +39,13 @@ linux_expected="$headers
 lib/libecs-cpp.a
 lib/libecs-cpp.la
 lib/libecs-cpp.so
-lib/libecs-cpp.so.0
-lib/libecs-cpp.so.0.0.0"
+lib/libecs-cpp.so.2
+lib/libecs-cpp.so.2.0.0"
 mingw_expected="$headers
 lib/libecs-cpp.a
 lib/libecs-cpp.dll.a
 lib/libecs-cpp.la
-bin/libecs-cpp-0.dll"
+bin/libecs-cpp-2.dll"
 
 case "$host_os" in
     mingw*|cygwin*|msys*) expected="$mingw_expected"; windows=yes ;;
@@ -99,6 +101,28 @@ if [ -n "$programs" ]; then
     if [ -s "$tmp/programs" ]; then
         status=1
     fi
+fi
+
+# The compatibility version must not be the one earlier incompatible releases shipped.
+if [ "$windows" = yes ]; then
+    for f in "$root"/bin/libecs-cpp-*.dll; do
+        case "$f" in
+            */libecs-cpp-0.dll|*'/libecs-cpp-*.dll') echo "FAIL: library file name carries major version 0 or is missing"; status=1 ;;
+        esac
+    done
+else
+    if ! command -v readelf >/dev/null 2>&1; then
+        echo "FAIL: readelf is needed to read the soname"
+        exit 2
+    fi
+    soname=$(readelf -d "$root/lib/libecs-cpp.so" 2>/dev/null | sed -n 's/.*(SONAME).*\[\(.*\)\].*/\1/p')
+    major=${soname#libecs-cpp.so.}
+    case "$soname:$major" in
+        libecs-cpp.so.*:*[!0-9]*|libecs-cpp.so.*:) echo "FAIL: unreadable soname: $soname"; status=1 ;;
+        libecs-cpp.so.*:0) echo "FAIL: soname major version is 0: $soname"; status=1 ;;
+        libecs-cpp.so.*:*) ;;
+        *) echo "FAIL: no soname recorded in the installed library"; status=1 ;;
+    esac
 fi
 
 if ! run_make uninstall; then
