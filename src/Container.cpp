@@ -28,13 +28,13 @@ namespace ecs
     Container::Container(ecs::Manager *manager):
         Manager(manager), Handle(ecs::Uuid().Get())
     {
-        this->logger = loggerFunction;
+        this->logger = std::make_shared<const LogFunction>(loggerFunction);
     }
 
     Container::Container(ecs::Manager *manager, const std::string &handle):
         Manager(manager), Handle(handle)
     {
-        this->logger = loggerFunction;
+        this->logger = std::make_shared<const LogFunction>(loggerFunction);
     }
 
     Container::~Container()
@@ -355,14 +355,24 @@ namespace ecs
 
     void Container::Log(const std::string &message, const std::string &level)
     {
-        if(this->logger)
+        std::shared_ptr<const LogFunction> destination;
         {
-            this->logger(message, level);
+            std::lock_guard<std::mutex> lock(this->loggerLock);
+            destination = this->logger;
+        }
+        if(destination && *destination)
+        {
+            (*destination)(message, level);
         }
     }
 
     void Container::LoggerSet(std::function<void(const std::string &, const std::string &)> fn)
     {
-        this->logger = std::move(fn);
+        auto holder = std::make_shared<const LogFunction>(std::move(fn));
+        {
+            std::lock_guard<std::mutex> lock(this->loggerLock);
+            this->logger.swap(holder);
+        }
+        // holder now owns the previous destination and releases it here, outside the lock.
     }
 }

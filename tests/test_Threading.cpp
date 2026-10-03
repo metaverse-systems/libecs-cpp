@@ -1151,3 +1151,235 @@ TEST_CASE("Sending to a manager that is being destroyed is memory safe", "[Threa
     REQUIRE(otherErrors == 0);
     REQUIRE(delivered > 0);
 }
+
+namespace
+{
+    /*! One log destination's tally. Lines are counted by whichever thread logs; probes are the lines a
+     *  test sends to check where the next line goes. */
+    struct LogTally
+    {
+        std::atomic<std::size_t> lines{0};
+        std::atomic<std::size_t> probes{0};
+    };
+
+    using LogFunction = std::function<void(const std::string &, const std::string &)>;
+
+    LogFunction tallyDestination(std::shared_ptr<LogTally> tally)
+    {
+        return [tally](const std::string &message, const std::string &) {
+            tally->lines++;
+            if(message == "probe")
+            {
+                tally->probes++;
+            }
+        };
+    }
+
+    /*! Logs one numbered line through System::Log on every update and counts the calls. */
+    class LoggingSystem : public ecs::System
+    {
+      public:
+        explicit LoggingSystem(const std::string &handle, std::shared_ptr<std::atomic<std::size_t>> calls)
+          : calls(std::move(calls))
+        {
+            this->Handle = handle;
+            this->Timing.SetFrequency(0);
+        }
+
+        void Update() override
+        {
+            this->Log("line " + std::to_string(this->calls->load()), "info");
+            (*this->calls)++;
+        }
+
+        nlohmann::json Export() const override
+        {
+            return nlohmann::json::object();
+        }
+
+        std::shared_ptr<std::atomic<std::size_t>> calls;
+    };
+}
+
+TEST_CASE("Replacing the log destination while logging", "[Threading]")
+{
+    constexpr int REPLACEMENTS = 5000;
+    constexpr int LOGGERS = 2;
+
+    std::atomic<bool> stop{false};
+    auto systemCalls = std::make_shared<std::atomic<std::size_t>>(0);
+    std::vector<std::shared_ptr<LogTally>> tallies;
+    std::atomic<std::size_t> threadCalls{0};
+    std::atomic<int> probeFailures{0};
+    std::atomic<int> otherErrors{0};
+
+    bool completed = withTimeout(
+      [&]() {
+          auto manager = std::make_unique<ecs::Manager>();
+          auto container = manager->Container("world");
+          // The first destination is installed before anything logs, so no line goes to the default one.
+          tallies.push_back(std::make_shared<LogTally>());
+          container->LoggerSet(tallyDestination(tallies.back()));
+          container->System(std::make_unique<LoggingSystem>("logger", systemCalls));
+          container->Start(100);
+
+          std::atomic<bool> halt{false};
+          std::latch go(LOGGERS + 2);
+          std::vector<std::thread> threads;
+          for(int t = 0; t < LOGGERS; t++)
+          {
+              threads.emplace_back([&, t]() {
+                  go.arrive_and_wait();
+                  try
+                  {
+                      for(int n = 0; !halt.load(); n++)
+                      {
+                          container->Log("thread " + std::to_string(t) + " line " + std::to_string(n));
+                          threadCalls++;
+                      }
+                  }
+                  catch(...)
+                  {
+                      otherErrors++;
+                  }
+              });
+          }
+
+          // The replacing thread owns the tallies vector until it is joined.
+          std::vector<std::shared_ptr<LogTally>> replaced;
+          std::thread replacer([&]() {
+              go.arrive_and_wait();
+              try
+              {
+                  for(int n = 0; n < REPLACEMENTS && !stop; n++)
+                  {
+                      auto tally = std::make_shared<LogTally>();
+                      replaced.push_back(tally);
+                      container->LoggerSet(tallyDestination(tally));
+                      // A line logged after LoggerSet returned, by the same thread, goes to the new destination.
+                      container->Log("probe");
+                      threadCalls++;
+                      if(tally->probes.load() != 1)
+                      {
+                          probeFailures++;
+                      }
+                  }
+              }
+              catch(...)
+              {
+                  otherErrors++;
+              }
+          });
+
+          go.arrive_and_wait();
+          replacer.join();
+          halt = true;
+          for(auto &t : threads)
+          {
+              t.join();
+          }
+          // Destroying the manager stops the world thread, so every line has been delivered after this.
+          manager.reset();
+          tallies.insert(tallies.end(), replaced.begin(), replaced.end());
+      },
+      60s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("replacing the destination did not finish in time");
+    }
+    REQUIRE(otherErrors == 0);
+    REQUIRE(probeFailures == 0);
+
+    std::size_t delivered = 0;
+    for(auto &tally : tallies)
+    {
+        delivered += tally->lines.load();
+    }
+    // Every destination here is a tally and the first was installed before the world started, so the
+    // default destination received nothing.
+    REQUIRE(systemCalls->load() > 0);
+    REQUIRE(delivered == systemCalls->load() + threadCalls.load());
+}
+
+TEST_CASE("A log destination may log or replace itself", "[Threading]")
+{
+    std::atomic<bool> stop{false};
+    std::size_t entries = 0;
+    std::size_t nested = 0;
+    std::size_t replacementLines = 0;
+
+    bool completed = withTimeout(
+      [&]() {
+          ecs::Manager manager;
+          auto container = manager.Container("world");
+
+          // A destination that logs once per entry, with a depth counter so it cannot recurse forever.
+          int depth = 0;
+          container->LoggerSet([&](const std::string &message, const std::string &) {
+              entries++;
+              if(message == "nested")
+              {
+                  nested++;
+              }
+              if(depth == 0)
+              {
+                  depth++;
+                  container->Log("nested");
+                  depth--;
+              }
+          });
+          container->Log("outer");
+          container->Log("outer");
+
+          // A destination that replaces itself from inside a call.
+          bool replaced = false;
+          container->LoggerSet([&](const std::string &, const std::string &) {
+              if(!replaced)
+              {
+                  replaced = true;
+                  container->LoggerSet([&](const std::string &, const std::string &) {
+                      replacementLines++;
+                  });
+              }
+          });
+          container->Log("first");
+          container->Log("second");
+          container->Log("third");
+      },
+      10s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("a destination that logs or replaces itself deadlocked");
+    }
+    REQUIRE(entries == 4);
+    REQUIRE(nested == 2);
+    REQUIRE(replacementLines == 2);
+}
+
+TEST_CASE("An empty destination accepts lines", "[Threading]")
+{
+    ecs::Manager manager;
+    auto container = manager.Container("world");
+    auto tally = std::make_shared<LogTally>();
+
+    container->LoggerSet(tallyDestination(tally));
+    container->Log("before");
+    REQUIRE(tally->lines == 1);
+
+    REQUIRE_NOTHROW(container->LoggerSet(nullptr));
+    REQUIRE_NOTHROW(container->Log("dropped"));
+    REQUIRE_NOTHROW(container->Log("dropped", "error"));
+    REQUIRE(tally->lines == 1);
+
+    container->LoggerSet(tallyDestination(tally));
+    container->Log("after");
+    REQUIRE(tally->lines == 2);
+
+    REQUIRE_NOTHROW(container->LoggerSet(LogFunction{}));
+    REQUIRE_NOTHROW(container->Log("dropped"));
+    REQUIRE(tally->lines == 2);
+}

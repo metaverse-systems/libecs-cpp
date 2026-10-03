@@ -104,14 +104,24 @@ namespace ecs
         ecs::TypeEntityComponentList Components;
         ecs::Uuid UuidGet();
         std::unordered_map<std::string, std::unique_ptr<ecs::System>> Systems;
+        /*! Sends a line to the current log destination. Safe to call from any thread. Each call goes to
+         *  exactly one destination, one that was installed at some time during the call; a call that starts
+         *  after LoggerSet() returned uses the new destination. The destination is called with no lock held,
+         *  so it may itself call Log() or LoggerSet(). If the destination is empty the line is dropped. */
         void Log(const std::string &message, const std::string &level = "info");
+        /*! Replaces the log destination. Safe to call from any thread, including from inside a destination.
+         *  An empty function makes later Log() calls drop their lines. The previous destination may still
+         *  finish a call that began before the replacement. */
         void LoggerSet(std::function<void(const std::string &, const std::string &)> fn);
         
       private:
         /*! Maps system handles to their mailboxes so other threads can route without touching Systems. */
         std::mutex mailboxesLock;
         std::unordered_map<std::string, std::shared_ptr<ecs::Mailbox>> mailboxes;
-        std::function<void(const std::string &, const std::string &)> logger;
+        using LogFunction = std::function<void(const std::string &, const std::string &)>;
+        /*! Guards the pointer only; the destination itself is called without the lock. */
+        std::mutex loggerLock;
+        std::shared_ptr<const LogFunction> logger;
         /*! One position in the update order. A null system marks a system removed during the current walk. */
         struct SystemSlot
         {
