@@ -555,10 +555,23 @@ namespace ecs
             while(!stopToken.stop_requested())
             {
                 {
-                    // Ends early, with the lock released, as soon as a stop is requested.
-                    std::unique_lock<std::mutex> lock(this->lifecycleLock);
-                    this->lifecycleChanged.wait_for(lock, stopToken, std::chrono::microseconds(this->sleepInterval),
-                                                    [this] { return this->stopRequested.load(); });
+                    // Ends early, with the lock released, as soon as a stop is requested. A timed wait on some
+                    // platforms (for example the Windows thread library) overshoots by about a millisecond, which
+                    // would stretch every tick, so the wait ends a little before the deadline and the rest of the
+                    // interval is slept.
+                    constexpr std::chrono::microseconds slack(2000);
+                    const std::chrono::microseconds interval(this->sleepInterval);
+                    const auto deadline = std::chrono::steady_clock::now() + interval;
+                    if(interval > slack)
+                    {
+                        std::unique_lock<std::mutex> lock(this->lifecycleLock);
+                        this->lifecycleChanged.wait_until(lock, stopToken, deadline - slack,
+                                                          [this] { return this->stopRequested.load(); });
+                    }
+                    if(stopToken.stop_requested() || this->stopRequested.load()) break;
+                    std::this_thread::sleep_until(deadline);
+                    // A sleep may end a fraction of a millisecond early on some platforms.
+                    while(std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
                 }
                 if(stopToken.stop_requested() || this->stopRequested.load()) break;
                 this->Update();
