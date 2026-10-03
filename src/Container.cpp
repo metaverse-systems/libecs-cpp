@@ -184,8 +184,13 @@ namespace ecs
             std::unique_ptr<ecs::System> old = std::move(existing->second);
             for(auto &slot : this->system_order)
             {
-                if(slot.system == old.get()) slot.system = ptr;
+                if(slot.system == old.get())
+                {
+                    slot.system = ptr;
+                    slot.started = false;
+                }
             }
+            this->startPending = true;
             existing->second = std::move(system);
             {
                 std::lock_guard<std::mutex> guard(this->mailboxesLock);
@@ -196,6 +201,7 @@ namespace ecs
         }
 
         this->system_order.push_back(SystemSlot{handle, ptr});
+        this->startPending = true;
         try
         {
             this->Systems.emplace(handle, std::move(system));
@@ -258,22 +264,33 @@ namespace ecs
 
     void Container::SystemsInitialize()
     {
+        this->systemsStart();
+    }
+
+    void Container::systemsStart()
+    {
+        // Cleared first: a system registered while this runs sets it again and is started by the next pass.
+        this->startPending = false;
         WalkScope walk(this);
         for(size_t i = 0, count = this->system_order.size(); i < count; i++)
         {
             auto *system = this->system_order[i].system;
-            if(system == nullptr) continue;
+            if(system == nullptr || this->system_order[i].started) continue;
+            // Marked before the call, so a system that fails to start is not started again.
+            this->system_order[i].started = true;
             try
             {
                 system->Initialize();
             }
             catch(const std::exception &e)
             {
+                this->startPending = true;
                 this->Log("[" + this->system_order[i].handle + "] threw during Initialize(): " + e.what(), "error");
                 throw;
             }
             catch(...)
             {
+                this->startPending = true;
                 this->Log("[" + this->system_order[i].handle + "] threw unknown exception during Initialize()", "error");
                 throw;
             }
@@ -359,11 +376,13 @@ namespace ecs
     {
         if(this->walkDepth == 0 && !this->draining && this->deferredCount.load() != 0)
             this->deferredRun();
+        if(this->startPending && this->walkDepth == 0)
+            this->systemsStart();
         WalkScope walk(this);
         for(size_t i = 0, count = this->system_order.size(); i < count; i++)
         {
             auto *system = this->system_order[i].system;
-            if(system == nullptr) continue;
+            if(system == nullptr || !this->system_order[i].started) continue;
             try
             {
                 if(system->Timing.ShouldUpdate())

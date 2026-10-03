@@ -82,10 +82,13 @@ namespace ecs
          *  other thread uses the world. */
         void Start();
         void Start(uint32_t);
-        /*! Calls Initialize() on every registered system, in registration order.
+        /*! Calls Initialize() once on every registered system that has not been started yet, in
+         *  registration order. Update() does this by itself before the update walk whenever a system
+         *  has been registered since the last time, so calling it is optional, and calling it again
+         *  never starts a system twice.
          *
          * This is a walk. A system registered during it does not get Initialize() from this call and is
-         * updated from the next Update(). A system removed during it is not initialized if it has not
+         * started and updated from the next Update(). A system removed during it is not initialized if it has not
          * been reached yet. Systems removed during the walk are released when it returns, normally or
          * because a system threw. World thread only. If Initialize() throws, the error is logged with the system's
          * identifier and rethrown after every change requested so far has completed.
@@ -236,6 +239,8 @@ namespace ecs
         {
             std::string handle;
             ecs::System *system;
+            /*! True once Initialize() has been called (or attempted) on this system. */
+            bool started = false;
         };
         class WalkScope;
         std::vector<SystemSlot> system_order;
@@ -261,5 +266,10 @@ namespace ecs
         ecs::Entity *entityCreate(const std::string &handle);
 
         std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> resources;
+
+        /*! World thread only. True when a registered system may not have been started yet. */
+        bool startPending = false;
+        /*! Calls Initialize() on every slot not yet started, in registration order. */
+        void systemsStart();
     };
 }
