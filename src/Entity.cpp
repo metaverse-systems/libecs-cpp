@@ -53,6 +53,26 @@ namespace ecs
         return c;
     }
 
+    std::shared_ptr<ecs::Component> Entity::componentFind(const std::string &type) const
+    {
+        auto byType = this->Container->Components.find(type);
+        if(byType == this->Container->Components.end())
+        {
+            return nullptr;
+        }
+        auto byEntity = byType->second.find(this->Handle);
+        if(byEntity == byType->second.end())
+        {
+            return nullptr;
+        }
+        return byEntity->second;
+    }
+
+    bool Entity::ComponentHas(const std::string &type) const
+    {
+        return this->componentFind(type) != nullptr;
+    }
+
     void Entity::ComponentDestroy(const std::string &type)
     {
         this->Container->ComponentDestroy(this->Handle, type);

@@ -222,3 +222,164 @@ TEST_CASE("An update pass with one removal allocates independently of system cou
     REQUIRE(small == large);
     REQUIRE(small <= 4);
 }
+
+namespace
+{
+    class LookupComponent : public ecs::Component
+    {
+      public:
+        explicit LookupComponent(const std::string &type)
+        {
+            this->Type = type;
+        }
+        nlohmann::json Export() const override { return nlohmann::json::object(); }
+    };
+
+    class OtherLookupComponent : public ecs::Component
+    {
+      public:
+        OtherLookupComponent()
+        {
+            this->Type = "LookupKind";
+        }
+        nlohmann::json Export() const override { return nlohmann::json::object(); }
+    };
+
+    /*! A world with a present component, an entity without one, and a stored component of another kind. */
+    struct LookupWorld
+    {
+        LookupWorld()
+        {
+            this->container = this->manager.Container("allocation-lookup");
+            this->container->Entity("present")->Component(new LookupComponent("LookupKind"));
+            this->container->Entity("bare");
+            this->container->Entity("other")->Component(new OtherLookupComponent());
+            this->container->Entity("long")->Component(new LookupComponent("VelocityComponent"));
+        }
+
+        ecs::Manager manager;
+        ecs::Container *container = nullptr;
+        const std::string present = "present";
+        const std::string bare = "bare";
+        const std::string other = "other";
+        const std::string unknown = "nobody";
+        const std::string kind = "LookupKind";
+        const std::string unusedKind = "NeverUsedKind";
+    };
+
+    template<class Body>
+    std::size_t allocationsOf(int calls, Body body)
+    {
+        body(); // warm-up
+        allocationCount = 0;
+        measuring = true;
+        for(int i = 0; i < calls; i++)
+            body();
+        measuring = false;
+        return allocationCount.load();
+    }
+}
+
+TEST_CASE("Component lookup does not allocate", "[UpdateAllocation]")
+{
+    LookupWorld w;
+    constexpr int calls = 100000;
+    int found = 0;
+
+    SECTION("present")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentGet<LookupComponent>(w.present, w.kind) ? 1 : 0; }) == 0);
+    }
+    SECTION("absent component")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentGet<LookupComponent>(w.bare, w.kind) ? 1 : 0; }) == 0);
+    }
+    SECTION("unused type")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentGet<LookupComponent>(w.present, w.unusedKind) ? 1 : 0; }) == 0);
+    }
+    SECTION("unknown entity")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentGet<LookupComponent>(w.unknown, w.kind) ? 1 : 0; }) == 0);
+    }
+    SECTION("mismatched kind")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentGet<LookupComponent>(w.other, w.kind) ? 1 : 0; }) == 0);
+    }
+    SECTION("through the entity")
+    {
+        auto *entity = w.container->Entity(w.present);
+        REQUIRE(allocationsOf(calls, [&]() { found += entity->ComponentGet<LookupComponent>(w.kind) ? 1 : 0; }) == 0);
+    }
+    REQUIRE(found >= 0);
+}
+
+TEST_CASE("Component question does not allocate", "[UpdateAllocation]")
+{
+    LookupWorld w;
+    constexpr int calls = 100000;
+    int found = 0;
+
+    SECTION("present")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentHas(w.present, w.kind) ? 1 : 0; }) == 0);
+    }
+    SECTION("absent component")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentHas(w.bare, w.kind) ? 1 : 0; }) == 0);
+    }
+    SECTION("unused type")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentHas(w.present, w.unusedKind) ? 1 : 0; }) == 0);
+    }
+    SECTION("unknown entity")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentHas(w.unknown, w.kind) ? 1 : 0; }) == 0);
+    }
+    SECTION("mismatched kind")
+    {
+        REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentHas(w.other, w.kind) ? 1 : 0; }) == 0);
+    }
+    SECTION("through the entity")
+    {
+        auto *entity = w.container->Entity(w.present);
+        REQUIRE(allocationsOf(calls, [&]() { found += entity->ComponentHas(w.kind) ? 1 : 0; }) == 0);
+    }
+    REQUIRE(found >= 0);
+}
+
+TEST_CASE("A short string literal does not allocate and a long one allocates at most once per call", "[UpdateAllocation]")
+{
+    LookupWorld w;
+    constexpr int calls = 10000;
+    int found = 0;
+
+    // The standard string keeps up to 15 characters inside the object; a longer literal needs a buffer
+    // when it is turned into a string for the call.
+    REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentHas("present", "Position") ? 1 : 0; }) == 0);
+    REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentGet<LookupComponent>("present", "Position") ? 1 : 0; }) == 0);
+
+    REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentHas("long", "VelocityComponent") ? 1 : 0; }) <= static_cast<std::size_t>(calls));
+    REQUIRE(allocationsOf(calls, [&]() { found += w.container->ComponentGet<LookupComponent>("long", "VelocityComponent") ? 1 : 0; }) <= static_cast<std::size_t>(calls));
+    REQUIRE(found == 2 * (calls + 1));
+}
+
+TEST_CASE("Resource retrieval does not allocate", "[UpdateAllocation]")
+{
+    ecs::Manager manager;
+    auto *container = manager.Container("allocation-resource");
+    container->ResourceAdd("present-resource", ecs::Resource{std::vector<uint8_t>(1024, 1)});
+    const std::string existing = "present-resource";
+    const std::string unknown = "missing-resource";
+    int found = 0;
+
+    SECTION("existing name")
+    {
+        REQUIRE(allocationsOf(100000, [&]() { found += container->ResourceGet(existing) ? 1 : 0; }) == 0);
+    }
+    SECTION("unknown name")
+    {
+        REQUIRE(allocationsOf(100000, [&]() { found += container->ResourceGet(unknown) ? 1 : 0; }) == 0);
+    }
+    REQUIRE(found >= 0);
+}

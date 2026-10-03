@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <thread>
 #include <memory>
+#include <type_traits>
 #include <mutex>
 #include <atomic>
 #include <iostream>
@@ -55,6 +56,7 @@ namespace ecs
      * | Stop() | Any thread. From the world thread it only requests; elsewhere it returns once the world has been torn down |
      * | System(), SystemDestroy() | World thread |
      * | Entity(), EntityDestroy(), Component(), ComponentDestroy() | World thread |
+     * | ComponentGet(), ComponentHas() | World thread; takes no lock |
      * | ResourceAdd(), Resources(), ResourceGet(), Export() | World thread |
      * | Entities, Components, Systems | World thread (public so systems can iterate them) |
      * | ~Container() | Exclusive: discards pending deferred changes unrun, stops and joins the thread, delivers Shutdown() to every started system |
@@ -172,6 +174,36 @@ namespace ecs
          * the entity has exactly one component of each type. Anyone holding a shared_ptr to the replaced
          * component keeps a valid object. The same type on a different entity is kept alongside. */
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
+        /*! Looks up the component of the given type on the given entity, as kind T (world thread only).
+         *
+         * The result is empty when the entity has no component of that type, when the type has never been
+         * used, when the entity is unknown, when either string is empty, and when the stored component is
+         * not a T. With the default kind, ecs::Component, any stored component is returned. The call
+         * never throws, never changes the world, takes no lock and, given existing std::string
+         * arguments, never allocates. The result keeps its object valid even if the component is later
+         * replaced or removed.
+         *
+         * Unlike Components[type][entity], which inserts an empty entry for a type or entity it does not
+         * find, this lookup (like find() and at()) leaves the table as it was. A short string literal
+         * (up to 15 characters) does not allocate when converted to std::string, a longer one does, so
+         * code that runs every pass should hold its type names in std::string constants. */
+        template <class T = ecs::Component>
+        std::shared_ptr<T> ComponentGet(const std::string &entity, const std::string &type) const
+        {
+            std::shared_ptr<ecs::Component> found = this->componentFind(entity, type);
+            if constexpr(std::is_same_v<T, ecs::Component>)
+            {
+                return found;
+            }
+            else
+            {
+                return std::dynamic_pointer_cast<T>(found);
+            }
+        }
+        /*! True when the given entity has a component of the given type, whatever its kind (world thread
+         *  only). Never throws, never changes the world, takes no lock and never allocates given existing
+         *  std::string arguments. An empty slot left by Components[type][entity] counts as no component. */
+        bool ComponentHas(const std::string &entity, const std::string &type) const;
         /*! Removes a component (world thread only). The identifiers may be fields of the component being removed. An
          *  unknown entity or type is a silent no-op. */
         void ComponentDestroy(const std::string &entity, const std::string &type);
@@ -253,12 +285,18 @@ namespace ecs
          *
          * The function and everything it captures must stay valid until it runs or is discarded. */
         void Defer(std::function<void()> fn);
-        /*! World thread only. */
+        /*! Stores a resource under a name, replacing any resource of that name (world thread only). Passing
+         *  a temporary or a std::move()d value costs no copy of the bytes; passing an lvalue copies them
+         *  once. Readers that still hold the replaced resource keep their data. Treat a resource as
+         *  read-only once added. */
         void ResourceAdd(const std::string &name, ecs::Resource r);
         /*! World thread only. */
         void Resources(const std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> &resources);
-        /*! World thread only. */
-        ecs::Resource ResourceGet(const std::string &name);
+        /*! Returns the stored resource as a shared read-only view, without copying its bytes (world thread
+         *  only). The result is empty when the name is unknown; nothing is created and nothing is thrown.
+         *  The data stays valid for as long as the result is held, even after the resource is replaced or
+         *  the world is destroyed. */
+        std::shared_ptr<const ecs::Resource> ResourceGet(const std::string &name) const;
         /*! World thread only. Public so systems can iterate it. */
         std::unordered_map<std::string, std::unique_ptr<ecs::Entity>> Entities;
         /*! Any thread. Set at construction and never changes. */
@@ -334,6 +372,8 @@ namespace ecs
         std::jthread containerThread;
         void threadFunc(std::stop_token stopToken);
         ecs::Entity *entityCreate(const std::string &handle);
+        /*! Finds the stored component with find() only, so nothing is inserted. Empty when absent. */
+        std::shared_ptr<ecs::Component> componentFind(const std::string &entity, const std::string &type) const;
 
         std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> resources;
 

@@ -3,6 +3,9 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <memory>
+#include <type_traits>
+#include <libecs-cpp/Component.hpp>
 #include <libecs-cpp/json.hpp>
 
 namespace ecs
@@ -27,7 +30,31 @@ namespace ecs
          *  std::runtime_error and leave the world unchanged. A second component of the same Type replaces
          *  the first; holders of the old component keep a valid object. */
         std::shared_ptr<ecs::Component> Component(ecs::Component *component);
+        /*! Looks up this entity's component of the given type, as kind T. Empty when the entity has no
+         *  component of that type or the stored one is not a T; with the default kind any stored
+         *  component is returned. Never throws, never changes the world, takes no lock and never
+         *  allocates given an existing std::string. The result stays valid if the component is later
+         *  replaced or removed. See Container::ComponentGet(). */
+        template <class T = ecs::Component>
+        std::shared_ptr<T> ComponentGet(const std::string &type) const
+        {
+            std::shared_ptr<ecs::Component> found = this->componentFind(type);
+            if constexpr(std::is_same_v<T, ecs::Component>)
+            {
+                return found;
+            }
+            else
+            {
+                return std::dynamic_pointer_cast<T>(found);
+            }
+        }
+        /*! True when this entity has a component of the given type, whatever its kind. Never throws,
+         *  never changes the world, takes no lock and never allocates given an existing std::string. */
+        bool ComponentHas(const std::string &type) const;
         void Destroy();
         void ComponentDestroy(const std::string &type);
+    
+      private:
+        std::shared_ptr<ecs::Component> componentFind(const std::string &type) const;
     };
 }

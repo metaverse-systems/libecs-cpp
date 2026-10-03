@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <string>
+#include <memory>
 #include <libecs-cpp/json.hpp>
 
 namespace ecs
@@ -20,6 +21,9 @@ namespace ecs
         virtual ~Component() = default;
     };
 
+    /*! Components are stored in the world's table as shared pointers. Reading
+     *  Components[type][entity] inserts an empty entry when the type or entity is missing, while
+     *  Container::ComponentGet() and Entity::ComponentGet() leave the table unchanged. */
     typedef std::unordered_map<std::string, std::shared_ptr<ecs::Component>> EntityComponentList;
 
     typedef std::unordered_map<std::string, ecs::EntityComponentList> TypeEntityComponentList;

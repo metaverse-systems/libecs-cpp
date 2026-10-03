@@ -97,17 +97,29 @@ class PhysicsSystem : public ecs::System
 
         std::cout << "Last run " << dt << "ms ago" << std::endl;
 
+        // Type names held in std::string constants so lookups do not allocate
+        static const std::string positionType = "PositionComponent";
+        static const std::string velocityType = "VelocityComponent";
+
+        // Look the type up with find(): indexing a missing type would insert an empty entry
+        auto positions = this->Components->find(positionType);
+        if(positions == this->Components->end()) return;
+
         // Iterate over PositionComponents
-        for(auto &[entity, pcomponent] : (*this->Components)["PositionComponent"])
+        for(auto &[entity, pcomponent] : positions->second)
         {
             // Cast to PositionComponent class
             auto pos = std::dynamic_pointer_cast<PositionComponent>(pcomponent);
 
-            // Get related Component
-            auto vcomponent = (*this->Components)["VelocityComponent"][entity];
-            // Cast to VelocityComponent
-            auto vel = std::dynamic_pointer_cast<VelocityComponent>(vcomponent);
-                
+            // Get the related VelocityComponent; the result is empty when the entity has none
+            auto vel = this->Container->ComponentGet<VelocityComponent>(entity, velocityType);
+
+            if(!pos || !vel)
+            {
+                std::cout << entity << " - has no velocity, skipped" << std::endl;
+                continue;
+            }
+
             // scale velocity
             float multiplier = dt / 1000.0;
 
@@ -146,6 +158,12 @@ int main(int argc, char *argv[])
     config["x"] = 1; // meters per second
     config["y"] = 0;
     e->Component(new VelocityComponent(config));
+
+    /* An entity with a position and no velocity: the system skips it */
+    auto still = world->Entity();
+    config["x"] = 5;
+    config["y"] = 5;
+    still->Component(new PositionComponent(config));
 
     /* Run container in its own thread */
     bool threaded = true;

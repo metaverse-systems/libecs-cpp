@@ -16,3 +16,5 @@ test_Validation
 bench_message_submit
 test_Lifecycle
 test_ProcessManager
+test_Access
+bench_component_get

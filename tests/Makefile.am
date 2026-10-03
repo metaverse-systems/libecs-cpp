@@ -2,7 +2,7 @@ AM_CPPFLAGS = -I../include ${CATCH2_CFLAGS}
 AM_CXXFLAGS = -std=c++20 $(SANITIZER_CXXFLAGS)
 AM_LDFLAGS = $(SANITIZER_LDFLAGS)
 
-check_PROGRAMS = test_Manager test_System test_Entity test_Container test_Timing test_UpdateAllocation test_Uuid test_Threading test_Validation test_Lifecycle test_ProcessManager
+check_PROGRAMS = test_Manager test_System test_Entity test_Container test_Timing test_UpdateAllocation test_Uuid test_Threading test_Validation test_Lifecycle test_ProcessManager test_Access
 
 TEST_EXTENSIONS = .sh
 LOG_COMPILER = $(SHELL) $(srcdir)/run-test.sh
@@ -23,7 +23,7 @@ check-local:
 	@echo "cross-compiling for $(if $(host_alias),$(host_alias),$(host)): test programs were built but not run"
 endif
 
-EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh known-gaps.txt bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp
+EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh known-gaps.txt bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp
 
 test_Manager_SOURCES = test_Manager.cpp
 test_Manager_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
@@ -63,3 +63,7 @@ test_Lifecycle_LDFLAGS = $(AM_LDFLAGS) -pthread
 test_ProcessManager_SOURCES = test_ProcessManager.cpp
 test_ProcessManager_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
 test_ProcessManager_LDFLAGS = $(AM_LDFLAGS) -pthread
+
+test_Access_SOURCES = test_Access.cpp
+test_Access_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
+test_Access_LDFLAGS = $(AM_LDFLAGS) -pthread

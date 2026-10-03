@@ -717,7 +717,7 @@ namespace ecs
 
     void Container::ResourceAdd(const std::string &name, ecs::Resource r)
     {
-        this->resources[name] = std::make_shared<ecs::Resource>(r);
+        this->resources[name] = std::make_shared<ecs::Resource>(std::move(r));
     }
 
     void Container::Resources(const std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> &resources)
@@ -728,15 +728,34 @@ namespace ecs
         }
     }
 
-    ecs::Resource Container::ResourceGet(const std::string &name)
+    std::shared_ptr<const ecs::Resource> Container::ResourceGet(const std::string &name) const
     {
-        if(!this->resources.contains(name))
+        auto it = this->resources.find(name);
+        if(it == this->resources.end())
         {
-            auto err = "Attempted to access non-existent resource: " + name;
-            throw std::runtime_error(err);
+            return nullptr;
         }
+        return it->second;
+    }
 
-        return *(this->resources[name]);
+    std::shared_ptr<ecs::Component> Container::componentFind(const std::string &entity, const std::string &type) const
+    {
+        auto byType = this->Components.find(type);
+        if(byType == this->Components.end())
+        {
+            return nullptr;
+        }
+        auto byEntity = byType->second.find(entity);
+        if(byEntity == byType->second.end())
+        {
+            return nullptr;
+        }
+        return byEntity->second;
+    }
+
+    bool Container::ComponentHas(const std::string &entity, const std::string &type) const
+    {
+        return this->componentFind(entity, type) != nullptr;
     }
 
     void Container::ComponentDestroy(const std::string &entity, const std::string &type)
