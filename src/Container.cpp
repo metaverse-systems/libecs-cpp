@@ -39,23 +39,153 @@ namespace ecs
         this->logger = std::make_shared<const LogFunction>(loggerFunction);
     }
 
+    class Container::WalkScope
+    {
+      public:
+        explicit WalkScope(Container *container): container(container)
+        {
+            this->container->walkDepth++;
+        }
+        ~WalkScope()
+        {
+            this->container->walkFinish();
+        }
+        WalkScope(const WalkScope &) = delete;
+        WalkScope &operator=(const WalkScope &) = delete;
+        WalkScope(WalkScope &&) = delete;
+        WalkScope &operator=(WalkScope &&) = delete;
+
+      private:
+        Container *container;
+    };
+
+    void Container::deferredClose()
+    {
+        std::vector<std::function<void()>> discarded;
+        {
+            std::lock_guard<std::mutex> guard(this->deferredLock);
+            this->deferredClosed = true;
+            discarded.swap(this->deferred);
+            this->deferredCount.store(0);
+        }
+        // Destroyed here, after the lock is released, without running.
+    }
+
     Container::~Container()
     {
-        {
-            std::vector<std::function<void()>> discarded;
-            {
-                std::lock_guard<std::mutex> guard(this->deferredLock);
-                this->deferredClosed = true;
-                discarded.swap(this->deferred);
-                this->deferredCount.store(0);
-            }
-            // Destroyed here, after the lock is released, without running.
-        }
+        this->deferredClose();
         if(this->containerThread.joinable())
         {
+            // The world's own thread delivers the notifications before it ends.
             this->containerThread.request_stop();
             this->containerThread.join();
         }
+        else
+        {
+            this->teardown();
+        }
+
+        // The logger, the mailbox table and the other members still exist here, so a system may log
+        // from its destructor.
+        this->retiredRelease();
+        std::vector<std::unique_ptr<ecs::System>> owned;
+        owned.reserve(this->Systems.size());
+        for(auto &slot : this->system_order)
+        {
+            if(slot.system == nullptr) continue;
+            auto found = this->Systems.find(slot.handle);
+            if(found != this->Systems.end() && found->second.get() == slot.system)
+            {
+                owned.push_back(std::move(found->second));
+            }
+        }
+        // Anything left in Systems has no slot; it is released after the others.
+        std::vector<std::unique_ptr<ecs::System>> unordered;
+        for(auto &[name, system] : this->Systems)
+        {
+            if(system) unordered.push_back(std::move(system));
+        }
+        this->Systems.clear();
+        this->system_order.clear();
+        {
+            std::lock_guard<std::mutex> guard(this->mailboxesLock);
+            this->mailboxes.clear();
+        }
+        unordered.clear();
+        while(!owned.empty())
+        {
+            owned.pop_back();
+        }
+    }
+
+    void Container::Stop()
+    {
+        if(this->containerThread.joinable())
+        {
+            this->containerThread.request_stop();
+            if(std::this_thread::get_id() != this->containerThread.get_id())
+            {
+                this->containerThread.join();
+            }
+            return;
+        }
+        this->teardown();
+    }
+
+    void Container::systemNotify(ecs::System *system)
+    {
+        const std::string handle = system->Handle;
+        // The report goes through its own guard: a log destination that throws must not stop the others.
+        auto report = [this, &handle](const std::string &what) {
+            try
+            {
+                this->Log("[" + handle + "] threw during Shutdown(): " + what, "error");
+            }
+            catch(...)
+            {
+            }
+        };
+        try
+        {
+            system->Shutdown();
+        }
+        catch(const std::exception &e)
+        {
+            report(e.what());
+        }
+        catch(...)
+        {
+            report("unknown exception");
+        }
+    }
+
+    void Container::teardown()
+    {
+        if(this->tearingDown || this->tornDown) return;
+        this->tearingDown = true;
+        this->deferredClose();
+        {
+            WalkScope walk(this);
+            // Slots added by notifications sit past this count and are not visited.
+            for(size_t i = this->system_order.size(); i-- > 0;)
+            {
+                if(i >= this->system_order.size()) continue;
+                auto *system = this->system_order[i].system;
+                if(system == nullptr || !this->system_order[i].started || this->system_order[i].shutdown) continue;
+                // Marked before the call, so a failing or re-entrant notification is not repeated.
+                this->system_order[i].shutdown = true;
+                const std::string handle = this->system_order[i].handle;
+                this->systemNotify(system);
+                std::lock_guard<std::mutex> guard(this->mailboxesLock);
+                auto found = this->mailboxes.find(handle);
+                if(found != this->mailboxes.end() && found->second == system->mailbox)
+                {
+                    this->mailboxes.erase(found);
+                }
+            }
+        }
+        this->tearingDown = false;
+        this->tornDown = true;
     }
 
     void Container::Start()
@@ -88,26 +218,6 @@ namespace ecs
         return config;
     }
 
-    class Container::WalkScope
-    {
-      public:
-        explicit WalkScope(Container *container): container(container)
-        {
-            this->container->walkDepth++;
-        }
-        ~WalkScope()
-        {
-            this->container->walkFinish();
-        }
-        WalkScope(const WalkScope &) = delete;
-        WalkScope &operator=(const WalkScope &) = delete;
-        WalkScope(WalkScope &&) = delete;
-        WalkScope &operator=(WalkScope &&) = delete;
-
-      private:
-        Container *container;
-    };
-
     void Container::walkFinish()
     {
         this->walkDepth--;
@@ -118,13 +228,27 @@ namespace ecs
         }
         if(this->walkDepth == 0 && !this->retiredSystems.empty())
         {
-            // Release outside any walk, so a destructor that changes systems sees a settled container.
-            std::vector<std::unique_ptr<ecs::System>> released;
-            released.swap(this->retiredSystems);
+            this->retiredRelease();
         }
     }
 
-    void Container::systemRetire(std::unique_ptr<ecs::System> system)
+    void Container::retiredRelease()
+    {
+        // Notify and release outside any walk, so user code that changes systems sees a settled container.
+        // A notification may retire more systems, so repeat until none are left.
+        while(!this->retiredSystems.empty())
+        {
+            std::vector<RetiredSystem> released;
+            released.swap(this->retiredSystems);
+            for(auto &retired : released)
+            {
+                if(retired.notify) this->systemNotify(retired.system.get());
+            }
+            // Destroyed here, with no walk running.
+        }
+    }
+
+    void Container::systemRetire(std::unique_ptr<ecs::System> system, bool notify)
     {
         ecs::System *ptr = system.get();
         if(this->walkDepth > 0)
@@ -147,8 +271,12 @@ namespace ecs
         {
             // Its own timer walk may still be running, so keep it alive and tell that walk to stop.
             system->removed = true;
-            this->retiredSystems.push_back(std::move(system));
+            this->retiredSystems.push_back(RetiredSystem{std::move(system), notify});
+            return;
         }
+
+        if(notify) this->systemNotify(ptr);
+        // system is destroyed here.
     }
 
     ecs::System *Container::System(std::unique_ptr<ecs::System> system)
@@ -182,12 +310,15 @@ namespace ecs
             // Match on the old instance, not the handle: a slot nulled earlier in this walk by a
             // removal keeps the handle but must stay empty.
             std::unique_ptr<ecs::System> old = std::move(existing->second);
+            bool notify = false;
             for(auto &slot : this->system_order)
             {
                 if(slot.system == old.get())
                 {
+                    notify = slot.started && !slot.shutdown;
                     slot.system = ptr;
                     slot.started = false;
+                    slot.shutdown = false;
                 }
             }
             this->startPending = true;
@@ -196,7 +327,7 @@ namespace ecs
                 std::lock_guard<std::mutex> guard(this->mailboxesLock);
                 this->mailboxes[handle] = ptr->mailbox;
             }
-            this->systemRetire(std::move(old));
+            this->systemRetire(std::move(old), notify);
             return ptr;
         }
 
@@ -269,6 +400,7 @@ namespace ecs
 
     void Container::systemsStart()
     {
+        if(this->tornDown || this->tearingDown) return;
         // Cleared first: a system registered while this runs sets it again and is started by the next pass.
         this->startPending = false;
         WalkScope walk(this);
@@ -315,6 +447,8 @@ namespace ecs
             // std::terminate, so ask the application to shut down instead.
             if(this->Manager) this->Manager->Shutdown();
         }
+        // Notifications are delivered on this thread before it ends.
+        this->teardown();
     }
 
     void Container::Defer(std::function<void()> fn)
@@ -374,6 +508,7 @@ namespace ecs
 
     void Container::Update()
     {
+        if(this->tornDown || this->tearingDown) return;
         if(this->walkDepth == 0 && !this->draining && this->deferredCount.load() != 0)
             this->deferredRun();
         if(this->startPending && this->walkDepth == 0)
@@ -483,7 +618,12 @@ namespace ecs
             this->mailboxes.erase(target);
         }
 
-        this->systemRetire(std::move(removed));
+        bool notify = false;
+        for(const auto &slot : this->system_order)
+        {
+            if(slot.system == removed.get()) notify = slot.started && !slot.shutdown;
+        }
+        this->systemRetire(std::move(removed), notify);
     }
 
     ecs::Uuid Container::UuidGet()

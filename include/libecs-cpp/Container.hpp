@@ -51,11 +51,12 @@ namespace ecs
      * | Log(message, level), LoggerSet(fn) | Any thread |
      * | UuidGet(), Handle, Manager | Any thread (Handle and Manager are set at construction and never change) |
      * | Update(), SystemsInitialize() | World thread, one thread at a time |
+     * | Stop() | Any thread. From the world thread it only requests; elsewhere it returns once the world has been torn down |
      * | System(), SystemDestroy() | World thread |
      * | Entity(), EntityDestroy(), Component(), ComponentDestroy() | World thread |
      * | ResourceAdd(), Resources(), ResourceGet(), Export() | World thread |
      * | Entities, Components, Systems | World thread (public so systems can iterate them) |
-     * | ~Container() | Exclusive: discards pending deferred changes unrun, stops and joins the thread |
+     * | ~Container() | Exclusive: discards pending deferred changes unrun, stops and joins the thread, delivers Shutdown() to every started system |
      *
      * Locks: the library uses five mutexes, and each one is a leaf: Manager's container table, this
      * class's mailbox table, deferred queue and log destination, and each system's mailbox. A thread
@@ -82,6 +83,17 @@ namespace ecs
          *  other thread uses the world. */
         void Start();
         void Start(uint32_t);
+        /*! Stops the world and delivers System::Shutdown() once to every system that was started and has
+         *  not been shut down yet, last registered first. Calling it again does nothing.
+         *
+         * A world without a thread is torn down on the calling thread before the call returns. Errors
+         * thrown by Shutdown() are logged at level "error" with the system's identifier and swallowed, and
+         * the remaining systems are still notified. Functions still waiting in Defer() are discarded
+         * unrun. A system removed from inside a Shutdown() is notified once and released; a system
+         * registered from inside one is never started and is released without a notification. Calling
+         * Stop() from inside a Shutdown() returns at once. After the call, Update() does nothing and a
+         * system registered later is never started. */
+        void Stop();
         /*! Calls Initialize() once on every registered system that has not been started yet, in
          *  registration order. Update() does this by itself before the update walk whenever a system
          *  has been registered since the last time, so calling it is optional, and calling it again
@@ -140,9 +152,11 @@ namespace ecs
          * messages, and is never started, updated or timer-walked again, even later in the same pass. Its
          * identifier may be registered again at once.
          *
-         * Called outside a walk, the system is destroyed at once. Called during a walk, or from inside
-         * the system's own timer walk, the system stays in memory until the walk returns, so code running
-         * inside it may finish, but must not use the system after the walk ends. If the removal happens
+         * If the system was started it receives Shutdown() once, just before it is released. Called outside
+         * a walk, that happens during this call and the system is destroyed at once. Called during a walk,
+         * or from inside the system's own timer walk, the notification is delivered and the system is
+         * released when the walk returns, so code running inside it may finish, but must not use the
+         * system after the walk ends. An error thrown by Shutdown() is logged and swallowed. If the removal happens
          * in a direct System::UpdateSystem() call made outside a walk, the system stays in memory until
          * the end of the next walk or until the container is destroyed.
          */
@@ -241,6 +255,8 @@ namespace ecs
             ecs::System *system;
             /*! True once Initialize() has been called (or attempted) on this system. */
             bool started = false;
+            /*! True once Shutdown() has been called (or attempted) on this system. */
+            bool shutdown = false;
         };
         class WalkScope;
         std::vector<SystemSlot> system_order;
@@ -256,8 +272,21 @@ namespace ecs
         bool orderHasGaps = false;
         void walkFinish();
         /*! Systems removed during a walk. They are released when the outermost walk ends. Declared after Systems so they are destroyed first. */
-        std::vector<std::unique_ptr<ecs::System>> retiredSystems;
-        void systemRetire(std::unique_ptr<ecs::System> system);
+        struct RetiredSystem
+        {
+            std::unique_ptr<ecs::System> system;
+            /*! True when the system was started and has not been sent Shutdown() yet. */
+            bool notify = false;
+        };
+        std::vector<RetiredSystem> retiredSystems;
+        /*! Takes the system out of the update order, then sends its notification and releases it, now or
+         *  when the outermost walk ends. */
+        void systemRetire(std::unique_ptr<ecs::System> system, bool notify);
+        /*! Sends Shutdown(), logging and swallowing any error. */
+        void systemNotify(ecs::System *system);
+        /*! Sends the due notifications of the retired systems and releases them. */
+        void retiredRelease();
+        void deferredClose();
         /*! Number of microseconds to sleep between Update() calls */
         uint32_t sleepInterval = 1000000 / 30;
 
@@ -271,5 +300,11 @@ namespace ecs
         bool startPending = false;
         /*! Calls Initialize() on every slot not yet started, in registration order. */
         void systemsStart();
+        /*! World thread, or the thread that stops or destroys a world without one. True while teardown
+         *  runs and after it has finished. */
+        bool tearingDown = false;
+        bool tornDown = false;
+        /*! Sends Shutdown() to every started system, last registered first, then releases what was removed. */
+        void teardown();
     };
 }
