@@ -96,11 +96,28 @@ namespace ecs
          * Called during a walk, the new system is not updated or initialized in that walk. It is updated
          * from the next pass, after every system registered before it. Registering under the identifier
          * of a system removed earlier in the same walk creates a new system that goes to the end of the
-         * order and is not affected when the removed one is released. The outcome of registering a second
-         * system under an identifier that is still in use is unspecified, but memory safe.
+         * order and is not affected when the removed one is released.
+         *
+         * Three calls are rejected with std::runtime_error and leave the world unchanged: a null pointer,
+         * a system whose Handle is empty, and a system object that is already registered in a world. A
+         * rejected call destroys the system that was passed in, except for an already registered object:
+         * that one belongs to its world, so the pointer is released and the object is not deleted.
+         *
+         * Registering a system under the Handle of a system that is still registered replaces it. The new
+         * instance takes the old one's place in the update order, is started and updated once, and
+         * receives messages sent after the call. Messages still waiting for the old instance are
+         * discarded with it. The old instance stays in memory until the outermost walk ends, but is not
+         * visited again. Raw pointers to the replaced system must not be used after the call.
+         * System::Container is set by registration only.
          */
         ecs::System *System(std::unique_ptr<ecs::System> system);
-        /*! World thread only. */
+        /*! Attaches a component to the entity named by its EntityHandle (world thread only).
+         *
+         * Four attachments are rejected with std::runtime_error and leave the world unchanged: a null
+         * pointer, an empty Type, an empty EntityHandle, and an EntityHandle that names no entity in this
+         * world. If the entity already has a component of the same Type, the new component replaces it, so
+         * the entity has exactly one component of each type. Anyone holding a shared_ptr to the replaced
+         * component keeps a valid object. The same type on a different entity is kept alongside. */
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
         /*! Removes a component (world thread only). The identifiers may be fields of the component being removed. An
          *  unknown entity or type is a silent no-op. */
@@ -153,8 +170,15 @@ namespace ecs
          */
         void Update();
         /*! Routes a message to the system named in message["destination"]["system"]. Safe to call from
-         *  any thread, at any time. Throws std::runtime_error if the system is unknown; a system is addressable by
-         *  handle once it has been registered with System(). */
+         *  any thread, at any time.
+         *
+         *  The message must be a JSON object with a "destination" object that holds a non-empty text
+         *  "system". The world name in message["destination"]["container"] is not read: a message sent
+         *  directly to a world goes to this world whatever that field holds. A message that breaks the
+         *  rules throws std::runtime_error naming the missing or wrong field and, for a wrong type, the type
+         *  found; nothing is changed and no lock is taken. Throws std::runtime_error if the system is
+         *  unknown, and the error names this world, the one that received the call. A system is addressable
+         *  by handle once it has been registered with System(). */
         void MessageSubmit(const nlohmann::json &message);
         /*! Queues a change to the world to be made by the world's own thread. Safe to call from any
          *  thread, including from inside the world.

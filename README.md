@@ -98,6 +98,8 @@ callbacks. The rules below describe what happens.
 * A system registered under the identifier of a system removed in the same pass is a new system. It goes
   to the end of the order, is not updated in that pass, and is not affected when the removed system is
   released.
+* A system registered under the identifier of a system that is still registered replaces it. See "Input
+  validation".
 
 ### Order
 
@@ -153,8 +155,6 @@ callbacks. The rules below describe what happens.
 * Calling `Update()` or `SystemsInitialize()` from inside a walk of the same container is memory safe, but
   no outcome is defined.
 * Notifying systems when they are removed, and starting systems that are added late.
-* Registering a second system under an identifier that is still in use. The previous outcome is kept and
-  is memory safe.
 
 ## Identifiers
 
@@ -189,6 +189,77 @@ ecs::Uuid("550e8400-e29b-41d4-a716-44665544000g"): invalid character 'g' at posi
 The installed `ecs-cpp.pc` provides `-std=c++20 -pthread` in its compile flags. A consumer that wants a
 later standard must put its own `-std=` after the pkg-config flags.
 
+## Input validation
+
+Every public operation checks its input before it changes anything. A rejection throws a catchable
+`std::runtime_error`, leaves the library exactly as it was (no mailbox gains a message, no table gains an
+entry, no lock is taken and no counter is touched), and the world stays usable. Error text has the form
+`<function>: <condition>`, where the function is written like `ecs::Manager::MessageSubmit()`,
+`ecs::Container("world")::System()` or `ecs::Entity("handle")::Component()`. A rejection from inside a
+system's `Update()` can be caught there. An uncaught one follows the existing path for any exception: it is
+logged with the system's identifier and rethrown by `Update()`.
+
+### Messages
+
+A message given to `Manager::MessageSubmit()` or `Container::MessageSubmit()` is a JSON object with a
+`destination` object. `destination.system` is non-empty text. For `Manager::MessageSubmit()`,
+`destination.container` is non-empty text as well. `Container::MessageSubmit()` goes to the world that
+received the call and does not read `destination.container`. Any other field is delivered unchanged.
+The checks run in the order of the table and stop at the first failure.
+
+| Condition | Key phrase of the error | Manager | World |
+|---|---|---|---|
+| The message is not a JSON object | `message must be a JSON object`, then `got <type>` | yes | yes |
+| No `destination` | `message.destination is missing` | yes | yes |
+| `destination` is not an object | `message.destination must be a JSON object`, then `got <type>` | yes | yes |
+| No `destination.container` | `message.destination.container is missing` | yes | no |
+| `destination.container` is not text | `message.destination.container must be text`, then `got <type>` | yes | no |
+| `destination.container` is `""` | `message.destination.container is empty` | yes | no |
+| No `destination.system` | `message.destination.system is missing` | yes | yes |
+| `destination.system` is not text | `message.destination.system must be text`, then `got <type>` | yes | yes |
+| `destination.system` is `""` | `message.destination.system is empty` | yes | yes |
+
+`<type>` is the JSON type name: `null`, `boolean`, `number`, `string`, `array`, `object`, `binary` or
+`discarded`. A well-formed message for an unknown destination throws `Container <name> not found.` (the
+world named in the message) or `System <name> not found.` (naming the world that was asked for the
+system; when a message goes directly to a world, that is the world that received it, whatever its
+`destination.container` says).
+
+### Registering systems
+
+| Condition | Key phrase of the error | After the call |
+|---|---|---|
+| Null pointer | `system is missing` | Unchanged. |
+| `Handle` is `""` | `system handle is empty` | Unchanged; the passed system is destroyed. |
+| The object is already registered in a world | `system "<handle>" is already registered` | Unchanged; the pointer is released and the object is not deleted, because it belongs to its world. |
+
+Registering a system under the `Handle` of a system that is still registered **replaces** it. The world
+keeps one system for that identifier, in the old one's position in the update order. The new instance is
+started and updated once, receives messages sent after the call, and never sees messages that were waiting
+for the old one, which are discarded with it. The old instance is not visited again; it stays in memory
+until the outermost walk ends, and raw pointers to it must not be used after the call. A system's
+`Container` member is set by registration only.
+
+### Attaching components
+
+`Container::Component()` and `Entity::Component()` reject the inputs below. `EntityHandle` is set by
+`Entity::Component()` and read by `Container::Component()`.
+
+| Condition | Key phrase of the error | After the call |
+|---|---|---|
+| Null component | `component is missing` | Unchanged. |
+| `Type` is `""` | `component type is empty` | Unchanged; no entry for the type. |
+| `EntityHandle` is `""` (world call only) | `component entity handle is empty` | Unchanged. |
+| `EntityHandle` names no entity in the world (never created, destroyed, or misspelled) | `entity "<handle>" does not exist` | Unchanged. |
+
+`Entity::Component()` takes a raw pointer and owns it from the moment of the call, including when the call
+is rejected: the component is then deleted. Creating an `Entity` with a null container throws
+`ecs::Entity: container is missing`.
+
+A second component of the same `Type` on the same entity **replaces** the first, so an entity has exactly
+one component of each type. Code that holds a `shared_ptr` to the replaced component keeps a valid object.
+The same type on different entities is kept for each.
+
 ## Threading
 
 A **world** is an `ecs::Container`. The **world thread** is the thread that runs the world's update
@@ -217,15 +288,15 @@ and the update order stay usable from the world thread exactly as before.
 | `Manager::Container(handle)`, `Manager::Container()` | Any thread | One world per handle even when many threads ask at once. The pointer is valid until the manager is destroyed. |
 | `Manager::ContainersGet()` | Any thread | A snapshot by value; worlds created later are not in it. |
 | `Manager::IsRunning()`, `Manager::Shutdown()` | Any thread | Atomic. Once `IsRunning()` returns `false` it never returns `true` again. Idempotent. |
-| `Manager::MessageSubmit(message)` | Any thread | Returns without waiting for the destination's update. Throws `std::runtime_error` if the world is unknown or the manager is being destroyed. |
+| `Manager::MessageSubmit(message)` | Any thread | Returns without waiting for the destination's update. Throws `std::runtime_error` if the message is malformed, the world or system is unknown, or the manager is being destroyed. A malformed message is rejected before any lock is taken. |
 | `Manager::~Manager()` | Exclusive | Waits for sends already in progress; later sends fail as unknown. The process-wide `ECS` manager is never destroyed. |
 | `Container::Start()`, `Start(interval)` | Once | Call once, from the thread that owns the world, before any other thread uses it. |
 | `Container::Defer(fn)` | Any thread | See "Deferred changes". |
-| `Container::MessageSubmit(message)` | Any thread | Throws `std::runtime_error` if the system is unknown. |
+| `Container::MessageSubmit(message)` | Any thread | Throws `std::runtime_error` if the message is malformed or the system is unknown. The world name in the message is ignored. |
 | `Container::Log()`, `Container::LoggerSet()` | Any thread | Each line goes to exactly one destination. |
 | `Container::UuidGet()`, `Handle`, `Manager` | Any thread | `Handle` and `Manager` never change after construction. |
 | `Container::Update()`, `SystemsInitialize()` | World thread | One thread at a time. |
-| `Container::System()`, `SystemDestroy()` | World thread | Register with `System()`; routing by handle depends on it. |
+| `Container::System()`, `SystemDestroy()` | World thread | Register with `System()`; routing by handle depends on it. A second system under a used identifier replaces the first. |
 | `Container::Entity()`, `EntityDestroy()`, `Component()`, `ComponentDestroy()` | World thread | |
 | `Container::ResourceAdd()`, `Resources()`, `ResourceGet()`, `Export()` | World thread | |
 | `Container::Entities`, `Components`, `Systems` | World thread | Public so systems can iterate them. |
@@ -247,7 +318,7 @@ handled in that pass; a message to the sender itself, or to a system already upd
 handled in the next pass. A message is never handled inside the sender's call.
 
 If a system is removed while a message is on its way, the message is discarded with the system or the send
-fails as unknown; it is never delivered to a destroyed object. An unknown destination throws
+fails as unknown; it is never delivered to a destroyed object. A malformed or unknown destination throws
 `std::runtime_error`, so callers on other threads should catch it.
 
 The mailbox is unbounded. The library never drops a message to save memory, so an application that needs
@@ -331,6 +402,35 @@ request from inside a system is a single store and cannot deadlock. Requesting s
 threads or destroy worlds.
 
 ## Release notes
+
+### 1.5.0
+
+Public signatures and object layouts are unchanged, so nothing needs to be rebuilt. The behaviours below
+changed. See "Input validation" for the rules and the error table.
+
+* A malformed message to `Manager::MessageSubmit()` or `Container::MessageSubmit()` throws
+  `std::runtime_error` instead of aborting the process. A field of the wrong type, which used to throw
+  `nlohmann::json::type_error`, now throws `std::runtime_error`. Code that catches `type_error` around a
+  send should catch `std::runtime_error`.
+* An empty world name or system name in a message is rejected. A world created with an empty handle can no
+  longer be addressed by message; give it a non-empty handle.
+* A message sent directly to a world that names an unknown system reports the world that received it, not
+  the world named in the message.
+* Registering a system under an identifier that is still in use replaces the earlier system: one system
+  remains, at the old position in the update order, started and updated once. Before, the outcome was
+  unspecified. Code that registered a second system under a used identifier on purpose should remove the
+  first with `SystemDestroy()` if it needs the new one at the end of the order.
+* A null system, a system with an empty `Handle` and a system that is already registered are rejected.
+  A rejected `System()` call destroys the system that was passed in (an already registered object is not
+  deleted).
+* A component with an empty `Type`, an empty `EntityHandle` or an unknown entity is rejected. A plugin
+  component that never sets `Type`, or a factory that returns null, now fails when it is loaded. Set `Type`
+  in the component's constructor.
+* A rejected `Entity::Component()` call deletes the component that was passed in. Do not use the pointer
+  afterwards.
+* A second component of a type on the same entity replaces the first; before, the outcome was not
+  defined.
+* Creating an `Entity` with a null container throws.
 
 ### 1.4.0
 

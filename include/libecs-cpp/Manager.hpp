@@ -66,7 +66,15 @@ namespace ecs
         /** Any thread. Requests shutdown; idempotent, and the request is never withdrawn. */
         void Shutdown();
 
-        /** Any thread. Routes a message to its destination container; throws std::runtime_error if that container is unknown or the manager is being destroyed. */
+        /** Any thread. Routes a message to its destination container.
+         *
+         * The message must be a JSON object with a "destination" object that holds a non-empty text
+         * "container" and a non-empty text "system". Other fields are delivered unchanged. A message that
+         * breaks these rules throws std::runtime_error whose text names the missing or wrong field and,
+         * for a wrong type, the type that was found. The checks run before any lock is taken, so a
+         * rejected message changes nothing: no mailbox gains an entry and shutdown accounting is not
+         * touched. Throws std::runtime_error as well if the container or the system is unknown, or the
+         * manager is being destroyed. */
         void MessageSubmit(const nlohmann::json &message);
       private:
         ecs::Container *containerCreate(const std::string &handle);
