@@ -217,7 +217,7 @@ and the update order stay usable from the world thread exactly as before.
 | `Manager::Container(handle)`, `Manager::Container()` | Any thread | One world per handle even when many threads ask at once. The pointer is valid until the manager is destroyed. |
 | `Manager::ContainersGet()` | Any thread | A snapshot by value; worlds created later are not in it. |
 | `Manager::IsRunning()`, `Manager::Shutdown()` | Any thread | Atomic. Once `IsRunning()` returns `false` it never returns `true` again. Idempotent. |
-| `Manager::MessageSubmit(message)` | Any thread | Returns without waiting for the destination's update. Throws `std::runtime_error` if the world is unknown. |
+| `Manager::MessageSubmit(message)` | Any thread | Returns without waiting for the destination's update. Throws `std::runtime_error` if the world is unknown or the manager is being destroyed. |
 | `Manager::~Manager()` | Exclusive | Waits for sends already in progress; later sends fail as unknown. The process-wide `ECS` manager is never destroyed. |
 | `Container::Start()`, `Start(interval)` | Once | Call once, from the thread that owns the world, before any other thread uses it. |
 | `Container::Defer(fn)` | Any thread | See "Deferred changes". |
@@ -231,9 +231,9 @@ and the update order stay usable from the world thread exactly as before.
 | `Container::Entities`, `Components`, `Systems` | World thread | Public so systems can iterate them. |
 | `Container::~Container()` | Exclusive | Discards pending deferred changes unrun, stops and joins the thread. |
 | `System::MessageSubmit(message)` | Any thread | The system must be alive. Routing through `Container` or `Manager` is safe against removal; a direct pointer is not. |
-| `System::MessagesWaiting()`, `messages` | World thread | `MessagesWaiting()` counts delivered messages not yet read, including ones not yet moved to the queue. |
-| `System::Initialize()`, `Update()`, `UpdateSystem()`, `Configure()`, `Export()`, `TimerAdd()`, `TimerClear()`, `DeltaTimeGet()`, `Log()` | World thread | |
-| `System::Handle`, `Container`, `Components` | World thread | Set during registration. |
+| `System::MessagesWaiting()`, `messages` | World thread | `MessagesWaiting()` moves delivered messages into the queue, then counts the messages waiting to be read. |
+| `System::Initialize()`, `Update()`, `UpdateSystem()`, `Configure()`, `Export()`, `Shutdown()`, `TimerAdd()`, `TimerClear()`, `DeltaTimeGet()`, `Log()` | World thread | |
+| `System::Handle`, `Container`, `Components`, `Timing` | World thread | Set during registration. |
 | `Entity`, `Component` | World thread | They change the world's tables. |
 
 ### Messages
@@ -242,7 +242,7 @@ A message accepted by `MessageSubmit()` on `Manager`, `Container` or `System` is
 destination system exactly once while that system exists. Messages from one sender to one destination
 arrive in the order sent; no order is promised between senders. Sending does not wait for any update pass
 and does not call into the destination. A message becomes visible in `messages` at the start of the
-destination's next `UpdateSystem()`. A message sent during a pass to a system later in the update order is
+destination's next `UpdateSystem()` (or earlier, if the world thread calls `MessagesWaiting()`). A message sent during a pass to a system later in the update order is
 handled in that pass; a message to the sender itself, or to a system already updated in the pass, is
 handled in the next pass. A message is never handled inside the sender's call.
 
@@ -317,10 +317,11 @@ The library uses five mutexes: the manager's container table, and each container
 queue and log destination, plus one per system mailbox. Each is a leaf. A thread holds at most one of them
 at a time, and none is held while user code runs (system methods, timer callbacks, message handlers, log
 destinations, deferred functions, or destructors of user objects). Sending never waits for a world to
-update; the only blocking wait in the library is `~Manager` waiting for sends in progress, and those never
-block. As a result, worlds whose systems send messages to each other in both directions, or to themselves,
-cannot deadlock. An application's own locks are its own responsibility: do not hold one while calling a
-library function that your handlers also need under that lock.
+update; the only blocking wait on library state is `~Manager` waiting for sends in progress, and those never
+block (destroying a world also joins its thread). As a result, worlds whose systems send messages to each
+other in both directions, or to themselves, cannot deadlock. An application's own locks are its own
+responsibility: do not hold one while calling a library function that your handlers also need under that
+lock.
 
 ### Shutdown
 
@@ -339,9 +340,11 @@ threads or destroy worlds.
 * Systems are addressable by routed messages only if they are registered through `Container::System()`.
   Code that inserts into `Container::Systems` directly must register with
   `Container::System(std::make_unique<...>(...))`.
-* `System::MessagesWaiting()` counts messages not yet moved to the queue, and is for the world thread only.
-  Code that called it from another thread to see a backlog should count on the world thread, or have the
-  system publish its own counter.
+* `System::MessagesWaiting()` now also counts messages that were delivered but not yet moved to the queue
+  (it moves them first), and is for the world thread only. Code that called it from another thread to see a
+  backlog should count on the world thread, or have the system publish its own counter.
+* The error for a message to an unknown system names the container it was sent to, rather than reading the
+  container from the message. The exception type is unchanged.
 * A message sent during a pass is first handled at the destination's next update. Do not rely on
   same-call or same-pass handling.
 * Changing a running world from outside threads was always a data race. Wrap such a change in

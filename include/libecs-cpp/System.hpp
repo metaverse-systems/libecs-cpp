@@ -83,7 +83,8 @@ namespace ecs
      *   MessagesWaiting(), TimerAdd(), TimerClear(), DeltaTimeGet(), Log(), the messages queue and the
      *   public members Handle, Container, Components and Timing (set during registration).
      * - Messages are delivered to the system's mailbox from any thread and become visible in messages
-     *   at the start of the system's next UpdateSystem(). Mailboxes are unbounded; an application that
+     *   at the start of the system's next UpdateSystem(), or earlier if MessagesWaiting() is called.
+     *   Mailboxes are unbounded; an application that
      *   needs back-pressure provides it.
      */
     class System
@@ -116,16 +117,18 @@ namespace ecs
         /*! World thread only. Set during registration. */
         ecs::Container *Container = nullptr;
         /*! Delivers a message to this system. Safe to call from any thread at any time. Returns without
-         *  waiting for the system's update; the system sees the message in a later update of its world.
-         *  Messages from one sender arrive in the order sent, each exactly once. */
+         *  waiting for the system's update; the message is moved into messages at the start of the
+         *  system's next UpdateSystem(), which may be later in the pass that is running. Messages from
+         *  one sender arrive in the order sent, each exactly once. */
         void MessageSubmit(const nlohmann::json &message);
         /*! World thread only. */
         virtual nlohmann::json Export() const = 0;
         /*! World thread only. Set during registration. */
         ecs::TypeEntityComponentList *Components = nullptr;
         ecs::Timing Timing;
-        /*! Counts delivered messages that have not been read, including ones not yet moved to the
-         *  message queue. Call from the world thread only. */
+        /*! Moves any delivered messages into the message queue, then returns how many messages are
+         *  waiting to be read, so a message delivered before the call is counted. Call from the world
+         *  thread only. */
         size_t MessagesWaiting();
         /*! World thread only. */
         uint32_t DeltaTimeGet();

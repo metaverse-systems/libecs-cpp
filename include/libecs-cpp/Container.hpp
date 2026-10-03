@@ -133,6 +133,10 @@ namespace ecs
         /*! Runs one update pass (world thread only, one thread at a time): calls System::UpdateSystem() on each system in registration order, each at
          *  most once. This is a walk.
          *
+         * Before any system is updated, the functions handed to Defer() run, unless this call is made from
+         * inside a walk or from inside a deferred function. If one of them throws, the rest still run and
+         * the first exception is rethrown before any system is updated.
+         *
          * Adding or removing systems never changes the relative order of the others. A system removed
          * earlier in the pass is skipped. A system added during the pass is first updated in the next one.
          * A pass in which nothing is added or removed allocates no memory and does not copy the system
