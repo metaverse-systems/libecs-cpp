@@ -9,8 +9,8 @@ class SinkSystem : public ecs::System
 {
 public:
     explicit SinkSystem(const std::string &handle)
+      : ecs::System(handle)
     {
-        this->Handle = handle;
     }
 
     void Update() override

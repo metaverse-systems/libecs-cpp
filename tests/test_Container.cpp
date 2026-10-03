@@ -13,8 +13,8 @@
 class TestSystem : public ecs::System
 {
   public:
-    TestSystem() { this->Handle = "TestSystem"; }
-    TestSystem(std::string handle) { this->Handle = handle; }
+    TestSystem() : ecs::System("TestSystem") {}
+    TestSystem(std::string handle) : ecs::System(handle) {}
 
     nlohmann::json Export() const
     {
@@ -32,7 +32,7 @@ class TestSystem : public ecs::System
 class ThrowingSystem : public ecs::System
 {
   public:
-    ThrowingSystem() { this->Handle = "ThrowingSystem"; }
+    ThrowingSystem() : ecs::System("ThrowingSystem") {}
 
     nlohmann::json Export() const
     {
@@ -47,7 +47,7 @@ class ThrowingSystem : public ecs::System
 class ThrowOnUpdateSystem : public ecs::System
 {
   public:
-    ThrowOnUpdateSystem() { this->Handle = "ThrowOnUpdateSystem"; }
+    ThrowOnUpdateSystem() : ecs::System("ThrowOnUpdateSystem") {}
 
     nlohmann::json Export() const
     {
@@ -94,7 +94,7 @@ namespace
     class CountingSystem : public ecs::System
     {
       public:
-        CountingSystem(std::string handle) { this->Handle = std::move(handle); }
+        CountingSystem(std::string handle) : ecs::System(std::move(handle)) {}
 
         nlohmann::json Export() const { return nlohmann::json::object(); }
 
@@ -350,7 +350,7 @@ TEST_CASE("SystemDestroy called during active Update iteration is safe", "[Conta
     // Create a system that destroys its sibling on first update
     class SelfishSystem : public ecs::System {
       public:
-        SelfishSystem() { this->Handle = "SelfishSystem"; }
+        SelfishSystem() : ecs::System("SelfishSystem") {}
         nlohmann::json Export() const override { return {{"Handle", this->Handle}}; }
         void Update() override {
             updateCount++;
@@ -364,7 +364,7 @@ TEST_CASE("SystemDestroy called during active Update iteration is safe", "[Conta
 
     class SiblingSystem : public ecs::System {
       public:
-        SiblingSystem() { this->Handle = "SiblingSystem"; }
+        SiblingSystem() : ecs::System("SiblingSystem") {}
         nlohmann::json Export() const override { return {{"Handle", this->Handle}}; }
         void Update() override {
             updateCount++;
@@ -449,9 +449,8 @@ namespace
     {
       public:
         WalkSystem(WalkLog *log, const std::string &name, const std::string &handle):
-            name(name), log(log)
+            ecs::System(handle), name(name), log(log)
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
         ~WalkSystem() override { this->log->destroyed[this->name]++; }

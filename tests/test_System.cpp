@@ -4,20 +4,22 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 class TestSystem : public ecs::System
 {
   public:
     TestSystem()
+      : ecs::System("TestSystem")
     {
-        this->Handle = "TestSystem";
     }
 
     TestSystem(std::string handle)
+      : ecs::System(handle)
     {
-        this->Handle = handle;
     }
 
     nlohmann::json Export() const
@@ -93,9 +95,8 @@ namespace
     {
       public:
         TimerSystem(TimerLog *log, const std::string &name):
-            name(name), log(log)
+            ecs::System(timerHandle(name)), name(name), log(log)
         {
-            this->Handle = timerHandle(name);
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
         ~TimerSystem() override { this->log->counts["destroyed:" + this->name]++; }
@@ -464,4 +465,85 @@ TEST_CASE("A timer callback that changes timers and then throws", "[System]") {
     REQUIRE(log.count("fire:C") == 1);
     REQUIRE(log.count("fire:D") == 1);
     REQUIRE(log.count("update:S") == 1);
+}
+
+// A system's identifier is fixed by its constructor. These cases hold the rules that follow from that.
+
+static_assert(!std::is_assignable_v<decltype((std::declval<ecs::System &>().Handle)), const char *>,
+  "a system's identifier cannot be assigned after construction");
+static_assert(!std::is_assignable_v<decltype((std::declval<ecs::System &>().Handle)), const std::string &>,
+  "a system's identifier cannot be assigned a string after construction");
+
+TEST_CASE("A system built with an identifier registers under it", "[System][Identifier]") {
+    ecs::Manager manager;
+    auto world = manager.Container("world");
+
+    auto *system = world->System(std::make_unique<TestSystem>("given"));
+
+    REQUIRE(system->Handle == "given");
+    REQUIRE(world->Systems.count("given") == 1);
+    REQUIRE(world->Systems.at("given").get() == system);
+    REQUIRE(world->Export()["Systems"].contains("given"));
+}
+
+namespace
+{
+    // Takes the base class's default constructor, which generates the identifier.
+    class UnnamedSystem : public ecs::System
+    {
+      public:
+        UnnamedSystem() = default;
+
+        nlohmann::json Export() const { return nlohmann::json::object(); }
+    };
+}
+
+TEST_CASE("Two default-built systems get different non-empty identifiers", "[System][Identifier]") {
+    UnnamedSystem first;
+    UnnamedSystem second;
+
+    REQUIRE_FALSE(first.Handle.empty());
+    REQUIRE_FALSE(second.Handle.empty());
+    REQUIRE(first.Handle != second.Handle);
+}
+
+TEST_CASE("The identifier of a registered system is the one its constructor gave it", "[System][Identifier]") {
+    ecs::Manager manager;
+    auto world = manager.Container("world");
+
+    auto *system = world->System(std::make_unique<TestSystem>("construction-time"));
+    world->System(std::make_unique<TestSystem>("other"));
+
+    REQUIRE(system->Handle == "construction-time");
+    REQUIRE(world->Systems.at("construction-time").get() == system);
+    REQUIRE(world->Systems.count("other") == 1);
+}
+
+TEST_CASE("A system built with an empty identifier is refused at registration", "[System][Identifier]") {
+    ecs::Manager manager;
+    auto world = manager.Container("world");
+
+    REQUIRE_THROWS_AS(world->System(std::make_unique<TestSystem>("")), std::runtime_error);
+    REQUIRE(world->Systems.empty());
+}
+
+TEST_CASE("A second system with the same identifier replaces the first", "[System][Identifier]") {
+    ecs::Manager manager;
+    auto world = manager.Container("world");
+
+    world->System(std::make_unique<TestSystem>("same"));
+    auto *replacement = world->System(std::make_unique<TestSystem>("same"));
+
+    REQUIRE(world->Systems.size() == 1);
+    REQUIRE(world->Systems.at("same").get() == replacement);
+}
+
+TEST_CASE("Registering the same object twice is refused", "[System][Identifier]") {
+    ecs::Manager manager;
+    auto world = manager.Container("world");
+    auto *system = world->System(std::make_unique<TestSystem>("once"));
+
+    REQUIRE_THROWS_AS(world->System(std::unique_ptr<ecs::System>(system)), std::runtime_error);
+    REQUIRE(world->Systems.size() == 1);
+    REQUIRE(world->Systems.at("once").get() == system);
 }

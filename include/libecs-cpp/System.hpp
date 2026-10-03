@@ -143,7 +143,8 @@ namespace ecs
      * - World thread only: Initialize(), Configure(), Update(), UpdateSystem(), Export(), Shutdown(),
      *   MessagesWaiting(), TimerAdd(), TimerClear(), ElapsedGet(), ElapsedSecondsGet(), ClockSet(),
      *   DeltaTimeGet(), Log(), the messages queue and the
-     *   public members Handle, Container, Components and Timing (set during registration).
+     *   public members Container, Components and Timing (set during registration). Handle is fixed at
+     *   construction and may be read from any thread.
      * - Messages are delivered to the system's mailbox from any thread and become visible in messages
      *   at the start of the system's next UpdateSystem(), or earlier if MessagesWaiting() is called.
      *   Mailboxes are unbounded; an application that
@@ -152,7 +153,21 @@ namespace ecs
     class System
     {
       public:
+        /*! Builds a system whose identifier is a freshly generated UUID. */
         System();
+        /*! Builds a system with the given identifier. This is the one way to name a system: the
+         *  identifier is fixed for the life of the object and cannot be assigned afterwards.
+         *
+         * A subclass names itself in its constructor's initialiser list:
+         *
+         *     class Foo : public ecs::System
+         *     {
+         *       public:
+         *         Foo() : ecs::System("Foo") {}
+         *     };
+         *
+         * A plugin factory that returns a new Foo reaches the same constructor. An empty identifier is
+         * refused when the system is registered. */
         System(const std::string &handle);
         virtual ~System() = default;
         /*! Start-up notification. World thread only.
@@ -208,8 +223,8 @@ namespace ecs
          * with the system's identifier.
          */
         void UpdateSystem();
-        /*! World thread only. Set during registration. */
-        std::string Handle;
+        /*! The system's identifier, given to the constructor and never changed. */
+        const std::string Handle;
         /*! World thread only. Set during registration. */
         ecs::Container *Container = nullptr;
         /*! Delivers a message to this system. Safe to call from any thread at any time. Returns without

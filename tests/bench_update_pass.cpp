@@ -9,8 +9,8 @@ class EmptySystem : public ecs::System
 {
 public:
     explicit EmptySystem(const std::string &handle)
+      : ecs::System(handle)
     {
-        this->Handle = handle;
     }
 
     void Update() override {}

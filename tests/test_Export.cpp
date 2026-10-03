@@ -13,9 +13,8 @@ namespace
     {
       public:
         CounterSystem(std::string handle, std::string label)
-            : label(std::move(label))
+            : ecs::System(std::move(handle)), label(std::move(label))
         {
-            this->Handle = std::move(handle);
         }
 
         nlohmann::json Export() const

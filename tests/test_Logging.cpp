@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -66,7 +67,7 @@ namespace
     class LoggingSystem : public ecs::System
     {
       public:
-        explicit LoggingSystem(std::string handle) { this->Handle = std::move(handle); }
+        explicit LoggingSystem(std::string handle) : ecs::System(std::move(handle)) {}
 
         nlohmann::json Export() const { return nlohmann::json::object(); }
     };
@@ -129,7 +130,7 @@ namespace
     class TeardownSystem : public ecs::System
     {
       public:
-        explicit TeardownSystem(std::string handle) { this->Handle = std::move(handle); }
+        explicit TeardownSystem(std::string handle) : ecs::System(std::move(handle)) {}
         ~TeardownSystem() { this->Log("destroyed", "info"); }
 
         nlohmann::json Export() const { return nlohmann::json::object(); }
@@ -962,4 +963,36 @@ TEST_CASE("A destination replaced with a recording one receives plain text for e
         REQUIRE(message.find(escape) == std::string::npos);
         REQUIRE(level.find(escape) == std::string::npos);
     }
+}
+
+// A system's identifier is fixed by its constructor, so it is the one it logs with and is exported under.
+
+static_assert(!std::is_assignable_v<decltype((std::declval<ecs::System &>().Handle)), const char *>,
+  "a system's identifier cannot be assigned after construction");
+
+TEST_CASE("Held lines use the identifier given to the constructor", "[Logging][Identifier]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    world->System(std::make_unique<HeldSystem>("from-constructor", HeldLines{{"a", "info"}, {"b", "warning"}}));
+
+    const std::vector<Recorder::Line> expected = {{"[from-constructor] a", "info"}, {"[from-constructor] b", "warning"}};
+    REQUIRE(recorder.snapshot() == expected);
+}
+
+TEST_CASE("A registered system logs and is exported under its construction-time identifier", "[Logging][Identifier]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    auto *system = world->System(std::make_unique<LoggingSystem>("fixed"));
+    system->Log("later", "error");
+
+    const std::vector<Recorder::Line> expected = {{"[fixed] later", "error"}};
+    REQUIRE(recorder.snapshot() == expected);
+    REQUIRE(system->Handle == "fixed");
+    REQUIRE(world->Export()["Systems"].contains("fixed"));
 }

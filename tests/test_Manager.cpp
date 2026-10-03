@@ -6,8 +6,8 @@ class TestSystem : public ecs::System
 {
   public:
     TestSystem()
+      : ecs::System("TestSystem")
     {
-        this->Handle = "TestSystem";
     }
 
     nlohmann::json Export() const

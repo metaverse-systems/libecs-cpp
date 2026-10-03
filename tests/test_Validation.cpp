@@ -27,9 +27,8 @@ namespace
       public:
         explicit RecorderSystem(const std::string &handle,
           std::shared_ptr<std::vector<json>> received = std::make_shared<std::vector<json>>())
-          : received(std::move(received))
+          : ecs::System(handle), received(std::move(received))
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -56,9 +55,8 @@ namespace
     {
       public:
         SenderSystem(const std::string &handle, ecs::Manager *manager, bool catching)
-          : manager(manager), catching(catching)
+          : ecs::System(handle), manager(manager), catching(catching)
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -117,9 +115,8 @@ namespace
     class GatedSystem : public ecs::System
     {
       public:
-        GatedSystem(const std::string &handle, std::shared_ptr<DestructionGate> gate) : gate(std::move(gate))
+        GatedSystem(const std::string &handle, std::shared_ptr<DestructionGate> gate) : ecs::System(handle), gate(std::move(gate))
         {
-            this->Handle = handle;
         }
 
         ~GatedSystem() override
@@ -816,9 +813,8 @@ namespace
     {
       public:
         CountingSystem(const std::string &handle, std::shared_ptr<Trace> trace, std::shared_ptr<Counters> counters)
-          : trace(std::move(trace)), counters(std::move(counters))
+          : ecs::System(handle), trace(std::move(trace)), counters(std::move(counters))
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 

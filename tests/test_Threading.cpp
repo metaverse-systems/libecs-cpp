@@ -38,9 +38,8 @@ namespace
     {
       public:
         explicit RecorderSystem(const std::string &handle, std::shared_ptr<Recorded> recorded = std::make_shared<Recorded>())
-          : recorded(std::move(recorded))
+          : ecs::System(handle), recorded(std::move(recorded))
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -175,11 +174,10 @@ namespace
           std::atomic<bool> *done,
           std::atomic<int> *inUpdate,
           std::atomic<int> *errors)
-          : manager(manager), destinationContainer(std::move(destinationContainer)),
+          : ecs::System(handle), manager(manager), destinationContainer(std::move(destinationContainer)),
             destinationSystem(std::move(destinationSystem)), sender(sender), total(total), perPass(perPass), done(done),
             inUpdate(inUpdate), errors(errors)
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -228,9 +226,8 @@ namespace
     {
       public:
         BlockingSystem(const std::string &handle, std::latch *release, std::atomic<bool> *entered, std::atomic<std::size_t> *received)
-          : release(release), entered(entered), received(received)
+          : ecs::System(handle), release(release), entered(entered), received(received)
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -269,9 +266,8 @@ namespace
     {
       public:
         PassSystem(const std::string &handle, PassClock *clock, std::vector<std::string> targets)
-          : clock(clock), targets(std::move(targets))
+          : ecs::System(handle), clock(clock), targets(std::move(targets))
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -321,10 +317,9 @@ namespace
           int passes,
           std::atomic<int> *completed,
           std::atomic<int> *errors)
-          : manager(manager), destinationContainer(std::move(destinationContainer)), sender(sender), passes(passes),
+          : ecs::System(handle), manager(manager), destinationContainer(std::move(destinationContainer)), sender(sender), passes(passes),
             completed(completed), errors(errors)
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -370,9 +365,8 @@ namespace
     class ShutdownSystem : public ecs::System
     {
       public:
-        ShutdownSystem(const std::string &handle, ecs::Manager *manager) : manager(manager)
+        ShutdownSystem(const std::string &handle, ecs::Manager *manager) : ecs::System(handle), manager(manager)
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -1180,9 +1174,8 @@ namespace
     {
       public:
         explicit LoggingSystem(const std::string &handle, std::shared_ptr<std::atomic<std::size_t>> calls)
-          : calls(std::move(calls))
+          : ecs::System(handle), calls(std::move(calls))
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -1392,9 +1385,8 @@ namespace
     {
       public:
         StepSystem(const std::string &handle, std::shared_ptr<std::vector<std::string>> log, std::function<void(StepSystem &)> onUpdate = nullptr)
-          : log(std::move(log)), onUpdate(std::move(onUpdate))
+          : ecs::System(handle), log(std::move(log)), onUpdate(std::move(onUpdate))
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -1423,9 +1415,8 @@ namespace
     {
       public:
         explicit ThreadIdSystem(const std::string &handle, std::shared_ptr<std::atomic<std::thread::id>> id)
-          : id(std::move(id))
+          : ecs::System(handle), id(std::move(id))
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
@@ -1455,9 +1446,8 @@ namespace
     {
       public:
         explicit HoldSystem(const std::string &handle, std::shared_ptr<Hold> hold)
-          : hold(std::move(hold))
+          : ecs::System(handle), hold(std::move(hold))
         {
-            this->Handle = handle;
             this->Timing.SetInterval(std::chrono::microseconds(0));
         }
 
