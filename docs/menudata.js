@@ -201,13 +201,11 @@ var menudata={children:[
 {text:"m",url:"globals_m.html#index_m"},
 {text:"n",url:"globals_n.html#index_n"},
 {text:"o",url:"globals_o.html#index_o"},
-{text:"t",url:"globals_t.html#index_t"},
-{text:"u",url:"globals_u.html#index_u"}]},
+{text:"t",url:"globals_t.html#index_t"}]},
 {text:"Functions",url:"globals_func.html",children:[
 {text:"m",url:"globals_func.html#index_m"},
 {text:"o",url:"globals_func.html#index_o"},
-{text:"t",url:"globals_func.html#index_t"},
-{text:"u",url:"globals_func.html#index_u"}]},
+{text:"t",url:"globals_func.html#index_t"}]},
 {text:"Variables",url:"globals_vars.html"},
 {text:"Macros",url:"globals_defs.html",children:[
 {text:"i",url:"globals_defs.html#index_i"},

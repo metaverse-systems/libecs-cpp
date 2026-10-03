@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.2.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.3.0</span>
    </div>
   </td>
  </tr>
@@ -87,19 +87,23 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:acf8b43f1d9056f48f0c3eb24d3dad5a5" id="r_acf8b43f1d9056f48f0c3eb24d3dad5a5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#acf8b43f1d9056f48f0c3eb24d3dad5a5">Uuid</a> ()</td></tr>
 <tr class="separator:acf8b43f1d9056f48f0c3eb24d3dad5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae259d8a060a597fd495efe38858f3386" id="r_ae259d8a060a597fd495efe38858f3386"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#ae259d8a060a597fd495efe38858f3386">Uuid</a> (const std::string &amp;<a class="el" href="classecs_1_1Uuid.html#ab9eab5e6c8b8ae6593e3e8dab031e1ae">id</a>)</td></tr>
+<tr class="memitem:ae259d8a060a597fd495efe38858f3386" id="r_ae259d8a060a597fd495efe38858f3386"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#ae259d8a060a597fd495efe38858f3386">Uuid</a> (const std::string &amp;id)</td></tr>
 <tr class="separator:ae259d8a060a597fd495efe38858f3386"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2aff11019a4e7cdf9f1b63e4537d68d0" id="r_a2aff11019a4e7cdf9f1b63e4537d68d0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#a2aff11019a4e7cdf9f1b63e4537d68d0">Get</a> ()</td></tr>
-<tr class="separator:a2aff11019a4e7cdf9f1b63e4537d68d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b3cb9c79388d8a780fcb2fb6179af53" id="r_a8b3cb9c79388d8a780fcb2fb6179af53"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#a8b3cb9c79388d8a780fcb2fb6179af53">Get</a> () const</td></tr>
+<tr class="separator:a8b3cb9c79388d8a780fcb2fb6179af53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ab9eab5e6c8b8ae6593e3e8dab031e1ae" id="r_ab9eab5e6c8b8ae6593e3e8dab031e1ae"><td class="memItemLeft" align="right" valign="top">UUIDv4::UUID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#ab9eab5e6c8b8ae6593e3e8dab031e1ae">id</a></td></tr>
-<tr class="separator:ab9eab5e6c8b8ae6593e3e8dab031e1ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32b20df3f00277a06f628b18b94b8840" id="r_a32b20df3f00277a06f628b18b94b8840"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#a32b20df3f00277a06f628b18b94b8840">high</a> = 0</td></tr>
+<tr class="separator:a32b20df3f00277a06f628b18b94b8840"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3202757d23057d3bf80ce22cb7897be" id="r_ae3202757d23057d3bf80ce22cb7897be"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Uuid.html#ae3202757d23057d3bf80ce22cb7897be">low</a> = 0</td></tr>
+<tr class="separator:ae3202757d23057d3bf80ce22cb7897be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00008">8</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<div class="textblock"><p>A 128-bit random identifier in the standard version 4 text form (for example "550e8400-e29b-41d4-a716-446655440000").</p>
+<p>The layout is the same in every build: two 64-bit halves, 16 bytes in total. </p>
+
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00013">13</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acf8b43f1d9056f48f0c3eb24d3dad5a5" name="acf8b43f1d9056f48f0c3eb24d3dad5a5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acf8b43f1d9056f48f0c3eb24d3dad5a5">&#9670;&#160;</a></span>Uuid() <span class="overload">[1/2]</span></h2>
@@ -115,13 +119,24 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Generates a new random identifier.</p>
+<p>Safe to call from any number of threads at once. Each thread has its own independently seeded generator, so no lock is taken. The identifiers are unique in practice but are not cryptographically unpredictable; do not use them as secrets. </p>
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00004">4</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">    5</span>{</div>
-<div class="line"><span class="lineno">    6</span>    <span class="keyword">static</span> UUIDv4::UUIDGenerator&lt;std::mt19937_64&gt; uuidGenerator;</div>
-<div class="line"><span class="lineno">    7</span>    this-&gt;<span class="keywordtype">id</span> = uuidGenerator.getUUID();</div>
-<div class="line"><span class="lineno">    8</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00150">150</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  151</span>{</div>
+<div class="line"><span class="lineno">  152</span>    <span class="keyword">auto</span> &amp;generator = generatorGet();</div>
+<div class="line"><span class="lineno">  153</span>    this-&gt;<a class="code hl_variable" href="classecs_1_1Uuid.html#a32b20df3f00277a06f628b18b94b8840">high</a> = generator();</div>
+<div class="line"><span class="lineno">  154</span>    this-&gt;<a class="code hl_variable" href="classecs_1_1Uuid.html#ae3202757d23057d3bf80ce22cb7897be">low</a> = generator();</div>
+<div class="line"><span class="lineno">  155</span> </div>
+<div class="line"><span class="lineno">  156</span>    <span class="comment">// Version 4 in the high half, the standard variant in the low half.</span></div>
+<div class="line"><span class="lineno">  157</span>    this-&gt;<a class="code hl_variable" href="classecs_1_1Uuid.html#a32b20df3f00277a06f628b18b94b8840">high</a> = (this-&gt;<a class="code hl_variable" href="classecs_1_1Uuid.html#a32b20df3f00277a06f628b18b94b8840">high</a> &amp; 0xFFFFFFFFFFFF0FFFULL) | 0x0000000000004000ULL;</div>
+<div class="line"><span class="lineno">  158</span>    this-&gt;<a class="code hl_variable" href="classecs_1_1Uuid.html#ae3202757d23057d3bf80ce22cb7897be">low</a> = (this-&gt;<a class="code hl_variable" href="classecs_1_1Uuid.html#ae3202757d23057d3bf80ce22cb7897be">low</a> &amp; 0x3FFFFFFFFFFFFFFFULL) | 0x8000000000000000ULL;</div>
+<div class="line"><span class="lineno">  159</span>}</div>
+<div class="ttc" id="aclassecs_1_1Uuid_html_a32b20df3f00277a06f628b18b94b8840"><div class="ttname"><a href="classecs_1_1Uuid.html#a32b20df3f00277a06f628b18b94b8840">ecs::Uuid::high</a></div><div class="ttdeci">std::uint64_t high</div><div class="ttdef"><b>Definition</b> <a href="Uuid_8hpp_source.html#l00042">Uuid.hpp:42</a></div></div>
+<div class="ttc" id="aclassecs_1_1Uuid_html_ae3202757d23057d3bf80ce22cb7897be"><div class="ttname"><a href="classecs_1_1Uuid.html#ae3202757d23057d3bf80ce22cb7897be">ecs::Uuid::low</a></div><div class="ttdeci">std::uint64_t low</div><div class="ttdef"><b>Definition</b> <a href="Uuid_8hpp_source.html#l00043">Uuid.hpp:43</a></div></div>
 </div><!-- fragment -->
+<p class="reference">References <a class="el" href="Uuid_8hpp_source.html#l00042">high</a>, and <a class="el" href="Uuid_8hpp_source.html#l00043">low</a>.</p>
+
 </div>
 </div>
 <a id="ae259d8a060a597fd495efe38858f3386" name="ae259d8a060a597fd495efe38858f3386"></a>
@@ -139,17 +154,76 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Parses the canonical 36-character text form, in either letter case and of any version. The text is not trimmed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>the text to parse </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>if the text is empty, is not 36 characters long, or has a character that does not belong at its position </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00010">10</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   11</span>{</div>
-<div class="line"><span class="lineno">   12</span>    this-&gt;<span class="keywordtype">id</span> = UUIDv4::UUID(<span class="keywordtype">id</span>);</div>
-<div class="line"><span class="lineno">   13</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00161">161</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  162</span>{</div>
+<div class="line"><span class="lineno">  163</span>    <span class="keywordflow">if</span>(<span class="keywordtype">id</span>.empty())</div>
+<div class="line"><span class="lineno">  164</span>    {</div>
+<div class="line"><span class="lineno">  165</span>        reject(<span class="keywordtype">id</span>, <span class="stringliteral">&quot;text is empty&quot;</span>);</div>
+<div class="line"><span class="lineno">  166</span>    }</div>
+<div class="line"><span class="lineno">  167</span>    <span class="keywordflow">if</span>(<span class="keywordtype">id</span>.size() != 36)</div>
+<div class="line"><span class="lineno">  168</span>    {</div>
+<div class="line"><span class="lineno">  169</span>        reject(<span class="keywordtype">id</span>, <span class="stringliteral">&quot;text is &quot;</span> + std::to_string(<span class="keywordtype">id</span>.size()) + <span class="stringliteral">&quot; characters long, expected 36&quot;</span>);</div>
+<div class="line"><span class="lineno">  170</span>    }</div>
+<div class="line"><span class="lineno">  171</span> </div>
+<div class="line"><span class="lineno">  172</span>    std::uint64_t parsedHigh = 0;</div>
+<div class="line"><span class="lineno">  173</span>    std::uint64_t parsedLow = 0;</div>
+<div class="line"><span class="lineno">  174</span>    std::size_t digits = 0;</div>
+<div class="line"><span class="lineno">  175</span> </div>
+<div class="line"><span class="lineno">  176</span>    <span class="keywordflow">for</span>(std::size_t position = 1; position &lt;= 36; position++)</div>
+<div class="line"><span class="lineno">  177</span>    {</div>
+<div class="line"><span class="lineno">  178</span>        <span class="keyword">auto</span> c = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span><span class="keyword">&gt;</span>(<span class="keywordtype">id</span>[position - 1]);</div>
+<div class="line"><span class="lineno">  179</span> </div>
+<div class="line"><span class="lineno">  180</span>        <span class="keywordflow">if</span>(position == 9 || position == 14 || position == 19 || position == 24)</div>
+<div class="line"><span class="lineno">  181</span>        {</div>
+<div class="line"><span class="lineno">  182</span>            <span class="keywordflow">if</span>(c != <span class="charliteral">&#39;-&#39;</span>)</div>
+<div class="line"><span class="lineno">  183</span>            {</div>
+<div class="line"><span class="lineno">  184</span>                reject(<span class="keywordtype">id</span>, <span class="stringliteral">&quot;expected &#39;-&#39; at position &quot;</span> + std::to_string(position) + <span class="stringliteral">&quot;, found &quot;</span> + describe(c));</div>
+<div class="line"><span class="lineno">  185</span>            }</div>
+<div class="line"><span class="lineno">  186</span>            <span class="keywordflow">continue</span>;</div>
+<div class="line"><span class="lineno">  187</span>        }</div>
+<div class="line"><span class="lineno">  188</span> </div>
+<div class="line"><span class="lineno">  189</span>        <span class="keywordtype">int</span> <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a59e696b1dad6d0d99c172ac4518c2042a2063c1608d6e0baf80249c42e2be5804">value</a> = hexValue(c);</div>
+<div class="line"><span class="lineno">  190</span>        <span class="keywordflow">if</span>(value &lt; 0)</div>
+<div class="line"><span class="lineno">  191</span>        {</div>
+<div class="line"><span class="lineno">  192</span>            reject(<span class="keywordtype">id</span>, <span class="stringliteral">&quot;invalid character &quot;</span> + describe(c) + <span class="stringliteral">&quot; at position &quot;</span> + std::to_string(position)</div>
+<div class="line"><span class="lineno">  193</span>                       + <span class="stringliteral">&quot;, expected a hexadecimal digit&quot;</span>);</div>
+<div class="line"><span class="lineno">  194</span>        }</div>
+<div class="line"><span class="lineno">  195</span> </div>
+<div class="line"><span class="lineno">  196</span>        <span class="keywordflow">if</span>(digits &lt; 16)</div>
+<div class="line"><span class="lineno">  197</span>        {</div>
+<div class="line"><span class="lineno">  198</span>            parsedHigh = (parsedHigh &lt;&lt; 4) | static_cast&lt;std::uint64_t&gt;(value);</div>
+<div class="line"><span class="lineno">  199</span>        }</div>
+<div class="line"><span class="lineno">  200</span>        <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno">  201</span>        {</div>
+<div class="line"><span class="lineno">  202</span>            parsedLow = (parsedLow &lt;&lt; 4) | static_cast&lt;std::uint64_t&gt;(value);</div>
+<div class="line"><span class="lineno">  203</span>        }</div>
+<div class="line"><span class="lineno">  204</span>        digits++;</div>
+<div class="line"><span class="lineno">  205</span>    }</div>
+<div class="line"><span class="lineno">  206</span> </div>
+<div class="line"><span class="lineno">  207</span>    this-&gt;<a class="code hl_variable" href="classecs_1_1Uuid.html#a32b20df3f00277a06f628b18b94b8840">high</a> = parsedHigh;</div>
+<div class="line"><span class="lineno">  208</span>    this-&gt;<a class="code hl_variable" href="classecs_1_1Uuid.html#ae3202757d23057d3bf80ce22cb7897be">low</a> = parsedLow;</div>
+<div class="line"><span class="lineno">  209</span>}</div>
+<div class="ttc" id="anamespacenlohmann_1_1detail_html_a59e696b1dad6d0d99c172ac4518c2042a2063c1608d6e0baf80249c42e2be5804"><div class="ttname"><a href="namespacenlohmann_1_1detail.html#a59e696b1dad6d0d99c172ac4518c2042a2063c1608d6e0baf80249c42e2be5804">nlohmann::detail::parse_event_t::value</a></div><div class="ttdeci">@ value</div><div class="ttdoc">the parser finished reading a JSON value</div></div>
 </div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a2aff11019a4e7cdf9f1b63e4537d68d0" name="a2aff11019a4e7cdf9f1b63e4537d68d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2aff11019a4e7cdf9f1b63e4537d68d0">&#9670;&#160;</a></span>Get()</h2>
+<a id="a8b3cb9c79388d8a780fcb2fb6179af53" name="a8b3cb9c79388d8a780fcb2fb6179af53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b3cb9c79388d8a780fcb2fb6179af53">&#9670;&#160;</a></span>Get()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -158,21 +232,27 @@ Private Attributes</h2></td></tr>
           <td class="memname">std::string ecs::Uuid::Get </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Returns the canonical lowercase 36-character text form. </p>
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00015">15</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   16</span>{</div>
-<div class="line"><span class="lineno">   17</span>    <span class="keywordflow">return</span> this-&gt;<span class="keywordtype">id</span>.str();</div>
-<div class="line"><span class="lineno">   18</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Uuid_8cpp_source.html#l00211">211</a> of file <a class="el" href="Uuid_8cpp_source.html">Uuid.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  212</span>{</div>
+<div class="line"><span class="lineno">  213</span>    std::string text(36, <span class="charliteral">&#39;-&#39;</span>);</div>
+<div class="line"><span class="lineno">  214</span>    writeHalf(text.data(), this-&gt;high, highOffsets);</div>
+<div class="line"><span class="lineno">  215</span>    writeHalf(text.data(), this-&gt;low, lowOffsets);</div>
+<div class="line"><span class="lineno">  216</span>    <span class="keywordflow">return</span> text;</div>
+<div class="line"><span class="lineno">  217</span>}</div>
 </div><!-- fragment -->
+<p class="reference">Referenced by <a class="el" href="bench__uuid_8cpp_source.html#l00007">main()</a>, <a class="el" href="test__Uuid_8cpp_source.html#l00086">TEST_CASE()</a>, <a class="el" href="test__Uuid_8cpp_source.html#l00205">TEST_CASE()</a>, and <a class="el" href="test__Uuid_8cpp_source.html#l00138">TEST_CASE()</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ab9eab5e6c8b8ae6593e3e8dab031e1ae" name="ab9eab5e6c8b8ae6593e3e8dab031e1ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab9eab5e6c8b8ae6593e3e8dab031e1ae">&#9670;&#160;</a></span>id</h2>
+<a id="a32b20df3f00277a06f628b18b94b8840" name="a32b20df3f00277a06f628b18b94b8840"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32b20df3f00277a06f628b18b94b8840">&#9670;&#160;</a></span>high</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -181,7 +261,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">UUIDv4::UUID ecs::Uuid::id</td>
+          <td class="memname">std::uint64_t ecs::Uuid::high = 0</td>
         </tr>
       </table>
   </td>
@@ -191,7 +271,35 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00015">15</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00042">42</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="Uuid_8cpp_source.html#l00150">Uuid()</a>.</p>
+
+</div>
+</div>
+<a id="ae3202757d23057d3bf80ce22cb7897be" name="ae3202757d23057d3bf80ce22cb7897be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3202757d23057d3bf80ce22cb7897be">&#9670;&#160;</a></span>low</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::uint64_t ecs::Uuid::low = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="Uuid_8hpp_source.html#l00043">43</a> of file <a class="el" href="Uuid_8hpp_source.html">Uuid.hpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="Uuid_8cpp_source.html#l00150">Uuid()</a>.</p>
 
 </div>
 </div>
@@ -202,7 +310,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 2 2026 22:14:38 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 03:40:19 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

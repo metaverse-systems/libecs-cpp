@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.2.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.3.0</span>
    </div>
   </td>
  </tr>
@@ -182,12 +182,39 @@ Not covered</h2>
 <li>Notifying systems when they are removed, and starting systems that are added late.</li>
 <li>Registering a second system under an identifier that is still in use. The previous outcome is kept and is memory safe.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md12"></a>
-Release notes</h2>
-<h3><a class="anchor" id="autotoc_md13"></a>
-1.2.0</h3>
-<p>The rules above are now guaranteed. The object layout of <code><a class="el" href="classecs_1_1Container.html">ecs::Container</a></code>, <code><a class="el" href="classecs_1_1System.html">ecs::System</a></code> and <code><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></code> changed (private members only, no public signature changed), so plugins must be rebuilt against the new headers. <code>the-seed build</code> does this.</p>
-<h1><a class="anchor" id="autotoc_md14"></a>
+<h1><a class="anchor" id="autotoc_md12"></a>
+Identifiers</h1>
+<p>Every container, entity, component and system gets a text handle that the library generates from an <code><a class="el" href="classecs_1_1Uuid.html">ecs::Uuid</a></code>. <code>Get()</code> returns the text form of an identifier: 36 lowercase hexadecimal characters with hyphens after the 8th, 12th, 16th and 20th, for example <code>550e8400-e29b-41d4-a716-446655440000</code>. Generated identifiers are version 4 with the standard variant.</p>
+<ul>
+<li><b>Thread safety.</b> <code><a class="el" href="classecs_1_1Uuid.html">ecs::Uuid()</a></code> can be called from any number of threads at the same time, including threads the library did not create. Each thread has its own generator, seeded independently on that thread's first identifier, and no lock is taken.</li>
+<li><b>Not secret.</b> Identifiers are unique in practice but are not cryptographically unpredictable. Do not use them as secrets or tokens.</li>
+<li><b>Fork.</b> A child process that forks after generating identifiers continues the parent's sequence, so both processes can produce the same identifiers afterwards.</li>
+<li><b>Parsing.</b> <code><a class="el" href="classecs_1_1Uuid.html">ecs::Uuid(text)</a></code> accepts exactly 36 characters in upper or lower case, with hyphens in the standard places, and any version or variant (including the all-zero identifier). <code>Get()</code> always returns lowercase. Text saved by earlier versions parses and round-trips unchanged.</li>
+<li><b>Rejected forms.</b> The empty string, text of any other length, leading or trailing whitespace, braces, a <code>urn:uuid:</code> prefix, the form without hyphens, and any character that is not a hexadecimal digit.</li>
+<li><b>Errors.</b> Rejected text throws <code>std::runtime_error</code>. The message is a single line of printable ASCII and names the problem and, for a bad character, its 1-based position (the first one found). Long input is shortened to its first 64 characters and unprintable bytes are written as <code>\xNN</code>.</li>
+</ul>
+<div class="fragment"><div class="line">ecs::Uuid(&quot;&quot;): text is empty</div>
+<div class="line">ecs::Uuid(&quot;550e8400-e29b-41d4-a716-44665544000&quot;): text is 35 characters long, expected 36</div>
+<div class="line">ecs::Uuid(&quot;550e8400xe29b-41d4-a716-446655440000&quot;): expected &#39;-&#39; at position 9, found &#39;x&#39;</div>
+<div class="line">ecs::Uuid(&quot;550e8400-e29b-41d4-a716-44665544000g&quot;): invalid character &#39;g&#39; at position 36, expected a hexadecimal digit</div>
+</div><!-- fragment --><p>The installed <code>ecs-cpp.pc</code> provides <code>-std=c++20 -pthread</code> in its compile flags. A consumer that wants a later standard must put its own <code>-std=</code> after the pkg-config flags.</p>
+<h1><a class="anchor" id="autotoc_md13"></a>
+Release notes</h1>
+<h2><a class="anchor" id="autotoc_md14"></a>
+1.3.0</h2>
+<ul>
+<li>The object layout of <code><a class="el" href="classecs_1_1Uuid.html">ecs::Uuid</a></code> changed (16 bytes, alignment 8), so plugins must be rebuilt against the new headers. <code>the-seed build</code> does this.</li>
+<li><code>uuid_v4.h</code> and <code>endianness.h</code> are no longer installed, and installing removes any copies left in the prefix by an earlier version.</li>
+<li><code>--disable-builtin-uuid</code> is retired. The library always uses its own identifier generator and no longer needs libuuid.</li>
+<li>Parsing identifier text is correct and strict, and throws <code>std::runtime_error</code> on malformed text.</li>
+<li><code><a class="el" href="classecs_1_1Uuid.html#a8b3cb9c79388d8a780fcb2fb6179af53">ecs::Uuid::Get()</a></code> is <code>const</code>.</li>
+<li><code>ecs-cpp.pc</code> carries <code>-std=c++20 -pthread</code>.</li>
+<li>The library no longer needs processor extensions and builds on 64-bit ARM.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md15"></a>
+1.2.0</h2>
+<p>The rules in "Changing systems and timers while they run" are now guaranteed. The object layout of <code><a class="el" href="classecs_1_1Container.html">ecs::Container</a></code>, <code><a class="el" href="classecs_1_1System.html">ecs::System</a></code> and <code><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></code> changed (private members only, no public signature changed), so plugins must be rebuilt against the new headers. <code>the-seed build</code> does this.</p>
+<h1><a class="anchor" id="autotoc_md16"></a>
 Running the tests</h1>
 <div class="fragment"><div class="line">./autogen.sh</div>
 <div class="line">./configure</div>
@@ -195,7 +222,7 @@ Running the tests</h1>
 <div class="line">make check</div>
 </div><!-- fragment --><p><code>make check</code> builds and runs every test program in <code>tests/</code> and finishes in a few seconds. Each program prints one <code>PASS:</code> or <code>FAIL:</code> line, followed by a summary (<code># TOTAL</code>, <code># PASS</code>, <code># FAIL</code>, <code># ERROR</code>). The command exits non-zero if any program fails, crashes or cannot start, and the <code>FAIL:</code> line names the program. The full output of each program is in <code>tests/&lt;program&gt;.log</code>, and the combined output of a failing run is in <code>tests/test-suite.log</code>.</p>
 <p>The tests need Catch2 v3 (<code>catch2-with-main</code> in pkg-config), for example <code>sudo apt install catch2</code>.</p>
-<h1><a class="anchor" id="autotoc_md15"></a>
+<h1><a class="anchor" id="autotoc_md17"></a>
 Sanitizer variants</h1>
 <p>Two opt-in variants run the same tests with a sanitizer built in:</p>
 <div class="fragment"><div class="line">make distclean</div>
@@ -207,15 +234,15 @@ Sanitizer variants</h1>
 <div class="line">make</div>
 <div class="line">make check</div>
 </div><!-- fragment --><p><code>address</code> enables AddressSanitizer together with UndefinedBehaviorSanitizer (memory errors, leaks and undefined behavior); <code>thread</code> enables ThreadSanitizer (data races). They correspond to the hosted <code>test (address+undefined)</code> and <code>test (thread)</code> checks. The sanitizer runtime options are fixed in <code>tests/Makefile.am</code>, so a local run behaves the same as the hosted one. Run <code>make distclean</code> before switching variants. Any other value for <code>--enable-sanitizer</code> stops <code>configure</code> with an error.</p>
-<h1><a class="anchor" id="autotoc_md16"></a>
+<h1><a class="anchor" id="autotoc_md18"></a>
 Known gaps</h1>
 <p><code>tests/known-gaps.txt</code> lists sanitizer findings that are already understood and are waiting for a planned fix. Each entry names the sanitizer variant, the test program, the test case, a text that must appear in the failure output, the finding, and the roadmap task that fixes it. The file currently has no entries.</p>
 <p>When a listed test case fails with the listed text, the run passes and prints a <code>KNOWN GAP:</code> line. Any other failure, in a listed or unlisted test case, still fails the run. If a listed test case passes, the run prints a <code>STALE KNOWN GAP:</code> line: remove the entry. If an entry is malformed or names a test case that does not exist, the run fails with a <code>MALFORMED KNOWN GAP:</code> line. Entries are removed when the fix lands; the file is never used to hide a new defect.</p>
-<h1><a class="anchor" id="autotoc_md17"></a>
+<h1><a class="anchor" id="autotoc_md19"></a>
 Continuous integration</h1>
-<p>Every pull request to <code>master</code>, every push to <code>master</code> and every manual run builds the library and runs <code>make check</code> as three separate checks: <code>test (plain)</code>, <code>test (address+undefined)</code> and <code>test (thread)</code>. These runs have read-only access to the repository and no secrets, so proposals from forks are checked the same way as proposals from this repository. A manual run accepts a <code>repeat</code> count to run the tests several times in a row.</p>
+<p>Every pull request to <code>master</code>, every push to <code>master</code> and every manual run builds the library and runs <code>make check</code> as four separate checks: <code>test (plain)</code>, <code>test (address+undefined)</code>, <code>test (thread)</code> and <code>test (plain (arm64))</code>, which runs the plain variant on a 64-bit ARM machine. These runs have read-only access to the repository and no secrets, so proposals from forks are checked the same way as proposals from this repository. A manual run accepts a <code>repeat</code> count to run the tests several times in a row.</p>
 <p>The Doxygen documentation is regenerated and committed only by pushes to <code>master</code>, never by proposals.</p>
-<h1><a class="anchor" id="autotoc_md18"></a>
+<h1><a class="anchor" id="autotoc_md20"></a>
 Build library for Windows</h1>
 <ul>
 <li>Build and install libecs-cpp</li>
@@ -238,7 +265,7 @@ Build library for Windows</h1>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Oct 2 2026 22:14:38 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 03:40:19 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
