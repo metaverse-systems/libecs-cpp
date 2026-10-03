@@ -20,11 +20,11 @@ class TestSystem : public ecs::System
     {
         nlohmann::json config;
         config["Handle"] = this->Handle;
-        config["updateCount"] = updateCount;
+        config["updateCount"] = this->updateCount;
         return config;
     }
 
-    void Update() { updateCount++; }
+    void Update() { this->updateCount++; }
 
     int updateCount = 0;
 };
@@ -69,7 +69,7 @@ class TestComponent : public ecs::Component
     nlohmann::json Export() const
     {
         nlohmann::json config;
-        config["value"] = value;
+        config["value"] = this->value;
         return config;
     }
 
@@ -305,7 +305,7 @@ TEST_CASE("SystemDestroy with non-existent handle is no-op", "[Container]") {
     REQUIRE_NOTHROW(container->SystemDestroy("NonExistent"));
 }
 
-TEST_CASE("SystemDestroy removes handle from system_order_", "[Container]") {
+TEST_CASE("SystemDestroy removes the system from the update order", "[Container]") {
     ecs::Manager manager;
     auto container = manager.Container("test-container");
     auto sysA = std::make_unique<TestSystem>("SystemA");
@@ -353,7 +353,7 @@ TEST_CASE("SystemDestroy called during active Update iteration is safe", "[Conta
         SelfishSystem() : ecs::System("SelfishSystem") {}
         nlohmann::json Export() const override { return {{"Handle", this->Handle}}; }
         void Update() override {
-            updateCount++;
+            this->updateCount++;
             // Try to destroy sibling - container should handle gracefully
             if(this->Container) {
                 this->Container->SystemDestroy("SiblingSystem");
@@ -367,7 +367,7 @@ TEST_CASE("SystemDestroy called during active Update iteration is safe", "[Conta
         SiblingSystem() : ecs::System("SiblingSystem") {}
         nlohmann::json Export() const override { return {{"Handle", this->Handle}}; }
         void Update() override {
-            updateCount++;
+            this->updateCount++;
         }
         int updateCount = 0;
     };
@@ -431,12 +431,12 @@ namespace
         std::vector<std::string> inits;
         std::unordered_map<std::string, int> destroyed;
 
-        int updateCount(const std::string &name) const { return (int)std::count(updates.begin(), updates.end(), name); }
-        int initCount(const std::string &name) const { return (int)std::count(inits.begin(), inits.end(), name); }
+        int updateCount(const std::string &name) const { return (int)std::count(this->updates.begin(), this->updates.end(), name); }
+        int initCount(const std::string &name) const { return (int)std::count(this->inits.begin(), this->inits.end(), name); }
         int destroyCount(const std::string &name) const
         {
-            auto found = destroyed.find(name);
-            return found == destroyed.end() ? 0 : found->second;
+            auto found = this->destroyed.find(name);
+            return found == this->destroyed.end() ? 0 : found->second;
         }
     };
 

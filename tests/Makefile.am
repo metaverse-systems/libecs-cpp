@@ -19,13 +19,13 @@ AM_TESTS_ENVIRONMENT = \
 	TSAN_OPTIONS='halt_on_error=0:exitcode=66:second_deadlock_stack=1:print_summary=1'; export TSAN_OPTIONS;
 
 if !CROSS_COMPILING
-TESTS = $(check_PROGRAMS) run-test-selftest.sh run-example.sh run-logging.sh check-exports-selftest.sh check-exports.sh
+TESTS = $(check_PROGRAMS) run-test-selftest.sh run-example.sh run-logging.sh check-exports-selftest.sh check-exports.sh check-style-selftest.sh check-style.sh
 else
 check-local:
 	@echo "cross-compiling for $(if $(host_alias),$(host_alias),$(host)): test programs were built but not run"
 endif
 
-EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh run-logging.sh check-exports.sh check-exports-selftest.sh known-gaps.txt log_probe.cpp bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp
+EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh run-logging.sh check-exports.sh check-exports-selftest.sh check-style.sh check-style-selftest.sh known-gaps.txt log_probe.cpp bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp
 
 # Helper program for run-logging.sh. It is not a Catch2 program: it stays out of check_PROGRAMS, TESTS and
 # ECS_TEST_PROGRAMS, and is built before the script runs through the dependency on the script's log file.

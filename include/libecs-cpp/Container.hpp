@@ -375,7 +375,7 @@ namespace ecs
             bool shutdown = false;
         };
         class WalkScope;
-        std::vector<SystemSlot> system_order;
+        std::vector<SystemSlot> systemOrder;
         uint32_t walkDepth = 0;
         /*! Guards deferred and deferredClosed only; deferred functions run with no lock held. */
         std::mutex deferredLock;

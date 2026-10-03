@@ -92,7 +92,7 @@ namespace ecs
         this->retiredRelease();
         std::vector<std::unique_ptr<ecs::System>> owned;
         owned.reserve(this->Systems.size());
-        for(auto &slot : this->system_order)
+        for(auto &slot : this->systemOrder)
         {
             if(slot.system == nullptr) continue;
             auto found = this->Systems.find(slot.handle);
@@ -108,7 +108,7 @@ namespace ecs
             if(system) unordered.push_back(std::move(system));
         }
         this->Systems.clear();
-        this->system_order.clear();
+        this->systemOrder.clear();
         {
             std::lock_guard<std::mutex> guard(this->mailboxesLock);
             this->mailboxes.clear();
@@ -236,14 +236,14 @@ namespace ecs
         {
             WalkScope walk(this);
             // Slots added by notifications sit past this count and are not visited.
-            for(size_t i = this->system_order.size(); i-- > 0;)
+            for(size_t i = this->systemOrder.size(); i-- > 0;)
             {
-                if(i >= this->system_order.size()) continue;
-                auto *system = this->system_order[i].system;
-                if(system == nullptr || !this->system_order[i].started || this->system_order[i].shutdown) continue;
+                if(i >= this->systemOrder.size()) continue;
+                auto *system = this->systemOrder[i].system;
+                if(system == nullptr || !this->systemOrder[i].started || this->systemOrder[i].shutdown) continue;
                 // Marked before the call, so a failing or re-entrant notification is not repeated.
-                this->system_order[i].shutdown = true;
-                const std::string handle = this->system_order[i].handle;
+                this->systemOrder[i].shutdown = true;
+                const std::string handle = this->systemOrder[i].handle;
                 this->systemNotify(system);
                 std::lock_guard<std::mutex> guard(this->mailboxesLock);
                 auto found = this->mailboxes.find(handle);
@@ -341,7 +341,7 @@ namespace ecs
         this->walkDepth--;
         if(this->walkDepth == 0 && this->orderHasGaps)
         {
-            std::erase_if(this->system_order, [](const SystemSlot &slot) { return slot.system == nullptr; });
+            std::erase_if(this->systemOrder, [](const SystemSlot &slot) { return slot.system == nullptr; });
             this->orderHasGaps = false;
         }
         if(this->walkDepth == 0 && !this->retiredSystems.empty())
@@ -371,7 +371,7 @@ namespace ecs
         ecs::System *ptr = system.get();
         if(this->walkDepth > 0)
         {
-            for(auto &slot : this->system_order)
+            for(auto &slot : this->systemOrder)
             {
                 if(slot.system == ptr)
                 {
@@ -382,7 +382,7 @@ namespace ecs
         }
         else
         {
-            std::erase_if(this->system_order, [ptr](const SystemSlot &slot) { return slot.system == ptr; });
+            std::erase_if(this->systemOrder, [ptr](const SystemSlot &slot) { return slot.system == ptr; });
         }
 
         if(this->walkDepth > 0 || system->timerWalkDepth > 0)
@@ -431,7 +431,7 @@ namespace ecs
             // removal keeps the handle but must stay empty.
             std::unique_ptr<ecs::System> old = std::move(existing->second);
             bool notify = false;
-            for(auto &slot : this->system_order)
+            for(auto &slot : this->systemOrder)
             {
                 if(slot.system == old.get())
                 {
@@ -453,7 +453,7 @@ namespace ecs
             return ptr;
         }
 
-        this->system_order.push_back(SystemSlot{handle, ptr});
+        this->systemOrder.push_back(SystemSlot{handle, ptr});
         this->startPending = true;
         try
         {
@@ -464,7 +464,7 @@ namespace ecs
         catch(...)
         {
             this->Systems.erase(handle);
-            this->system_order.pop_back();
+            this->systemOrder.pop_back();
             throw;
         }
         // Last step, with no library lock held: lines the system logged before it was attached.
@@ -530,12 +530,12 @@ namespace ecs
         // Cleared first: a system registered while this runs sets it again and is started by the next pass.
         this->startPending = false;
         WalkScope walk(this);
-        for(size_t i = 0, count = this->system_order.size(); i < count; i++)
+        for(size_t i = 0, count = this->systemOrder.size(); i < count; i++)
         {
-            auto *system = this->system_order[i].system;
-            if(system == nullptr || this->system_order[i].started) continue;
+            auto *system = this->systemOrder[i].system;
+            if(system == nullptr || this->systemOrder[i].started) continue;
             // Marked before the call, so a system that fails to start is not started again.
-            this->system_order[i].started = true;
+            this->systemOrder[i].started = true;
             try
             {
                 system->Initialize();
@@ -543,13 +543,13 @@ namespace ecs
             catch(const std::exception &e)
             {
                 this->startPending = true;
-                this->Log("[" + this->system_order[i].handle + "] threw during Initialize(): " + e.what(), "error");
+                this->Log("[" + this->systemOrder[i].handle + "] threw during Initialize(): " + e.what(), "error");
                 throw;
             }
             catch(...)
             {
                 this->startPending = true;
-                this->Log("[" + this->system_order[i].handle + "] threw unknown exception during Initialize()", "error");
+                this->Log("[" + this->systemOrder[i].handle + "] threw unknown exception during Initialize()", "error");
                 throw;
             }
         }
@@ -667,11 +667,11 @@ namespace ecs
         if(this->startPending && this->walkDepth == 0)
             this->systemsStart();
         WalkScope walk(this);
-        for(size_t i = 0, count = this->system_order.size(); i < count; i++)
+        for(size_t i = 0, count = this->systemOrder.size(); i < count; i++)
         {
-            auto *system = this->system_order[i].system;
+            auto *system = this->systemOrder[i].system;
             // A system shut down earlier in this pass (the world was stopped from inside the pass) is not updated.
-            if(system == nullptr || !this->system_order[i].started || this->system_order[i].shutdown) continue;
+            if(system == nullptr || !this->systemOrder[i].started || this->systemOrder[i].shutdown) continue;
             try
             {
                 const std::chrono::microseconds now = system->clock->Now();
@@ -680,12 +680,12 @@ namespace ecs
             }
             catch(const std::exception &e)
             {
-                this->Log("[" + this->system_order[i].handle + "] threw during Update(): " + e.what(), "error");
+                this->Log("[" + this->systemOrder[i].handle + "] threw during Update(): " + e.what(), "error");
                 throw;
             }
             catch(...)
             {
-                this->Log("[" + this->system_order[i].handle + "] threw unknown exception during Update()", "error");
+                this->Log("[" + this->systemOrder[i].handle + "] threw unknown exception during Update()", "error");
                 throw;
             }
         }
@@ -778,7 +778,7 @@ namespace ecs
         }
 
         bool notify = false;
-        for(const auto &slot : this->system_order)
+        for(const auto &slot : this->systemOrder)
         {
             if(slot.system == removed.get()) notify = slot.started && !slot.shutdown;
         }
