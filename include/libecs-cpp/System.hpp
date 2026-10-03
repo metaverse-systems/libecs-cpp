@@ -233,7 +233,8 @@ namespace ecs
          * it is the same on every call during that update, from Update(), a timer callback or any helper.
          * Reading it changes nothing, and a system that never reads it loses no time. The values of
          * consecutive updates add up to the time the clock moved. Nothing is clamped: after a long stall
-         * the whole stall is reported.
+         * the whole stall is reported, so code that integrates over the step should cap it itself, for
+         * example with std::min(this->ElapsedSecondsGet(), 0.25).
          *
          * Before the first update, and during it, the value is the system's configured interval (Timing),
          * because there is no earlier update to measure from. A system whose interval is zero therefore

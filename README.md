@@ -157,6 +157,104 @@ down is described in "Start-up, shutdown and stopping".
   no outcome is defined.
 * Start-up and shutdown notifications, which are described in "Start-up, shutdown and stopping".
 
+## Time: intervals and elapsed time
+
+### Terms
+
+* An **interval** is the time between two updates of a repeating schedule: a system's `Timing`, a world's
+  `Start(interval)` and a repeating timer. A **timer length** is the interval of a timer: how long after it
+  was added (or after it last fired) it next fires. **Elapsed time** is how much time passed between the
+  previous update of a system and the current one.
+* Every interval and every timer length is a `std::chrono` duration, for example
+  `std::chrono::milliseconds(100)` or `std::chrono::hours(2)`. Internally the unit is microseconds. A
+  larger interval means the schedule fires less often.
+
+### Rules
+
+* **Zero** means every pass: a system with an interval of zero is updated on every pass of its world, and a
+  timer of length zero fires once on every update of its system (never more than once per update, even if
+  its callback adds or clears timers).
+* **The maximum** is `ecs::MAX_INTERVAL`, 100 years of 365.25 days. A negative value or one above the
+  maximum is rejected with `std::runtime_error` and nothing is changed: `Timing::SetInterval()`,
+  `System::TimerAdd()` and `Container::Start(interval)` all check it.
+* **The first fire** of a new timer is one full length after it was added with `TimerAdd()`, and the first
+  update of a new `Timing` is due one full interval after it was created or restarted (`Restart(now)`).
+  A schedule that is asked right after creation says no.
+* **The default** interval of a system is 33 333 microseconds, about 30 updates a second. The catch-up
+  rule is unchanged: a schedule that is asked late moves forward by exactly the whole intervals that
+  passed, so its average rate stays exact; if more than two whole intervals passed (after a long stall) it
+  fires once and starts counting again from that moment.
+* **The first update.** There is no earlier update to measure from, so `ElapsedGet()` reports the
+  system's configured interval before the first update and during it, whenever the system was constructed
+  or registered. A system whose interval is zero reports zero for its first update; code that divides by
+  the elapsed time must treat that value specially or set an explicit interval.
+* **Measured once per update.** The clock is read once at the start of each update, and that one reading
+  decides both whether the system is due and what its elapsed time is. `ElapsedGet()` and
+  `ElapsedSecondsGet()` return the same value however many times they are called in that update, from
+  `Update()`, a timer callback or helper code. Reading them changes nothing, a system that never reads
+  them loses no time, and the values of consecutive updates add up to the time the clock moved (to within
+  the one microsecond that truncating the clock reading costs).
+* **No clamp.** After a stall the whole stall is reported: a system that was not updated for five hours
+  gets an elapsed time of five hours. Code that integrates over the step should cap it itself.
+* **The clock.** Systems and worlds read an `ecs::Clock`. The default is the real steady clock. A clock is
+  not owned by what uses it and must outlive it. `System::ClockSet()` and `Container::ClockSet()` replace
+  it (the world's call sets the clock of every system it holds and of every system registered later); the
+  schedule, timers and elapsed measurement of each affected system start again from the new clock's time.
+  The thread of a world that was started with `Start()` still waits on the real clock, so use a
+  `ManualClock` with worlds that are driven by calls to `Update()`.
+
+### Examples
+
+```cpp
+class Movement : public ecs::System
+{
+  public:
+    Movement() : System("game/Movement")
+    {
+        this->TimerAdd(ecs::Timer("autosave", [this] { this->Save(); }, std::chrono::hours(2)));
+    }
+    void Update() override
+    {
+        // Seconds as a double. Cap the step yourself so that one long stall is not integrated in one go.
+        double dt = std::min(this->ElapsedSecondsGet(), 0.25);
+        // position += velocity * dt;
+    }
+    nlohmann::json Export() const override { return {}; }
+    void Save() {}
+};
+```
+
+Slow a system down with a longer interval: `this->Timing.SetInterval(std::chrono::milliseconds(100));`.
+
+Testing time without sleeping, with a controlled clock:
+
+```cpp
+ecs::ManualClock clock;
+Movement system;
+system.ClockSet(&clock);
+clock.Advance(std::chrono::hours(2));
+system.UpdateSystem();            // the autosave timer fires; ElapsedGet() is two hours
+```
+
+A schedule on its own, with explicit instants:
+`ecs::Timing t(std::chrono::seconds(7200)); t.Restart(std::chrono::microseconds(0));`
+then `t.ShouldUpdate(std::chrono::minutes(48))` is `false`.
+
+### Old names and new names
+
+The old names keep their previous meaning and units and still compile, now with a deprecation notice that
+names the replacement. They stay for at least the next minor release after 1.8.0; removal is not
+scheduled in 1.8.0 and will be announced in release notes first.
+
+| Old | New |
+|---|---|
+| `Timing.SetFrequency(us)` and `Timing.GetFrequency()` (the number is an interval in microseconds, not a frequency) | `Timing.SetInterval(std::chrono::microseconds(us))` and `Timing.GetInterval()` |
+| `Timing(us)` | `Timing(std::chrono::microseconds(us))` |
+| `Timer("name", callback, 30)` (a bare number of seconds; a floating-point count no longer compiles) | `Timer("name", callback, std::chrono::seconds(30))` |
+| `uint32_t ms = DeltaTimeGet();` (whole milliseconds) | `ElapsedGet()` (microseconds) or `ElapsedSecondsGet()` (seconds as a `double`) |
+| the protected member `lastTime` | nothing: it is no longer maintained, use `ElapsedGet()` |
+| `Container::Start(us)` | unchanged and not deprecated; `Start(std::chrono::microseconds(us))` shows the unit |
+
 ## Start-up, shutdown and stopping
 
 A system has two notifications. `Initialize()` is the start-up notification and `Shutdown()` is the
@@ -505,6 +603,7 @@ and the update order stay usable from the world thread exactly as before.
 | `Manager::Shutdown()` | Any thread | Idempotent. From an application thread it blocks until every world with its own thread has stopped and delivered its notifications; from a world thread it only requests. See "Start-up, shutdown and stopping". |
 | `Manager::MessageSubmit(message)` | Any thread | Returns without waiting for the destination's update. Throws `std::runtime_error` if the message is malformed, the world or system is unknown, or the manager is being destroyed. A malformed message is rejected before any lock is taken. |
 | `Manager::~Manager()` | Exclusive | Shuts down first, waits for sends already in progress; later sends and new worlds fail. The process-wide `ECS` manager is never destroyed. |
+| `Container::ClockSet(clock)` | World thread | Every system of the world uses the new clock; see "Time: intervals and elapsed time". |
 | `Container::Start()`, `Start(interval)` | Once | Call from the thread that owns the world, before any other thread uses it. A repeated call, a call after a stop and a call after manager shutdown do nothing. |
 | `Container::Stop()` | Any thread | From the world thread it only requests; elsewhere it returns once the world has been torn down. |
 | `Container::Defer(fn)` | Any thread | See "Deferred changes". |
@@ -520,7 +619,7 @@ and the update order stay usable from the world thread exactly as before.
 | `Container::~Container()` | Exclusive | Discards pending deferred changes unrun, stops and joins the thread, delivers `Shutdown()` to every started system. |
 | `System::MessageSubmit(message)` | Any thread | The system must be alive. Routing through `Container` or `Manager` is safe against removal; a direct pointer is not. |
 | `System::MessagesWaiting()`, `messages` | World thread | `MessagesWaiting()` moves delivered messages into the queue, then counts the messages waiting to be read. |
-| `System::Initialize()`, `Update()`, `UpdateSystem()`, `Configure()`, `Export()`, `Shutdown()`, `TimerAdd()`, `TimerClear()`, `DeltaTimeGet()`, `Log()` | World thread | |
+| `System::Initialize()`, `Update()`, `UpdateSystem()`, `Configure()`, `Export()`, `Shutdown()`, `TimerAdd()`, `TimerClear()`, `ElapsedGet()`, `ElapsedSecondsGet()`, `ClockSet()`, `Log()` | World thread | Time reads change nothing. The older `DeltaTimeGet()` is in the table of old names. |
 | `System::Handle`, `Container`, `Components`, `Timing` | World thread | Set during registration. |
 | `Entity`, `Component` | World thread | They change the world's tables. |
 
@@ -623,6 +722,64 @@ thread also stops every world that has its own thread and waits until it has end
 "Start-up, shutdown and stopping". It does not destroy worlds.
 
 ## Release notes
+
+### 1.8.0
+
+Clear timer lengths and intervals, trustworthy elapsed time and a clock that tests can control. This is a
+minor release although `System` and `Timing` change layout, following the precedent of 1.4.0 to 1.7.0;
+the migration of each change is below, and the rules are in "Time: intervals and elapsed time".
+
+**Rebuild every system plugin** (`the-seed build`). `System::Timing` is a public member and its code is
+compiled into each system plugin, and `System` gained members, so a system plugin built against 1.7.0 and
+loaded by 1.8.0 is not safe. Loading one was tried: the plugin allocates the old, smaller object, the
+1.8.0 constructor writes past its end, and the program corrupts memory and then crashes. A plugin that
+only defines components (`create_component`) contains none of this code and keeps working without a
+rebuild; that was checked by loading one built against 1.7.0 into 1.8.0. `Container::Start(unsigned int)`
+and `System::DeltaTimeGet()` are still exported, so code rebuilt in place still links. libthe-seed 0.3.2
+requires `ecs-cpp >= 1.8.0`.
+
+New:
+
+* `ecs::Clock`, `ecs::SteadyClock` (the default) and `ecs::ManualClock`, in `<libecs-cpp/Clock.hpp>`,
+  with `System::ClockSet()` and `Container::ClockSet()`.
+* `System::ElapsedGet()` (microseconds) and `System::ElapsedSecondsGet()` (a `double` in seconds).
+* `Timing` takes `std::chrono::microseconds`: `SetInterval()`, `GetInterval()`, `ShouldUpdate(now)`,
+  `Restart(now)`; the constants `ecs::MAX_INTERVAL` and `ecs::DEFAULT_INTERVAL`.
+* `Timer` takes a `std::chrono` duration, and `Container::Start(std::chrono::microseconds)`.
+* Out-of-range values are rejected with `std::runtime_error` instead of wrapping around.
+
+Fixed:
+
+* A timer length of more than about 71 minutes used to wrap around in a 32-bit count of microseconds: a
+  two-hour timer fired after about 48 minutes. Lengths up to `MAX_INTERVAL` are now exact.
+* Elapsed time no longer rounds a sub-millisecond gap down to zero or drops the remainder of each step,
+  and no longer depends on how often it is read.
+
+Tests: `test_Elapsed` (elapsed time, the first update, stalls and the world clock, all on a controlled
+clock) and `test_Compatibility` (every deprecated name still gives its previous result) are new.
+
+Migration:
+
+| Old | New |
+|---|---|
+| `Timing.SetFrequency(us)` / `GetFrequency()` | `Timing.SetInterval(std::chrono::microseconds(us))` / `GetInterval()` |
+| `Timing(us)` | `Timing(std::chrono::microseconds(us))` |
+| `Timer("n", cb, 30)` (seconds; a floating-point count no longer compiles) | `Timer("n", cb, std::chrono::seconds(30))` |
+| `uint32_t ms = DeltaTimeGet();` | `ElapsedGet()` (microseconds) or `ElapsedSecondsGet()` (seconds, `double`) |
+| `Start(us)` | unchanged, or `Start(std::chrono::microseconds(us))` |
+
+The deprecated names compile with a notice and keep their previous units and meaning, apart from the two
+behaviours below. A floating-point timer length (`Timer("n", cb, 0.5)`) no longer compiles: pass a duration.
+
+Two behaviours to know about:
+
+* `DeltaTimeGet()` used to return the time since the previous call. It now returns the time of the
+  current update, measured once. A system that read it only every Nth update used to see N updates of
+  time and now sees one, and a second call in the same update no longer returns about zero. Accumulate in
+  the system, or switch to `ElapsedGet()` and sum the values you need.
+* `DeltaTimeGet()` now carries the part of a millisecond that it cannot show into the next update, so the
+  running total stays within a millisecond of the real one. A 33 333 microsecond step reads mostly 33 with
+  a 34 about every third update, where it used to read 33 every time.
 
 ### 1.7.0
 
@@ -781,6 +938,11 @@ program prints one `PASS:` or `FAIL:` line, followed by a summary (`# TOTAL`, `#
 `# ERROR`). The command exits non-zero if any program fails, crashes or cannot start, and the
 `FAIL:` line names the program. The full output of each program is in `tests/<program>.log`, and the
 combined output of a failing run is in `tests/test-suite.log`.
+
+The programs are `test_Manager`, `test_System`, `test_Entity`, `test_Container`, `test_Timing` (schedule
+arithmetic, with explicit instants), `test_Elapsed` (elapsed time, the first update, stalls and the world
+clock, on a controlled clock), `test_Compatibility` (the deprecated names), `test_UpdateAllocation`,
+`test_Uuid`, `test_Threading`, `test_Validation`, `test_Lifecycle`, `test_ProcessManager` and `test_Access`.
 
 The tests need Catch2 v3 (`catch2-with-main` in pkg-config), for example `sudo apt install catch2`.
 
