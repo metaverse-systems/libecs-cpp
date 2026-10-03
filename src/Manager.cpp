@@ -11,6 +11,20 @@ namespace ecs
     Manager::~Manager()
     {
         this->Shutdown();
+
+        std::unordered_map<std::string, std::unique_ptr<ecs::Container>> doomed;
+        {
+            std::unique_lock<std::mutex> lock(this->mutexContainers);
+            this->closing = true;
+            this->sendsIdle.wait(lock, [this] { return this->sendsInFlight == 0; });
+            doomed = std::move(this->containers);
+        }
+        doomed.clear();
+
+        // Worlds are gone without the lock held; sends that arrived meanwhile were refused
+        // under the lock. Taking it once more means every such refusal has finished with the
+        // manager's members before the object's storage can be released.
+        std::lock_guard<std::mutex> lock(this->mutexContainers);
     }
 
     ecs::Container *Manager::Container(const std::string &handle)
@@ -45,6 +59,7 @@ namespace ecs
 
     std::vector<std::string> Manager::ContainersGet()
     {
+        std::lock_guard<std::mutex> lock(this->mutexContainers);
         std::vector<std::string> handles;
 
         for(auto &c : this->containers)
@@ -56,12 +71,35 @@ namespace ecs
     void Manager::MessageSubmit(const nlohmann::json &message)
     {
         auto dest_container = message["destination"]["container"].get<std::string>();
-        if(!this->containers.contains(dest_container))
+        ecs::Container *target = nullptr;
+        {
+            std::lock_guard<std::mutex> lock(this->mutexContainers);
+            auto it = this->containers.find(dest_container);
+            if(!this->closing && it != this->containers.end())
+            {
+                target = it->second.get();
+                this->sendsInFlight++;
+            }
+        }
+
+        if(target == nullptr)
         {
             auto err = "ecs::Manager::MessageSubmit(): Container " + dest_container + " not found.";
             throw std::runtime_error(err);
         }
 
-        this->containers[dest_container]->MessageSubmit(message);
+        struct SendDone
+        {
+            Manager *manager;
+            ~SendDone()
+            {
+                std::lock_guard<std::mutex> lock(this->manager->mutexContainers);
+                this->manager->sendsInFlight--;
+                if(this->manager->sendsInFlight == 0 && this->manager->closing)
+                    this->manager->sendsIdle.notify_all();
+            }
+        } done{this};
+
+        target->MessageSubmit(message);
     }
 }

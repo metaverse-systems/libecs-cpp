@@ -1,8 +1,10 @@
 #include <catch2/catch_all.hpp>
 #include <libecs-cpp/ecs.hpp>
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <cstddef>
+#include <functional>
 #include <future>
 #include <latch>
 #include <map>
@@ -305,6 +307,87 @@ namespace
       private:
         PassClock *clock;
         std::vector<std::string> targets;
+    };
+
+    /*! On each pass, up to a limit, creates a world, lists the worlds and sends one message to a system in
+     *  another world, all through the manager from inside Update(). */
+    class ManagerCallerSystem : public ecs::System
+    {
+      public:
+        ManagerCallerSystem(const std::string &handle,
+          ecs::Manager *manager,
+          std::string destinationContainer,
+          int sender,
+          int passes,
+          std::atomic<int> *completed,
+          std::atomic<int> *errors)
+          : manager(manager), destinationContainer(std::move(destinationContainer)), sender(sender), passes(passes),
+            completed(completed), errors(errors)
+        {
+            this->Handle = handle;
+            this->Timing.SetFrequency(0);
+        }
+
+        void Update() override
+        {
+            if(this->pass >= this->passes)
+            {
+                return;
+            }
+            try
+            {
+                this->manager->Container();
+                if(this->manager->ContainersGet().empty())
+                {
+                    this->errors->fetch_add(1);
+                }
+                this->manager->MessageSubmit(message(this->destinationContainer, "recorder", this->sender, this->pass));
+            }
+            catch(const std::exception &)
+            {
+                this->errors->fetch_add(1);
+            }
+            this->pass++;
+            this->completed->fetch_add(1);
+        }
+
+        nlohmann::json Export() const override
+        {
+            return nlohmann::json::object();
+        }
+
+      private:
+        ecs::Manager *manager;
+        std::string destinationContainer;
+        int sender;
+        int passes;
+        std::atomic<int> *completed;
+        std::atomic<int> *errors;
+        int pass = 0;
+    };
+
+    /*! Asks the manager to shut down from inside Update(). */
+    class ShutdownSystem : public ecs::System
+    {
+      public:
+        ShutdownSystem(const std::string &handle, ecs::Manager *manager) : manager(manager)
+        {
+            this->Handle = handle;
+            this->Timing.SetFrequency(0);
+        }
+
+        void Update() override
+        {
+            this->manager->Shutdown();
+        }
+
+        nlohmann::json Export() const override
+        {
+            return nlohmann::json::object();
+        }
+
+      private:
+        ecs::Manager *manager;
     };
 }
 
@@ -619,4 +702,452 @@ TEST_CASE("Messages to unknown or removed destinations are dropped safely", "[Th
     REQUIRE(distinct.size() == recordedCount);
     REQUIRE(recordedCount <= sent);
     REQUIRE(recordedCount + static_cast<std::size_t>(thrown.load()) <= sent);
+}
+
+TEST_CASE("Worlds can be created and listed from many threads", "[Threading]")
+{
+    constexpr int THREADS = 8;
+    constexpr int PER_THREAD = 100;
+
+    ecs::Manager manager;
+    std::atomic<bool> stop{false};
+    std::vector<std::set<std::string>> seen(THREADS);
+    std::vector<std::set<ecs::Container *>> created(THREADS);
+    std::atomic<int> badSnapshots{0};
+
+    bool completed = withTimeout(
+      [&]() {
+          std::latch go(THREADS + 1);
+          std::vector<std::thread> threads;
+          for(int t = 0; t < THREADS; t++)
+          {
+              threads.emplace_back([&, t]() {
+                  go.arrive_and_wait();
+                  for(int i = 0; i < PER_THREAD && !stop; i++)
+                  {
+                      created[t].insert(manager.Container());
+                      auto snapshot = manager.ContainersGet();
+                      std::set<std::string> distinct(snapshot.begin(), snapshot.end());
+                      if(distinct.size() != snapshot.size() || distinct.contains(""))
+                      {
+                          badSnapshots++;
+                      }
+                      seen[t].insert(snapshot.begin(), snapshot.end());
+                  }
+              });
+          }
+          go.arrive_and_wait();
+          for(auto &t : threads)
+          {
+              t.join();
+          }
+      },
+      60s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("the worlds were not created in time");
+    }
+
+    auto handles = manager.ContainersGet();
+    std::set<std::string> distinct(handles.begin(), handles.end());
+    REQUIRE(badSnapshots == 0);
+    REQUIRE(handles.size() == static_cast<std::size_t>(THREADS) * PER_THREAD);
+    REQUIRE(distinct.size() == handles.size());
+
+    std::set<ecs::Container *> pointers;
+    for(auto &set : created)
+    {
+        pointers.insert(set.begin(), set.end());
+    }
+    REQUIRE(pointers.size() == handles.size());
+
+    // Every handle that any snapshot showed names a world that exists: looking it up creates nothing.
+    for(auto &set : seen)
+    {
+        for(auto &handle : set)
+        {
+            REQUIRE(distinct.contains(handle));
+            REQUIRE(pointers.contains(manager.Container(handle)));
+        }
+    }
+    REQUIRE(manager.ContainersGet().size() == handles.size());
+}
+
+TEST_CASE("The same handle from many threads yields one world", "[Threading]")
+{
+    constexpr int THREADS = 16;
+    constexpr int HANDLES = 50;
+
+    ecs::Manager manager;
+    std::atomic<bool> stop{false};
+    std::vector<std::vector<ecs::Container *>> results(HANDLES, std::vector<ecs::Container *>(THREADS, nullptr));
+
+    bool completed = withTimeout(
+      [&]() {
+          for(int h = 0; h < HANDLES && !stop; h++)
+          {
+              std::string handle = h == 0 ? std::string("shared") : "shared-" + std::to_string(h);
+              std::latch go(THREADS + 1);
+              std::vector<std::thread> threads;
+              for(int t = 0; t < THREADS; t++)
+              {
+                  threads.emplace_back([&, h, t, handle]() {
+                      go.arrive_and_wait();
+                      results[h][t] = manager.Container(handle);
+                  });
+              }
+              go.arrive_and_wait();
+              for(auto &t : threads)
+              {
+                  t.join();
+              }
+          }
+      },
+      60s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("the lookups did not finish in time");
+    }
+
+    auto handles = manager.ContainersGet();
+    REQUIRE(handles.size() == static_cast<std::size_t>(HANDLES));
+    for(int h = 0; h < HANDLES; h++)
+    {
+        std::string handle = h == 0 ? std::string("shared") : "shared-" + std::to_string(h);
+        REQUIRE(results[h][0] != nullptr);
+        for(int t = 1; t < THREADS; t++)
+        {
+            REQUIRE(results[h][t] == results[h][0]);
+        }
+        REQUIRE(std::count(handles.begin(), handles.end(), handle) == 1);
+    }
+}
+
+TEST_CASE("Routing while a world is being created delivers once or reports unknown", "[Threading]")
+{
+    constexpr int SENDERS = 4;
+    constexpr int AFTER_READY = 2000;
+
+    ecs::Manager manager;
+    std::atomic<bool> stop{false};
+    std::atomic<bool> ready{false};
+    std::atomic<int> otherErrors{0};
+    std::vector<std::vector<std::pair<int, int>>> accepted(SENDERS);
+    auto recorded = std::make_shared<Recorded>();
+
+    bool completed = withTimeout(
+      [&]() {
+          std::latch go(SENDERS + 2);
+          std::vector<std::thread> threads;
+          for(int s = 0; s < SENDERS; s++)
+          {
+              threads.emplace_back([&, s]() {
+                  go.arrive_and_wait();
+                  int after = 0;
+                  for(int n = 0; after < AFTER_READY && !stop; n++)
+                  {
+                      if(ready)
+                      {
+                          after++;
+                      }
+                      try
+                      {
+                          manager.MessageSubmit(message("late", "recorder", s, n));
+                          accepted[s].emplace_back(s, n);
+                      }
+                      catch(const std::runtime_error &)
+                      {
+                      }
+                      catch(const std::exception &)
+                      {
+                          otherErrors++;
+                      }
+                  }
+              });
+          }
+          threads.emplace_back([&]() {
+              go.arrive_and_wait();
+              auto *late = manager.Container("late");
+              late->System(std::make_unique<RecorderSystem>("recorder", recorded));
+              ready = true;
+          });
+          go.arrive_and_wait();
+          for(auto &t : threads)
+          {
+              t.join();
+          }
+      },
+      60s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("the senders did not finish in time");
+    }
+
+    // The world was never started, so the test thread delivers what was accepted.
+    manager.Container("late")->Update();
+
+    std::vector<std::pair<int, int>> expected;
+    for(auto &list : accepted)
+    {
+        expected.insert(expected.end(), list.begin(), list.end());
+    }
+    auto handled = recorded->entries;
+    std::sort(expected.begin(), expected.end());
+    std::sort(handled.begin(), handled.end());
+
+    REQUIRE(otherErrors == 0);
+    REQUIRE_FALSE(expected.empty());
+    REQUIRE(handled == expected);
+}
+
+TEST_CASE("Systems may call the manager from inside Update", "[Threading]")
+{
+    constexpr int PASSES = 200;
+
+    std::atomic<bool> stop{false};
+    std::atomic<int> completedA{0};
+    std::atomic<int> completedB{0};
+    std::atomic<int> errors{0};
+    auto recordedA = std::make_shared<Recorded>();
+    auto recordedB = std::make_shared<Recorded>();
+    std::size_t worlds = 0;
+
+    bool completed = withTimeout(
+      [&]() {
+          ecs::Manager manager;
+          auto a = manager.Container("A");
+          auto b = manager.Container("B");
+          a->System(std::make_unique<RecorderSystem>("recorder", recordedA));
+          b->System(std::make_unique<RecorderSystem>("recorder", recordedB));
+          a->System(std::make_unique<ManagerCallerSystem>("caller", &manager, "B", 1, PASSES, &completedA, &errors));
+          b->System(std::make_unique<ManagerCallerSystem>("caller", &manager, "A", 2, PASSES, &completedB, &errors));
+          a->Start(100);
+          b->Start(100);
+
+          waitUntil([&]() {
+              return completedA >= PASSES && completedB >= PASSES && recordedA->count >= static_cast<std::size_t>(PASSES) &&
+                     recordedB->count >= static_cast<std::size_t>(PASSES);
+          }, stop, 25s);
+          worlds = manager.ContainersGet().size();
+      },
+      30s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("the worlds did not finish in time; passes " << completedA << " and " << completedB);
+    }
+
+    REQUIRE(errors == 0);
+    REQUIRE(completedA == PASSES);
+    REQUIRE(completedB == PASSES);
+    REQUIRE(recordedA->count == static_cast<std::size_t>(PASSES));
+    REQUIRE(recordedB->count == static_cast<std::size_t>(PASSES));
+    REQUIRE(worlds == static_cast<std::size_t>(2 + 2 * PASSES));
+}
+
+TEST_CASE("Shutdown is observed by a polling thread", "[Threading]")
+{
+    for(int round = 0; round < 20; round++)
+    {
+        ecs::Manager manager;
+        std::atomic<bool> sawFalse{false};
+        std::atomic<bool> reverted{false};
+        std::atomic<bool> quit{false};
+        std::atomic<bool> never{false};
+
+        std::thread poller([&]() {
+            bool seenFalse = false;
+            while(!quit)
+            {
+                if(!manager.IsRunning())
+                {
+                    seenFalse = true;
+                    sawFalse = true;
+                }
+                else if(seenFalse)
+                {
+                    reverted = true;
+                }
+                std::this_thread::sleep_for(1ms);
+            }
+        });
+
+        std::this_thread::sleep_for(3ms);
+        auto requested = std::chrono::steady_clock::now();
+        manager.Shutdown();
+        bool seen = waitUntil([&]() { return sawFalse.load(); }, never, 1s);
+        auto delay = std::chrono::steady_clock::now() - requested;
+
+        // Keep polling for a while after the first false to catch a reversal.
+        std::this_thread::sleep_for(10ms);
+        quit = true;
+        poller.join();
+
+        INFO("round " << round);
+        REQUIRE(seen);
+        REQUIRE(delay < 1s);
+        REQUIRE_FALSE(reverted);
+        REQUIRE_FALSE(manager.IsRunning());
+    }
+}
+
+TEST_CASE("Concurrent shutdown requests are idempotent", "[Threading]")
+{
+    constexpr int REQUESTERS = 8;
+    constexpr int CREATORS = 2;
+    constexpr int WORLD_LIMIT = 2000;
+
+    std::atomic<bool> stop{false};
+    bool runningAfter = true;
+    bool runningLater = true;
+
+    bool completed = withTimeout(
+      [&]() {
+          ecs::Manager manager;
+          std::atomic<bool> halt{false};
+          std::latch go(REQUESTERS + CREATORS + 1);
+          std::vector<std::thread> requesters;
+          std::vector<std::thread> creators;
+          for(int i = 0; i < REQUESTERS; i++)
+          {
+              requesters.emplace_back([&]() {
+                  go.arrive_and_wait();
+                  manager.Shutdown();
+              });
+          }
+          for(int i = 0; i < CREATORS; i++)
+          {
+              creators.emplace_back([&]() {
+                  go.arrive_and_wait();
+                  for(int n = 0; n < WORLD_LIMIT && !halt && !stop; n++)
+                  {
+                      manager.Container();
+                  }
+              });
+          }
+          go.arrive_and_wait();
+          for(auto &t : requesters)
+          {
+              t.join();
+          }
+          runningAfter = manager.IsRunning();
+          std::this_thread::sleep_for(20ms);
+          halt = true;
+          for(auto &t : creators)
+          {
+              t.join();
+          }
+          runningLater = manager.IsRunning();
+      },
+      60s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("the shutdown requests did not finish in time");
+    }
+    REQUIRE_FALSE(runningAfter);
+    REQUIRE_FALSE(runningLater);
+}
+
+TEST_CASE("Shutdown from inside a system is recorded", "[Threading]")
+{
+    std::atomic<bool> stop{false};
+    bool observed = false;
+
+    bool completed = withTimeout(
+      [&]() {
+          ecs::Manager manager;
+          auto container = manager.Container("world");
+          container->System(std::make_unique<ShutdownSystem>("stopper", &manager));
+          container->Start(100);
+          observed = waitUntil([&]() { return !manager.IsRunning(); }, stop, 1s);
+      },
+      30s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("the world did not shut down cleanly in time");
+    }
+    REQUIRE(observed);
+}
+
+// The senders hold only a raw pointer to the manager. They are told to stop by the thread that destroys
+// the manager, immediately before it does, so a send that has already started can overlap the
+// destruction and no send starts long after it.
+TEST_CASE("Sending to a manager that is being destroyed is memory safe", "[Threading]")
+{
+    constexpr int ROUNDS = 50;
+    constexpr int SENDERS = 4;
+
+    std::atomic<bool> stop{false};
+    std::atomic<int> otherErrors{0};
+    std::atomic<std::size_t> delivered{0};
+
+    bool completed = withTimeout(
+      [&]() {
+          for(int round = 0; round < ROUNDS && !stop; round++)
+          {
+              auto manager = std::make_unique<ecs::Manager>();
+              auto container = manager->Container("world");
+              container->System(std::make_unique<RecorderSystem>("recorder"));
+              container->Start(100);
+
+              ecs::Manager *raw = manager.get();
+              std::atomic<bool> halt{false};
+              std::atomic<int> sent{0};
+              std::latch go(SENDERS + 1);
+              std::vector<std::thread> senders;
+              for(int s = 0; s < SENDERS; s++)
+              {
+                  senders.emplace_back([&, s]() {
+                      go.arrive_and_wait();
+                      for(int n = 0; !halt.load(); n++)
+                      {
+                          try
+                          {
+                              raw->MessageSubmit(message("world", "recorder", s, n));
+                              sent++;
+                          }
+                          catch(const std::runtime_error &)
+                          {
+                          }
+                          catch(const std::exception &)
+                          {
+                              otherErrors++;
+                          }
+                      }
+                  });
+              }
+              go.arrive_and_wait();
+              while(sent.load() < 50 && !stop)
+              {
+                  std::this_thread::yield();
+              }
+              delivered += static_cast<std::size_t>(sent.load());
+              halt = true;
+              manager.reset();
+              for(auto &t : senders)
+              {
+                  t.join();
+              }
+          }
+      },
+      30s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("the destruction did not finish in time");
+    }
+    REQUIRE(otherErrors == 0);
+    REQUIRE(delivered > 0);
 }
