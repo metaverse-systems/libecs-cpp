@@ -14,7 +14,7 @@ pkginclude_HEADERS = \
 	../include/libecs-cpp/Timing.hpp
 
 # Internal header: shipped in the source distribution, never installed.
-noinst_HEADERS = Validation.hpp
+noinst_HEADERS = Validation.hpp ConsoleLog.hpp
 
 libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall $(SANITIZER_CXXFLAGS)
 

@@ -1,7 +1,9 @@
 #include <catch2/catch_all.hpp>
 #include <libecs-cpp/ecs.hpp>
+#include "../src/ConsoleLog.hpp"
 
 #include <algorithm>
+#include <cstdlib>
 #include <atomic>
 #include <chrono>
 #include <functional>
@@ -14,6 +16,12 @@
 #include <thread>
 #include <utility>
 #include <vector>
+
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 
 // Logging behaviour, observed through a recording destination installed with LoggerSet().
 
@@ -726,4 +734,232 @@ TEST_CASE("componentsClear on a system attached to a world gives the destination
     REQUIRE(recorder.count() == 0);
     REQUIRE(console.out.str().empty());
     REQUIRE(console.err.str().empty());
+}
+
+// The default destination: colour only on an interactive stream, decided per stream, over injected streams.
+
+namespace
+{
+    const std::string escape = "\033";
+
+    void setNoColour(const char *value)
+    {
+#ifdef _WIN32
+        _putenv_s("NO_COLOR", value);
+#else
+        setenv("NO_COLOR", value, 1);
+#endif
+    }
+
+    void clearNoColour()
+    {
+#ifdef _WIN32
+        _putenv_s("NO_COLOR", "");
+#else
+        unsetenv("NO_COLOR");
+#endif
+    }
+
+    bool streamsAreTerminals()
+    {
+#ifdef _WIN32
+        return _isatty(1) != 0 || _isatty(2) != 0;
+#else
+        return isatty(STDOUT_FILENO) != 0 || isatty(STDERR_FILENO) != 0;
+#endif
+    }
+
+    // Restores NO_COLOR to what it was when the object is destroyed.
+    class NoColourScope
+    {
+      public:
+        NoColourScope()
+        {
+            const char *current = std::getenv("NO_COLOR");
+            this->wasSet = current != nullptr;
+            if(this->wasSet)
+            {
+                this->saved = current;
+            }
+        }
+
+        ~NoColourScope()
+        {
+            if(this->wasSet)
+            {
+                setNoColour(this->saved.c_str());
+            }
+            else
+            {
+                clearNoColour();
+            }
+        }
+
+        NoColourScope(const NoColourScope &) = delete;
+        NoColourScope &operator=(const NoColourScope &) = delete;
+
+      private:
+        bool wasSet = false;
+        std::string saved;
+    };
+
+    // Standard-library streams standing in for standard output and standard error.
+    struct FakeStreams
+    {
+        std::ostringstream output;
+        std::ostringstream error;
+
+        ecs::Console console(bool colourOutput, bool colourError)
+        {
+            return ecs::Console{&this->output, &this->error, colourOutput, colourError};
+        }
+    };
+}
+
+TEST_CASE("A stream with colour on gets the colour code of the severity around the tag", "[Logging][Console]") {
+    const std::vector<std::pair<std::string, std::string>> codes = {
+        {"error", "91"}, {"warning", "93"}, {"debug", "97"}, {"info", "92"}, {"unknown", "92"}};
+
+    for(const auto &[level, code] : codes)
+    {
+        DYNAMIC_SECTION("severity " << level)
+        {
+            FakeStreams streams;
+            auto log = ecs::consoleLogger(streams.console(true, true));
+            log("a message", level);
+
+            const std::string expected = escape + "[" + code + "m[" + level + "]" + escape + "[0m a message\n";
+            const bool toError = level == "error" || level == "warning";
+            REQUIRE((toError ? streams.error.str() : streams.output.str()) == expected);
+            REQUIRE((toError ? streams.output.str() : streams.error.str()).empty());
+        }
+    }
+}
+
+TEST_CASE("A stream with colour off gets the same text with no escape sequence", "[Logging][Console]") {
+    for(const std::string level : {"error", "warning", "debug", "info", "unknown"})
+    {
+        DYNAMIC_SECTION("severity " << level)
+        {
+            FakeStreams streams;
+            auto log = ecs::consoleLogger(streams.console(false, false));
+            log("a message", level);
+
+            const std::string expected = "[" + level + "] a message\n";
+            const bool toError = level == "error" || level == "warning";
+            REQUIRE((toError ? streams.error.str() : streams.output.str()) == expected);
+            REQUIRE((toError ? streams.output.str() : streams.error.str()).empty());
+            REQUIRE(streams.output.str().find(escape) == std::string::npos);
+            REQUIRE(streams.error.str().find(escape) == std::string::npos);
+        }
+    }
+}
+
+TEST_CASE("Error and warning go to the error stream and the other severities to the output stream", "[Logging][Console]") {
+    FakeStreams streams;
+    auto log = ecs::consoleLogger(streams.console(false, false));
+
+    log("one", "error");
+    log("two", "warning");
+    log("three", "info");
+    log("four", "debug");
+    log("five", "something else");
+
+    REQUIRE(streams.error.str() == "[error] one\n[warning] two\n");
+    REQUIRE(streams.output.str() == "[info] three\n[debug] four\n[something else] five\n");
+}
+
+TEST_CASE("The two stream flags are independent", "[Logging][Console]") {
+    SECTION("output coloured, error clean")
+    {
+        FakeStreams streams;
+        auto log = ecs::consoleLogger(streams.console(true, false));
+        log("to output", "info");
+        log("to error", "error");
+
+        REQUIRE(streams.output.str() == escape + "[92m[info]" + escape + "[0m to output\n");
+        REQUIRE(streams.error.str() == "[error] to error\n");
+    }
+    SECTION("output clean, error coloured")
+    {
+        FakeStreams streams;
+        auto log = ecs::consoleLogger(streams.console(false, true));
+        log("to output", "info");
+        log("to error", "error");
+
+        REQUIRE(streams.output.str() == "[info] to output\n");
+        REQUIRE(streams.error.str() == escape + "[91m[error]" + escape + "[0m to error\n");
+    }
+}
+
+TEST_CASE("An unknown severity is treated like info", "[Logging][Console]") {
+    FakeStreams known;
+    FakeStreams unknown;
+    ecs::consoleLogger(known.console(true, true))("same", "info");
+    ecs::consoleLogger(unknown.console(true, true))("same", "no-such-severity");
+
+    REQUIRE(known.error.str().empty());
+    REQUIRE(unknown.error.str().empty());
+    REQUIRE(unknown.output.str() == escape + "[92m[no-such-severity]" + escape + "[0m same\n");
+    REQUIRE(known.output.str() == escape + "[92m[info]" + escape + "[0m same\n");
+}
+
+TEST_CASE("Colour is wanted only on a terminal with NO_COLOR not set to a value", "[Logging][Console]") {
+    REQUIRE(ecs::colourWanted(true, false));
+    REQUIRE_FALSE(ecs::colourWanted(true, true));
+    REQUIRE_FALSE(ecs::colourWanted(false, false));
+    REQUIRE_FALSE(ecs::colourWanted(false, true));
+}
+
+TEST_CASE("The environment decision is made once per stream and reads NO_COLOR as set only when non-empty", "[Logging][Console]") {
+    NoColourScope scope;
+
+    // Neither standard stream is a terminal under the test runner, so the flags are false whatever NO_COLOR says.
+    if(streamsAreTerminals())
+    {
+        SKIP("standard output or standard error is a terminal; run with both redirected");
+    }
+
+    SECTION("NO_COLOR unset")
+    {
+        clearNoColour();
+        const ecs::Console console = ecs::Console::fromEnvironment();
+        REQUIRE_FALSE(console.colourOutput);
+        REQUIRE_FALSE(console.colourError);
+    }
+    SECTION("NO_COLOR set to a non-empty value")
+    {
+        setNoColour("1");
+        const ecs::Console console = ecs::Console::fromEnvironment();
+        REQUIRE_FALSE(console.colourOutput);
+        REQUIRE_FALSE(console.colourError);
+    }
+    SECTION("NO_COLOR set to an empty value")
+    {
+        setNoColour("");
+        const ecs::Console console = ecs::Console::fromEnvironment();
+        REQUIRE_FALSE(console.colourOutput);
+        REQUIRE_FALSE(console.colourError);
+    }
+}
+
+TEST_CASE("A destination replaced with a recording one receives plain text for every severity", "[Logging][Console]") {
+    ecs::Manager manager;
+    auto world = manager.Container("console");
+    Recorder recorder;
+    recorder.install(world);
+
+    for(const std::string level : {"error", "warning", "debug", "info", "unknown"})
+    {
+        world->Log("text of " + level, level);
+    }
+
+    const auto lines = recorder.snapshot();
+    REQUIRE(lines.size() == 5);
+    for(const auto &[message, level] : lines)
+    {
+        REQUIRE(message == "text of " + level);
+        REQUIRE(message.find(escape) == std::string::npos);
+        REQUIRE(level.find(escape) == std::string::npos);
+    }
 }

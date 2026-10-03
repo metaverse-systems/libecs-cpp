@@ -1,5 +1,6 @@
 #include <libecs-cpp/ecs.hpp>
 #include "Validation.hpp"
+#include "ConsoleLog.hpp"
 #include <thread>
 #include <algorithm>
 #include <cstring>
@@ -9,30 +10,6 @@
 
 namespace ecs
 {
-    namespace
-    {
-        // console-output: begin
-        auto loggerFunction = [](const std::string &message, const std::string &level) {
-            if(level == "error")
-            {
-                std::cerr << "\033[91m[" << level << "]\033[0m " << message << std::endl;
-                return;
-            }
-            if(level == "warning")
-            {
-                std::cerr << "\033[93m[" << level << "]\033[0m " << message << std::endl;
-                return;
-            }
-            if(level == "debug")
-            {
-                std::cout << "\033[97m[" << level << "]\033[0m " << message << std::endl;
-                return;
-            }
-            std::cout << "\033[92m[" << level << "]\033[0m " << message << std::endl;
-        };
-        // console-output: end
-    }
-
     namespace
     {
         /*! Non-null on a thread that is running world code (the world's thread, Update(), SystemsInitialize()
@@ -61,13 +38,13 @@ namespace ecs
     Container::Container(ecs::Manager *manager):
         Manager(manager), Handle(ecs::Uuid().Get())
     {
-        this->logger = std::make_shared<const LogFunction>(loggerFunction);
+        this->logger = std::make_shared<const LogFunction>(consoleLogger(Console::fromEnvironment()));
     }
 
     Container::Container(ecs::Manager *manager, const std::string &handle):
         Manager(manager), Handle(handle)
     {
-        this->logger = std::make_shared<const LogFunction>(loggerFunction);
+        this->logger = std::make_shared<const LogFunction>(consoleLogger(Console::fromEnvironment()));
     }
 
     class Container::WalkScope

@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I../include ${CATCH2_CFLAGS}
+AM_CPPFLAGS = -I../include -I../src ${CATCH2_CFLAGS}
 AM_CXXFLAGS = -std=c++20 $(SANITIZER_CXXFLAGS)
 AM_LDFLAGS = $(SANITIZER_LDFLAGS)
 
@@ -25,7 +25,15 @@ check-local:
 	@echo "cross-compiling for $(if $(host_alias),$(host_alias),$(host)): test programs were built but not run"
 endif
 
-EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh run-logging.sh check-exports.sh check-exports-selftest.sh known-gaps.txt bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp
+EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh run-logging.sh check-exports.sh check-exports-selftest.sh known-gaps.txt log_probe.cpp bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp
+
+# Helper program for run-logging.sh. It is not a Catch2 program: it stays out of check_PROGRAMS, TESTS and
+# ECS_TEST_PROGRAMS, and is built before the script runs through the dependency on the script's log file.
+EXTRA_PROGRAMS = log_probe
+log_probe_SOURCES = log_probe.cpp
+log_probe_LDADD = ../src/libecs-cpp.la
+log_probe_LDFLAGS = $(AM_LDFLAGS) -pthread
+run-logging.log: log_probe$(EXEEXT)
 
 test_Manager_SOURCES = test_Manager.cpp
 test_Manager_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}

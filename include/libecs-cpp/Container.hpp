@@ -344,7 +344,12 @@ namespace ecs
          *  exactly one destination, one that was installed at some time during the call; a call that starts
          *  after LoggerSet() returned uses the new destination. The destination is called with no lock held,
          *  so it may itself call Log() or LoggerSet(). If the destination is empty the line is dropped.
-         *  Lines a system logged before it was registered reach the destination when it is registered. */
+         *  Lines a system logged before it was registered reach the destination when it is registered.
+         *  A new world's default destination writes "[level] message": error and warning to standard error,
+         *  every other level to standard output. A stream gets colour codes only when it is an interactive
+         *  terminal and the NO_COLOR environment variable is unset or empty; each stream is decided once,
+         *  when the world is created, so redirecting it later does not change the decision. A destination
+         *  set with LoggerSet() always receives the plain message and level. */
         void Log(const std::string &message, const std::string &level = "info");
         /*! Replaces the log destination. Safe to call from any thread, including from inside a destination.
          *  An empty function makes later Log() calls drop their lines. The previous destination may still
