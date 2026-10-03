@@ -17,13 +17,13 @@ AM_TESTS_ENVIRONMENT = \
 	TSAN_OPTIONS='halt_on_error=0:exitcode=66:second_deadlock_stack=1:print_summary=1'; export TSAN_OPTIONS;
 
 if !CROSS_COMPILING
-TESTS = $(check_PROGRAMS) run-test-selftest.sh run-example.sh
+TESTS = $(check_PROGRAMS) run-test-selftest.sh run-example.sh run-logging.sh
 else
 check-local:
 	@echo "cross-compiling for $(if $(host_alias),$(host_alias),$(host)): test programs were built but not run"
 endif
 
-EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh known-gaps.txt bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp
+EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh run-logging.sh known-gaps.txt bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp
 
 test_Manager_SOURCES = test_Manager.cpp
 test_Manager_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}

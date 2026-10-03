@@ -7,6 +7,7 @@
 #include <iostream>
 #include <exception>
 
+// console-output: begin
 auto loggerFunction = [](const std::string &message, const std::string &level) {
     if(level == "error")
     {
@@ -25,6 +26,7 @@ auto loggerFunction = [](const std::string &message, const std::string &level) {
     }
     std::cout << "\033[92m[" << level << "]\033[0m " << message << std::endl;
 };
+// console-output: end
 namespace ecs
 {
     namespace

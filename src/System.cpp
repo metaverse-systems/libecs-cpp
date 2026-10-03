@@ -171,7 +171,7 @@ namespace ecs
     {
         if (!this->Container)
         {
-            std::cout << "Warning: Container is null in componentsClear()" << std::endl;
+            this->Log("Container is null in componentsClear()", "warning");
             return;
         }
 

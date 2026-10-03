@@ -106,6 +106,17 @@ namespace
         std::streambuf *cerrBefore;
     };
 
+    // Exposes the protected componentsClear() and logs on request.
+    class ClearingSystem : public ecs::System
+    {
+      public:
+        explicit ClearingSystem(const std::string &handle) : ecs::System(handle) {}
+
+        nlohmann::json Export() const { return nlohmann::json::object(); }
+
+        void clear() { this->componentsClear(); }
+    };
+
     // Logs from Shutdown() and from its destructor.
     class TeardownSystem : public ecs::System
     {
@@ -658,4 +669,61 @@ TEST_CASE("Another thread logging and replacing the destination during registrat
         }
         REQUIRE(next == linesEach);
     }
+}
+
+TEST_CASE("componentsClear on a system with no world writes nothing to the console and holds its warning", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+    ConsoleCapture console;
+
+    auto system = std::make_unique<ClearingSystem>("clearing");
+    system->clear();
+
+    REQUIRE(console.out.str().empty());
+    REQUIRE(console.err.str().empty());
+    // Held, not delivered: the system has no world to deliver to yet.
+    REQUIRE(recorder.count() == 0);
+
+    world->System(std::move(system));
+    REQUIRE(recorder.contains("[clearing] Container is null in componentsClear()", "warning"));
+    REQUIRE(console.out.str().empty());
+    REQUIRE(console.err.str().empty());
+}
+
+TEST_CASE("The componentsClear warning is delivered at registration in order with the other held lines", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    auto system = std::make_unique<ClearingSystem>("clearing");
+    system->Log("before", "info");
+    system->clear();
+    system->Log("after", "error");
+    REQUIRE(recorder.count() == 0);
+
+    world->System(std::move(system));
+
+    const std::vector<Recorder::Line> expected = {{"[clearing] before", "info"},
+                                                  {"[clearing] Container is null in componentsClear()", "warning"},
+                                                  {"[clearing] after", "error"}};
+    REQUIRE(recorder.snapshot() == expected);
+}
+
+TEST_CASE("componentsClear on a system attached to a world gives the destination no warning", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+    ConsoleCapture console;
+
+    auto *system = world->System(std::make_unique<ClearingSystem>("attached"));
+    REQUIRE(recorder.count() == 0);
+    static_cast<ClearingSystem *>(system)->clear();
+
+    REQUIRE(recorder.count() == 0);
+    REQUIRE(console.out.str().empty());
+    REQUIRE(console.err.str().empty());
 }
