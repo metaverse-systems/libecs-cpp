@@ -180,6 +180,11 @@ namespace ecs
          * Messages still waiting for the old instance are discarded with it. The old instance stays in memory until the outermost walk ends, but is not
          * visited again. Raw pointers to the replaced system must not be used after the call.
          * System::Container is set by registration only.
+         *
+         * Lines the system logged before this call are delivered to the log destination as the last step
+         * of a successful call, once and in order, each with the system's identifier as a prefix, before
+         * the world starts the system. A rejected call delivers nothing. A destination that throws does
+         * not stop the remaining lines or undo the registration. Held lines are not capped.
          */
         ecs::System *System(std::unique_ptr<ecs::System> system);
         /*! Attaches a component to the entity named by its EntityHandle (world thread only).
@@ -338,7 +343,8 @@ namespace ecs
         /*! Sends a line to the current log destination. Safe to call from any thread. Each call goes to
          *  exactly one destination, one that was installed at some time during the call; a call that starts
          *  after LoggerSet() returned uses the new destination. The destination is called with no lock held,
-         *  so it may itself call Log() or LoggerSet(). If the destination is empty the line is dropped. */
+         *  so it may itself call Log() or LoggerSet(). If the destination is empty the line is dropped.
+         *  Lines a system logged before it was registered reach the destination when it is registered. */
         void Log(const std::string &message, const std::string &level = "info");
         /*! Replaces the log destination. Safe to call from any thread, including from inside a destination.
          *  An empty function makes later Log() calls drop their lines. The previous destination may still

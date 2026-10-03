@@ -268,6 +268,8 @@ namespace ecs
          *  From Update() the timer is added at once. */
         void TimerAdd(Timer timer);
         /*! Sends a message to the world's log destination with this system's identifier as a prefix.
+         *  Before the system is attached to a world the message is held, and registering the system
+         *  delivers every held message to the destination, in order. Held messages are not capped.
          *  A message with no severity is "info", as on the world's own Log(). The usual severity names are
          *  "error", "warning", "info" and "debug"; any other name is passed on as given. World thread only. */
         void Log(const std::string &message, const std::string &level = "info");
@@ -281,6 +283,10 @@ namespace ecs
         std::vector<ecs::Timer> timersAdded;
         bool removed = false;
         void timerWalkFinish();
+        /*! Sends the lines held from before attachment to the world's log destination, once and in order,
+         *  each with the identifier prefix. A destination that throws does not stop the remaining lines.
+         *  Does nothing when no world is attached or nothing is held. Takes no lock. */
+        void bufferedDeliver();
         /*! One update at the given clock reading: measures the elapsed time, then runs the timers and
          *  Update(). */
         void updateSystem(std::chrono::microseconds now);
@@ -300,6 +306,10 @@ namespace ecs
         std::unordered_map<std::string, std::vector<std::string>> componentsToDelete;
         void componentsClear();
         std::vector<ecs::Timer> timers;
+        /*! Lines logged before the system was attached to a world, as (message, severity) pairs in the
+         *  order they were logged. The world delivers them once, in order, with this system's identifier
+         *  as a prefix, as the last step of registering the system. They are not capped: a system that
+         *  logs without limit before it is registered holds them all in memory. */
         std::vector<std::pair<std::string, std::string>> bufferedLogMessages;
     };
 }

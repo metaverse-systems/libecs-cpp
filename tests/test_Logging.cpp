@@ -5,9 +5,13 @@
 #include <atomic>
 #include <chrono>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <mutex>
+#include <sstream>
+#include <stdexcept>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -57,6 +61,49 @@ namespace
         explicit LoggingSystem(std::string handle) { this->Handle = std::move(handle); }
 
         nlohmann::json Export() const { return nlohmann::json::object(); }
+    };
+
+    // Large loops run shorter when a sanitizer slows the program down.
+#if defined(__SANITIZE_ADDRESS__) || defined(__SANITIZE_THREAD__)
+    constexpr int kSanitizerFactor = 4;
+#elif defined(__has_feature)
+#if __has_feature(address_sanitizer) || __has_feature(thread_sanitizer)
+    constexpr int kSanitizerFactor = 4;
+#else
+    constexpr int kSanitizerFactor = 1;
+#endif
+#else
+    constexpr int kSanitizerFactor = 1;
+#endif
+
+    using HeldLines = std::vector<std::pair<std::string, std::string>>;
+
+    // Logs the given lines from its constructor, before any world exists, and never logs again.
+    class HeldSystem : public ecs::System
+    {
+      public:
+        HeldSystem(const std::string &handle, const HeldLines &held) : ecs::System(handle)
+        {
+            for(const auto &[message, level] : held) this->Log(message, level);
+        }
+
+        nlohmann::json Export() const { return nlohmann::json::object(); }
+    };
+
+    // Redirects std::cout and std::cerr into buffers for the life of the object.
+    struct ConsoleCapture
+    {
+        ConsoleCapture() : coutBefore(std::cout.rdbuf(this->out.rdbuf())), cerrBefore(std::cerr.rdbuf(this->err.rdbuf())) {}
+        ~ConsoleCapture()
+        {
+            std::cout.rdbuf(this->coutBefore);
+            std::cerr.rdbuf(this->cerrBefore);
+        }
+
+        std::ostringstream out;
+        std::ostringstream err;
+        std::streambuf *coutBefore;
+        std::streambuf *cerrBefore;
     };
 
     // Logs from Shutdown() and from its destructor.
@@ -347,4 +394,268 @@ TEST_CASE("A call written with the severity as a second argument still behaves t
 
     const std::vector<Recorder::Line> expected = {{"[speaker] m", "warning"}};
     REQUIRE(recorder.snapshot() == expected);
+}
+
+TEST_CASE("Lines logged before attachment are delivered at registration, in order, without another Log call", "[Logging]") {
+    // A system that logs only while it is being built must still be heard once it joins a world.
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    world->System(std::make_unique<HeldSystem>("early", HeldLines{{"first", "warning"}, {"second", "error"}}));
+
+    const std::vector<Recorder::Line> expected = {{"[early] first", "warning"}, {"[early] second", "error"}};
+    REQUIRE(recorder.snapshot() == expected);
+}
+
+TEST_CASE("Held lines are delivered exactly once", "[Logging]") {
+    // Registering delivers the held lines and a later Log call must not send them again.
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    auto *system = world->System(std::make_unique<HeldSystem>("early", HeldLines{{"held one", "info"}, {"held two", "debug"}}));
+    REQUIRE(recorder.count() == 2);
+    system->Log("later", "warning");
+    system->Log("latest");
+
+    const std::vector<Recorder::Line> expected = {
+        {"[early] held one", "info"}, {"[early] held two", "debug"}, {"[early] later", "warning"}, {"[early] latest", "info"}};
+    REQUIRE(recorder.snapshot() == expected);
+}
+
+TEST_CASE("Registering a system that held nothing delivers nothing", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    world->System(std::make_unique<HeldSystem>("silent", HeldLines{}));
+    world->System(std::make_unique<LoggingSystem>("also-silent"));
+
+    REQUIRE(recorder.count() == 0);
+}
+
+TEST_CASE("A refused registration delivers nothing", "[Logging]") {
+    // None of the refusals leaves an unattached object behind: the empty-identifier system is destroyed
+    // with the failed call and the already attached one stays with the world that owns it.
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    SECTION("empty identifier") {
+        REQUIRE_THROWS_AS(world->System(std::make_unique<HeldSystem>("", HeldLines{{"held", "info"}})), std::runtime_error);
+        REQUIRE(recorder.count() == 0);
+    }
+
+    SECTION("missing system") {
+        REQUIRE_THROWS_AS(world->System(std::unique_ptr<ecs::System>()), std::runtime_error);
+        REQUIRE(recorder.count() == 0);
+    }
+
+    SECTION("system already attached to another world") {
+        auto other = manager.Container("other");
+        Recorder otherRecorder;
+        otherRecorder.install(other);
+        auto *system = world->System(std::make_unique<HeldSystem>("early", HeldLines{{"held", "info"}}));
+        const std::vector<Recorder::Line> expected = {{"[early] held", "info"}};
+        REQUIRE(recorder.snapshot() == expected);
+
+        // The pointer aliases an object the first world owns; the refusal leaves it there.
+        REQUIRE_THROWS_AS(other->System(std::unique_ptr<ecs::System>(system)), std::runtime_error);
+
+        REQUIRE(otherRecorder.count() == 0);
+        REQUIRE(recorder.snapshot() == expected);
+    }
+}
+
+TEST_CASE("Held lines carry the identifier the system has at registration", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    world->System(std::make_unique<HeldSystem>("registered-as", HeldLines{{"m", "info"}}));
+
+    const std::vector<Recorder::Line> expected = {{"[registered-as] m", "info"}};
+    REQUIRE(recorder.snapshot() == expected);
+}
+
+TEST_CASE("A system that replaces another delivers its held lines once and leaves the replaced lines alone", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+    world->System(std::make_unique<HeldSystem>("same", HeldLines{{"old held", "info"}}));
+    REQUIRE(recorder.count() == 1);
+
+    auto *replacement = world->System(std::make_unique<HeldSystem>("same", HeldLines{{"new held", "warning"}}));
+    replacement->Log("new later");
+
+    const std::vector<Recorder::Line> expected = {
+        {"[same] old held", "info"}, {"[same] new held", "warning"}, {"[same] new later", "info"}};
+    REQUIRE(recorder.snapshot() == expected);
+}
+
+TEST_CASE("A large batch of held lines arrives complete and in order", "[Logging]") {
+    // At least 1000 lines even when a sanitizer shortens the loop.
+    const int total = 4000 / kSanitizerFactor;
+    HeldLines held;
+    for(int i = 0; i < total; ++i) held.emplace_back("line " + std::to_string(i), i % 2 == 0 ? "info" : "warning");
+
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    world->System(std::make_unique<HeldSystem>("batch", held));
+
+    const auto lines = recorder.snapshot();
+    REQUIRE(lines.size() == static_cast<size_t>(total));
+    for(int i = 0; i < total; ++i)
+    {
+        if(lines[i] != Recorder::Line("[batch] line " + std::to_string(i), i % 2 == 0 ? "info" : "warning"))
+        {
+            FAIL("line " << i << " is missing or out of order: " << lines[i].first);
+        }
+    }
+}
+
+TEST_CASE("A destination that throws on the first held line does not stop the rest or the registration", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    world->LoggerSet([&](const std::string &message, const std::string &level) {
+        const bool first = recorder.count() == 0;
+        recorder.record(message, level);
+        if(first) throw std::runtime_error("destination failure");
+    });
+
+    ecs::System *system = nullptr;
+    REQUIRE_NOTHROW(system = world->System(std::make_unique<HeldSystem>(
+                        "early", HeldLines{{"one", "info"}, {"two", "warning"}, {"three", "error"}})));
+
+    const std::vector<Recorder::Line> expected = {{"[early] one", "info"}, {"[early] two", "warning"}, {"[early] three", "error"}};
+    REQUIRE(recorder.snapshot() == expected);
+    // The registration stands: the system is in the world and logs normally.
+    REQUIRE(world->Systems.contains("early"));
+    system->Log("after");
+    REQUIRE(recorder.contains("[early] after", "info"));
+}
+
+TEST_CASE("A destination that replaces itself during delivery hands each remaining line to the current destination", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder first;
+    Recorder second;
+    world->LoggerSet([&](const std::string &message, const std::string &level) {
+        first.record(message, level);
+        second.install(world);
+    });
+
+    world->System(std::make_unique<HeldSystem>("early", HeldLines{{"one", "info"}, {"two", "warning"}, {"three", "error"}}));
+
+    REQUIRE(first.snapshot() == std::vector<Recorder::Line>({{"[early] one", "info"}}));
+    REQUIRE(second.snapshot() == std::vector<Recorder::Line>({{"[early] two", "warning"}, {"[early] three", "error"}}));
+}
+
+TEST_CASE("A destination that logs back through the system sees no repeated line and no recursion", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    ecs::System *system = nullptr;
+    int depth = 0;
+    int deepest = 0;
+    bool echoed = false;
+    world->LoggerSet([&](const std::string &message, const std::string &level) {
+        depth++;
+        deepest = std::max(deepest, depth);
+        recorder.record(message, level);
+        if(!echoed && system != nullptr)
+        {
+            echoed = true;
+            system->Log("echo", "debug");
+        }
+        depth--;
+    });
+
+    auto owned = std::make_unique<HeldSystem>("early", HeldLines{{"one", "info"}, {"two", "warning"}});
+    system = owned.get();
+    world->System(std::move(owned));
+
+    const auto lines = recorder.snapshot();
+    REQUIRE(std::count(lines.begin(), lines.end(), Recorder::Line("[early] one", "info")) == 1);
+    REQUIRE(std::count(lines.begin(), lines.end(), Recorder::Line("[early] two", "warning")) == 1);
+    REQUIRE(std::count(lines.begin(), lines.end(), Recorder::Line("[early] echo", "debug")) == 1);
+    REQUIRE(lines.size() == 3);
+    // The held lines keep their order relative to each other.
+    const auto one = std::find(lines.begin(), lines.end(), Recorder::Line("[early] one", "info"));
+    const auto two = std::find(lines.begin(), lines.end(), Recorder::Line("[early] two", "warning"));
+    REQUIRE(one < two);
+    // The echo is delivered from inside the destination once; it is not delivered again from inside itself.
+    REQUIRE(deepest <= 2);
+}
+
+TEST_CASE("A system destroyed without being registered delivers nothing and writes nothing", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+    ConsoleCapture console;
+
+    {
+        HeldSystem lonely("lonely", HeldLines{{"never heard", "error"}});
+        lonely.Log("also never heard");
+    }
+
+    REQUIRE(recorder.count() == 0);
+    REQUIRE(console.out.str().empty());
+    REQUIRE(console.err.str().empty());
+}
+
+TEST_CASE("Another thread logging and replacing the destination during registrations loses no held line", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    std::atomic<bool> stop{false};
+    std::thread noise([&]() {
+        while(!stop.load())
+        {
+            world->Log("noise");
+            recorder.install(world);
+            std::this_thread::yield();
+        }
+    });
+
+    const int systems = 20 / kSanitizerFactor + 1;
+    const int linesEach = 50;
+    for(int s = 0; s < systems; ++s)
+    {
+        HeldLines held;
+        for(int i = 0; i < linesEach; ++i) held.emplace_back("m" + std::to_string(i), "info");
+        world->System(std::make_unique<HeldSystem>("sys" + std::to_string(s), held));
+    }
+
+    stop.store(true);
+    noise.join();
+
+    const auto lines = recorder.snapshot();
+    for(int s = 0; s < systems; ++s)
+    {
+        const std::string prefix = "[sys" + std::to_string(s) + "] ";
+        // Each system's lines arrive once and in order among themselves.
+        int next = 0;
+        for(const auto &[message, level] : lines)
+        {
+            if(message.rfind(prefix, 0) != 0) continue;
+            REQUIRE(message == prefix + "m" + std::to_string(next));
+            next++;
+        }
+        REQUIRE(next == linesEach);
+    }
 }

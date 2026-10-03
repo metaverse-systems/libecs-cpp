@@ -465,6 +465,8 @@ namespace ecs
                 this->mailboxes[handle] = ptr->mailbox;
             }
             this->systemRetire(std::move(old), notify);
+            // Last step, with no library lock held: lines the system logged before it was attached.
+            ptr->bufferedDeliver();
             return ptr;
         }
 
@@ -482,6 +484,8 @@ namespace ecs
             this->system_order.pop_back();
             throw;
         }
+        // Last step, with no library lock held: lines the system logged before it was attached.
+        ptr->bufferedDeliver();
         return ptr;
     }
 

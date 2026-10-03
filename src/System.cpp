@@ -234,12 +234,32 @@ namespace ecs
             return;
         }
 
-        for(const auto &[msg, lvl] : this->bufferedLogMessages)
-        {
-            this->Container->Log("[" + this->Handle + "] " + msg, lvl);
-        }
-        this->bufferedLogMessages.clear();
-        
+        // Lines held from before attachment go first, so the order of the lines is kept.
+        this->bufferedDeliver();
+
         this->Container->Log("[" + this->Handle + "] " + message, level);
+    }
+
+    void System::bufferedDeliver()
+    {
+        if(!this->Container || this->bufferedLogMessages.empty()) return;
+
+        // Take the held lines out first: a destination that logs back through this system then finds
+        // nothing left to repeat, and every held line is delivered exactly once.
+        std::vector<std::pair<std::string, std::string>> held;
+        held.swap(this->bufferedLogMessages);
+        this->bufferedLogMessages.clear();
+
+        for(const auto &[line, level] : held)
+        {
+            try
+            {
+                this->Container->Log("[" + this->Handle + "] " + line, level);
+            }
+            catch(...)
+            {
+                // A destination that throws must not stop the remaining lines or the registration.
+            }
+        }
     }
 }
