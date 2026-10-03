@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.3.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.4.0</span>
    </div>
   </td>
  </tr>
@@ -176,7 +176,6 @@ Examples</h2>
 <h2><a class="anchor" id="autotoc_md11"></a>
 Not covered</h2>
 <ul>
-<li>Changing a world from any thread other than the one driving its walks.</li>
 <li><code>Container::Export()</code> and the <code>System::Export()</code> overrides it calls are a <code>const</code> query. They must not add or remove systems, entities or components.</li>
 <li>Calling <code>Update()</code> or <code>SystemsInitialize()</code> from inside a walk of the same container is memory safe, but no outcome is defined.</li>
 <li>Notifying systems when they are removed, and starting systems that are added late.</li>
@@ -199,8 +198,134 @@ Identifiers</h1>
 <div class="line">ecs::Uuid(&quot;550e8400-e29b-41d4-a716-44665544000g&quot;): invalid character &#39;g&#39; at position 36, expected a hexadecimal digit</div>
 </div><!-- fragment --><p>The installed <code>ecs-cpp.pc</code> provides <code>-std=c++20 -pthread</code> in its compile flags. A consumer that wants a later standard must put its own <code>-std=</code> after the pkg-config flags.</p>
 <h1><a class="anchor" id="autotoc_md13"></a>
-Release notes</h1>
+Threading</h1>
+<p>A <b>world</b> is an <code><a class="el" href="classecs_1_1Container.html">ecs::Container</a></code>. The <b>world thread</b> is the thread that runs the world's update passes: its own background thread once <code>Start()</code> has been called, or the one thread an application uses to call <code>Update()</code>. Any other thread is an <b>outside caller</b>.</p>
+<p>The rule has three classes of operation:</p>
+<ul>
+<li><b>Safe from any thread.</b> Delivering messages, using the manager, requesting and observing shutdown, replacing the log destination, logging, and handing the world a deferred change.</li>
+<li><b>World thread only.</b> Everything that reads or changes entities, components, systems, resources, timers or the update order, and everything that reads <code>System::messages</code>.</li>
+<li><b>Unsupported from outside callers of a running world.</b> Direct changes to entities, components, systems or resources. The outcome is undefined. The supported alternative is <code>Container::Defer()</code>.</li>
+</ul>
+<p>A world that is not running (never started, and nobody is calling <code>Update()</code>) may be changed directly from one thread, as before. Only one thread at a time may do so. <code>Start()</code> must be called once, by the thread that owns the world, before any other thread uses it. Code inside a world (systems, timer callbacks) has no new obligations: no locks and no new calls, and <code>Entities</code>, <code>Components</code>, <code>Systems</code> and the update order stay usable from the world thread exactly as before.</p>
 <h2><a class="anchor" id="autotoc_md14"></a>
+Operations</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Member   </th><th class="markdownTableHeadNone">Class   </th><th class="markdownTableHeadNone">Notes    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Manager::Container(handle)</code>, <code>Manager::Container()</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone">One world per handle even when many threads ask at once. The pointer is valid until the manager is destroyed.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Manager::ContainersGet()</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone">A snapshot by value; worlds created later are not in it.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Manager::IsRunning()</code>, <code>Manager::Shutdown()</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone">Atomic. Once <code>IsRunning()</code> returns <code>false</code> it never returns <code>true</code> again. Idempotent.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Manager::MessageSubmit(message)</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone">Returns without waiting for the destination's update. Throws <code>std::runtime_error</code> if the world is unknown or the manager is being destroyed.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Manager::~Manager()</code>   </td><td class="markdownTableBodyNone">Exclusive   </td><td class="markdownTableBodyNone">Waits for sends already in progress; later sends fail as unknown. The process-wide <code>ECS</code> manager is never destroyed.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Container::Start()</code>, <code>Start(interval)</code>   </td><td class="markdownTableBodyNone">Once   </td><td class="markdownTableBodyNone">Call once, from the thread that owns the world, before any other thread uses it.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Container::Defer(fn)</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone">See "Deferred changes".    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Container::MessageSubmit(message)</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone">Throws <code>std::runtime_error</code> if the system is unknown.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Container::Log()</code>, <code>Container::LoggerSet()</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone">Each line goes to exactly one destination.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Container::UuidGet()</code>, <code>Handle</code>, <code>Manager</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone"><code>Handle</code> and <code>Manager</code> never change after construction.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Container::Update()</code>, <code>SystemsInitialize()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">One thread at a time.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Container::System()</code>, <code>SystemDestroy()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">Register with <code>System()</code>; routing by handle depends on it.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Container::Entity()</code>, <code>EntityDestroy()</code>, <code>Component()</code>, <code>ComponentDestroy()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone"></td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Container::ResourceAdd()</code>, <code>Resources()</code>, <code>ResourceGet()</code>, <code>Export()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone"></td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Container::Entities</code>, <code>Components</code>, <code>Systems</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">Public so systems can iterate them.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Container::~Container()</code>   </td><td class="markdownTableBodyNone">Exclusive   </td><td class="markdownTableBodyNone">Discards pending deferred changes unrun, stops and joins the thread.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>System::MessageSubmit(message)</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone">The system must be alive. Routing through <code>Container</code> or <code>Manager</code> is safe against removal; a direct pointer is not.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>System::MessagesWaiting()</code>, <code>messages</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone"><code>MessagesWaiting()</code> moves delivered messages into the queue, then counts the messages waiting to be read.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>System::Initialize()</code>, <code>Update()</code>, <code>UpdateSystem()</code>, <code>Configure()</code>, <code>Export()</code>, <code>Shutdown()</code>, <code>TimerAdd()</code>, <code>TimerClear()</code>, <code>DeltaTimeGet()</code>, <code>Log()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone"></td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>System::Handle</code>, <code>Container</code>, <code>Components</code>, <code>Timing</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">Set during registration.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Entity</code>, <code>Component</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">They change the world's tables.   </td></tr>
+</table>
+<h2><a class="anchor" id="autotoc_md15"></a>
+Messages</h2>
+<p>A message accepted by <code>MessageSubmit()</code> on <code>Manager</code>, <code>Container</code> or <code>System</code> is received by the destination system exactly once while that system exists. Messages from one sender to one destination arrive in the order sent; no order is promised between senders. Sending does not wait for any update pass and does not call into the destination. A message becomes visible in <code>messages</code> at the start of the destination's next <code>UpdateSystem()</code> (or earlier, if the world thread calls <code>MessagesWaiting()</code>). A message sent during a pass to a system later in the update order is handled in that pass; a message to the sender itself, or to a system already updated in the pass, is handled in the next pass. A message is never handled inside the sender's call.</p>
+<p>If a system is removed while a message is on its way, the message is discarded with the system or the send fails as unknown; it is never delivered to a destroyed object. An unknown destination throws <code>std::runtime_error</code>, so callers on other threads should catch it.</p>
+<p>The mailbox is unbounded. The library never drops a message to save memory, so an application that needs back-pressure provides it.</p>
+<h2><a class="anchor" id="autotoc_md16"></a>
+Deferred changes</h2>
+<p><code>void Container::Defer(std::function&lt;void()&gt; fn)</code> hands a change to the world's own thread.</p>
+<ul>
+<li>It is safe from any thread, including from inside the world (a system, a timer callback or another deferred function).</li>
+<li><code>fn</code> runs exactly once, on the world thread, at the start of the next <code>Update()</code>, before any system is updated and never in the middle of a pass.</li>
+<li>Functions run in the order they were accepted, so one submitter's functions run in submission order.</li>
+<li>Inside <code>fn</code> the usual rules for code inside a world apply, so every world-thread operation is available.</li>
+<li>A function submitted from inside <code>fn</code>, or during a pass, runs in the next pass.</li>
+<li>If <code>fn</code> throws, the error is logged at level <code>error</code>, the other functions in the batch still run, and the first error is rethrown by <code>Update()</code> before any system is updated. On a world's own thread it is caught at the thread boundary and the manager is asked to shut down, as for a system's error.</li>
+<li>A world that is never updated never runs its deferred functions. Functions pending when the world is destroyed, or submitted after destruction begins, are discarded without running.</li>
+<li><code>fn</code> and everything it captures must stay valid until it runs or is discarded. A function that needs an entity looks it up by handle inside the function.</li>
+</ul>
+<p>A command from the main thread to a running world:</p>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
+<div class="line"><a class="code hl_class" href="classecs_1_1Container.html">ecs::Container</a> *world = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;main&quot;</span>);</div>
+<div class="line">world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#abfb8bcfb8b652b6938ebe463cb646f0f">Start</a>();</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// The world is running, so do not call world-&gt;Entity() from here.</span></div>
+<div class="line">world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a4d33b403b0ddc78a7b730225fd187d01">Defer</a>([world]() {</div>
+<div class="line">    <a class="code hl_class" href="classecs_1_1Entity.html">ecs::Entity</a> *player = world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">Entity</a>();</div>
+<div class="line">    <span class="comment">// ... add components to player ...</span></div>
+<div class="line">});</div>
+<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00075">Container.hpp:76</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a4d33b403b0ddc78a7b730225fd187d01"><div class="ttname"><a href="classecs_1_1Container.html#a4d33b403b0ddc78a7b730225fd187d01">ecs::Container::Defer</a></div><div class="ttdeci">void Defer(std::function&lt; void()&gt; fn)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00253">Container.cpp:253</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a9a0c9c1a24491b801182702a14fd23cd"><div class="ttname"><a href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">ecs::Container::Entity</a></div><div class="ttdeci">ecs::Entity * Entity(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00189">Container.cpp:189</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_abfb8bcfb8b652b6938ebe463cb646f0f"><div class="ttname"><a href="classecs_1_1Container.html#abfb8bcfb8b652b6938ebe463cb646f0f">ecs::Container::Start</a></div><div class="ttdeci">void Start()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00060">Container.cpp:60</a></div></div>
+<div class="ttc" id="aclassecs_1_1Entity_html"><div class="ttname"><a href="classecs_1_1Entity.html">ecs::Entity</a></div><div class="ttdef"><b>Definition</b> <a href="Entity_8hpp_source.html#l00015">Entity.hpp:16</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html"><div class="ttname"><a href="classecs_1_1Manager.html">ecs::Manager</a></div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00046">Manager.hpp:47</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_af96d2ee8eb88a8c35adfb6015acf59bd"><div class="ttname"><a href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">ecs::Manager::Container</a></div><div class="ttdeci">ecs::Container * Container(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00030">Manager.cpp:30</a></div></div>
+</div><!-- fragment --><p>Two worlds messaging each other:</p>
+<div class="fragment"><div class="line"><span class="comment">// In a system of world &quot;a&quot;, on its world thread.</span></div>
+<div class="line"><span class="keywordtype">void</span> Update()<span class="keyword"> override</span></div>
+<div class="line"><span class="keyword"></span>{</div>
+<div class="line">    <span class="comment">// Received by &quot;pong&quot; in its next update (or the same pass if it comes later in the order).</span></div>
+<div class="line">    this-&gt;Container-&gt;Manager-&gt;MessageSubmit({</div>
+<div class="line">        {<span class="stringliteral">&quot;destination&quot;</span>, {{<span class="stringliteral">&quot;container&quot;</span>, <span class="stringliteral">&quot;b&quot;</span>}, {<span class="stringliteral">&quot;system&quot;</span>, <span class="stringliteral">&quot;pong&quot;</span>}}},</div>
+<div class="line">        {<span class="stringliteral">&quot;payload&quot;</span>, <span class="stringliteral">&quot;ping&quot;</span>}});</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// To itself or to a sibling that was already updated in this pass: handled in the next pass.</span></div>
+<div class="line">    this-&gt;MessageSubmit({{<span class="stringliteral">&quot;destination&quot;</span>, {{<span class="stringliteral">&quot;container&quot;</span>, <span class="stringliteral">&quot;a&quot;</span>}, {<span class="stringliteral">&quot;system&quot;</span>, <span class="stringliteral">&quot;ping&quot;</span>}}}});</div>
+<div class="line">}</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md17"></a>
+Log destination</h2>
+<p><code>LoggerSet(fn)</code> and <code>Log(message, level)</code> are safe from any thread at any time. Each <code>Log()</code> call goes to exactly one destination that was installed at some time during the call, and a call that starts after <code>LoggerSet()</code> returned uses the new destination. A destination may call <code>Log()</code> or <code>LoggerSet()</code> itself, because no lock is held while it runs. An empty function makes later <code>Log()</code> calls succeed and print nothing. The previous destination may still finish a call that began before the replacement, so it must stay callable until then.</p>
+<h2><a class="anchor" id="autotoc_md18"></a>
+Locks and deadlocks</h2>
+<p>The library uses five mutexes: the manager's container table, and each container's mailbox table, deferred queue and log destination, plus one per system mailbox. Each is a leaf. A thread holds at most one of them at a time, and none is held while user code runs (system methods, timer callbacks, message handlers, log destinations, deferred functions, or destructors of user objects). Sending never waits for a world to update; the only blocking wait on library state is <code>~Manager</code> waiting for sends in progress, and those never block (destroying a world also joins its thread). As a result, worlds whose systems send messages to each other in both directions, or to themselves, cannot deadlock. An application's own locks are its own responsibility: do not hold one while calling a library function that your handlers also need under that lock.</p>
+<h2><a class="anchor" id="autotoc_md19"></a>
+Shutdown</h2>
+<p><code>Manager::Shutdown()</code> and <code>Manager::IsRunning()</code> are atomic. A request is visible to other threads in the next poll in practice. <code>IsRunning()</code> never goes back to <code>true</code>, and concurrent requests are idempotent. A request from inside a system is a single store and cannot deadlock. Requesting shutdown does not stop world threads or destroy worlds.</p>
+<h1><a class="anchor" id="autotoc_md20"></a>
+Release notes</h1>
+<h2><a class="anchor" id="autotoc_md21"></a>
+1.4.0</h2>
+<ul>
+<li>New <code>Container::Defer()</code> hands a change to a running world's own thread. See "Threading".</li>
+<li>The layout of <code>System</code>, <code>Container</code> and <code>Manager</code> changed, so plugins and every consumer built against 1.3.0 must be rebuilt against the new headers. <code>the-seed build</code> does this.</li>
+<li>Systems are addressable by routed messages only if they are registered through <code>Container::System()</code>. Code that inserts into <code>Container::Systems</code> directly must register with <code>Container::System(std::make_unique&lt;...&gt;(...))</code>.</li>
+<li><code>System::MessagesWaiting()</code> now also counts messages that were delivered but not yet moved to the queue (it moves them first), and is for the world thread only. Code that called it from another thread to see a backlog should count on the world thread, or have the system publish its own counter.</li>
+<li>The error for a message to an unknown system names the container it was sent to, rather than reading the container from the message. The exception type is unchanged.</li>
+<li>A message sent during a pass is first handled at the destination's next update. Do not rely on same-call or same-pass handling.</li>
+<li>Changing a running world from outside threads was always a data race. Wrap such a change in <code>Container::Defer()</code>.</li>
+<li><code>~Manager</code> waits for sends in progress and destroys its worlds from its body, which removes a race for embedding code that destroys a <code>Manager</code> while its world threads message each other.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md22"></a>
 1.3.0</h2>
 <ul>
 <li>The object layout of <code><a class="el" href="classecs_1_1Uuid.html">ecs::Uuid</a></code> changed (16 bytes, alignment 8), so plugins must be rebuilt against the new headers. <code>the-seed build</code> does this.</li>
@@ -211,10 +336,10 @@ Release notes</h1>
 <li><code>ecs-cpp.pc</code> carries <code>-std=c++20 -pthread</code>.</li>
 <li>The library no longer needs processor extensions and builds on 64-bit ARM.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md15"></a>
+<h2><a class="anchor" id="autotoc_md23"></a>
 1.2.0</h2>
 <p>The rules in "Changing systems and timers while they run" are now guaranteed. The object layout of <code><a class="el" href="classecs_1_1Container.html">ecs::Container</a></code>, <code><a class="el" href="classecs_1_1System.html">ecs::System</a></code> and <code><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></code> changed (private members only, no public signature changed), so plugins must be rebuilt against the new headers. <code>the-seed build</code> does this.</p>
-<h1><a class="anchor" id="autotoc_md16"></a>
+<h1><a class="anchor" id="autotoc_md24"></a>
 Running the tests</h1>
 <div class="fragment"><div class="line">./autogen.sh</div>
 <div class="line">./configure</div>
@@ -222,7 +347,7 @@ Running the tests</h1>
 <div class="line">make check</div>
 </div><!-- fragment --><p><code>make check</code> builds and runs every test program in <code>tests/</code> and finishes in a few seconds. Each program prints one <code>PASS:</code> or <code>FAIL:</code> line, followed by a summary (<code># TOTAL</code>, <code># PASS</code>, <code># FAIL</code>, <code># ERROR</code>). The command exits non-zero if any program fails, crashes or cannot start, and the <code>FAIL:</code> line names the program. The full output of each program is in <code>tests/&lt;program&gt;.log</code>, and the combined output of a failing run is in <code>tests/test-suite.log</code>.</p>
 <p>The tests need Catch2 v3 (<code>catch2-with-main</code> in pkg-config), for example <code>sudo apt install catch2</code>.</p>
-<h1><a class="anchor" id="autotoc_md17"></a>
+<h1><a class="anchor" id="autotoc_md25"></a>
 Sanitizer variants</h1>
 <p>Two opt-in variants run the same tests with a sanitizer built in:</p>
 <div class="fragment"><div class="line">make distclean</div>
@@ -234,15 +359,15 @@ Sanitizer variants</h1>
 <div class="line">make</div>
 <div class="line">make check</div>
 </div><!-- fragment --><p><code>address</code> enables AddressSanitizer together with UndefinedBehaviorSanitizer (memory errors, leaks and undefined behavior); <code>thread</code> enables ThreadSanitizer (data races). They correspond to the hosted <code>test (address+undefined)</code> and <code>test (thread)</code> checks. The sanitizer runtime options are fixed in <code>tests/Makefile.am</code>, so a local run behaves the same as the hosted one. Run <code>make distclean</code> before switching variants. Any other value for <code>--enable-sanitizer</code> stops <code>configure</code> with an error.</p>
-<h1><a class="anchor" id="autotoc_md18"></a>
+<h1><a class="anchor" id="autotoc_md26"></a>
 Known gaps</h1>
 <p><code>tests/known-gaps.txt</code> lists sanitizer findings that are already understood and are waiting for a planned fix. Each entry names the sanitizer variant, the test program, the test case, a text that must appear in the failure output, the finding, and the roadmap task that fixes it. The file currently has no entries.</p>
 <p>When a listed test case fails with the listed text, the run passes and prints a <code>KNOWN GAP:</code> line. Any other failure, in a listed or unlisted test case, still fails the run. If a listed test case passes, the run prints a <code>STALE KNOWN GAP:</code> line: remove the entry. If an entry is malformed or names a test case that does not exist, the run fails with a <code>MALFORMED KNOWN GAP:</code> line. Entries are removed when the fix lands; the file is never used to hide a new defect.</p>
-<h1><a class="anchor" id="autotoc_md19"></a>
+<h1><a class="anchor" id="autotoc_md27"></a>
 Continuous integration</h1>
 <p>Every pull request to <code>master</code>, every push to <code>master</code> and every manual run builds the library and runs <code>make check</code> as four separate checks: <code>test (plain)</code>, <code>test (address+undefined)</code>, <code>test (thread)</code> and <code>test (plain (arm64))</code>, which runs the plain variant on a 64-bit ARM machine. These runs have read-only access to the repository and no secrets, so proposals from forks are checked the same way as proposals from this repository. A manual run accepts a <code>repeat</code> count to run the tests several times in a row.</p>
 <p>The Doxygen documentation is regenerated and committed only by pushes to <code>master</code>, never by proposals.</p>
-<h1><a class="anchor" id="autotoc_md20"></a>
+<h1><a class="anchor" id="autotoc_md28"></a>
 Build library for Windows</h1>
 <ul>
 <li>Build and install libecs-cpp</li>
@@ -265,7 +390,7 @@ Build library for Windows</h1>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 03:40:19 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 05:27:13 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
