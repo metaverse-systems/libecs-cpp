@@ -12,6 +12,9 @@ pkginclude_HEADERS = \
 	../include/libecs-cpp/json.hpp \
     ../include/libecs-cpp/Timing.hpp
 
+# Internal header: shipped in the source distribution, never installed.
+noinst_HEADERS = Validation.hpp
+
 libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall $(SANITIZER_CXXFLAGS)
 
 libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Component.cpp Entity.cpp Uuid.cpp

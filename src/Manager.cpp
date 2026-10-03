@@ -1,5 +1,7 @@
 #include <libecs-cpp/ecs.hpp>
 
+#include "Validation.hpp"
+
 ecs::Manager *ECS = new ecs::Manager();
 
 namespace ecs
@@ -70,7 +72,9 @@ namespace ecs
 
     void Manager::MessageSubmit(const nlohmann::json &message)
     {
-        auto dest_container = message["destination"]["container"].get<std::string>();
+        const validation::Caller caller{nullptr};
+        const std::string &dest_container = validation::messageContainer(message, caller);
+        validation::messageSystem(message, caller);
         ecs::Container *target = nullptr;
         {
             std::lock_guard<std::mutex> lock(this->mutexContainers);

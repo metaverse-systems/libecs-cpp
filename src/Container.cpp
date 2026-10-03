@@ -1,4 +1,5 @@
 #include <libecs-cpp/ecs.hpp>
+#include "Validation.hpp"
 #include <thread>
 #include <algorithm>
 #include <cstring>
@@ -334,7 +335,8 @@ namespace ecs
 
     void Container::MessageSubmit(const nlohmann::json &message)
     {
-        auto dest_system = message["destination"]["system"].get<std::string>();
+        const std::string &dest_system = validation::messageSystem(
+            message, validation::Caller{&this->Handle});
         std::shared_ptr<ecs::Mailbox> mailbox;
         {
             std::lock_guard<std::mutex> guard(this->mailboxesLock);
