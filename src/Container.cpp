@@ -4,6 +4,7 @@
 #include <cstring>
 #include <chrono>
 #include <iostream>
+#include <exception>
 
 auto loggerFunction = [](const std::string &message, const std::string &level) {
     if(level == "error")
@@ -39,6 +40,16 @@ namespace ecs
 
     Container::~Container()
     {
+        {
+            std::vector<std::function<void()>> discarded;
+            {
+                std::lock_guard<std::mutex> guard(this->deferredLock);
+                this->deferredClosed = true;
+                discarded.swap(this->deferred);
+                this->deferredCount.store(0);
+            }
+            // Destroyed here, after the lock is released, without running.
+        }
         if(this->containerThread.joinable())
         {
             this->containerThread.request_stop();
@@ -239,8 +250,65 @@ namespace ecs
         }
     }
 
+    void Container::Defer(std::function<void()> fn)
+    {
+        {
+            std::lock_guard<std::mutex> guard(this->deferredLock);
+            if(!this->deferredClosed)
+            {
+                this->deferred.push_back(std::move(fn));
+                this->deferredCount.store(this->deferred.size());
+                return;
+            }
+        }
+        // Dropped: fn is destroyed here, outside the lock.
+    }
+
+    void Container::deferredRun()
+    {
+        struct DrainScope
+        {
+            explicit DrainScope(bool &flag): flag(flag) { this->flag = true; }
+            ~DrainScope() { this->flag = false; }
+            bool &flag;
+        };
+
+        std::vector<std::function<void()>> batch;
+        {
+            std::lock_guard<std::mutex> guard(this->deferredLock);
+            batch.swap(this->deferred);
+            this->deferredCount.store(0);
+        }
+
+        std::exception_ptr first;
+        {
+            DrainScope drain(this->draining);
+            for(auto &fn : batch)
+            {
+                try
+                {
+                    fn();
+                }
+                catch(const std::exception &e)
+                {
+                    this->Log("[" + this->Handle + "] a deferred change threw: " + e.what(), "error");
+                    if(!first) first = std::current_exception();
+                }
+                catch(...)
+                {
+                    this->Log("[" + this->Handle + "] a deferred change threw an unknown exception", "error");
+                    if(!first) first = std::current_exception();
+                }
+            }
+        }
+        batch.clear();
+        if(first) std::rethrow_exception(first);
+    }
+
     void Container::Update()
     {
+        if(this->walkDepth == 0 && !this->draining && this->deferredCount.load() != 0)
+            this->deferredRun();
         WalkScope walk(this);
         for(size_t i = 0, count = this->system_order.size(); i < count; i++)
         {

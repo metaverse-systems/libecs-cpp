@@ -6,6 +6,7 @@
 #include <thread>
 #include <memory>
 #include <mutex>
+#include <atomic>
 #include <iostream>
 #include <functional>
 #include <libecs-cpp/json.hpp>
@@ -95,6 +96,21 @@ namespace ecs
          *  any thread. Throws std::runtime_error if the system is unknown; a system is addressable by
          *  handle once it has been registered with System(). */
         void MessageSubmit(const nlohmann::json &message);
+        /*! Queues a change to the world to be made by the world's own thread. Safe to call from any
+         *  thread, including from inside the world.
+         *
+         * The function runs once, on the thread that calls Update(), in the order the calls were accepted,
+         * at the start of the next Update(), before any system is updated and never in the middle of a
+         * pass. A function submitted from a deferred function, or during a pass, runs in the next pass.
+         *
+         * If a function throws, the error is logged at level "error", the rest of the batch still runs,
+         * and the first exception is rethrown by Update() before any system is updated. On the world's own
+         * thread it is caught at the thread boundary, as for a system's error. A world that is never
+         * updated never runs them. Functions still pending when the container is destroyed are discarded
+         * without running, and a call made after destruction has begun is dropped.
+         *
+         * The function and everything it captures must stay valid until it runs or is discarded. */
+        void Defer(std::function<void()> fn);
         void ResourceAdd(const std::string &name, ecs::Resource r);
         void Resources(const std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> &resources);
         ecs::Resource ResourceGet(const std::string &name);
@@ -131,6 +147,14 @@ namespace ecs
         class WalkScope;
         std::vector<SystemSlot> system_order;
         uint32_t walkDepth = 0;
+        /*! Guards deferred and deferredClosed only; deferred functions run with no lock held. */
+        std::mutex deferredLock;
+        std::vector<std::function<void()>> deferred;
+        /*! Size of deferred, readable without the lock so an empty queue costs one load per pass. */
+        std::atomic<std::size_t> deferredCount{0};
+        bool deferredClosed = false;
+        bool draining = false;
+        void deferredRun();
         bool orderHasGaps = false;
         void walkFinish();
         /*! Systems removed during a walk. They are released when the outermost walk ends. Declared after Systems so they are destroyed first. */

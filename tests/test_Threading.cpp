@@ -1383,3 +1383,430 @@ TEST_CASE("An empty destination accepts lines", "[Threading]")
     REQUIRE_NOTHROW(container->Log("dropped"));
     REQUIRE(tally->lines == 2);
 }
+
+namespace
+{
+    /*! Appends the name of each pass step to a log shared with the test. The log is touched only by the
+     *  thread that calls Update(), and the test reads it afterwards. */
+    class StepSystem : public ecs::System
+    {
+      public:
+        StepSystem(const std::string &handle, std::shared_ptr<std::vector<std::string>> log, std::function<void(StepSystem &)> onUpdate = nullptr)
+          : log(std::move(log)), onUpdate(std::move(onUpdate))
+        {
+            this->Handle = handle;
+            this->Timing.SetFrequency(0);
+        }
+
+        void Update() override
+        {
+            this->log->push_back("update " + this->Handle);
+            this->updates++;
+            if(this->onUpdate)
+            {
+                this->onUpdate(*this);
+            }
+        }
+
+        nlohmann::json Export() const override
+        {
+            return nlohmann::json::object();
+        }
+
+        std::shared_ptr<std::vector<std::string>> log;
+        std::function<void(StepSystem &)> onUpdate;
+        int updates = 0;
+    };
+
+    /*! Stores the id of the thread that updates it. */
+    class ThreadIdSystem : public ecs::System
+    {
+      public:
+        explicit ThreadIdSystem(const std::string &handle, std::shared_ptr<std::atomic<std::thread::id>> id)
+          : id(std::move(id))
+        {
+            this->Handle = handle;
+            this->Timing.SetFrequency(0);
+        }
+
+        void Update() override
+        {
+            this->id->store(std::this_thread::get_id());
+        }
+
+        nlohmann::json Export() const override
+        {
+            return nlohmann::json::object();
+        }
+
+        std::shared_ptr<std::atomic<std::thread::id>> id;
+    };
+
+    /*! Once armed, holds its world inside Update() until it is released, so a test can keep a world busy
+     *  while the container is destroyed around it. */
+    struct Hold
+    {
+        std::atomic<bool> armed{false};
+        std::atomic<bool> held{false};
+        std::atomic<bool> released{false};
+    };
+
+    class HoldSystem : public ecs::System
+    {
+      public:
+        explicit HoldSystem(const std::string &handle, std::shared_ptr<Hold> hold)
+          : hold(std::move(hold))
+        {
+            this->Handle = handle;
+            this->Timing.SetFrequency(0);
+        }
+
+        void Update() override
+        {
+            if(!this->hold->armed)
+            {
+                return;
+            }
+            this->hold->held = true;
+            auto end = std::chrono::steady_clock::now() + 10s;
+            while(!this->hold->released && std::chrono::steady_clock::now() < end)
+            {
+                std::this_thread::sleep_for(1ms);
+            }
+        }
+
+        nlohmann::json Export() const override
+        {
+            return nlohmann::json::object();
+        }
+
+        std::shared_ptr<Hold> hold;
+    };
+
+    class MarkerComponent : public ecs::Component
+    {
+      public:
+        MarkerComponent()
+        {
+            this->Type = "Marker";
+        }
+
+        nlohmann::json Export() const override
+        {
+            return nlohmann::json::object();
+        }
+    };
+
+    /*! One deferred function's run: who submitted it, its index and the thread it ran on. */
+    struct DeferredRun
+    {
+        int submitter;
+        int index;
+        std::thread::id thread;
+    };
+}
+
+TEST_CASE("Deferred changes run once, on the world thread, in order", "[Threading]")
+{
+    constexpr int SUBMITTERS = 8;
+    constexpr int PER_SUBMITTER = 1000;
+    constexpr std::size_t TOTAL = static_cast<std::size_t>(SUBMITTERS) * PER_SUBMITTER;
+
+    std::atomic<bool> stop{false};
+    auto worldThread = std::make_shared<std::atomic<std::thread::id>>();
+    // Touched only by the world thread until the world has been destroyed.
+    std::vector<DeferredRun> runs;
+    std::atomic<std::size_t> ran{0};
+    std::atomic<bool> counted{false};
+    std::atomic<std::size_t> entitiesSeen{0};
+    std::atomic<int> otherErrors{0};
+    bool arrived = false;
+
+    bool completed = withTimeout(
+      [&]() {
+          auto manager = std::make_unique<ecs::Manager>();
+          auto container = manager->Container("world");
+          container->System(std::make_unique<ThreadIdSystem>("thread", worldThread));
+          container->Start(100);
+          arrived = waitUntil([&]() { return worldThread->load() != std::thread::id(); }, stop, 10s);
+
+          std::latch go(SUBMITTERS);
+          std::vector<std::thread> submitters;
+          for(int s = 0; s < SUBMITTERS; s++)
+          {
+              submitters.emplace_back([&, s]() {
+                  go.arrive_and_wait();
+                  try
+                  {
+                      for(int n = 0; n < PER_SUBMITTER; n++)
+                      {
+                          container->Defer([&runs, &ran, container, s, n]() {
+                              runs.push_back(DeferredRun{s, n, std::this_thread::get_id()});
+                              container->Entity();
+                              ran++;
+                          });
+                      }
+                  }
+                  catch(...)
+                  {
+                      otherErrors++;
+                  }
+              });
+          }
+          for(auto &t : submitters)
+          {
+              t.join();
+          }
+
+          waitUntil([&]() { return ran.load() == TOTAL; }, stop, 30s);
+          // The last function counts the entities from the world thread, where reading them is allowed.
+          container->Defer([&]() {
+              entitiesSeen = container->Entities.size();
+              counted = true;
+          });
+          waitUntil([&]() { return counted.load(); }, stop, 10s);
+          manager.reset();
+      },
+      60s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("the deferred changes did not finish in time");
+    }
+    REQUIRE(arrived);
+    REQUIRE(otherErrors == 0);
+    REQUIRE(counted);
+    REQUIRE(entitiesSeen == TOTAL);
+    REQUIRE(runs.size() == TOTAL);
+
+    std::map<int, int> last;
+    std::size_t offThread = 0;
+    std::size_t outOfOrder = 0;
+    for(auto &run : runs)
+    {
+        if(run.thread != worldThread->load())
+        {
+            offThread++;
+        }
+        auto found = last.find(run.submitter);
+        if(found == last.end() ? run.index != 0 : run.index != found->second + 1)
+        {
+            outOfOrder++;
+        }
+        last[run.submitter] = run.index;
+    }
+    REQUIRE(offThread == 0);
+    REQUIRE(outOfOrder == 0);
+    REQUIRE(last.size() == static_cast<std::size_t>(SUBMITTERS));
+    for(auto &[submitter, index] : last)
+    {
+        REQUIRE(index == PER_SUBMITTER - 1);
+    }
+}
+
+TEST_CASE("Deferred changes do not run mid-pass", "[Threading]")
+{
+    ecs::Manager manager;
+    auto container = manager.Container("world");
+    auto log = std::make_shared<std::vector<std::string>>();
+    bool deferred = false;
+
+    container->System(std::make_unique<StepSystem>("A", log));
+    container->System(std::make_unique<StepSystem>("B", log, [&](StepSystem &) {
+        if(deferred)
+        {
+            return;
+        }
+        deferred = true;
+        container->Defer([&]() {
+            log->push_back("deferred");
+            // Submitted while deferred changes are running, so it waits for the next pass.
+            container->Defer([&]() { log->push_back("deferred again"); });
+        });
+    }));
+    container->System(std::make_unique<StepSystem>("C", log));
+
+    container->Update();
+    container->Update();
+    container->Update();
+
+    const std::vector<std::string> expected{
+      "update A", "update B", "update C",
+      "deferred", "update A", "update B", "update C",
+      "deferred again", "update A", "update B", "update C"};
+    REQUIRE(*log == expected);
+}
+
+TEST_CASE("A throwing deferred change is handled like a throwing system", "[Threading]")
+{
+    ecs::Manager manager;
+    auto container = manager.Container("world");
+    auto log = std::make_shared<std::vector<std::string>>();
+    auto system = container->System(std::make_unique<StepSystem>("A", log));
+
+    std::vector<std::pair<std::string, std::string>> logged;
+    container->LoggerSet([&logged](const std::string &message, const std::string &level) {
+        logged.emplace_back(message, level);
+    });
+
+    std::vector<int> ran;
+    container->Defer([&]() { ran.push_back(1); });
+    container->Defer([&]() {
+        ran.push_back(2);
+        throw std::runtime_error("deferred failure");
+    });
+    container->Defer([&]() { ran.push_back(3); });
+
+    REQUIRE_THROWS_AS(container->Update(), std::runtime_error);
+    REQUIRE(ran == std::vector<int>{1, 2, 3});
+    REQUIRE(static_cast<StepSystem *>(system)->updates == 0);
+    REQUIRE(log->empty());
+
+    bool errorLogged = false;
+    for(auto &[message, level] : logged)
+    {
+        if(level == "error" && message.find("deferred failure") != std::string::npos)
+        {
+            errorLogged = true;
+        }
+    }
+    REQUIRE(errorLogged);
+
+    REQUIRE_NOTHROW(container->Update());
+    REQUIRE(static_cast<StepSystem *>(system)->updates == 1);
+    REQUIRE(ran.size() == 3);
+}
+
+TEST_CASE("Pending deferred changes are discarded unrun at destruction", "[Threading]")
+{
+    auto token = std::make_shared<int>(0);
+    std::atomic<int> ran{0};
+
+    {
+        ecs::Manager manager;
+        auto container = manager.Container("world");
+        for(int n = 0; n < 100; n++)
+        {
+            container->Defer([token, &ran]() { ran++; });
+        }
+        REQUIRE(token.use_count() == 101);
+    }
+
+    REQUIRE(ran == 0);
+    REQUIRE(token.use_count() == 1);
+}
+
+TEST_CASE("Defer after destruction begins is dropped", "[Threading]")
+{
+    constexpr int SENDERS = 4;
+
+    std::atomic<bool> stop{false};
+    auto token = std::make_shared<int>(0);
+    auto hold = std::make_shared<Hold>();
+    std::atomic<int> submitted{0};
+    std::atomic<int> ranAfterRelease{0};
+    std::atomic<int> otherErrors{0};
+    std::atomic<bool> senderStop{false};
+    bool held = false;
+
+    bool completed = withTimeout(
+      [&]() {
+          auto manager = std::make_unique<ecs::Manager>();
+          auto container = manager->Container("world");
+          container->System(std::make_unique<HoldSystem>("hold", hold));
+          container->Start(100);
+
+          ecs::Container *raw = container;
+          std::latch go(SENDERS);
+          std::vector<std::thread> senders;
+          for(int s = 0; s < SENDERS; s++)
+          {
+              senders.emplace_back([&]() {
+                  go.arrive_and_wait();
+                  try
+                  {
+                      while(!senderStop.load())
+                      {
+                          raw->Defer([token, &hold, &ranAfterRelease]() {
+                              if(hold->released)
+                              {
+                                  ranAfterRelease++;
+                              }
+                          });
+                          submitted++;
+                      }
+                  }
+                  catch(...)
+                  {
+                      otherErrors++;
+                  }
+              });
+          }
+
+          waitUntil([&]() { return submitted.load() >= 200; }, stop, 10s);
+          // Keep the world thread inside a system so that destroying the manager has to wait for it, and
+          // the senders go on calling Defer while the container is being destroyed. The senders are told
+          // to stop only after the destruction has had time to begin, and the world thread is released
+          // only after they have all stopped, so nothing touches the container once it is gone.
+          hold->armed = true;
+          held = waitUntil([&]() { return hold->held.load(); }, stop, 10s);
+
+          std::thread destroyer([&]() { manager.reset(); });
+          std::this_thread::sleep_for(50ms);
+          senderStop = true;
+          for(auto &t : senders)
+          {
+              t.join();
+          }
+          hold->released = true;
+          destroyer.join();
+      },
+      60s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("destroying a container during Defer did not finish in time");
+    }
+    REQUIRE(held);
+    REQUIRE(otherErrors == 0);
+    REQUIRE(submitted >= 200);
+    REQUIRE(ranAfterRelease == 0);
+    // Every function was run, discarded or dropped, and destroyed exactly once.
+    REQUIRE(token.use_count() == 1);
+}
+
+TEST_CASE("A world that is not running can be changed directly", "[Threading]")
+{
+    ecs::Manager manager;
+    auto container = manager.Container("world");
+    auto log = std::make_shared<std::vector<std::string>>();
+
+    auto *entity = container->Entity("first");
+    entity->Component(new MarkerComponent());
+    auto system = container->System(std::make_unique<StepSystem>("A", log));
+
+    REQUIRE(container->Entities.size() == 1);
+    REQUIRE(container->Components["Marker"].contains("first"));
+    REQUIRE(container->Systems.contains("A"));
+    REQUIRE(system != nullptr);
+
+    container->Defer([&]() {
+        log->push_back("deferred");
+        container->Entity("second");
+    });
+    REQUIRE(container->Entities.size() == 1);
+
+    container->Update();
+    REQUIRE(container->Entities.size() == 2);
+    REQUIRE(*log == std::vector<std::string>{"deferred", "update A"});
+
+    container->EntityDestroy("first");
+    container->SystemDestroy("A");
+    REQUIRE(container->Entities.size() == 1);
+    REQUIRE_FALSE(container->Components["Marker"].contains("first"));
+    REQUIRE_FALSE(container->Systems.contains("A"));
+    container->Update();
+    REQUIRE(log->size() == 2);
+}
