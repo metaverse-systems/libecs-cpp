@@ -1078,7 +1078,7 @@ clock, on a controlled clock), `test_Compatibility` (the deprecated names), `tes
 `test_Resources` and `test_Export`. The script tests are `run-test-selftest.sh`, `run-example.sh`,
 `run-logging.sh` (console writes outside the default destination, and output to a file and a terminal),
 `check-exports.sh` and `check-exports-selftest.sh` (exported names) and `check-style.sh` with
-`check-style-selftest.sh` (`this->` and member naming).
+`check-style-selftest.sh` (member naming: no trailing underscores, camelCase private members).
 
 The tests need Catch2 v3 (`catch2-with-main` in pkg-config), for example `sudo apt install catch2`.
 

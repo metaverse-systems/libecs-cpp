@@ -1,6 +1,5 @@
 #include <libecs-cpp/Component.hpp>
 #include <libecs-cpp/ecs.hpp>
-#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
