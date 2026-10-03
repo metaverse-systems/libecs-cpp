@@ -1810,3 +1810,180 @@ TEST_CASE("A world that is not running can be changed directly", "[Threading]")
     container->Update();
     REQUIRE(log->size() == 2);
 }
+
+TEST_CASE("Stress: messaging, world creation, shutdown polling, log replacement and deferred entity changes together", "[Threading]")
+{
+    constexpr int WORLDS = 3;
+    constexpr int THREADS = 8;
+    constexpr int ITERATIONS = 2000;
+    constexpr int EVERY = 100;
+    constexpr int ROUNDS_PER_THREAD = ITERATIONS / EVERY;
+
+    std::atomic<bool> stop{false};
+    std::vector<std::shared_ptr<Recorded>> recorded;
+    for(int w = 0; w < WORLDS; w++)
+    {
+        recorded.push_back(std::make_shared<Recorded>());
+    }
+
+    std::atomic<std::size_t> sent{0};
+    std::atomic<std::size_t> refused{0};
+    std::atomic<std::size_t> created{0};
+    std::atomic<std::size_t> deferSubmitted{0};
+    std::atomic<std::size_t> deferRan{0};
+    std::atomic<std::size_t> logged{0};
+    std::atomic<std::size_t> delivered{0};
+    std::atomic<std::size_t> notRunning{0};
+    std::atomic<std::size_t> badSnapshots{0};
+    std::atomic<int> otherErrors{0};
+    std::atomic<std::size_t> entitiesSeen{0};
+    std::atomic<int> counted{0};
+    std::size_t handleCount = 0;
+    bool started = false;
+
+    // Every destination installed during the test adds to the same counter, so the lines delivered must
+    // equal the lines logged whichever destination received each one.
+    auto destination = [&delivered]() -> LogFunction {
+        return [&delivered](const std::string &, const std::string &) { delivered++; };
+    };
+
+    bool completed = withTimeout(
+      [&]() {
+          auto manager = std::make_unique<ecs::Manager>();
+          std::vector<ecs::Container *> worlds;
+          std::vector<std::string> handles;
+          for(int w = 0; w < WORLDS; w++)
+          {
+              handles.push_back("world" + std::to_string(w));
+              worlds.push_back(manager->Container(handles.back()));
+              worlds.back()->LoggerSet(destination());
+              worlds.back()->System(std::make_unique<RecorderSystem>("recorder", recorded[w]));
+              worlds.back()->Start(100);
+          }
+          started = true;
+
+          std::latch go(THREADS);
+          std::vector<std::thread> threads;
+          for(int t = 0; t < THREADS; t++)
+          {
+              threads.emplace_back([&, t]() {
+                  go.arrive_and_wait();
+                  try
+                  {
+                      for(int n = 0; n < ITERATIONS && !stop; n++)
+                      {
+                          int target = (t + n) % WORLDS;
+                          try
+                          {
+                              manager->MessageSubmit(message(handles[target], "recorder", t, n));
+                              sent++;
+                          }
+                          catch(const std::runtime_error &)
+                          {
+                              refused++;
+                          }
+
+                          if(n % EVERY == EVERY - 1)
+                          {
+                              manager->Container();
+                              created++;
+
+                              auto snapshot = manager->ContainersGet();
+                              std::set<std::string> distinct(snapshot.begin(), snapshot.end());
+                              if(distinct.size() != snapshot.size() || snapshot.size() < static_cast<std::size_t>(WORLDS))
+                              {
+                                  badSnapshots++;
+                              }
+
+                              auto *world = worlds[target];
+                              world->Defer([world, &deferRan]() {
+                                  world->Entity();
+                                  deferRan++;
+                              });
+                              deferSubmitted++;
+
+                              world->LoggerSet(destination());
+                              world->Log("stress line from thread " + std::to_string(t), "info");
+                              logged++;
+
+                              if(!manager->IsRunning())
+                              {
+                                  notRunning++;
+                              }
+                          }
+                      }
+                  }
+                  catch(...)
+                  {
+                      otherErrors++;
+                  }
+              });
+          }
+          for(auto &thread : threads)
+          {
+              thread.join();
+          }
+
+          // Let the worlds drain what was sent and run what was deferred before they are stopped.
+          waitUntil(
+            [&]() {
+                std::size_t total = 0;
+                for(auto &r : recorded)
+                {
+                    total += r->count.load();
+                }
+                return total == sent.load() && deferRan.load() == deferSubmitted.load();
+            },
+            stop,
+            20s);
+
+          // Count the entities on each world's own thread, where reading them is allowed.
+          for(auto *world : worlds)
+          {
+              world->Defer([world, &entitiesSeen, &counted]() {
+                  entitiesSeen += world->Entities.size();
+                  counted++;
+              });
+          }
+          waitUntil([&]() { return counted.load() == WORLDS; }, stop, 10s);
+
+          handleCount = manager->ContainersGet().size();
+          manager.reset();
+      },
+      60s,
+      stop);
+
+    if(!completed)
+    {
+        FAIL("the stress case did not finish in time");
+    }
+
+    REQUIRE(started);
+    REQUIRE(otherErrors == 0);
+    REQUIRE(badSnapshots == 0);
+    REQUIRE(notRunning == 0);
+    REQUIRE(refused == 0);
+    REQUIRE(sent == static_cast<std::size_t>(THREADS) * ITERATIONS);
+
+    // Each message was handled once or discarded with a destroyed mailbox, never twice.
+    std::set<std::pair<int, int>> distinct;
+    std::size_t recordedCount = 0;
+    for(auto &r : recorded)
+    {
+        recordedCount += r->entries.size();
+        distinct.insert(r->entries.begin(), r->entries.end());
+    }
+    REQUIRE(recordedCount <= sent);
+    REQUIRE(distinct.size() == recordedCount);
+
+    // Every deferred change that ran made exactly one entity.
+    REQUIRE(created == static_cast<std::size_t>(THREADS) * ROUNDS_PER_THREAD);
+    REQUIRE(deferSubmitted == static_cast<std::size_t>(THREADS) * ROUNDS_PER_THREAD);
+    REQUIRE(counted == WORLDS);
+    REQUIRE(entitiesSeen == deferRan);
+    REQUIRE(deferRan <= deferSubmitted);
+
+    REQUIRE(handleCount == static_cast<std::size_t>(WORLDS) + created);
+    REQUIRE(logged == static_cast<std::size_t>(THREADS) * ROUNDS_PER_THREAD);
+    REQUIRE(delivered == logged);
+}

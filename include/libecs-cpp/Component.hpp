@@ -6,6 +6,8 @@
 
 namespace ecs
 {
+    /*! World thread only: a component lives in its world's tables, so it must be used and changed from
+     *  the thread that drives the world (see Container). */
     class Component
     {
       public:

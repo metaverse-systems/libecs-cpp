@@ -73,17 +73,34 @@ namespace ecs
         std::atomic<std::size_t> count{0};
     };
 
+    /*! Base class for logic that runs in a world.
+     *
+     * Threading
+     *
+     * - Any thread: MessageSubmit(). The system must be alive; routing through Container or Manager is
+     *   safe against the system being removed, a direct pointer to the system is not.
+     * - World thread only: Initialize(), Configure(), Update(), UpdateSystem(), Export(), Shutdown(),
+     *   MessagesWaiting(), TimerAdd(), TimerClear(), DeltaTimeGet(), Log(), the messages queue and the
+     *   public members Handle, Container, Components and Timing (set during registration).
+     * - Messages are delivered to the system's mailbox from any thread and become visible in messages
+     *   at the start of the system's next UpdateSystem(). Mailboxes are unbounded; an application that
+     *   needs back-pressure provides it.
+     */
     class System
     {
       public:
         System();
         System(const std::string &handle);
         virtual ~System() = default;
+        /*! World thread only. */
         virtual void Initialize() {};
+        /*! World thread only. */
         virtual void Shutdown() {};
+        /*! World thread only. */
         virtual void Configure(const nlohmann::json &config);
+        /*! World thread only. */
         virtual void Update() {};
-        /*! Fires the timers that are due, then calls Update().
+        /*! Fires the timers that are due, then calls Update(). World thread only.
          *
          * The timer walk visits timers in the order they were added. A timer added during the walk does
          * not fire in it. A timer cleared during the walk and not yet reached does not fire. After the
@@ -94,27 +111,33 @@ namespace ecs
          * with the system's identifier.
          */
         void UpdateSystem();
+        /*! World thread only. Set during registration. */
         std::string Handle;
+        /*! World thread only. Set during registration. */
         ecs::Container *Container = nullptr;
         /*! Delivers a message to this system. Safe to call from any thread at any time. Returns without
          *  waiting for the system's update; the system sees the message in a later update of its world.
          *  Messages from one sender arrive in the order sent, each exactly once. */
         void MessageSubmit(const nlohmann::json &message);
+        /*! World thread only. */
         virtual nlohmann::json Export() const = 0;
+        /*! World thread only. Set during registration. */
         ecs::TypeEntityComponentList *Components = nullptr;
         ecs::Timing Timing;
         /*! Counts delivered messages that have not been read, including ones not yet moved to the
          *  message queue. Call from the world thread only. */
         size_t MessagesWaiting();
+        /*! World thread only. */
         uint32_t DeltaTimeGet();
-        /*! Cancels every timer with this name. Safe to call from a timer callback, including for the
+        /*! Cancels every timer with this name. World thread only. Safe to call from a timer callback, including for the
          *  callback's own name. Cancelling and then adding the same name leaves only the new timer; adding
          *  and then cancelling removes both. From Update() the change takes effect at once. */
         void TimerClear(const std::string &name);
-        /*! Adds a timer. Safe to call from a timer callback, on this system or on any other system of the
+        /*! Adds a timer. World thread only. Safe to call from a timer callback, on this system or on any other system of the
          *  same world. A timer added during this system's timer walk is considered from its next update.
          *  From Update() the timer is added at once. */
         void TimerAdd(Timer timer);
+        /*! World thread only. */
         void Log(const std::string &message, const std::string &level);
       private:
         friend class ecs::Container;
@@ -127,7 +150,7 @@ namespace ecs
         bool removed = false;
         void timerWalkFinish();
       protected:
-        /*! Messages ready to read. Touched by the world thread only. */
+        /*! Messages ready to read. World thread only. */
         std::queue<nlohmann::json> messages;
         std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
         std::unordered_map<std::string, std::vector<std::string>> componentsToDelete;

@@ -21,12 +21,65 @@ namespace ecs
     class Entity;
     struct Mailbox;
 
+    /*! A world: the entities, components, systems and resources that are updated together.
+     *
+     * Threading
+     *
+     * The world thread is the thread that runs the world's update passes: the world's own background
+     * thread once Start() has been called, or the single thread an application uses to call Update().
+     * Any other thread is an outside caller.
+     *
+     * - Safe from any thread: delivering messages, using the manager, requesting and observing
+     *   shutdown, replacing the log destination, logging, and handing the world a deferred change.
+     * - World thread only: everything that reads or changes entities, components, systems, resources,
+     *   timers or the update order, and everything that reads System::messages.
+     * - Unsupported from outside callers of a running world: direct changes to entities, components,
+     *   systems or resources. The outcome is undefined. Use Defer() instead.
+     * - A world that is not running (never started, and nobody is calling Update()) may be changed
+     *   directly from one thread at a time, as before. That thread must hand the world over, for
+     *   example by calling Start(), before another thread uses it.
+     * - Code inside a world has no new obligations: no locks and no new calls. Entities, Components,
+     *   Systems and the update order stay usable from the world thread exactly as before.
+     *
+     * Operations:
+     *
+     * | Member | Class |
+     * |---|---|
+     * | Start(), Start(interval) | Once: call once, from the thread that owns the world, before any other thread uses it |
+     * | Defer(fn) | Any thread |
+     * | MessageSubmit(message) | Any thread |
+     * | Log(message, level), LoggerSet(fn) | Any thread |
+     * | UuidGet(), Handle, Manager | Any thread (Handle and Manager are set at construction and never change) |
+     * | Update(), SystemsInitialize() | World thread, one thread at a time |
+     * | System(), SystemDestroy() | World thread |
+     * | Entity(), EntityDestroy(), Component(), ComponentDestroy() | World thread |
+     * | ResourceAdd(), Resources(), ResourceGet(), Export() | World thread |
+     * | Entities, Components, Systems | World thread (public so systems can iterate them) |
+     * | ~Container() | Exclusive: discards pending deferred changes unrun, stops and joins the thread |
+     *
+     * Locks: the library uses five mutexes, and each one is a leaf: Manager's container table, this
+     * class's mailbox table, deferred queue and log destination, and each system's mailbox. A thread
+     * holds at most one at any moment, and none is held while user code runs (system methods, timer
+     * callbacks, message handlers, log destinations, deferred functions or destructors of user
+     * objects). Sending a message never waits for a world to update. Worlds whose systems message each
+     * other in both directions, or themselves, therefore cannot deadlock. An application's own locks
+     * are its own responsibility.
+     *
+     * Lifetime: pointers returned by Entity(), System() and similar keep their existing lifetime
+     * rules. A thread other than the world thread must not hold one across a point where another
+     * thread could remove the object. A deferred function that needs an entity looks it up by handle
+     * inside the function.
+     *
+     * Deferred changes: see Defer(). Log destination: see Log() and LoggerSet().
+     */
     class Container
     {
       public:
         Container(ecs::Manager *manager);
         Container(ecs::Manager *manager, const std::string &handle);
         ~Container();
+        /*! Starts the world's own thread. Call it once, from the thread that owns the world, before any
+         *  other thread uses the world. */
         void Start();
         void Start(uint32_t);
         /*! Calls Initialize() on every registered system, in registration order.
@@ -34,11 +87,11 @@ namespace ecs
          * This is a walk. A system registered during it does not get Initialize() from this call and is
          * updated from the next Update(). A system removed during it is not initialized if it has not
          * been reached yet. Systems removed during the walk are released when it returns, normally or
-         * because a system threw. If Initialize() throws, the error is logged with the system's
+         * because a system threw. World thread only. If Initialize() throws, the error is logged with the system's
          * identifier and rethrown after every change requested so far has completed.
          */
         void SystemsInitialize();
-        /*! Registers a system. It is found in Systems as soon as the call returns.
+        /*! Registers a system (world thread only). It is found in Systems as soon as the call returns.
          *
          * Called during a walk, the new system is not updated or initialized in that walk. It is updated
          * from the next pass, after every system registered before it. Registering under the identifier
@@ -47,16 +100,19 @@ namespace ecs
          * system under an identifier that is still in use is unspecified, but memory safe.
          */
         ecs::System *System(std::unique_ptr<ecs::System> system);
+        /*! World thread only. */
         std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
-        /*! Removes a component. The identifiers may be fields of the component being removed. An
+        /*! Removes a component (world thread only). The identifiers may be fields of the component being removed. An
          *  unknown entity or type is a silent no-op. */
         void ComponentDestroy(const std::string &entity, const std::string &type);
+        /*! World thread only. */
         ecs::Entity *Entity(const std::string &handle);
+        /*! World thread only. */
         ecs::Entity *Entity();
-        /*! Removes an entity and its components. The identifier may be the entity's own Handle. An
+        /*! Removes an entity and its components (world thread only). The identifier may be the entity's own Handle. An
          *  unknown identifier, including an empty one, is a silent no-op. */
         void EntityDestroy(const std::string &handle);
-        /*! Removes a system.
+        /*! Removes a system (world thread only).
          *
          * The identifier may be the system's own Handle. An unknown identifier, including an empty one,
          * is a silent no-op, so removing a system twice releases it once. When the call returns the
@@ -71,10 +127,10 @@ namespace ecs
          * the end of the next walk or until the container is destroyed.
          */
         void SystemDestroy(const std::string &handle);
-        /*! Describes the world as JSON. This is a const query: overrides of System::Export() must not add
+        /*! Describes the world as JSON (world thread only). This is a const query: overrides of System::Export() must not add
          *  or remove systems, entities or components. */
         nlohmann::json Export() const;
-        /*! Runs one update pass: calls System::UpdateSystem() on each system in registration order, each at
+        /*! Runs one update pass (world thread only, one thread at a time): calls System::UpdateSystem() on each system in registration order, each at
          *  most once. This is a walk.
          *
          * Adding or removing systems never changes the relative order of the others. A system removed
@@ -93,7 +149,7 @@ namespace ecs
          */
         void Update();
         /*! Routes a message to the system named in message["destination"]["system"]. Safe to call from
-         *  any thread. Throws std::runtime_error if the system is unknown; a system is addressable by
+         *  any thread, at any time. Throws std::runtime_error if the system is unknown; a system is addressable by
          *  handle once it has been registered with System(). */
         void MessageSubmit(const nlohmann::json &message);
         /*! Queues a change to the world to be made by the world's own thread. Safe to call from any
@@ -111,14 +167,23 @@ namespace ecs
          *
          * The function and everything it captures must stay valid until it runs or is discarded. */
         void Defer(std::function<void()> fn);
+        /*! World thread only. */
         void ResourceAdd(const std::string &name, ecs::Resource r);
+        /*! World thread only. */
         void Resources(const std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> &resources);
+        /*! World thread only. */
         ecs::Resource ResourceGet(const std::string &name);
+        /*! World thread only. Public so systems can iterate it. */
         std::unordered_map<std::string, std::unique_ptr<ecs::Entity>> Entities;
+        /*! Any thread. Set at construction and never changes. */
         ecs::Manager *Manager = nullptr;
+        /*! Any thread. Set at construction and never changes. */
         const std::string Handle;
+        /*! World thread only. Public so systems can iterate it. */
         ecs::TypeEntityComponentList Components;
+        /*! Any thread. */
         ecs::Uuid UuidGet();
+        /*! World thread only. Public so systems can iterate it; register systems with System(). */
         std::unordered_map<std::string, std::unique_ptr<ecs::System>> Systems;
         /*! Sends a line to the current log destination. Safe to call from any thread. Each call goes to
          *  exactly one destination, one that was installed at some time during the call; a call that starts

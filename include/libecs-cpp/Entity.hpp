@@ -10,6 +10,8 @@ namespace ecs
     class Container;
     class Component;
 
+    /*! World thread only: an entity changes its world's tables, so every member must be used from the
+     *  thread that drives the world (see Container). */
     class Entity
     {
       public:

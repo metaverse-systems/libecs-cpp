@@ -23,6 +23,24 @@ namespace ecs
      * The destructor is the one exclusive operation: it waits for message
      * submissions already in progress, and later submissions fail as if the
      * destination container were unknown.
+     *
+     * Threading
+     *
+     * - Container(handle), Container(), ContainersGet(), IsRunning(), Shutdown() and MessageSubmit()
+     *   are safe from any thread at any time. Container(handle) yields exactly one world per handle
+     *   even when many threads ask at once. ContainersGet() returns a snapshot by value; worlds
+     *   created later are not in it. The pointers keep their existing lifetime: valid until the
+     *   manager is destroyed.
+     * - Shutdown guarantee: IsRunning() and Shutdown() are atomic. Once IsRunning() has returned false
+     *   it never returns true again, and repeated or concurrent requests are idempotent. A request
+     *   made from inside a system is a single store and cannot deadlock. Requesting shutdown does not
+     *   stop world threads or destroy worlds.
+     * - MessageSubmit() returns without waiting for the destination's update and throws
+     *   std::runtime_error if the world is unknown. Callers on other threads should catch it.
+     * - Destruction: the destructor waits for sends already in progress; sends that start later fail
+     *   as unknown. No outside thread may use a manager that another thread is destroying, except
+     *   through sends that were already in progress.
+     * - The process-wide ECS manager is intentionally never destroyed.
      */
 
     class Manager

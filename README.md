@@ -148,7 +148,6 @@ callbacks. The rules below describe what happens.
 
 ### Not covered
 
-* Changing a world from any thread other than the one driving its walks.
 * `Container::Export()` and the `System::Export()` overrides it calls are a `const` query. They must not
   add or remove systems, entities or components.
 * Calling `Update()` or `SystemsInitialize()` from inside a walk of the same container is memory safe, but
@@ -190,7 +189,165 @@ ecs::Uuid("550e8400-e29b-41d4-a716-44665544000g"): invalid character 'g' at posi
 The installed `ecs-cpp.pc` provides `-std=c++20 -pthread` in its compile flags. A consumer that wants a
 later standard must put its own `-std=` after the pkg-config flags.
 
+## Threading
+
+A **world** is an `ecs::Container`. The **world thread** is the thread that runs the world's update
+passes: its own background thread once `Start()` has been called, or the one thread an application uses
+to call `Update()`. Any other thread is an **outside caller**.
+
+The rule has three classes of operation:
+
+* **Safe from any thread.** Delivering messages, using the manager, requesting and observing shutdown,
+  replacing the log destination, logging, and handing the world a deferred change.
+* **World thread only.** Everything that reads or changes entities, components, systems, resources,
+  timers or the update order, and everything that reads `System::messages`.
+* **Unsupported from outside callers of a running world.** Direct changes to entities, components,
+  systems or resources. The outcome is undefined. The supported alternative is `Container::Defer()`.
+
+A world that is not running (never started, and nobody is calling `Update()`) may be changed directly
+from one thread, as before. Only one thread at a time may do so. `Start()` must be called once, by the
+thread that owns the world, before any other thread uses it. Code inside a world (systems, timer
+callbacks) has no new obligations: no locks and no new calls, and `Entities`, `Components`, `Systems`
+and the update order stay usable from the world thread exactly as before.
+
+### Operations
+
+| Member | Class | Notes |
+|---|---|---|
+| `Manager::Container(handle)`, `Manager::Container()` | Any thread | One world per handle even when many threads ask at once. The pointer is valid until the manager is destroyed. |
+| `Manager::ContainersGet()` | Any thread | A snapshot by value; worlds created later are not in it. |
+| `Manager::IsRunning()`, `Manager::Shutdown()` | Any thread | Atomic. Once `IsRunning()` returns `false` it never returns `true` again. Idempotent. |
+| `Manager::MessageSubmit(message)` | Any thread | Returns without waiting for the destination's update. Throws `std::runtime_error` if the world is unknown. |
+| `Manager::~Manager()` | Exclusive | Waits for sends already in progress; later sends fail as unknown. The process-wide `ECS` manager is never destroyed. |
+| `Container::Start()`, `Start(interval)` | Once | Call once, from the thread that owns the world, before any other thread uses it. |
+| `Container::Defer(fn)` | Any thread | See "Deferred changes". |
+| `Container::MessageSubmit(message)` | Any thread | Throws `std::runtime_error` if the system is unknown. |
+| `Container::Log()`, `Container::LoggerSet()` | Any thread | Each line goes to exactly one destination. |
+| `Container::UuidGet()`, `Handle`, `Manager` | Any thread | `Handle` and `Manager` never change after construction. |
+| `Container::Update()`, `SystemsInitialize()` | World thread | One thread at a time. |
+| `Container::System()`, `SystemDestroy()` | World thread | Register with `System()`; routing by handle depends on it. |
+| `Container::Entity()`, `EntityDestroy()`, `Component()`, `ComponentDestroy()` | World thread | |
+| `Container::ResourceAdd()`, `Resources()`, `ResourceGet()`, `Export()` | World thread | |
+| `Container::Entities`, `Components`, `Systems` | World thread | Public so systems can iterate them. |
+| `Container::~Container()` | Exclusive | Discards pending deferred changes unrun, stops and joins the thread. |
+| `System::MessageSubmit(message)` | Any thread | The system must be alive. Routing through `Container` or `Manager` is safe against removal; a direct pointer is not. |
+| `System::MessagesWaiting()`, `messages` | World thread | `MessagesWaiting()` counts delivered messages not yet read, including ones not yet moved to the queue. |
+| `System::Initialize()`, `Update()`, `UpdateSystem()`, `Configure()`, `Export()`, `TimerAdd()`, `TimerClear()`, `DeltaTimeGet()`, `Log()` | World thread | |
+| `System::Handle`, `Container`, `Components` | World thread | Set during registration. |
+| `Entity`, `Component` | World thread | They change the world's tables. |
+
+### Messages
+
+A message accepted by `MessageSubmit()` on `Manager`, `Container` or `System` is received by the
+destination system exactly once while that system exists. Messages from one sender to one destination
+arrive in the order sent; no order is promised between senders. Sending does not wait for any update pass
+and does not call into the destination. A message becomes visible in `messages` at the start of the
+destination's next `UpdateSystem()`. A message sent during a pass to a system later in the update order is
+handled in that pass; a message to the sender itself, or to a system already updated in the pass, is
+handled in the next pass. A message is never handled inside the sender's call.
+
+If a system is removed while a message is on its way, the message is discarded with the system or the send
+fails as unknown; it is never delivered to a destroyed object. An unknown destination throws
+`std::runtime_error`, so callers on other threads should catch it.
+
+The mailbox is unbounded. The library never drops a message to save memory, so an application that needs
+back-pressure provides it.
+
+### Deferred changes
+
+`void Container::Defer(std::function<void()> fn)` hands a change to the world's own thread.
+
+* It is safe from any thread, including from inside the world (a system, a timer callback or another
+  deferred function).
+* `fn` runs exactly once, on the world thread, at the start of the next `Update()`, before any system is
+  updated and never in the middle of a pass.
+* Functions run in the order they were accepted, so one submitter's functions run in submission order.
+* Inside `fn` the usual rules for code inside a world apply, so every world-thread operation is available.
+* A function submitted from inside `fn`, or during a pass, runs in the next pass.
+* If `fn` throws, the error is logged at level `error`, the other functions in the batch still run, and
+  the first error is rethrown by `Update()` before any system is updated. On a world's own thread it is
+  caught at the thread boundary and the manager is asked to shut down, as for a system's error.
+* A world that is never updated never runs its deferred functions. Functions pending when the world is
+  destroyed, or submitted after destruction begins, are discarded without running.
+* `fn` and everything it captures must stay valid until it runs or is discarded. A function that needs an
+  entity looks it up by handle inside the function.
+
+A command from the main thread to a running world:
+
+```cpp
+ecs::Manager manager;
+ecs::Container *world = manager.Container("main");
+world->Start();
+
+// The world is running, so do not call world->Entity() from here.
+world->Defer([world]() {
+    ecs::Entity *player = world->Entity();
+    // ... add components to player ...
+});
+```
+
+Two worlds messaging each other:
+
+```cpp
+// In a system of world "a", on its world thread.
+void Update() override
+{
+    // Received by "pong" in its next update (or the same pass if it comes later in the order).
+    this->Container->Manager->MessageSubmit({
+        {"destination", {{"container", "b"}, {"system", "pong"}}},
+        {"payload", "ping"}});
+
+    // To itself or to a sibling that was already updated in this pass: handled in the next pass.
+    this->MessageSubmit({{"destination", {{"container", "a"}, {"system", "ping"}}}});
+}
+```
+
+### Log destination
+
+`LoggerSet(fn)` and `Log(message, level)` are safe from any thread at any time. Each `Log()` call goes to
+exactly one destination that was installed at some time during the call, and a call that starts after
+`LoggerSet()` returned uses the new destination. A destination may call `Log()` or `LoggerSet()` itself,
+because no lock is held while it runs. An empty function makes later `Log()` calls succeed and print
+nothing. The previous destination may still finish a call that began before the replacement, so it must
+stay callable until then.
+
+### Locks and deadlocks
+
+The library uses five mutexes: the manager's container table, and each container's mailbox table, deferred
+queue and log destination, plus one per system mailbox. Each is a leaf. A thread holds at most one of them
+at a time, and none is held while user code runs (system methods, timer callbacks, message handlers, log
+destinations, deferred functions, or destructors of user objects). Sending never waits for a world to
+update; the only blocking wait in the library is `~Manager` waiting for sends in progress, and those never
+block. As a result, worlds whose systems send messages to each other in both directions, or to themselves,
+cannot deadlock. An application's own locks are its own responsibility: do not hold one while calling a
+library function that your handlers also need under that lock.
+
+### Shutdown
+
+`Manager::Shutdown()` and `Manager::IsRunning()` are atomic. A request is visible to other threads in the
+next poll in practice. `IsRunning()` never goes back to `true`, and concurrent requests are idempotent. A
+request from inside a system is a single store and cannot deadlock. Requesting shutdown does not stop world
+threads or destroy worlds.
+
 ## Release notes
+
+### 1.4.0
+
+* New `Container::Defer()` hands a change to a running world's own thread. See "Threading".
+* The layout of `System`, `Container` and `Manager` changed, so plugins and every consumer built against
+  1.3.0 must be rebuilt against the new headers. `the-seed build` does this.
+* Systems are addressable by routed messages only if they are registered through `Container::System()`.
+  Code that inserts into `Container::Systems` directly must register with
+  `Container::System(std::make_unique<...>(...))`.
+* `System::MessagesWaiting()` counts messages not yet moved to the queue, and is for the world thread only.
+  Code that called it from another thread to see a backlog should count on the world thread, or have the
+  system publish its own counter.
+* A message sent during a pass is first handled at the destination's next update. Do not rely on
+  same-call or same-pass handling.
+* Changing a running world from outside threads was always a data race. Wrap such a change in
+  `Container::Defer()`.
+* `~Manager` waits for sends in progress and destroys its worlds from its body, which removes a race for
+  embedding code that destroys a `Manager` while its world threads message each other.
 
 ### 1.3.0
 

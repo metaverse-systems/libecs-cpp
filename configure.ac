@@ -1,5 +1,5 @@
 AC_PREREQ([2.71])
-AC_INIT([libecs-cpp],[1.3.0],[tim@metaverse.systems],[libecs-cpp],[https://metaverse.systems])
+AC_INIT([libecs-cpp],[1.4.0],[tim@metaverse.systems],[libecs-cpp],[https://metaverse.systems])
 
 AC_ARG_ENABLE([builtin-uuid],
 	AS_HELP_STRING([--enable-builtin-uuid],
