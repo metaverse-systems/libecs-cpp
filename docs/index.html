@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.6.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
    </div>
   </td>
  </tr>
@@ -260,7 +260,7 @@ Examples</h2>
 <div class="line">world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#abfb8bcfb8b652b6938ebe463cb646f0f">Start</a>();            <span class="comment">// MySystem::Initialize() runs on the world thread, then updates begin</span></div>
 <div class="line"><span class="comment">// ... the program runs ...</span></div>
 <div class="line"><a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown</a>();        <span class="comment">// blocks until MySystem::Shutdown() has run and the thread has ended</span></div>
-<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00078">Container.hpp:79</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00080">Container.hpp:81</a></div></div>
 <div class="ttc" id="aclassecs_1_1Container_html_abfb8bcfb8b652b6938ebe463cb646f0f"><div class="ttname"><a href="classecs_1_1Container.html#abfb8bcfb8b652b6938ebe463cb646f0f">ecs::Container::Start</a></div><div class="ttdeci">void Start()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00307">Container.cpp:307</a></div></div>
 <div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00397">Container.cpp:397</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html"><div class="ttname"><a href="classecs_1_1Manager.html">ecs::Manager</a></div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00049">Manager.hpp:50</a></div></div>
@@ -276,10 +276,10 @@ Examples</h2>
 <div class="line">    world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">Update</a>();       <span class="comment">// starts any system not yet started, then updates</span></div>
 <div class="line">}</div>
 <div class="line">world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#adfec8a9d2fb3d296349d21476cd9bbc2">Stop</a>();             <span class="comment">// MySystem::Shutdown() runs here, on this thread</span></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a5864d8fa020129153b2037d68c577073"><div class="ttname"><a href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">ecs::Container::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00650">Container.cpp:650</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a5864d8fa020129153b2037d68c577073"><div class="ttname"><a href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">ecs::Container::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00651">Container.cpp:651</a></div></div>
 <div class="ttc" id="aclassecs_1_1Container_html_adfec8a9d2fb3d296349d21476cd9bbc2"><div class="ttname"><a href="classecs_1_1Container.html#adfec8a9d2fb3d296349d21476cd9bbc2">ecs::Container::Stop</a></div><div class="ttdeci">void Stop()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00199">Container.cpp:199</a></div></div>
 </div><!-- fragment --><p>A program that uses the process-wide manager:</p>
-<div class="fragment"><div class="line"><span class="keywordtype">int</span> <a class="code hl_function" href="bench__entity__creation_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a>()</div>
+<div class="fragment"><div class="line"><span class="keywordtype">int</span> <a class="code hl_function" href="bench__component__get_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a>()</div>
 <div class="line">{</div>
 <div class="line">    <a class="code hl_class" href="classecs_1_1Container.html">ecs::Container</a> *world = <a class="code hl_variable" href="ecs_8hpp.html#aefd947cd309ef7f716ceaeb01f95ffae">ECS</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;main&quot;</span>);</div>
 <div class="line">    world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;MySystem&gt;(<span class="stringliteral">&quot;my-system&quot;</span>));</div>
@@ -288,7 +288,7 @@ Examples</h2>
 <div class="line">    <a class="code hl_variable" href="ecs_8hpp.html#aefd947cd309ef7f716ceaeb01f95ffae">ECS</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown</a>();       <span class="comment">// before main returns: stops every world and waits for it</span></div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="abench__entity__creation_8cpp_html_ae66f6b31b5ad750f1fe042a706a4e3d4"><div class="ttname"><a href="bench__entity__creation_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a></div><div class="ttdeci">int main()</div><div class="ttdef"><b>Definition</b> <a href="bench__entity__creation_8cpp_source.html#l00005">bench_entity_creation.cpp:5</a></div></div>
+<div class="ttc" id="abench__component__get_8cpp_html_ae66f6b31b5ad750f1fe042a706a4e3d4"><div class="ttname"><a href="bench__component__get_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a></div><div class="ttdeci">int main()</div><div class="ttdef"><b>Definition</b> <a href="bench__component__get_8cpp_source.html#l00057">bench_component_get.cpp:57</a></div></div>
 <div class="ttc" id="aecs_8hpp_html_aefd947cd309ef7f716ceaeb01f95ffae"><div class="ttname"><a href="ecs_8hpp.html#aefd947cd309ef7f716ceaeb01f95ffae">ECS</a></div><div class="ttdeci">ecs::Manager * ECS</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00005">Manager.cpp:5</a></div></div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md20"></a>
 Identifiers</h1>
@@ -363,9 +363,51 @@ Attaching components</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>EntityHandle</code> names no entity in the world (never created, destroyed, or misspelled)   </td><td class="markdownTableBodyNone"><code>entity "&lt;handle&gt;" does not exist</code>   </td><td class="markdownTableBodyNone">Unchanged.   </td></tr>
 </table>
-<p><code>Entity::Component()</code> takes a raw pointer and owns it from the moment of the call, including when the call is rejected: the component is then deleted. A null pointer is reported with the entity's name (<code><a class="el" href="classecs_1_1Entity.html">ecs::Entity</a>("handle")::Component()</code>); the other rejections are made by the world and carry the world's name (<code><a class="el" href="classecs_1_1Container.html">ecs::Container</a>("world")::Component()</code>). Creating an <code>Entity</code> with a null container throws <code><a class="el" href="classecs_1_1Entity.html">ecs::Entity</a>: container is missing</code>.</p>
+<p>Both functions take a <code>std::unique_ptr&lt;<a class="el" href="classecs_1_1Component.html">ecs::Component</a>&gt;</code> by value and nothing else. The world owns the component from the moment of the call, including when the call is rejected: the component is then released exactly once and the caller's handle is empty. An empty handle is reported with the entity's name (<code><a class="el" href="classecs_1_1Entity.html">ecs::Entity</a>("handle")::Component()</code>); the other rejections are made by the world and carry the world's name (<code><a class="el" href="classecs_1_1Container.html">ecs::Container</a>("world")::Component()</code>). Creating an <code>Entity</code> with a null container throws <code><a class="el" href="classecs_1_1Entity.html">ecs::Entity</a>: container is missing</code>.</p>
 <p>A second component of the same <code>Type</code> on the same entity <b>replaces</b> the first, so an entity has exactly one component of each type. Code that holds a <code>shared_ptr</code> to the replaced component keeps a valid object. The same type on different entities is kept for each.</p>
 <h1><a class="anchor" id="autotoc_md25"></a>
+Component access and ownership</h1>
+<p>The example in <code>src/example.cpp</code> is the one-page demonstration of everything in this section: a system that walks the positions, reads the velocity of each entity without creating anything, and skips an entity that has none.</p>
+<h2><a class="anchor" id="autotoc_md26"></a>
+Looking a component up</h2>
+<div class="fragment"><div class="line"><span class="keyword">const</span> std::string positionType = <span class="stringliteral">&quot;PositionComponent&quot;</span>;</div>
+<div class="line"><span class="keyword">const</span> std::string velocityType = <span class="stringliteral">&quot;VelocityComponent&quot;</span>;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// the component of one entity, as kind T; empty when there is none</span></div>
+<div class="line"><span class="keywordflow">if</span>(<span class="keyword">auto</span> velocity = this-&gt;Container-&gt;ComponentGet&lt;VelocityComponent&gt;(entity, velocityType))</div>
+<div class="line">{</div>
+<div class="line">    velocity-&gt;Apply(delta);</div>
+<div class="line">}</div>
+<div class="line"><span class="comment">// without a kind, any stored component</span></div>
+<div class="line">std::shared_ptr&lt;ecs::Component&gt; any = world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a00240591b7f0b650d528a3ee1302626f">ComponentGet</a>(entity, velocityType);</div>
+<div class="line"><span class="comment">// the same two calls on an entity, without the entity argument</span></div>
+<div class="line"><span class="keywordtype">bool</span> has = e-&gt;ComponentHas(velocityType);</div>
+<div class="ttc" id="aclassecs_1_1Container_html_a00240591b7f0b650d528a3ee1302626f"><div class="ttname"><a href="classecs_1_1Container.html#a00240591b7f0b650d528a3ee1302626f">ecs::Container::ComponentGet</a></div><div class="ttdeci">std::shared_ptr&lt; T &gt; ComponentGet(const std::string &amp;entity, const std::string &amp;type) const</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00196">Container.hpp:196</a></div></div>
+</div><!-- fragment --><ul>
+<li><code>ComponentGet&lt;T&gt;(entity, type)</code> returns a <code>std::shared_ptr&lt;T&gt;</code>. It is empty when the entity has no component of that type, when the type has never been used, when the entity is unknown, when either string is empty, and when the stored component is not a <code>T</code>. It never throws and never changes the world.</li>
+<li><code>ComponentHas(entity, type)</code> answers whether a component is stored under that type name. Only the name is compared, so the component's class does not matter. It never throws and never changes the world.</li>
+<li>Both calls take no lock and, given existing <code>std::string</code> arguments, allocate nothing. A short string literal (up to 15 characters) converts without allocating; a longer one allocates, so code that runs every pass should keep its type names in <code>std::string</code> constants.</li>
+<li>The result keeps its object valid if the component is later replaced or removed.</li>
+<li>The public table <code>Components[type][entity]</code> is unchanged and still inserts an empty entry for a type or entity it does not find, as <code>std::unordered_map::operator[]</code> does. To read without inserting, use <code>ComponentGet</code>, or <code>find()</code> or <code>at()</code> on the table.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md27"></a>
+Attaching a component</h2>
+<div class="fragment"><div class="line"><span class="keyword">auto</span> stored = e-&gt;Component(std::make_unique&lt;PositionComponent&gt;(config));</div>
+<div class="line">world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#abda38faef643ddea8f9d8de10ad2fa6f">Component</a>(std::move(unique));      <span class="comment">// the handle is empty afterwards</span></div>
+<div class="ttc" id="aclassecs_1_1Container_html_abda38faef643ddea8f9d8de10ad2fa6f"><div class="ttname"><a href="classecs_1_1Container.html#abda38faef643ddea8f9d8de10ad2fa6f">ecs::Container::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(std::unique_ptr&lt; ecs::Component &gt; component)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00466">Container.cpp:466</a></div></div>
+</div><!-- fragment --><p>The world becomes the sole owner of the component at the call. Raw pointers, the address of an object the caller owns, <code>std::shared_ptr</code>s and copies of a handle that the caller keeps do not compile. A second component of a type replaces the first; holders of the old one keep a valid object. See "Attaching
+components" for the rejected inputs.</p>
+<h2><a class="anchor" id="autotoc_md28"></a>
+Resources</h2>
+<div class="fragment"><div class="line">world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a03940a5f57cdaeb85c8135fe69b0b989">ResourceAdd</a>(<span class="stringliteral">&quot;tiles&quot;</span>, std::move(bytes));   <span class="comment">// moved, not copied</span></div>
+<div class="line"><span class="keywordflow">if</span>(<span class="keyword">auto</span> tiles = world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#acc5cd3d693a9484c85f1bd4a2797fc22">ResourceGet</a>(<span class="stringliteral">&quot;tiles&quot;</span>))     <span class="comment">// empty when the name is unknown</span></div>
+<div class="line">{</div>
+<div class="line">    use(tiles-&gt;Data);                            <span class="comment">// read-only, shared</span></div>
+<div class="line">}</div>
+<div class="ttc" id="aclassecs_1_1Container_html_a03940a5f57cdaeb85c8135fe69b0b989"><div class="ttname"><a href="classecs_1_1Container.html#a03940a5f57cdaeb85c8135fe69b0b989">ecs::Container::ResourceAdd</a></div><div class="ttdeci">void ResourceAdd(const std::string &amp;name, ecs::Resource r)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00719">Container.cpp:719</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_acc5cd3d693a9484c85f1bd4a2797fc22"><div class="ttname"><a href="classecs_1_1Container.html#acc5cd3d693a9484c85f1bd4a2797fc22">ecs::Container::ResourceGet</a></div><div class="ttdeci">std::shared_ptr&lt; const ecs::Resource &gt; ResourceGet(const std::string &amp;name) const</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00732">Container.cpp:732</a></div></div>
+</div><!-- fragment --><p><code>ResourceGet</code> returns a <code>std::shared_ptr&lt;const <a class="el" href="structecs_1_1Resource.html">ecs::Resource</a>&gt;</code> that shares the stored bytes without a copy. An unknown name gives an empty pointer; nothing is created and nothing is thrown. The data stays valid for as long as the pointer is held, even after the resource is replaced or the world is destroyed. Treat a resource as read-only once it has been added.</p>
+<h1><a class="anchor" id="autotoc_md29"></a>
 Threading</h1>
 <p>A <b>world</b> is an <code><a class="el" href="classecs_1_1Container.html">ecs::Container</a></code>. The <b>world thread</b> is the thread that runs the world's update passes: its own background thread once <code>Start()</code> has been called, or the one thread an application uses to call <code><a class="el" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update()</a></code>. Any other thread is an <b>outside caller</b>.</p>
 <p>The rule has three classes of operation:</p>
@@ -375,7 +417,7 @@ Threading</h1>
 <li><b>Unsupported from outside callers of a running world.</b> Direct changes to entities, components, systems or resources. The outcome is undefined. The supported alternative is <code>Container::Defer()</code>.</li>
 </ul>
 <p>A world that is not running (never started, and nobody is calling <code><a class="el" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update()</a></code>) may be changed directly from one thread, as before. Only one thread at a time may do so. <code>Start()</code> must be called once, by the thread that owns the world, before any other thread uses it. Code inside a world (systems, timer callbacks) has no new obligations: no locks and no new calls, and <code>Entities</code>, <code>Components</code>, <code>Systems</code> and the update order stay usable from the world thread exactly as before.</p>
-<h2><a class="anchor" id="autotoc_md26"></a>
+<h2><a class="anchor" id="autotoc_md30"></a>
 Operations</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -411,28 +453,30 @@ Operations</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>Container::Entity()</code>, <code>EntityDestroy()</code>, <code>Component()</code>, <code>ComponentDestroy()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone"></td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Container::ComponentGet()</code>, <code>ComponentHas()</code>, <code>Entity::ComponentGet()</code>, <code>Entity::ComponentHas()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">Take no lock and change nothing.    </td></tr>
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>Container::ResourceAdd()</code>, <code>Resources()</code>, <code>ResourceGet()</code>, <code>Export()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone"></td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>Container::Entities</code>, <code>Components</code>, <code>Systems</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">Public so systems can iterate them.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>Container::~Container()</code>   </td><td class="markdownTableBodyNone">Exclusive   </td><td class="markdownTableBodyNone">Discards pending deferred changes unrun, stops and joins the thread, delivers <code>Shutdown()</code> to every started system.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>System::MessageSubmit(message)</code>   </td><td class="markdownTableBodyNone">Any thread   </td><td class="markdownTableBodyNone">The system must be alive. Routing through <code>Container</code> or <code>Manager</code> is safe against removal; a direct pointer is not.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>System::MessagesWaiting()</code>, <code>messages</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone"><code>MessagesWaiting()</code> moves delivered messages into the queue, then counts the messages waiting to be read.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>System::Initialize()</code>, <code><a class="el" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update()</a></code>, <code>UpdateSystem()</code>, <code>Configure()</code>, <code>Export()</code>, <code>Shutdown()</code>, <code>TimerAdd()</code>, <code>TimerClear()</code>, <code>DeltaTimeGet()</code>, <code>Log()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone"></td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>System::Handle</code>, <code>Container</code>, <code>Components</code>, <code>Timing</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">Set during registration.    </td></tr>
+<td class="markdownTableBodyNone"><code>System::Initialize()</code>, <code><a class="el" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update()</a></code>, <code>UpdateSystem()</code>, <code>Configure()</code>, <code>Export()</code>, <code>Shutdown()</code>, <code>TimerAdd()</code>, <code>TimerClear()</code>, <code>DeltaTimeGet()</code>, <code>Log()</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone"></td></tr>
 <tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>System::Handle</code>, <code>Container</code>, <code>Components</code>, <code>Timing</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">Set during registration.    </td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>Entity</code>, <code>Component</code>   </td><td class="markdownTableBodyNone">World thread   </td><td class="markdownTableBodyNone">They change the world's tables.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md27"></a>
+<h2><a class="anchor" id="autotoc_md31"></a>
 Messages</h2>
 <p>A message accepted by <code>MessageSubmit()</code> on <code>Manager</code>, <code>Container</code> or <code>System</code> is received by the destination system exactly once while that system exists. Messages from one sender to one destination arrive in the order sent; no order is promised between senders. Sending does not wait for any update pass and does not call into the destination. A message becomes visible in <code>messages</code> at the start of the destination's next <code>UpdateSystem()</code> (or earlier, if the world thread calls <code>MessagesWaiting()</code>). A message sent during a pass to a system later in the update order is handled in that pass; a message to the sender itself, or to a system already updated in the pass, is handled in the next pass. A message is never handled inside the sender's call.</p>
 <p>If a system is removed while a message is on its way, the message is discarded with the system or the send fails as unknown; it is never delivered to a destroyed object. A malformed or unknown destination throws <code>std::runtime_error</code>, so callers on other threads should catch it.</p>
 <p>The mailbox is unbounded. The library never drops a message to save memory, so an application that needs back-pressure provides it.</p>
-<h2><a class="anchor" id="autotoc_md28"></a>
+<h2><a class="anchor" id="autotoc_md32"></a>
 Deferred changes</h2>
 <p><code>void Container::Defer(std::function&lt;void()&gt; fn)</code> hands a change to the world's own thread.</p>
 <ul>
@@ -455,9 +499,9 @@ Deferred changes</h2>
 <div class="line">    <a class="code hl_class" href="classecs_1_1Entity.html">ecs::Entity</a> *player = world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">Entity</a>();</div>
 <div class="line">    <span class="comment">// ... add components to player ...</span></div>
 <div class="line">});</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a4d33b403b0ddc78a7b730225fd187d01"><div class="ttname"><a href="classecs_1_1Container.html#a4d33b403b0ddc78a7b730225fd187d01">ecs::Container::Defer</a></div><div class="ttdeci">void Defer(std::function&lt; void()&gt; fn)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00595">Container.cpp:595</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a9a0c9c1a24491b801182702a14fd23cd"><div class="ttname"><a href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">ecs::Container::Entity</a></div><div class="ttdeci">ecs::Entity * Entity(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00491">Container.cpp:491</a></div></div>
-<div class="ttc" id="aclassecs_1_1Entity_html"><div class="ttname"><a href="classecs_1_1Entity.html">ecs::Entity</a></div><div class="ttdef"><b>Definition</b> <a href="Entity_8hpp_source.html#l00015">Entity.hpp:16</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a4d33b403b0ddc78a7b730225fd187d01"><div class="ttname"><a href="classecs_1_1Container.html#a4d33b403b0ddc78a7b730225fd187d01">ecs::Container::Defer</a></div><div class="ttdeci">void Defer(std::function&lt; void()&gt; fn)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00596">Container.cpp:596</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a9a0c9c1a24491b801182702a14fd23cd"><div class="ttname"><a href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">ecs::Container::Entity</a></div><div class="ttdeci">ecs::Entity * Entity(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00492">Container.cpp:492</a></div></div>
+<div class="ttc" id="aclassecs_1_1Entity_html"><div class="ttname"><a href="classecs_1_1Entity.html">ecs::Entity</a></div><div class="ttdef"><b>Definition</b> <a href="Entity_8hpp_source.html#l00018">Entity.hpp:19</a></div></div>
 </div><!-- fragment --><p>Two worlds messaging each other:</p>
 <div class="fragment"><div class="line"><span class="comment">// In a system of world &quot;a&quot;, on its world thread.</span></div>
 <div class="line"><span class="keywordtype">void</span> <a class="code hl_function" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update</a>()<span class="keyword"> override</span></div>
@@ -471,18 +515,47 @@ Deferred changes</h2>
 <div class="line">    this-&gt;MessageSubmit({{<span class="stringliteral">&quot;destination&quot;</span>, {{<span class="stringliteral">&quot;container&quot;</span>, <span class="stringliteral">&quot;a&quot;</span>}, {<span class="stringliteral">&quot;system&quot;</span>, <span class="stringliteral">&quot;ping&quot;</span>}}}});</div>
 <div class="line">}</div>
 <div class="ttc" id="atest__Lifecycle_8cpp_html_a71f74f11ed7240d70fab1feb70185260"><div class="ttname"><a href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update</a></div><div class="ttdeci">world Update()</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md29"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md33"></a>
 Log destination</h2>
 <p><code>LoggerSet(fn)</code> and <code>Log(message, level)</code> are safe from any thread at any time. Each <code>Log()</code> call goes to exactly one destination that was installed at some time during the call, and a call that starts after <code>LoggerSet()</code> returned uses the new destination. A destination may call <code>Log()</code> or <code>LoggerSet()</code> itself, because no lock is held while it runs. An empty function makes later <code>Log()</code> calls succeed and print nothing. The previous destination may still finish a call that began before the replacement, so it must stay callable until then.</p>
-<h2><a class="anchor" id="autotoc_md30"></a>
+<h2><a class="anchor" id="autotoc_md34"></a>
 Locks and deadlocks</h2>
 <p>The library uses six mutexes: the manager's container table, each container's mailbox table, deferred queue, log destination and start/stop state (<code>lifecycleLock</code>), and one per system mailbox. Each is a leaf. A thread holds at most one of them at a time, and none is held while user code runs (system methods, timer callbacks, message handlers, log destinations, deferred functions, or destructors of user objects). Sending never waits for a world to update; the blocking waits on library state are <code>~Manager</code> waiting for sends in progress (those never block), and an application thread waiting for a world's thread to end in <code>Stop()</code>, <code>Manager::Shutdown()</code> or a destructor. Code on a world thread never waits: a request from there to stop a world or the manager only records the request. As a result, worlds whose systems send messages to each other in both directions, or to themselves, cannot deadlock. An application's own locks are its own responsibility: do not hold one while calling a library function that your handlers also need under that lock.</p>
-<h2><a class="anchor" id="autotoc_md31"></a>
+<h2><a class="anchor" id="autotoc_md35"></a>
 Shutdown</h2>
 <p><code>Manager::Shutdown()</code> and <code>Manager::IsRunning()</code> are atomic. A request is visible to other threads in the next poll in practice. <code>IsRunning()</code> never goes back to <code>true</code>, and concurrent requests are idempotent. A request from inside a system only records the stop and cannot deadlock. A request from an application thread also stops every world that has its own thread and waits until it has ended, as described in "Start-up, shutdown and stopping". It does not destroy worlds.</p>
-<h1><a class="anchor" id="autotoc_md32"></a>
+<h1><a class="anchor" id="autotoc_md36"></a>
 Release notes</h1>
-<h2><a class="anchor" id="autotoc_md33"></a>
+<h2><a class="anchor" id="autotoc_md37"></a>
+1.7.0</h2>
+<p>Component lookups that do not change the world, a sole-ownership attach and shared read-only resources. This is a minor release although several changes are source-incompatible, following the precedent of 1.4.0 to 1.6.0; the migration of each is below. Plugins that call a changed function must be rebuilt (<code>the-seed build</code>); plugins that only define a component class and <code>create_component</code> keep working without a rebuild, because the changed functions are not part of what they call. This was checked by loading both kinds of plugin, built against 1.6.0, into 1.7.0: the factory-only plugin loaded and worked, and the plugin that called <code>Entity::Component(new ...)</code> failed with an undefined symbol.</p>
+<p>New:</p>
+<ul>
+<li><code>Container::ComponentGet&lt;T&gt;(entity, type)</code> and <code>ComponentHas(entity, type)</code>, and the same two on <code>Entity</code> without the entity argument. See "Component access and ownership".</li>
+<li><code>src/example.cpp</code> no longer reads through the table: it looks velocities up with <code>ComponentGet</code> and skips an entity that has none.</li>
+</ul>
+<p>Source-incompatible changes and their migration:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Old   </th><th class="markdownTableHeadNone">New    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>e-&gt;Component(new T(cfg))</code>   </td><td class="markdownTableBodyNone"><code>e-&gt;Component(std::make_unique&lt;T&gt;(cfg))</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>e-&gt;Component(loader.Create(...).release())</code>   </td><td class="markdownTableBodyNone"><code>e-&gt;Component(loader.Create(...))</code>, passing the <code>std::unique_ptr</code> itself    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>world-&gt;Component(shared)</code>   </td><td class="markdownTableBodyNone"><code>world-&gt;Component(std::move(unique))</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>(*Components)["T"][entity]</code> to read a component   </td><td class="markdownTableBodyNone"><code>Container-&gt;ComponentGet&lt;T&gt;(entity, "T")</code>, then test the result for empty    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>auto r = world-&gt;ResourceGet(name);</code> (a copy of the bytes, throws for an unknown name)   </td><td class="markdownTableBodyNone"><code>auto r = world-&gt;ResourceGet(name);</code> is a <code>std::shared_ptr&lt;const <a class="el" href="structecs_1_1Resource.html">ecs::Resource</a>&gt;</code>: test it for empty and read through <code>-&gt;</code>; an unknown name no longer throws   </td></tr>
+</table>
+<ul>
+<li><code>Entity::Component()</code> and <code>Container::Component()</code> take a <code>std::unique_ptr&lt;<a class="el" href="classecs_1_1Component.html">ecs::Component</a>&gt;</code> by value. The overloads taking a raw pointer and a <code>std::shared_ptr</code> are removed, so those forms stop compiling. The caller's handle is empty after the call, and a rejected component is released exactly once. The error texts and the rule that a second component of a type replaces the first are unchanged.</li>
+<li><code>Container::ResourceGet()</code> is <code>const</code> and returns <code>std::shared_ptr&lt;const <a class="el" href="structecs_1_1Resource.html">ecs::Resource</a>&gt;</code> without copying the bytes; an unknown name gives an empty pointer instead of an exception. A caller that modified the returned copy must now add a changed resource with <code>ResourceAdd()</code>.</li>
+<li><code>Container::ResourceAdd()</code> moves its argument when it is given a temporary or a <code>std::move()</code>d value.</li>
+</ul>
+<p>No data member or virtual function was added to or removed from a public class.</p>
+<h2><a class="anchor" id="autotoc_md38"></a>
 1.6.0</h2>
 <p>New <code>Container::Stop()</code>. No existing signature changed and <code>System</code> is unchanged. <code>Container</code> gained private members at its end, so code that embeds a <code>Container</code> by value must be rebuilt; no plugin needs rebuilding. The behaviours below changed. See "Start-up, shutdown and stopping" for the rules.</p>
 <ul>
@@ -511,7 +584,7 @@ Release notes</h1>
 <li>The program template and <code>src/example.cpp</code> call <code>ECS-&gt;Shutdown()</code> after their loops. Migration: add the call to an existing program that relies on process exit to end its world threads, before <code>main</code> returns.</li>
 </ul>
 <p>No plugin rebuild is required.</p>
-<h2><a class="anchor" id="autotoc_md34"></a>
+<h2><a class="anchor" id="autotoc_md39"></a>
 1.5.0</h2>
 <p>Public signatures and object layouts are unchanged, so nothing needs to be rebuilt. The behaviours below changed. See "Input validation" for the rules and the error table.</p>
 <ul>
@@ -524,7 +597,7 @@ Release notes</h1>
 <li>A second component of a type on the same entity replaces the first; before, the outcome was not defined.</li>
 <li>Creating an <code>Entity</code> with a null container throws.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md35"></a>
+<h2><a class="anchor" id="autotoc_md40"></a>
 1.4.0</h2>
 <ul>
 <li>New <code>Container::Defer()</code> hands a change to a running world's own thread. See "Threading".</li>
@@ -536,7 +609,7 @@ Release notes</h1>
 <li>Changing a running world from outside threads was always a data race. Wrap such a change in <code>Container::Defer()</code>.</li>
 <li><code>~Manager</code> waits for sends in progress and destroys its worlds from its body, which removes a race for embedding code that destroys a <code>Manager</code> while its world threads message each other.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md36"></a>
+<h2><a class="anchor" id="autotoc_md41"></a>
 1.3.0</h2>
 <ul>
 <li>The object layout of <code><a class="el" href="classecs_1_1Uuid.html">ecs::Uuid</a></code> changed (16 bytes, alignment 8), so plugins must be rebuilt against the new headers. <code>the-seed build</code> does this.</li>
@@ -547,10 +620,10 @@ Release notes</h1>
 <li><code>ecs-cpp.pc</code> carries <code>-std=c++20 -pthread</code>.</li>
 <li>The library no longer needs processor extensions and builds on 64-bit ARM.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md37"></a>
+<h2><a class="anchor" id="autotoc_md42"></a>
 1.2.0</h2>
 <p>The rules in "Changing systems and timers while they run" are now guaranteed. The object layout of <code><a class="el" href="classecs_1_1Container.html">ecs::Container</a></code>, <code><a class="el" href="classecs_1_1System.html">ecs::System</a></code> and <code><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></code> changed (private members only, no public signature changed), so plugins must be rebuilt against the new headers. <code>the-seed build</code> does this.</p>
-<h1><a class="anchor" id="autotoc_md38"></a>
+<h1><a class="anchor" id="autotoc_md43"></a>
 Running the tests</h1>
 <div class="fragment"><div class="line">./autogen.sh</div>
 <div class="line">./configure</div>
@@ -558,7 +631,7 @@ Running the tests</h1>
 <div class="line">make check</div>
 </div><!-- fragment --><p><code>make check</code> builds and runs every test program in <code>tests/</code> and finishes in a few seconds. Each program prints one <code>PASS:</code> or <code>FAIL:</code> line, followed by a summary (<code># TOTAL</code>, <code># PASS</code>, <code># FAIL</code>, <code># ERROR</code>). The command exits non-zero if any program fails, crashes or cannot start, and the <code>FAIL:</code> line names the program. The full output of each program is in <code>tests/&lt;program&gt;.log</code>, and the combined output of a failing run is in <code>tests/test-suite.log</code>.</p>
 <p>The tests need Catch2 v3 (<code>catch2-with-main</code> in pkg-config), for example <code>sudo apt install catch2</code>.</p>
-<h1><a class="anchor" id="autotoc_md39"></a>
+<h1><a class="anchor" id="autotoc_md44"></a>
 Sanitizer variants</h1>
 <p>Two opt-in variants run the same tests with a sanitizer built in:</p>
 <div class="fragment"><div class="line">make distclean</div>
@@ -570,15 +643,15 @@ Sanitizer variants</h1>
 <div class="line">make</div>
 <div class="line">make check</div>
 </div><!-- fragment --><p><code>address</code> enables AddressSanitizer together with UndefinedBehaviorSanitizer (memory errors, leaks and undefined behavior); <code>thread</code> enables ThreadSanitizer (data races). They correspond to the hosted <code>test (address+undefined)</code> and <code>test (thread)</code> checks. The sanitizer runtime options are fixed in <code>tests/Makefile.am</code>, so a local run behaves the same as the hosted one. Run <code>make distclean</code> before switching variants. Any other value for <code>--enable-sanitizer</code> stops <code>configure</code> with an error.</p>
-<h1><a class="anchor" id="autotoc_md40"></a>
+<h1><a class="anchor" id="autotoc_md45"></a>
 Known gaps</h1>
 <p><code>tests/known-gaps.txt</code> lists sanitizer findings that are already understood and are waiting for a planned fix. Each entry names the sanitizer variant, the test program, the test case, a text that must appear in the failure output, the finding, and the roadmap task that fixes it. The file currently has no entries.</p>
 <p>When a listed test case fails with the listed text, the run passes and prints a <code>KNOWN GAP:</code> line. Any other failure, in a listed or unlisted test case, still fails the run. If a listed test case passes, the run prints a <code>STALE KNOWN GAP:</code> line: remove the entry. If an entry is malformed or names a test case that does not exist, the run fails with a <code>MALFORMED KNOWN GAP:</code> line. Entries are removed when the fix lands; the file is never used to hide a new defect.</p>
-<h1><a class="anchor" id="autotoc_md41"></a>
+<h1><a class="anchor" id="autotoc_md46"></a>
 Continuous integration</h1>
 <p>Every pull request to <code>master</code>, every push to <code>master</code> and every manual run builds the library and runs <code>make check</code> as four separate checks: <code>test (plain)</code>, <code>test (address+undefined)</code>, <code>test (thread)</code> and <code>test (plain (arm64))</code>, which runs the plain variant on a 64-bit ARM machine. These runs have read-only access to the repository and no secrets, so proposals from forks are checked the same way as proposals from this repository. A manual run accepts a <code>repeat</code> count to run the tests several times in a row.</p>
 <p>The Doxygen documentation is regenerated and committed only by pushes to <code>master</code>, never by proposals.</p>
-<h1><a class="anchor" id="autotoc_md42"></a>
+<h1><a class="anchor" id="autotoc_md47"></a>
 Build library for Windows</h1>
 <ul>
 <li>Build and install libecs-cpp</li>
@@ -601,7 +674,7 @@ Build library for Windows</h1>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 08:32:00 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 10:00:26 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

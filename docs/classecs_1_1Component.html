@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.6.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
    </div>
   </td>
  </tr>
@@ -89,10 +89,16 @@ Inheritance diagram for ecs::Component:</div>
 <map name="aecs_1_1Component_inherit__map" id="aecs_1_1Component_inherit__map">
 <area shape="rect" title=" " alt="" coords="161,5,287,31"/>
 <area shape="rect" href="classOtherComponent.html" title=" " alt="" coords="5,79,139,104"/>
-<area shape="poly" title=" " alt="" coords="189,39,98,81,96,76,186,34"/>
+<area shape="poly" title=" " alt="" coords="182,38,91,81,89,76,179,34"/>
+<area shape="poly" title=" " alt="" coords="195,39,105,81,103,76,193,34"/>
 <area shape="rect" href="classTestComponent.html" title=" " alt="" coords="163,79,285,104"/>
-<area shape="poly" title=" " alt="" coords="218,44,220,78,214,79,213,45"/>
-<area shape="poly" title=" " alt="" coords="235,45,234,79,228,78,230,44"/>
+<area shape="poly" title=" " alt="" coords="209,44,209,62,213,78,208,79,204,63,204,44"/>
+<area shape="poly" title=" " alt="" coords="227,44,227,79,221,79,221,44"/>
+<area shape="poly" title=" " alt="" coords="244,44,244,63,240,79,235,78,239,62,239,44"/>
+<area shape="rect" href="classPositionLike.html" title=" " alt="" coords="310,79,410,104"/>
+<area shape="poly" title=" " alt="" coords="259,34,339,76,337,81,256,39"/>
+<area shape="rect" href="classVelocityLike.html" title=" " alt="" coords="434,79,534,104"/>
+<area shape="poly" title=" " alt="" coords="280,32,443,76,441,81,278,37"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -119,7 +125,7 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>World thread only: a component lives in its world's tables, so it must be used and changed from the thread that drives the world (see <a class="el" href="classecs_1_1Container.html">Container</a>). </p>
 
-<p class="definition">Definition at line <a class="el" href="Component_8hpp_source.html#l00011">11</a> of file <a class="el" href="Component_8hpp_source.html">Component.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Component_8hpp_source.html#l00012">12</a> of file <a class="el" href="Component_8hpp_source.html">Component.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a90368789c17bd4fdcf0485ee3b477773" name="a90368789c17bd4fdcf0485ee3b477773"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a90368789c17bd4fdcf0485ee3b477773">&#9670;&#160;</a></span>Component() <span class="overload">[1/2]</span></h2>
@@ -139,7 +145,7 @@ Public Attributes</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="Component_8cpp_source.html#l00005">5</a> of file <a class="el" href="Component_8cpp_source.html">Component.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">    5</span>                        :</div>
 <div class="line"><span class="lineno">    6</span>        <a class="code hl_variable" href="classecs_1_1Component.html#a1c50d76636f1b23c3a255fec600df45f">Handle</a>(<a class="code hl_class" href="classecs_1_1Uuid.html">ecs::Uuid</a>().Get()) {}</div>
-<div class="ttc" id="aclassecs_1_1Component_html_a1c50d76636f1b23c3a255fec600df45f"><div class="ttname"><a href="classecs_1_1Component.html#a1c50d76636f1b23c3a255fec600df45f">ecs::Component::Handle</a></div><div class="ttdeci">const std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00017">Component.hpp:17</a></div></div>
+<div class="ttc" id="aclassecs_1_1Component_html_a1c50d76636f1b23c3a255fec600df45f"><div class="ttname"><a href="classecs_1_1Component.html#a1c50d76636f1b23c3a255fec600df45f">ecs::Component::Handle</a></div><div class="ttdeci">const std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00018">Component.hpp:18</a></div></div>
 <div class="ttc" id="aclassecs_1_1Uuid_html"><div class="ttname"><a href="classecs_1_1Uuid.html">ecs::Uuid</a></div><div class="ttdef"><b>Definition</b> <a href="Uuid_8hpp_source.html#l00013">Uuid.hpp:14</a></div></div>
 </div><!-- fragment -->
 <p class="reference">Referenced by <a class="el" href="test__Entity_8cpp_source.html#l00132">TEST_CASE()</a>.</p>
@@ -217,7 +223,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classTestComponent.html#ac2b68b66c8b1ad399010f4f4e2df8541">TestComponent</a>, <a class="el" href="classTestComponent.html#ac2b68b66c8b1ad399010f4f4e2df8541">TestComponent</a>, and <a class="el" href="classOtherComponent.html#a161605d62c6d46599301239cc24a8de5">OtherComponent</a>.</p>
+<p>Implemented in <a class="el" href="classTestComponent.html#ac2b68b66c8b1ad399010f4f4e2df8541">TestComponent</a>, <a class="el" href="classTestComponent.html#ac2b68b66c8b1ad399010f4f4e2df8541">TestComponent</a>, <a class="el" href="classOtherComponent.html#a161605d62c6d46599301239cc24a8de5">OtherComponent</a>, <a class="el" href="classPositionLike.html#a6e4a5efd293ebe25642fddce583f4b08">PositionLike</a>, and <a class="el" href="classVelocityLike.html#acad1c8e68e120e139f3b5d7d0f6bd3d9">VelocityLike</a>.</p>
 
 </div>
 </div>
@@ -234,7 +240,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Component_8hpp_source.html#l00019">19</a> of file <a class="el" href="Component_8hpp_source.html">Component.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Component_8hpp_source.html#l00020">20</a> of file <a class="el" href="Component_8hpp_source.html">Component.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="test__Entity_8cpp_source.html#l00132">TEST_CASE()</a>.</p>
 
@@ -252,7 +258,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Component_8hpp_source.html#l00017">17</a> of file <a class="el" href="Component_8hpp_source.html">Component.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Component_8hpp_source.html#l00018">18</a> of file <a class="el" href="Component_8hpp_source.html">Component.hpp</a>.</p>
 
 </div>
 </div>
@@ -268,9 +274,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Component_8hpp_source.html#l00018">18</a> of file <a class="el" href="Component_8hpp_source.html">Component.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Component_8hpp_source.html#l00019">19</a> of file <a class="el" href="Component_8hpp_source.html">Component.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="test__Entity_8cpp_source.html#l00080">OtherComponent::OtherComponent()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00132">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00064">TestComponent::TestComponent()</a>, and <a class="el" href="test__Entity_8cpp_source.html#l00012">TestComponent::TestComponent()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="test__Entity_8cpp_source.html#l00080">OtherComponent::OtherComponent()</a>, <a class="el" href="bench__component__get_8cpp_source.html#l00013">PositionLike::PositionLike()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00132">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00064">TestComponent::TestComponent()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00012">TestComponent::TestComponent()</a>, and <a class="el" href="bench__component__get_8cpp_source.html#l00029">VelocityLike::VelocityLike()</a>.</p>
 
 </div>
 </div>
@@ -281,7 +287,7 @@ Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 08:31:59 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 10:00:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

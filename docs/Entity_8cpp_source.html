@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.6.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
    </div>
   </td>
  </tr>
@@ -130,55 +130,78 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
 <div class="foldopen" id="foldopen00043" data-start="{" data-end="}">
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classecs_1_1Entity.html#ab074dc6ad97a7be45cfbfe7bcc38c8f8">   43</a></span>    std::shared_ptr&lt;ecs::Component&gt; <a class="code hl_function" href="classecs_1_1Entity.html#ab074dc6ad97a7be45cfbfe7bcc38c8f8">Entity::Component</a>(<a class="code hl_class" href="classecs_1_1Component.html">ecs::Component</a> *component)</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classecs_1_1Entity.html#a273a2367f71281fc07272da6c6e17936">   43</a></span>    std::shared_ptr&lt;ecs::Component&gt; <a class="code hl_function" href="classecs_1_1Entity.html#a273a2367f71281fc07272da6c6e17936">Entity::Component</a>(std::unique_ptr&lt;ecs::Component&gt; component)</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    {</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        <span class="keywordflow">if</span>(component == <span class="keyword">nullptr</span>)</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        <span class="keywordflow">if</span>(!component)</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        {</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;ecs::Entity(\&quot;&quot;</span> + this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a> + <span class="stringliteral">&quot;\&quot;)::Component(): component is missing.&quot;</span>);</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        }</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="comment">// The pointer is owned from here on, including when the world rejects it.</span></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        std::shared_ptr&lt;ecs::Component&gt; c(component);</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        c-&gt;EntityHandle = this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>;</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a48068d982dcc73594f16598f14eafa08">Component</a>(c);</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        <span class="keywordflow">return</span> c;</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    }</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        component-&gt;EntityHandle = this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        <span class="comment">// A rejection releases the component once, inside the container call.</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#abda38faef643ddea8f9d8de10ad2fa6f">Component</a>(std::move(component));</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    }</div>
 </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
-<div class="foldopen" id="foldopen00056" data-start="{" data-end="}">
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classecs_1_1Entity.html#a50b301755a768bbceaecae49580f6ca7">   56</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1Entity.html#a50b301755a768bbceaecae49580f6ca7">Entity::ComponentDestroy</a>(<span class="keyword">const</span> std::string &amp;type)</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    {</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aa39a74f84349e007bb4219251a37dbd1">ComponentDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>, type);</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    }</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="foldopen" id="foldopen00054" data-start="{" data-end="}">
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classecs_1_1Entity.html#adb3ee9ddb1974e5ad67f800916f35655">   54</a></span>    <span class="keyword">const</span> std::shared_ptr&lt;ecs::Component&gt; *<a class="code hl_function" href="classecs_1_1Entity.html#adb3ee9ddb1974e5ad67f800916f35655">Entity::componentFind</a>(<span class="keyword">const</span> std::string &amp;type)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keyword">auto</span> byType = this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">Components</a>.find(type);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keywordflow">if</span>(byType == this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>-&gt;<a class="code hl_variable" href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">Components</a>.end())</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        {</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        }</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        <span class="keyword">auto</span> byEntity = byType-&gt;second.find(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        <span class="keywordflow">if</span>(byEntity == byType-&gt;second.end())</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        {</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        }</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keywordflow">return</span> byEntity-&gt;second ? &amp;byEntity-&gt;second : <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    }</div>
 </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
-<div class="foldopen" id="foldopen00061" data-start="{" data-end="}">
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classecs_1_1Entity.html#ac842571fbdad74d5ed6525c42552e8bb">   61</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1Entity.html#ac842571fbdad74d5ed6525c42552e8bb">Entity::Destroy</a>()</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    {</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a7fb9378c11ac55f929249d52a0fdd066">EntityDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>);</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    }</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="foldopen" id="foldopen00069" data-start="{" data-end="}">
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="classecs_1_1Entity.html#aeded87e1970cb4daa3423cfa2f634927">   69</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classecs_1_1Entity.html#aeded87e1970cb4daa3423cfa2f634927">Entity::ComponentHas</a>(<span class="keyword">const</span> std::string &amp;type)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_function" href="classecs_1_1Entity.html#adb3ee9ddb1974e5ad67f800916f35655">componentFind</a>(type) != <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    }</div>
 </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>}</div>
-<div class="ttc" id="aclassecs_1_1Component_html"><div class="ttname"><a href="classecs_1_1Component.html">ecs::Component</a></div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00011">Component.hpp:12</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00078">Container.hpp:79</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a48068d982dcc73594f16598f14eafa08"><div class="ttname"><a href="classecs_1_1Container.html#a48068d982dcc73594f16598f14eafa08">ecs::Container::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(std::shared_ptr&lt; ecs::Component &gt; c)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00466">Container.cpp:466</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a6636742fd18a1acc8cfd040a2e9f73a7"><div class="ttname"><a href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">ecs::Container::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList Components</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00269">Container.hpp:269</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a7fb9378c11ac55f929249d52a0fdd066"><div class="ttname"><a href="classecs_1_1Container.html#a7fb9378c11ac55f929249d52a0fdd066">ecs::Container::EntityDestroy</a></div><div class="ttdeci">void EntityDestroy(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00705">Container.cpp:705</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_aa39a74f84349e007bb4219251a37dbd1"><div class="ttname"><a href="classecs_1_1Container.html#aa39a74f84349e007bb4219251a37dbd1">ecs::Container::ComponentDestroy</a></div><div class="ttdeci">void ComponentDestroy(const std::string &amp;entity, const std::string &amp;type)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00742">Container.cpp:742</a></div></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="foldopen" id="foldopen00074" data-start="{" data-end="}">
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classecs_1_1Entity.html#a50b301755a768bbceaecae49580f6ca7">   74</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1Entity.html#a50b301755a768bbceaecae49580f6ca7">Entity::ComponentDestroy</a>(<span class="keyword">const</span> std::string &amp;type)</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    {</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aa39a74f84349e007bb4219251a37dbd1">ComponentDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>, type);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    }</div>
+</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="foldopen" id="foldopen00079" data-start="{" data-end="}">
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="classecs_1_1Entity.html#ac842571fbdad74d5ed6525c42552e8bb">   79</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1Entity.html#ac842571fbdad74d5ed6525c42552e8bb">Entity::Destroy</a>()</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    {</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        this-&gt;<a class="code hl_class" href="classecs_1_1Container.html">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a7fb9378c11ac55f929249d52a0fdd066">EntityDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>);</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    }</div>
+</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>}</div>
+<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00080">Container.hpp:81</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a6636742fd18a1acc8cfd040a2e9f73a7"><div class="ttname"><a href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">ecs::Container::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList Components</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00317">Container.hpp:317</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a7fb9378c11ac55f929249d52a0fdd066"><div class="ttname"><a href="classecs_1_1Container.html#a7fb9378c11ac55f929249d52a0fdd066">ecs::Container::EntityDestroy</a></div><div class="ttdeci">void EntityDestroy(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00706">Container.cpp:706</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aa39a74f84349e007bb4219251a37dbd1"><div class="ttname"><a href="classecs_1_1Container.html#aa39a74f84349e007bb4219251a37dbd1">ecs::Container::ComponentDestroy</a></div><div class="ttdeci">void ComponentDestroy(const std::string &amp;entity, const std::string &amp;type)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00747">Container.cpp:747</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_abda38faef643ddea8f9d8de10ad2fa6f"><div class="ttname"><a href="classecs_1_1Container.html#abda38faef643ddea8f9d8de10ad2fa6f">ecs::Container::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(std::unique_ptr&lt; ecs::Component &gt; component)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00466">Container.cpp:466</a></div></div>
 <div class="ttc" id="aclassecs_1_1Entity_html_a0c975b301a889863e025904bdc13a584"><div class="ttname"><a href="classecs_1_1Entity.html#a0c975b301a889863e025904bdc13a584">ecs::Entity::Entity</a></div><div class="ttdeci">Entity(ecs::Container *container)</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00008">Entity.cpp:8</a></div></div>
-<div class="ttc" id="aclassecs_1_1Entity_html_a50b301755a768bbceaecae49580f6ca7"><div class="ttname"><a href="classecs_1_1Entity.html#a50b301755a768bbceaecae49580f6ca7">ecs::Entity::ComponentDestroy</a></div><div class="ttdeci">void ComponentDestroy(const std::string &amp;type)</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00056">Entity.cpp:56</a></div></div>
+<div class="ttc" id="aclassecs_1_1Entity_html_a273a2367f71281fc07272da6c6e17936"><div class="ttname"><a href="classecs_1_1Entity.html#a273a2367f71281fc07272da6c6e17936">ecs::Entity::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(std::unique_ptr&lt; ecs::Component &gt; component)</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00043">Entity.cpp:43</a></div></div>
+<div class="ttc" id="aclassecs_1_1Entity_html_a50b301755a768bbceaecae49580f6ca7"><div class="ttname"><a href="classecs_1_1Entity.html#a50b301755a768bbceaecae49580f6ca7">ecs::Entity::ComponentDestroy</a></div><div class="ttdeci">void ComponentDestroy(const std::string &amp;type)</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00074">Entity.cpp:74</a></div></div>
 <div class="ttc" id="aclassecs_1_1Entity_html_a7c063976528df7261dfcb068b06c118e"><div class="ttname"><a href="classecs_1_1Entity.html#a7c063976528df7261dfcb068b06c118e">ecs::Entity::Export</a></div><div class="ttdeci">nlohmann::json Export() const</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00026">Entity.cpp:26</a></div></div>
-<div class="ttc" id="aclassecs_1_1Entity_html_ab074dc6ad97a7be45cfbfe7bcc38c8f8"><div class="ttname"><a href="classecs_1_1Entity.html#ab074dc6ad97a7be45cfbfe7bcc38c8f8">ecs::Entity::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(ecs::Component *component)</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00043">Entity.cpp:43</a></div></div>
-<div class="ttc" id="aclassecs_1_1Entity_html_ac842571fbdad74d5ed6525c42552e8bb"><div class="ttname"><a href="classecs_1_1Entity.html#ac842571fbdad74d5ed6525c42552e8bb">ecs::Entity::Destroy</a></div><div class="ttdeci">void Destroy()</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00061">Entity.cpp:61</a></div></div>
-<div class="ttc" id="aclassecs_1_1Entity_html_acd3b2e6f744c9dbbafa52abe97183599"><div class="ttname"><a href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">ecs::Entity::Handle</a></div><div class="ttdeci">const std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="Entity_8hpp_source.html#l00023">Entity.hpp:23</a></div></div>
+<div class="ttc" id="aclassecs_1_1Entity_html_ac842571fbdad74d5ed6525c42552e8bb"><div class="ttname"><a href="classecs_1_1Entity.html#ac842571fbdad74d5ed6525c42552e8bb">ecs::Entity::Destroy</a></div><div class="ttdeci">void Destroy()</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00079">Entity.cpp:79</a></div></div>
+<div class="ttc" id="aclassecs_1_1Entity_html_acd3b2e6f744c9dbbafa52abe97183599"><div class="ttname"><a href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">ecs::Entity::Handle</a></div><div class="ttdeci">const std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="Entity_8hpp_source.html#l00026">Entity.hpp:26</a></div></div>
+<div class="ttc" id="aclassecs_1_1Entity_html_adb3ee9ddb1974e5ad67f800916f35655"><div class="ttname"><a href="classecs_1_1Entity.html#adb3ee9ddb1974e5ad67f800916f35655">ecs::Entity::componentFind</a></div><div class="ttdeci">const std::shared_ptr&lt; ecs::Component &gt; * componentFind(const std::string &amp;type) const</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00054">Entity.cpp:54</a></div></div>
+<div class="ttc" id="aclassecs_1_1Entity_html_aeded87e1970cb4daa3423cfa2f634927"><div class="ttname"><a href="classecs_1_1Entity.html#aeded87e1970cb4daa3423cfa2f634927">ecs::Entity::ComponentHas</a></div><div class="ttdeci">bool ComponentHas(const std::string &amp;type) const</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00069">Entity.cpp:69</a></div></div>
 <div class="ttc" id="aclassecs_1_1Uuid_html"><div class="ttname"><a href="classecs_1_1Uuid.html">ecs::Uuid</a></div><div class="ttdef"><b>Definition</b> <a href="Uuid_8hpp_source.html#l00013">Uuid.hpp:14</a></div></div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html"><div class="ttname"><a href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a></div><div class="ttdoc">a class to store JSON values</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l17281">json.hpp:17282</a></div></div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html_acdf9b3aab82dcf443dd91ca5ec06b80c"><div class="ttname"><a href="classnlohmann_1_1basic__json.html#acdf9b3aab82dcf443dd91ca5ec06b80c">nlohmann::basic_json::find</a></div><div class="ttdeci">iterator find(KeyT &amp;&amp;key)</div><div class="ttdoc">find an element in a JSON object</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l19600">json.hpp:19600</a></div></div>
 <div class="ttc" id="aecs_8hpp_html"><div class="ttname"><a href="ecs_8hpp.html">ecs.hpp</a></div></div>
-<div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00007">Component.hpp:8</a></div></div>
+<div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00008">Component.hpp:9</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 08:31:59 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 10:00:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
