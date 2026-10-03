@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen graphviz catch2 uuid-dev
+          sudo apt-get install -y doxygen graphviz catch2
 
       - name: Prepare Doxyfile
         # Use configure script to generate Doxyfile (Doxyfile.in must exist)

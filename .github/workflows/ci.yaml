@@ -22,7 +22,7 @@ concurrency:
 jobs:
   test:
     name: test (${{ matrix.name }})
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.runner || 'ubuntu-24.04' }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -31,6 +31,7 @@ jobs:
           - { name: plain, sanitizer: "" }
           - { name: address+undefined, sanitizer: address }
           - { name: thread, sanitizer: thread }
+          - { name: plain (arm64), sanitizer: "", runner: ubuntu-24.04-arm }
 
     steps:
       - name: Check out repository
@@ -41,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential autoconf automake libtool pkg-config catch2 uuid-dev
+          sudo apt-get install -y build-essential autoconf automake libtool pkg-config catch2
 
       - name: Lower address randomisation for the sanitizer runtime
         if: matrix.sanitizer != ''
@@ -53,6 +54,13 @@ jobs:
         run: |
           ./autogen.sh
           ./configure ${SANITIZER:+--enable-sanitizer=$SANITIZER}
+
+      - name: Check the build uses no processor-specific flags
+        run: |
+          if grep -nE -- '-m(avx|sse|ssse3|fma|bmi)|-march=|-mtune=native' src/Makefile tests/Makefile; then
+            echo "::error::processor-specific compiler flags found in the generated Makefiles"
+            exit 1
+          fi
 
       - name: Build
         run: make -j"$(nproc)"

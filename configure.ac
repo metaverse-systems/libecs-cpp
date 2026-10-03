@@ -1,5 +1,21 @@
 AC_PREREQ([2.71])
 AC_INIT([libecs-cpp],[1.2.0],[tim@metaverse.systems],[libecs-cpp],[https://metaverse.systems])
+
+AC_ARG_ENABLE([builtin-uuid],
+	AS_HELP_STRING([--enable-builtin-uuid],
+		[Retired: has no effect; the portable identifier generator is always used]),
+	[builtin_uuid="${enableval}"],
+	[builtin_uuid=""])
+
+AS_CASE(["$builtin_uuid"],
+	[no], [
+		AC_MSG_ERROR([--disable-builtin-uuid is no longer supported: libecs-cpp always uses its own portable identifier generator and no longer uses libuuid. Remove the option.])
+	],
+	[""], [],
+	[
+		AC_MSG_WARN([--enable-builtin-uuid has no effect and will be removed: the portable identifier generator is always used])
+	])
+
 LT_INIT
 AC_CONFIG_SRCDIR([src/Manager.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -12,18 +28,6 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CXX
 AM_INIT_AUTOMAKE([subdir-objects])
 
-AC_ARG_ENABLE([builtin-uuid],
-	AS_HELP_STRING([--enable-builtin-uuid],
-		[Use builtin uuid implementation instead of libuuid [default=yes]]),
-	[builtin_uuid="${enableval}"])
-
-AM_CONDITIONAL([BUILTIN_UUID], [test "$builtin_uuid" != "no"])
-
-AS_IF([test "$builtin_uuid" != "no" ], [
-    AC_DEFINE([USE_BUILTIN_UUID], [1], [Define if using builtin uuid.])
-])
-
-PKG_CHECK_MODULES([UUID], uuid, [], [dont_abort_configure="yes"])
 PKG_CHECK_MODULES([CATCH2], [catch2-with-main])
 
 AC_ARG_ENABLE([sanitizer],
