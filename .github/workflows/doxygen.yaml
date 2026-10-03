@@ -1,50 +1,63 @@
-name: Generate Doxygen Documentation
+name: Publish Documentation
 
 on:
   push:
     branches: [master]
-    paths-ignore: ['docs/**']
+  workflow_dispatch:
 
 permissions: {}
 
 concurrency:
-  group: doxygen-master
+  group: pages
   cancel-in-progress: false
 
 jobs:
-  doxygen:
-    name: Build & Deploy Doxygen Docs
+  build:
+    name: Build documentation
     runs-on: ubuntu-24.04
     permissions:
-      contents: write
-    # Only the accepted main line, and never for the generated docs commit
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && !contains(github.event.head_commit.message, '[skip ci]')
+      contents: read
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
-          persist-credentials: true  # so we can push back to repo
-          fetch-depth: 0            # needed to push commits
+          persist-credentials: false
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen graphviz catch2
-
-      - name: Prepare Doxyfile
-        # Use configure script to generate Doxyfile (Doxyfile.in must exist)
-        run: |
-          ./autogen.sh
-          ./configure
+          sudo apt-get install -y build-essential autoconf automake libtool pkg-config doxygen graphviz
 
       - name: Generate documentation
-        run: doxygen Doxyfile
-
-      - name: Commit and push docs
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs
-          git commit -m "chore: update Doxygen docs [skip ci]" || echo "No changes to commit"
-          git push origin HEAD:master
+          ./autogen.sh
+          ./configure --enable-tests=no
+          make doxygen
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: doxygen/html
+
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    runs-on: ubuntu-24.04
+    # Pages must be enabled once by the repository owner (Settings, Pages, Source: GitHub Actions);
+    # until then this job reports an error without failing the workflow's build.
+    continue-on-error: true
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

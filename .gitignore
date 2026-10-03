@@ -58,3 +58,7 @@ src/example
 config.h.in~
 configure.ac~
 configure~
+
+# Generated reference documentation
+/doxygen/
+/docs/

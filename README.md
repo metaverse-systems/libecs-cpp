@@ -1128,7 +1128,11 @@ These runs have read-only access to the repository and no secrets, so proposals 
 the same way as proposals from this repository. A manual run accepts a `repeat` count to run the tests
 several times in a row.
 
-The Doxygen documentation is regenerated and committed only by pushes to `master`, never by proposals.
+The reference documentation is not stored in the repository. `make doxygen` writes it to `doxygen/html` in the
+build directory (it needs `doxygen` and `graphviz`). A read-only `docs` check runs with every proposal, and the
+site is published to GitHub Pages only by pushes to `master`, never by proposals.
+The repository owner enables publishing once, under Settings, Pages, Build and deployment, Source: GitHub Actions;
+until then the publishing job reports an error and the site is not updated.
 
 ## Build library for Windows
 
