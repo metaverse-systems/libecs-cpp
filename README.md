@@ -191,11 +191,12 @@ later standard must put its own `-std=` after the pkg-config flags.
 
 ## Input validation
 
-Every public operation checks its input before it changes anything. A rejection throws a catchable
-`std::runtime_error`, leaves the library exactly as it was (no mailbox gains a message, no table gains an
-entry, no lock is taken and no counter is touched), and the world stays usable. Error text has the form
-`<function>: <condition>`, where the function is written like `ecs::Manager::MessageSubmit()`,
-`ecs::Container("world")::System()` or `ecs::Entity("handle")::Component()`. A rejection from inside a
+Message submission, system registration, component attachment and the `Entity` constructors check their
+input before they change anything. A rejection throws a catchable `std::runtime_error`, leaves the library
+exactly as it was (no mailbox gains a message, no table gains an entry, and a rejected message takes no
+lock and touches no counter), and the world stays usable. Error text has the form
+`<function>: <condition>.`, where the function is written like `ecs::Manager::MessageSubmit()` or
+`ecs::Container("world")::System()`, and a wrong type is reported as `, got <type>`. A rejection from inside a
 system's `Update()` can be caught there. An uncaught one follows the existing path for any exception: it is
 logged with the system's identifier and rethrown by `Update()`.
 
@@ -253,7 +254,9 @@ until the outermost walk ends, and raw pointers to it must not be used after the
 | `EntityHandle` names no entity in the world (never created, destroyed, or misspelled) | `entity "<handle>" does not exist` | Unchanged. |
 
 `Entity::Component()` takes a raw pointer and owns it from the moment of the call, including when the call
-is rejected: the component is then deleted. Creating an `Entity` with a null container throws
+is rejected: the component is then deleted. A null pointer is reported with the entity's name
+(`ecs::Entity("handle")::Component()`); the other rejections are made by the world and carry the world's
+name (`ecs::Container("world")::Component()`). Creating an `Entity` with a null container throws
 `ecs::Entity: container is missing`.
 
 A second component of the same `Type` on the same entity **replaces** the first, so an entity has exactly
@@ -414,11 +417,9 @@ changed. See "Input validation" for the rules and the error table.
   send should catch `std::runtime_error`.
 * An empty world name or system name in a message is rejected. A world created with an empty handle can no
   longer be addressed by message; give it a non-empty handle.
-* A message sent directly to a world that names an unknown system reports the world that received it, not
-  the world named in the message.
 * Registering a system under an identifier that is still in use replaces the earlier system: one system
-  remains, at the old position in the update order, started and updated once. Before, the outcome was
-  unspecified. Code that registered a second system under a used identifier on purpose should remove the
+  remains, at the old position in the update order, started and updated once. Before, the new system was
+  also listed a second time, so it was started and updated twice in every pass. Code that registered a second system under a used identifier on purpose should remove the
   first with `SystemDestroy()` if it needs the new one at the end of the order.
 * A null system, a system with an empty `Handle` and a system that is already registered are rejected.
   A rejected `System()` call destroys the system that was passed in (an already registered object is not

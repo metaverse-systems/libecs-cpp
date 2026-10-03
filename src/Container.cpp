@@ -179,10 +179,12 @@ namespace ecs
         if(existing != this->Systems.end())
         {
             // Same handle: the new instance takes the old one's place in the update order.
+            // Match on the old instance, not the handle: a slot nulled earlier in this walk by a
+            // removal keeps the handle but must stay empty.
             std::unique_ptr<ecs::System> old = std::move(existing->second);
             for(auto &slot : this->system_order)
             {
-                if(slot.handle == handle) slot.system = ptr;
+                if(slot.system == old.get()) slot.system = ptr;
             }
             existing->second = std::move(system);
             {

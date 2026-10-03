@@ -1124,6 +1124,33 @@ TEST_CASE("Remove then register in one pass keeps its meaning", "[Validation]")
     REQUIRE(world.trace->handlesIn(2) == std::vector<std::string>{"A", "C", "B"});
 }
 
+TEST_CASE("Replacing a system registered after a removal in the same pass keeps one slot", "[Validation]")
+{
+    World world;
+    CountingSystem *a = nullptr;
+    world.add("A", &a);
+    world.add("B");
+    world.add("C");
+    auto b2 = std::make_shared<Counters>();
+    auto b3 = std::make_shared<Counters>();
+    bool done = false;
+    a->onUpdate = [&]() {
+        if(done) return;
+        done = true;
+        world.container->SystemDestroy("B");
+        world.container->System(world.make("B", b2));
+        world.container->System(world.make("B", b3));
+    };
+
+    world.pass();
+    REQUIRE(world.trace->handlesIn(1) == std::vector<std::string>{"A", "C"});
+
+    world.pass();
+    REQUIRE(b2->updated == 0);
+    REQUIRE(b3->updated == 1);
+    REQUIRE(world.trace->handlesIn(2) == std::vector<std::string>{"A", "C", "B"});
+}
+
 TEST_CASE("Null system is rejected", "[Validation]")
 {
     World world;
