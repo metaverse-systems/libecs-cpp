@@ -7,6 +7,10 @@
 #include <memory>
 #include <mutex>
 #include <vector>
+#include <chrono>
+#include <concepts>
+#include <type_traits>
+#include <libecs-cpp/Clock.hpp>
 #include <libecs-cpp/Timing.hpp>
 
 namespace ecs
@@ -14,29 +18,53 @@ namespace ecs
     class Container;
     class System;
 
-    /*! A callback that fires after an interval, owned by a System.
+    /*! A callback that fires after a length of time, owned by a System.
      *
-     * A repeating timer (the default) fires every interval until it is cleared. A one-shot timer fires
+     * A repeating timer (the default) fires every length until it is cleared. A one-shot timer fires
      * once and is then discarded; if its callback adds a new timer under the same name, the new timer is
      * kept.
+     *
+     * The length is a std::chrono duration, for example std::chrono::hours(2), from zero up to
+     * ecs::MAX_INTERVAL. A timer first fires one full length after it is added with System::TimerAdd(),
+     * and not before. A length of zero fires once on every update of the system. A length outside the
+     * range is rejected by TimerAdd() with std::runtime_error.
+     *
+     * A bare number in place of a duration is still accepted and means seconds.
      */
     class Timer
     {
       public:
         Timer(std::string name,
           std::function<void()> callback,
-          uint32_t interval = 30 /* seconds */,
+          std::chrono::microseconds interval = std::chrono::seconds(30),
           bool repeat = true)
-          : Repeat(repeat)
+          : Repeat(repeat), length(interval)
         {
             this->Name = name;
             this->callback = callback;
-            this->timing.SetFrequency(1000000 * interval); // Convert seconds to microseconds
+            if(interval.count() >= 0 && interval <= MAX_INTERVAL)
+            {
+                this->timing.SetInterval(interval);
+            }
         }
 
+        /*! The old form: a bare number of seconds. A negative number or one above the maximum is kept as an
+         *  out-of-range length, which System::TimerAdd() rejects; it never wraps around. */
+        template<std::integral T>
+        Timer(std::string name,
+          std::function<void()> callback,
+          T seconds,
+          bool repeat = true)
+          : Timer(std::move(name), std::move(callback), Timer::fromSeconds(seconds), repeat)
+        {
+        }
+
+        /*! Runs the callback if the timer is due by the real steady clock. This is the stand-alone path
+         *  for a timer that is not owned by a system; a timer added to a system is driven by the system,
+         *  with the system's clock, and must not be run through this. */
         bool CallbackRun()
         {
-            if (this->timing.ShouldUpdate() && this->callback)
+            if(this->valid() && this->timing.ShouldUpdate() && this->callback)
             {
                 this->callback();
                 return true;
@@ -49,13 +77,43 @@ namespace ecs
       private:
         friend class ecs::System;
         bool discarded = false;
-        bool due()
+        std::chrono::microseconds length;
+
+        bool valid() const
         {
-            return this->timing.ShouldUpdate() && this->callback;
+            return this->length.count() >= 0 && this->length <= MAX_INTERVAL;
+        }
+        /*! Starts the schedule at the given instant. Only called with a valid length. */
+        void start(std::chrono::microseconds now)
+        {
+            this->timing.SetInterval(this->length);
+            this->timing.Restart(now);
+        }
+        bool due(std::chrono::microseconds now)
+        {
+            return this->timing.ShouldUpdate(now) && this->callback;
         }
         void fire()
         {
             this->callback();
+        }
+        template<typename T>
+        static std::chrono::microseconds fromSeconds(T seconds)
+        {
+            constexpr long long maximum = std::chrono::duration_cast<std::chrono::seconds>(MAX_INTERVAL).count();
+            if constexpr(std::is_signed_v<T>)
+            {
+                const long long value = seconds;
+                if(value < 0) return std::chrono::microseconds(-1);
+                if(value > maximum) return MAX_INTERVAL + std::chrono::microseconds(1);
+                return std::chrono::seconds(value);
+            }
+            else
+            {
+                const unsigned long long value = seconds;
+                if(value > static_cast<unsigned long long>(maximum)) return MAX_INTERVAL + std::chrono::microseconds(1);
+                return std::chrono::seconds(static_cast<long long>(value));
+            }
         }
         ecs::Timing timing;
         std::function<void()> callback = nullptr;
@@ -80,7 +138,8 @@ namespace ecs
      * - Any thread: MessageSubmit(). The system must be alive; routing through Container or Manager is
      *   safe against the system being removed, a direct pointer to the system is not.
      * - World thread only: Initialize(), Configure(), Update(), UpdateSystem(), Export(), Shutdown(),
-     *   MessagesWaiting(), TimerAdd(), TimerClear(), DeltaTimeGet(), Log(), the messages queue and the
+     *   MessagesWaiting(), TimerAdd(), TimerClear(), ElapsedGet(), ElapsedSecondsGet(), ClockSet(),
+     *   DeltaTimeGet(), Log(), the messages queue and the
      *   public members Handle, Container, Components and Timing (set during registration).
      * - Messages are delivered to the system's mailbox from any thread and become visible in messages
      *   at the start of the system's next UpdateSystem(), or earlier if MessagesWaiting() is called.
@@ -134,6 +193,9 @@ namespace ecs
         virtual void Update() {};
         /*! Fires the timers that are due, then calls Update(). World thread only.
          *
+         * The clock is read once, at the start, and that one reading decides which timers are due and
+         * sets the elapsed time of this update (see ElapsedGet()).
+         *
          * The timer walk visits timers in the order they were added. A timer added during the walk does
          * not fire in it. A timer cleared during the walk and not yet reached does not fire. After the
          * walk, exactly the one-shot timers that fired are removed, and the timer changes made by
@@ -161,13 +223,38 @@ namespace ecs
          *  waiting to be read, so a message delivered before the call is counted. Call from the world
          *  thread only. */
         size_t MessagesWaiting();
-        /*! World thread only. */
+        /*! The time that passed between the previous update of this system and the current one, in
+         *  microseconds. World thread only.
+         *
+         * It is measured once per update, from the same clock reading that decided the system was due, and
+         * it is the same on every call during that update, from Update(), a timer callback or any helper.
+         * Reading it changes nothing, and a system that never reads it loses no time. The values of
+         * consecutive updates add up to the time the clock moved. Nothing is clamped: after a long stall
+         * the whole stall is reported.
+         *
+         * Before the first update, and during it, the value is the system's configured interval (Timing),
+         * because there is no earlier update to measure from. A system whose interval is zero therefore
+         * reports zero for its first update. */
+        std::chrono::microseconds ElapsedGet() const;
+        /*! ElapsedGet() in seconds. World thread only. */
+        double ElapsedSecondsGet() const;
+        /*! Replaces the clock this system reads. World thread only.
+         *
+         * The schedule, the timers and the elapsed-time measurement start again from the new clock's
+         * time, because readings of different clocks cannot be compared. The pointer is not owned and the
+         * clock must outlive the system. A null pointer selects the real steady clock, which is the
+         * default. A world sets the clock of every system it holds with Container::ClockSet(). */
+        void ClockSet(const ecs::Clock *clock);
+        /*! The whole milliseconds of this update's elapsed time, with the part of a millisecond that is
+         *  left over carried into the next update, so the running total stays within a millisecond of the
+         *  true total. The same on every call during one update. World thread only. */
         uint32_t DeltaTimeGet();
         /*! Cancels every timer with this name. World thread only. Safe to call from a timer callback, including for the
          *  callback's own name. Cancelling and then adding the same name leaves only the new timer; adding
          *  and then cancelling removes both. From Update() the change takes effect at once. */
         void TimerClear(const std::string &name);
-        /*! Adds a timer. World thread only. Safe to call from a timer callback, on this system or on any other system of the
+        /*! Adds a timer, which first fires one full length from now. Throws std::runtime_error, adding
+         *  nothing, when the length is below zero or above ecs::MAX_INTERVAL. World thread only. Safe to call from a timer callback, on this system or on any other system of the
          *  same world. A timer added during this system's timer walk is considered from its next update.
          *  From Update() the timer is added at once. */
         void TimerAdd(Timer timer);
@@ -183,6 +270,16 @@ namespace ecs
         std::vector<ecs::Timer> timersAdded;
         bool removed = false;
         void timerWalkFinish();
+        /*! One update at the given clock reading: measures the elapsed time, then runs the timers and
+         *  Update(). */
+        void updateSystem(std::chrono::microseconds now);
+        void elapsedMeasure(std::chrono::microseconds now);
+        const ecs::Clock *clock = &ecs::SteadyClock::Instance();
+        bool updated = false;
+        std::chrono::microseconds previousUpdate{0};
+        std::chrono::microseconds elapsed{0};
+        std::chrono::microseconds millisecondCarry{0};
+        uint32_t elapsedMilliseconds = 0;
       protected:
         /*! Messages ready to read. World thread only. */
         std::queue<nlohmann::json> messages;

@@ -2,7 +2,7 @@ AM_CPPFLAGS = -I../include ${CATCH2_CFLAGS}
 AM_CXXFLAGS = -std=c++20 $(SANITIZER_CXXFLAGS)
 AM_LDFLAGS = $(SANITIZER_LDFLAGS)
 
-check_PROGRAMS = test_Manager test_System test_Entity test_Container test_Timing test_UpdateAllocation test_Uuid test_Threading test_Validation test_Lifecycle test_ProcessManager test_Access
+check_PROGRAMS = test_Manager test_System test_Entity test_Container test_Timing test_Elapsed test_UpdateAllocation test_Uuid test_Threading test_Validation test_Lifecycle test_ProcessManager test_Access
 
 TEST_EXTENSIONS = .sh
 LOG_COMPILER = $(SHELL) $(srcdir)/run-test.sh
@@ -40,6 +40,10 @@ test_Timing_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
 test_Container_SOURCES = test_Container.cpp
 test_Container_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
 test_Container_LDFLAGS = $(AM_LDFLAGS) -pthread
+
+test_Elapsed_SOURCES = test_Elapsed.cpp
+test_Elapsed_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
+test_Elapsed_LDFLAGS = $(AM_LDFLAGS) -pthread
 
 test_UpdateAllocation_SOURCES = test_UpdateAllocation.cpp
 test_UpdateAllocation_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}

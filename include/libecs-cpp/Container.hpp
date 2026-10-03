@@ -14,6 +14,10 @@
 #include <libecs-cpp/json.hpp>
 #include <libecs-cpp/Resource.hpp>
 #include <libecs-cpp/Component.hpp>
+#include <libecs-cpp/Clock.hpp>
+#include <libecs-cpp/Timing.hpp>
+#include <chrono>
+#include <cstdint>
 
 namespace ecs
 {
@@ -48,6 +52,7 @@ namespace ecs
      * | Member | Class |
      * |---|---|
      * | Start(), Start(interval) | Once: call from the thread that owns the world, before any other thread uses it; a repeated call is a no-op |
+     * | ClockSet(clock) | World thread |
      * | Defer(fn) | Any thread |
      * | MessageSubmit(message) | Any thread |
      * | Log(message, level), LoggerSet(fn) | Any thread |
@@ -100,9 +105,20 @@ namespace ecs
          * manager does not stop such a world; its owner stops it with Stop() or by destroying it.
          */
         void Start();
-        /*! As Start(), with the time between passes in microseconds. The interval does not delay a stop:
-         *  a stop request ends the wait at once. */
+        /*! As Start(), with the time between passes. The interval does not delay a stop: a stop request
+         *  ends the wait at once. An interval of zero runs the passes back to back. An interval below zero
+         *  or above ecs::MAX_INTERVAL throws std::runtime_error and leaves the world not started.
+         *
+         * The world's thread waits on the real steady clock whatever clock is set with ClockSet(). */
+        void Start(std::chrono::microseconds interval);
+        /*! As Start(interval), with the interval as a number of microseconds. */
         void Start(uint32_t);
+        /*! Replaces the clock that every system of this world reads, and the clock given to every system
+         *  registered later. World thread only. Each system starts its schedule, timers and elapsed-time
+         *  measurement again from the new clock (see System::ClockSet()). The pointer is not owned and the
+         *  clock must outlive the world. A null pointer selects the real steady clock, the default. Meant
+         *  for worlds driven by calls to Update(), for example with an ecs::ManualClock in a test. */
+        void ClockSet(const ecs::Clock *clock);
         /*! Stops the world and delivers System::Shutdown() once to every system that was started and has
          *  not been shut down yet, last registered first. Calling it again does nothing. Safe from any
          *  thread.
@@ -376,8 +392,10 @@ namespace ecs
         /*! Sends the due notifications of the retired systems and releases them. */
         void retiredRelease();
         void deferredClose();
-        /*! Number of microseconds to sleep between Update() calls */
-        uint32_t sleepInterval = 1000000 / 30;
+        /*! Time to sleep between Update() calls */
+        std::chrono::microseconds sleepInterval = ecs::DEFAULT_INTERVAL;
+        /*! The clock given to every system. World thread only. */
+        const ecs::Clock *clock = &ecs::SteadyClock::Instance();
 
         std::jthread containerThread;
         void threadFunc(std::stop_token stopToken);
@@ -428,7 +446,7 @@ namespace ecs
         /*! True once the world's own thread exists; set before the thread starts and never cleared. */
         std::atomic<bool> ownsThread{false};
         /*! Starts the thread once, if no stop was requested and the manager is running. */
-        void threadStart(const uint32_t *interval);
+        void threadStart(const std::chrono::microseconds *interval);
         /*! Marks the stop as requested and wakes the world's thread. Takes no lock while calling out. */
         void requestStop();
         /*! Waits until the world's thread has ended (one caller joins, the others wait), or tears down a

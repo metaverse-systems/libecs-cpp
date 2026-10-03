@@ -274,7 +274,7 @@ namespace ecs
         this->tornDown = true;
     }
 
-    void Container::threadStart(const uint32_t *interval)
+    void Container::threadStart(const std::chrono::microseconds *interval)
     {
         const char *refusal = nullptr;
         {
@@ -309,9 +309,29 @@ namespace ecs
         this->threadStart(nullptr);
     }
 
+    void Container::Start(std::chrono::microseconds interval)
+    {
+        if(interval.count() < 0 || interval > ecs::MAX_INTERVAL)
+        {
+            throw std::runtime_error("ecs::Container(\"" + this->Handle + "\")::Start(): interval " +
+                                     std::to_string(interval.count()) + " us is outside 0 to " +
+                                     std::to_string(ecs::MAX_INTERVAL.count()) + " us.");
+        }
+        this->threadStart(&interval);
+    }
+
     void Container::Start(uint32_t interval)
     {
-        this->threadStart(&interval);
+        this->Start(std::chrono::microseconds(interval));
+    }
+
+    void Container::ClockSet(const ecs::Clock *source)
+    {
+        this->clock = source != nullptr ? source : &ecs::SteadyClock::Instance();
+        for(auto &[handle, system] : this->Systems)
+        {
+            if(system) system->ClockSet(this->clock);
+        }
     }
 
     nlohmann::json Container::Export() const
@@ -415,6 +435,8 @@ namespace ecs
 
         system->Container = this;
         system->Components = &(this->Components);
+        // Only a different clock restarts the system, so the default setup behaves as before.
+        if(system->clock != this->clock) system->ClockSet(this->clock);
         const std::string handle = system->Handle;
         ecs::System *ptr = system.get();
 
@@ -561,7 +583,7 @@ namespace ecs
                     // would stretch every tick, so the wait ends a little before the deadline and the rest of the
                     // interval is slept.
                     constexpr std::chrono::microseconds slack(2000);
-                    const std::chrono::microseconds interval(this->sleepInterval);
+                    const std::chrono::microseconds interval = this->sleepInterval;
                     const auto deadline = std::chrono::steady_clock::now() + interval;
                     if(interval > slack)
                     {
@@ -665,8 +687,9 @@ namespace ecs
             if(system == nullptr || !this->system_order[i].started || this->system_order[i].shutdown) continue;
             try
             {
-                if(system->Timing.ShouldUpdate())
-                    system->UpdateSystem();
+                const std::chrono::microseconds now = system->clock->Now();
+                if(system->Timing.ShouldUpdate(now))
+                    system->updateSystem(now);
             }
             catch(const std::exception &e)
             {

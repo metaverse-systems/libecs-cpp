@@ -4,6 +4,10 @@
 #include <chrono>
 #include <numeric>
 #include <algorithm>
+#include <cstdint>
+#include <random>
+#include <stdexcept>
+#include <vector>
 
 using namespace ecs;
 
@@ -104,4 +108,262 @@ TEST_CASE("Timing three-tier cycle intervals", "[timing][T1b]")
     // Verify tier separation
     REQUIRE(tier1_us < tier2_us);
     REQUIRE(tier2_us < tier3_us);
+}
+
+namespace
+{
+    using micros = std::chrono::microseconds;
+
+    constexpr micros us(int64_t count)
+    {
+        return micros(count);
+    }
+
+    // The schedule as it was written when intervals were 32-bit, kept here on 64-bit integers so
+    // the new code can be compared with it result for result.
+    struct ReferenceSchedule
+    {
+        uint64_t interval;
+        uint64_t last;
+
+        bool step(uint64_t now)
+        {
+            if (this->interval == 0)
+                return true;
+            uint64_t elapsed = now - this->last;
+            if (elapsed >= this->interval)
+            {
+                uint64_t intervals = elapsed / this->interval;
+                if (intervals > MAX_CATCHUP)
+                    this->last = now;
+                else
+                    this->last += intervals * this->interval;
+                return true;
+            }
+            return false;
+        }
+    };
+}
+
+TEST_CASE("Schedule lengths from one second to thirty days", "[Timing]")
+{
+    const micros lengths[] = {
+        std::chrono::seconds(1),
+        std::chrono::minutes(70),
+        std::chrono::hours(2),
+        std::chrono::hours(24),
+        std::chrono::hours(24 * 30),
+    };
+
+    for (micros length : lengths)
+    {
+        INFO("length " << length.count() << " us");
+
+        SECTION("not due one microsecond early, due on time")
+        {
+            Timing timing(length);
+            timing.Restart(us(0));
+            REQUIRE_FALSE(timing.ShouldUpdate(length - us(1)));
+            REQUIRE(timing.ShouldUpdate(length));
+            REQUIRE_FALSE(timing.ShouldUpdate(length));
+        }
+
+        SECTION("on a 33333 us pass grid")
+        {
+            constexpr int64_t grid = 33333;
+            Timing timing(length);
+            timing.Restart(us(0));
+            const int64_t dueStep = (length.count() + grid - 1) / grid;
+
+            // Only the passes around the due time are evaluated. A pass that is not due leaves the
+            // schedule alone, so skipping the earlier ones changes nothing.
+            for (int64_t step = dueStep - 3; step < dueStep; ++step)
+            {
+                REQUIRE_FALSE(timing.ShouldUpdate(us(step * grid)));
+            }
+            REQUIRE(timing.ShouldUpdate(us(dueStep * grid)));
+            REQUIRE_FALSE(timing.ShouldUpdate(us((dueStep + 1) * grid)));
+        }
+    }
+}
+
+TEST_CASE("Maximum and invalid intervals", "[Timing]")
+{
+    SECTION("the maximum is a hundred years")
+    {
+        REQUIRE(MAX_INTERVAL == std::chrono::hours(24 * 36525));
+    }
+
+    SECTION("the maximum is accepted without overflow")
+    {
+        Timing timing(MAX_INTERVAL);
+        REQUIRE(timing.GetInterval() == MAX_INTERVAL);
+
+        timing.Restart(MAX_INTERVAL);
+        REQUIRE_FALSE(timing.ShouldUpdate(MAX_INTERVAL + MAX_INTERVAL - us(1)));
+        REQUIRE(timing.ShouldUpdate(MAX_INTERVAL + MAX_INTERVAL));
+
+        Timing other(us(1000));
+        REQUIRE_NOTHROW(other.SetInterval(MAX_INTERVAL));
+        REQUIRE(other.GetInterval() == MAX_INTERVAL);
+        other.Restart(us(0));
+        REQUIRE_FALSE(other.ShouldUpdate(MAX_INTERVAL - us(1)));
+        REQUIRE(other.ShouldUpdate(MAX_INTERVAL));
+    }
+
+    SECTION("values outside zero to the maximum are rejected")
+    {
+        const micros bad[] = {
+            MAX_INTERVAL + us(1),
+            micros::max(),
+            us(-1),
+            micros::min(),
+        };
+        for (micros value : bad)
+        {
+            INFO("value " << value.count() << " us");
+            REQUIRE_THROWS_AS(Timing(value), std::runtime_error);
+
+            Timing timing(us(5000));
+            REQUIRE_THROWS_AS(timing.SetInterval(value), std::runtime_error);
+            REQUIRE(timing.GetInterval() == us(5000));
+        }
+    }
+}
+
+TEST_CASE("Zero interval is due on every call", "[Timing]")
+{
+    SECTION("every call is due and the state is left alone")
+    {
+        Timing timing(us(0));
+        timing.Restart(us(1000));
+        REQUIRE(timing.ShouldUpdate(us(1000)));
+        REQUIRE(timing.ShouldUpdate(us(1000)));
+        REQUIRE(timing.ShouldUpdate(us(5000)));
+        REQUIRE(timing.ShouldUpdate(us(5000)));
+        REQUIRE(timing.ShouldUpdate(us(0)));
+
+        // The schedule still starts at 1000 us because the zero-interval calls did not move it.
+        timing.SetInterval(us(10000));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(10999)));
+        REQUIRE(timing.ShouldUpdate(us(11000)));
+    }
+
+    SECTION("an instant earlier than the last one counts as no time passed")
+    {
+        Timing timing(std::chrono::milliseconds(100));
+        timing.Restart(std::chrono::seconds(1));
+        REQUIRE_FALSE(timing.ShouldUpdate(std::chrono::milliseconds(500)));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(0)));
+        REQUIRE_FALSE(timing.ShouldUpdate(std::chrono::milliseconds(1099)));
+        REQUIRE(timing.ShouldUpdate(std::chrono::milliseconds(1100)));
+    }
+}
+
+TEST_CASE("Drift-free on a coarse grid", "[Timing]")
+{
+    constexpr int64_t grid = 33333;
+    constexpr int64_t hour = 3600LL * 1000000LL;
+    const int64_t intervals[] = {109850, 54925, 109849, 164774};
+
+    for (int64_t interval : intervals)
+    {
+        INFO("interval " << interval << " us");
+        Timing timing(us(interval));
+        timing.Restart(us(0));
+
+        int64_t fires = 0;
+        int64_t now = 0;
+        for (now = grid; now <= hour; now += grid)
+        {
+            if (timing.ShouldUpdate(us(now)))
+                ++fires;
+        }
+        const int64_t last = now - grid;
+        const int64_t whole = last / interval;
+        REQUIRE(fires >= whole - 1);
+        REQUIRE(fires <= whole + 1);
+    }
+}
+
+TEST_CASE("Stall snaps forward", "[Timing]")
+{
+    constexpr int64_t interval = 100000;
+
+    SECTION("the first call right after creation is not due")
+    {
+        Timing timing(std::chrono::hours(1));
+        REQUIRE_FALSE(timing.ShouldUpdate());
+    }
+
+    SECTION("the first fire is one full interval after the start")
+    {
+        Timing timing(us(interval));
+        timing.Restart(us(500));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(500)));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(500 + interval - 1)));
+        REQUIRE(timing.ShouldUpdate(us(500 + interval)));
+    }
+
+    SECTION("a gap of two intervals is caught up and stays on the grid")
+    {
+        Timing timing(us(interval));
+        timing.Restart(us(0));
+        REQUIRE(timing.ShouldUpdate(us(2 * interval + 50000)));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(2 * interval + 50000)));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(3 * interval - 1)));
+        REQUIRE(timing.ShouldUpdate(us(3 * interval)));
+    }
+
+    SECTION("a gap of three or more intervals fires once and snaps forward")
+    {
+        Timing timing(us(interval));
+        timing.Restart(us(0));
+        const int64_t stalled = 3 * interval + 50000;
+        REQUIRE(timing.ShouldUpdate(us(stalled)));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(stalled)));
+        // On the old grid the next fire would be at four intervals.
+        REQUIRE_FALSE(timing.ShouldUpdate(us(4 * interval)));
+        REQUIRE_FALSE(timing.ShouldUpdate(us(stalled + interval - 1)));
+        REQUIRE(timing.ShouldUpdate(us(stalled + interval)));
+    }
+}
+
+TEST_CASE("Sequence matches the old algorithm", "[Timing]")
+{
+    const int64_t intervals[] = {1, 33333, 54925, 109850, 1000000, 7200LL * 1000000LL};
+
+    for (int64_t interval : intervals)
+    {
+        INFO("interval " << interval << " us");
+        std::mt19937 random(12345);
+        Timing timing(us(interval));
+        timing.Restart(us(0));
+        ReferenceSchedule reference{static_cast<uint64_t>(interval), 0};
+
+        int64_t now = 0;
+        for (int i = 0; i < 20000; ++i)
+        {
+            // Mostly small steps, now and then a stall of many intervals.
+            const uint32_t pick = random();
+            int64_t step = static_cast<int64_t>(pick % 40000);
+            if (pick % 97 == 0)
+                step = static_cast<int64_t>(random() % (5 * interval + 1));
+            now += step;
+            REQUIRE(timing.ShouldUpdate(us(now)) == reference.step(static_cast<uint64_t>(now)));
+        }
+    }
+}
+
+TEST_CASE("GetInterval round-trips", "[Timing]")
+{
+    REQUIRE(DEFAULT_INTERVAL == us(33333));
+    REQUIRE(Timing().GetInterval() == DEFAULT_INTERVAL);
+
+    Timing timing;
+    for (int64_t value : {int64_t(0), int64_t(1), int64_t(33333), int64_t(7200) * 1000000, MAX_INTERVAL.count()})
+    {
+        timing.SetInterval(us(value));
+        REQUIRE(timing.GetInterval() == us(value));
+    }
 }

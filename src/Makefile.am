@@ -10,7 +10,8 @@ pkginclude_HEADERS = \
 	../include/libecs-cpp/Uuid.hpp \
 	../include/libecs-cpp/Resource.hpp \
 	../include/libecs-cpp/json.hpp \
-    ../include/libecs-cpp/Timing.hpp
+	../include/libecs-cpp/Clock.hpp \
+	../include/libecs-cpp/Timing.hpp
 
 # Internal header: shipped in the source distribution, never installed.
 noinst_HEADERS = Validation.hpp

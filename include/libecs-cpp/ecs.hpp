@@ -2,6 +2,7 @@
 
 #include <libecs-cpp/json.hpp>
 #include <libecs-cpp/Resource.hpp>
+#include <libecs-cpp/Clock.hpp>
 #include <libecs-cpp/Uuid.hpp>
 #include <libecs-cpp/Manager.hpp>
 #include <libecs-cpp/Container.hpp>
