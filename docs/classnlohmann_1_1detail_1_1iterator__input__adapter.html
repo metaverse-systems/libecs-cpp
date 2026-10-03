@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.5.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.6.0</span>
    </div>
   </td>
  </tr>
@@ -91,7 +91,7 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9423d7166b9e3092f149266acd064ba7" id="r_a9423d7166b9e3092f149266acd064ba7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#a9423d7166b9e3092f149266acd064ba7">iterator_input_adapter</a> (<a class="el" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">IteratorType</a> <a class="el" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">first</a>, <a class="el" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">IteratorType</a> <a class="el" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">last</a>)</td></tr>
+<tr class="memitem:a9423d7166b9e3092f149266acd064ba7" id="r_a9423d7166b9e3092f149266acd064ba7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#a9423d7166b9e3092f149266acd064ba7">iterator_input_adapter</a> (<a class="el" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">IteratorType</a> <a class="el" href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a>, <a class="el" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">IteratorType</a> <a class="el" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a>)</td></tr>
 <tr class="separator:a9423d7166b9e3092f149266acd064ba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa21344e8f75f0a88d4e66f166c405bb" id="r_aaa21344e8f75f0a88d4e66f166c405bb"><td class="memItemLeft" align="right" valign="top">std::char_traits&lt; <a class="el" href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#a7cc60e68767005322ab4b692c9dff283">char_type</a> &gt;<a class="el" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">::int_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#aaa21344e8f75f0a88d4e66f166c405bb">get_character</a> ()</td></tr>
 <tr class="separator:aaa21344e8f75f0a88d4e66f166c405bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,11 +175,12 @@ template&lt;<a class="el" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="json_8hpp_source.html#l05341">5341</a> of file <a class="el" href="json_8hpp_source.html">json.hpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno"> 5342</span>        : <a class="code hl_variable" href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#a8abccad27590d381a94e474b16161938">current</a>(std::move(<a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">first</a>)), <a class="code hl_variable" href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#a8aa29994ca6fdc0f8c96abf9151738ab">end</a>(std::move(<a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">last</a>))</div>
+<div class="fragment"><div class="line"><span class="lineno"> 5342</span>        : <a class="code hl_variable" href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#a8abccad27590d381a94e474b16161938">current</a>(std::move(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a>)), <a class="code hl_variable" href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#a8aa29994ca6fdc0f8c96abf9151738ab">end</a>(std::move(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a>))</div>
 <div class="line"><span class="lineno"> 5343</span>    {}</div>
 <div class="ttc" id="aclassnlohmann_1_1detail_1_1iterator__input__adapter_html_a8aa29994ca6fdc0f8c96abf9151738ab"><div class="ttname"><a href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#a8aa29994ca6fdc0f8c96abf9151738ab">nlohmann::detail::iterator_input_adapter::end</a></div><div class="ttdeci">IteratorType end</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l05359">json.hpp:5359</a></div></div>
 <div class="ttc" id="aclassnlohmann_1_1detail_1_1iterator__input__adapter_html_a8abccad27590d381a94e474b16161938"><div class="ttname"><a href="classnlohmann_1_1detail_1_1iterator__input__adapter.html#a8abccad27590d381a94e474b16161938">nlohmann::detail::iterator_input_adapter::current</a></div><div class="ttdeci">IteratorType current</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l05358">json.hpp:5358</a></div></div>
-<div class="ttc" id="anamespacenlohmann_1_1detail_html_a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5"><div class="ttname"><a href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">nlohmann::detail::value_t::array</a></div><div class="ttdeci">@ array</div><div class="ttdoc">array (ordered collection of values)</div></div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_a07978e60e3415eca4e8f5f01de4089bf"><div class="ttname"><a href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a></div><div class="ttdeci">auto last</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01294">test_Lifecycle.cpp:1294</a></div></div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_ab661290d29332536903330a9fee3ab82"><div class="ttname"><a href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a></div><div class="ttdeci">auto first</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01292">test_Lifecycle.cpp:1292</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -352,7 +353,7 @@ template&lt;<a class="el" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 06:28:37 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 08:31:59 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

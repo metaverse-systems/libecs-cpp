@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['_5f_5fpad0_5f_5f_0',['__pad0__',['../classnlohmann_1_1detail_1_1primitive__iterator__t.html#adc7b6ab7810f58afa4d6a5133995c9ba',1,'nlohmann::detail::primitive_iterator_t::__pad0__'],['../classnlohmann_1_1detail_1_1iter__impl.html#aa4bddeaa9a97b2a9b715918a7e8dcc3a',1,'nlohmann::detail::iter_impl::__pad0__'],['../classnlohmann_1_1json__pointer.html#a551777cfe37bf7adb82253482030d992',1,'nlohmann::json_pointer::__pad0__'],['../classnlohmann_1_1detail_1_1serializer.html#af15da74dab5b01150eabfed0be7d75df',1,'nlohmann::detail::serializer::__pad0__'],['../classnlohmann_1_1basic__json.html#a501740b004225f4c948e657c9e6e539e',1,'nlohmann::basic_json::__pad0__']]],
-  ['_5f_5fpad1_5f_5f_1',['__pad1__',['../classnlohmann_1_1detail_1_1iter__impl.html#a4a60e9d074cc53929b73eaa7963f1fa9',1,'nlohmann::detail::iter_impl::__pad1__'],['../classnlohmann_1_1basic__json.html#a834674252ca19c65b24963d28eb8932d',1,'nlohmann::basic_json::__pad1__']]],
-  ['_5f_5fpad2_5f_5f_2',['__pad2__',['../classnlohmann_1_1basic__json.html#ab85f42065b70594c15de42e1f0870fba',1,'nlohmann::basic_json']]],
-  ['_5f_5fpad3_5f_5f_3',['__pad3__',['../classnlohmann_1_1basic__json.html#aa52fb28bbfe1d5484808cad53c35d76c',1,'nlohmann::basic_json']]]
+  ['_3a_3anlohmann_3a_3adetail_3a_3abinary_5freader_0',['binary_reader',['../classnlohmann_1_1basic__json.html#aa226ed5103dfd10e27e562d35a3a106b',1,'nlohmann::basic_json']]],
+  ['_3a_3anlohmann_3a_3adetail_3a_3abinary_5fwriter_1',['binary_writer',['../classnlohmann_1_1basic__json.html#a69d491bbda88ade6d3c7a2b11309e8bf',1,'nlohmann::basic_json']]],
+  ['_3a_3anlohmann_3a_3adetail_3a_3aexception_2',['exception',['../classnlohmann_1_1basic__json.html#abdcb15d025676b4d3db0f32a50f4393f',1,'nlohmann::basic_json']]],
+  ['_3a_3anlohmann_3a_3adetail_3a_3aiter_5fimpl_3',['iter_impl',['../classnlohmann_1_1basic__json.html#a842e5c7ca096025c18b11e715d3401f4',1,'nlohmann::basic_json']]],
+  ['_3a_3anlohmann_3a_3adetail_3a_3ajson_5fsax_5fdom_5fcallback_5fparser_4',['json_sax_dom_callback_parser',['../classnlohmann_1_1basic__json.html#a95574da8d12905ea99dc348934c837da',1,'nlohmann::basic_json']]],
+  ['_3a_3anlohmann_3a_3adetail_3a_3ajson_5fsax_5fdom_5fparser_5',['json_sax_dom_parser',['../classnlohmann_1_1basic__json.html#a47aabb1eceae32e8a6e8e7f0ff34be60',1,'nlohmann::basic_json']]],
+  ['_3a_3anlohmann_3a_3adetail_3a_3aparser_6',['parser',['../classnlohmann_1_1basic__json.html#ac8f3125911eb018ef4ab00d879487baf',1,'nlohmann::basic_json']]]
 ];

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.5.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.6.0</span>
    </div>
   </td>
  </tr>
@@ -128,8 +128,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(freq);</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="comment">// Let it fire once immediately (initialized in the past)</span></div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordtype">bool</span> first = timing.<a class="code hl_function" href="classecs_1_1Timing.html#a2e79ef06cf5ce82f9dedf40891b45934">ShouldUpdate</a>();</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    (void)first;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a> = timing.<a class="code hl_function" href="classecs_1_1Timing.html#a2e79ef06cf5ce82f9dedf40891b45934">ShouldUpdate</a>();</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    (void)<a class="code hl_variable" href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a>;</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="comment">// Stall for longer than MAX_CATCHUP * freq (2 * 100ms = 200ms)</span></div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    std::this_thread::sleep_for(std::chrono::milliseconds(250));</div>
@@ -200,11 +200,12 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassecs_1_1Timing_html"><div class="ttname"><a href="classecs_1_1Timing.html">ecs::Timing</a></div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00012">Timing.hpp:13</a></div></div>
 <div class="ttc" id="aclassecs_1_1Timing_html_a2e79ef06cf5ce82f9dedf40891b45934"><div class="ttname"><a href="classecs_1_1Timing.html#a2e79ef06cf5ce82f9dedf40891b45934">ecs::Timing::ShouldUpdate</a></div><div class="ttdeci">bool ShouldUpdate()</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00019">Timing.hpp:19</a></div></div>
 <div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00007">Component.hpp:8</a></div></div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_ab661290d29332536903330a9fee3ab82"><div class="ttname"><a href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a></div><div class="ttdeci">auto first</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01292">test_Lifecycle.cpp:1292</a></div></div>
 <div class="ttc" id="atest__Timing_8cpp_html_a55d0a510b98c7cedb504f8edd28e896a"><div class="ttname"><a href="test__Timing_8cpp.html#a55d0a510b98c7cedb504f8edd28e896a">TEST_CASE</a></div><div class="ttdeci">TEST_CASE(&quot;Timing remainder-carry keeps drift-free average&quot;, &quot;[timing][T1b]&quot;)</div><div class="ttdef"><b>Definition</b> <a href="test__Timing_8cpp_source.html#l00015">test_Timing.cpp:15</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 06:28:36 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 08:31:59 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

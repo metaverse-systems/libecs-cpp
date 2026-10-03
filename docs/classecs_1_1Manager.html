@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.5.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.6.0</span>
    </div>
   </td>
  </tr>
@@ -125,17 +125,17 @@ Private Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Manages containers.</p>
-<p>Every method is safe to call from any thread, including from inside a system's Update(). Shutdown is atomic and never reverts once requested. The destructor is the one exclusive operation: it waits for message submissions already in progress, and later submissions fail as if the destination container were unknown.</p>
+<p>Every method is safe to call from any thread, including from inside a system's <a class="el" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update()</a>. Shutdown is atomic and never reverts once requested. The destructor is the one exclusive operation: it waits for message submissions already in progress, and later submissions fail as if the destination container were unknown.</p>
 <p>Threading</p>
 <ul>
 <li>Container(handle), <a class="el" href="classecs_1_1Manager.html#a13e1112c2033aba6c59d5b0fffd8fff7">Container()</a>, <a class="el" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet()</a>, <a class="el" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning()</a>, <a class="el" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown()</a> and <a class="el" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit()</a> are safe from any thread at any time. Container(handle) yields exactly one world per handle even when many threads ask at once. <a class="el" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet()</a> returns a snapshot by value; worlds created later are not in it. The pointers keep their existing lifetime: valid until the manager is destroyed.</li>
-<li>Shutdown guarantee: <a class="el" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning()</a> and <a class="el" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown()</a> are atomic. Once <a class="el" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning()</a> has returned false it never returns true again, and repeated or concurrent requests are idempotent. A request made from inside a system is a single store and cannot deadlock. Requesting shutdown does not stop world threads or destroy worlds.</li>
+<li>Shutdown guarantee: <a class="el" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning()</a> and <a class="el" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown()</a> are atomic. Once <a class="el" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning()</a> has returned false it never returns true again, and repeated or concurrent requests are idempotent. A request made from a thread that runs world code (a system's Initialize(), <a class="el" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update()</a> or <a class="el" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown()</a>, a timer callback or a deferred function) only requests the stop of the worlds that have their own thread and returns at once; from any other thread, <a class="el" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown()</a> returns after every threaded world has stopped, its thread has ended and its systems have been shut down. Worlds driven by their owner's calls to <a class="el" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update()</a> are not touched; the owner stops them.</li>
 <li><a class="el" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit()</a> returns without waiting for the destination's update and throws std::runtime_error if the world is unknown. Callers on other threads should catch it.</li>
 <li>Destruction: the destructor waits for sends already in progress; sends that start later fail as unknown. No outside thread may use a manager that another thread is destroying, except through sends that were already in progress.</li>
 <li>The process-wide ECS manager is intentionally never destroyed. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00046">46</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00049">49</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a752c44853b64f2ae4807f882bc2e7cbe" name="a752c44853b64f2ae4807f882bc2e7cbe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a752c44853b64f2ae4807f882bc2e7cbe">&#9670;&#160;</a></span>Manager()</h2>
@@ -172,7 +172,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Exclusive. Requests shutdown, waits for sends in progress, then destroys the containers. </p>
+<p>Exclusive. Runs <a class="el" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown()</a> first, so that every threaded world is stopped and joined, and its systems are notified, while all worlds still exist. Then it closes the manager: later sends and creation of worlds fail. Then it destroys the worlds, which stops and releases the worlds that are driven by their owner's <a class="el" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update()</a> calls. The process-wide ECS manager is never destroyed. </p>
 
 <p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00013">13</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   14</span>    {</div>
@@ -192,14 +192,14 @@ Private Attributes</h2></td></tr>
 <div class="line"><span class="lineno">   28</span>        <span class="comment">// manager&#39;s members before the object&#39;s storage can be released.</span></div>
 <div class="line"><span class="lineno">   29</span>        std::lock_guard&lt;std::mutex&gt; lock(this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">mutexContainers</a>);</div>
 <div class="line"><span class="lineno">   30</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a3460b89e41fa2df3d4313cf3308c854a"><div class="ttname"><a href="classecs_1_1Manager.html#a3460b89e41fa2df3d4313cf3308c854a">ecs::Manager::closing</a></div><div class="ttdeci">bool closing</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00084">Manager.hpp:84</a></div></div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a393ffe8ba4eccbe8b844d34838511155"><div class="ttname"><a href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">ecs::Manager::mutexContainers</a></div><div class="ttdeci">std::mutex mutexContainers</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00082">Manager.hpp:82</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a3460b89e41fa2df3d4313cf3308c854a"><div class="ttname"><a href="classecs_1_1Manager.html#a3460b89e41fa2df3d4313cf3308c854a">ecs::Manager::closing</a></div><div class="ttdeci">bool closing</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00102">Manager.hpp:102</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a393ffe8ba4eccbe8b844d34838511155"><div class="ttname"><a href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">ecs::Manager::mutexContainers</a></div><div class="ttdeci">std::mutex mutexContainers</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00100">Manager.hpp:100</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_a3c7085998ab4641d97e50e92ecc1b86a"><div class="ttname"><a href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">ecs::Manager::Shutdown</a></div><div class="ttdeci">void Shutdown()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00047">Manager.cpp:47</a></div></div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a4ef53c664d5410c1249712593d9d185c"><div class="ttname"><a href="classecs_1_1Manager.html#a4ef53c664d5410c1249712593d9d185c">ecs::Manager::sendsIdle</a></div><div class="ttdeci">std::condition_variable sendsIdle</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00085">Manager.hpp:85</a></div></div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a65d8e52ca4fcf97fb2a347667252da26"><div class="ttname"><a href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">ecs::Manager::containers</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::unique_ptr&lt; ecs::Container &gt; &gt; containers</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00081">Manager.hpp:81</a></div></div>
-<div class="ttc" id="aclassecs_1_1Manager_html_ad5f6c1890bb1f50aac5a48218e9d2eb1"><div class="ttname"><a href="classecs_1_1Manager.html#ad5f6c1890bb1f50aac5a48218e9d2eb1">ecs::Manager::sendsInFlight</a></div><div class="ttdeci">std::size_t sendsInFlight</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00083">Manager.hpp:83</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a4ef53c664d5410c1249712593d9d185c"><div class="ttname"><a href="classecs_1_1Manager.html#a4ef53c664d5410c1249712593d9d185c">ecs::Manager::sendsIdle</a></div><div class="ttdeci">std::condition_variable sendsIdle</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00103">Manager.hpp:103</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a65d8e52ca4fcf97fb2a347667252da26"><div class="ttname"><a href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">ecs::Manager::containers</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::unique_ptr&lt; ecs::Container &gt; &gt; containers</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00099">Manager.hpp:99</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_ad5f6c1890bb1f50aac5a48218e9d2eb1"><div class="ttname"><a href="classecs_1_1Manager.html#ad5f6c1890bb1f50aac5a48218e9d2eb1">ecs::Manager::sendsInFlight</a></div><div class="ttdeci">std::size_t sendsInFlight</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00101">Manager.hpp:101</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00084">closing</a>, <a class="el" href="Manager_8hpp_source.html#l00081">containers</a>, <a class="el" href="Manager_8hpp_source.html#l00082">mutexContainers</a>, <a class="el" href="Manager_8hpp_source.html#l00085">sendsIdle</a>, <a class="el" href="Manager_8hpp_source.html#l00083">sendsInFlight</a>, and <a class="el" href="Manager_8cpp_source.html#l00047">Shutdown()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00102">closing</a>, <a class="el" href="Manager_8hpp_source.html#l00099">containers</a>, <a class="el" href="Manager_8hpp_source.html#l00100">mutexContainers</a>, <a class="el" href="Manager_8hpp_source.html#l00103">sendsIdle</a>, <a class="el" href="Manager_8hpp_source.html#l00101">sendsInFlight</a>, and <a class="el" href="Manager_8cpp_source.html#l00047">Shutdown()</a>.</p>
 
 </div>
 </div>
@@ -218,16 +218,16 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Any thread. Creates a container with a generated unique handle. </p>
+<p>Any thread. Creates a container with a generated unique handle. Throws std::runtime_error when a new world is asked for while the manager is being destroyed. </p>
 
 <p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00037">37</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   38</span>    {</div>
 <div class="line"><span class="lineno">   39</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#a11e2067abb52ece42246363e6392a95d">containerCreate</a>(<a class="code hl_class" href="classecs_1_1Uuid.html">ecs::Uuid</a>().Get());</div>
 <div class="line"><span class="lineno">   40</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a11e2067abb52ece42246363e6392a95d"><div class="ttname"><a href="classecs_1_1Manager.html#a11e2067abb52ece42246363e6392a95d">ecs::Manager::containerCreate</a></div><div class="ttdeci">ecs::Container * containerCreate(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00052">Manager.cpp:52</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a11e2067abb52ece42246363e6392a95d"><div class="ttname"><a href="classecs_1_1Manager.html#a11e2067abb52ece42246363e6392a95d">ecs::Manager::containerCreate</a></div><div class="ttdeci">ecs::Container * containerCreate(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00063">Manager.cpp:63</a></div></div>
 <div class="ttc" id="aclassecs_1_1Uuid_html"><div class="ttname"><a href="classecs_1_1Uuid.html">ecs::Uuid</a></div><div class="ttdef"><b>Definition</b> <a href="Uuid_8hpp_source.html#l00013">Uuid.hpp:14</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00052">containerCreate()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00063">containerCreate()</a>.</p>
 
 </div>
 </div>
@@ -246,16 +246,16 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Any thread. Returns the container with this handle, creating it if needed; the same handle always yields the same container. </p>
+<p>Any thread. Returns the container with this handle, creating it if needed; the same handle always yields the same container. Throws std::runtime_error when a new world is asked for while the manager is being destroyed. A world created after <a class="el" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown()</a> cannot be started with Start(). </p>
 
 <p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00032">32</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   33</span>    {</div>
 <div class="line"><span class="lineno">   34</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#a11e2067abb52ece42246363e6392a95d">containerCreate</a>(handle);</div>
 <div class="line"><span class="lineno">   35</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00052">containerCreate()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00063">containerCreate()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="bench__entity__creation_8cpp_source.html#l00005">main()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01306">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00282">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00481">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00599">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00601">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00628">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00760">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01641">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00184">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00135">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00228">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00351">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00415">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01780">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01363">TEST_CASE()</a>, <a class="el" href="test__UpdateAllocation_8cpp_source.html#l00187">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00204">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00306">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00132">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01001">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00079">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00089">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00102">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00192">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01700">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01608">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01509">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00666">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00048">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00034">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00069">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00058">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00112">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00041">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00028">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00093">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00113">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00026">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00044">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00179">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00559">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00394">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00627">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00130">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00119">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01681">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00499">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00419">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00521">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00457">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00567">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00149">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00966">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01204">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00830">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01086">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01060">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01814">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00144">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00152">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00165">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00321">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00267">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00230">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00214">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00258">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00224">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00708">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00909">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00778">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00463">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00598">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00707">TEST_CASE()</a>, and <a class="el" href="test__Uuid_8cpp_source.html#l00159">TEST_CASE()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="bench__entity__creation_8cpp_source.html#l00005">main()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01306">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l03132">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02979">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00282">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00481">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00599">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00601">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00628">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00760">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01641">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00184">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00135">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00228">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00351">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00415">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01780">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01363">TEST_CASE()</a>, <a class="el" href="test__UpdateAllocation_8cpp_source.html#l00187">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00204">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02475">TEST_CASE()</a>, <a class="el" href="test__System_8cpp_source.html#l00306">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02745">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00132">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01001">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00079">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00089">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00102">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00192">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01700">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01608">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01509">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l03092">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00666">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00048">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00034">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00069">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00058">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00112">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00041">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00028">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00093">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00113">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l00537">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00026">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00044">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00179">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00559">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00394">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01318">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00627">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00130">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00119">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01148">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01681">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00499">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01100">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l00568">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00419">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00521">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00457">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00567">TEST_CASE()</a>, <a class="el" href="test__Entity_8cpp_source.html#l00149">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00966">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01383">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01204">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00830">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01086">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01060">TEST_CASE()</a>, <a class="el" href="test__ProcessManager_8cpp_source.html#l00095">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01776">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l00443">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l00594">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01814">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00144">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00152">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00165">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00321">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00267">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00230">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00214">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00258">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00224">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00708">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00909">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l00493">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00778">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00463">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00598">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l03026">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00707">TEST_CASE()</a>, and <a class="el" href="test__Uuid_8cpp_source.html#l00159">TEST_CASE()</a>.</p>
 
 </div>
 </div>
@@ -283,17 +283,22 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00052">52</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   53</span>    {</div>
-<div class="line"><span class="lineno">   54</span>        std::lock_guard&lt;std::mutex&gt; lock(this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">mutexContainers</a>);</div>
-<div class="line"><span class="lineno">   55</span>        <span class="keywordflow">if</span>(!this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>.contains(handle))</div>
-<div class="line"><span class="lineno">   56</span>        {</div>
-<div class="line"><span class="lineno">   57</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>[handle] = std::make_unique&lt;ecs::Container&gt;(<span class="keyword">this</span>, handle);</div>
-<div class="line"><span class="lineno">   58</span>        }</div>
-<div class="line"><span class="lineno">   59</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>[handle].get();</div>
-<div class="line"><span class="lineno">   60</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00063">63</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   64</span>    {</div>
+<div class="line"><span class="lineno">   65</span>        std::lock_guard&lt;std::mutex&gt; lock(this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">mutexContainers</a>);</div>
+<div class="line"><span class="lineno">   66</span>        <span class="keywordflow">if</span>(!this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>.contains(handle))</div>
+<div class="line"><span class="lineno">   67</span>        {</div>
+<div class="line"><span class="lineno">   68</span>            <span class="keywordflow">if</span>(this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a3460b89e41fa2df3d4313cf3308c854a">closing</a>)</div>
+<div class="line"><span class="lineno">   69</span>            {</div>
+<div class="line"><span class="lineno">   70</span>                <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;ecs::Manager::Container(): the manager is shutting down, container &quot;</span> +</div>
+<div class="line"><span class="lineno">   71</span>                                         handle + <span class="stringliteral">&quot; was not created.&quot;</span>);</div>
+<div class="line"><span class="lineno">   72</span>            }</div>
+<div class="line"><span class="lineno">   73</span>            this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>[handle] = std::make_unique&lt;ecs::Container&gt;(<span class="keyword">this</span>, handle);</div>
+<div class="line"><span class="lineno">   74</span>        }</div>
+<div class="line"><span class="lineno">   75</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>[handle].get();</div>
+<div class="line"><span class="lineno">   76</span>    }</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00081">containers</a>, and <a class="el" href="Manager_8hpp_source.html#l00082">mutexContainers</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00102">closing</a>, <a class="el" href="Manager_8hpp_source.html#l00099">containers</a>, and <a class="el" href="Manager_8hpp_source.html#l00100">mutexContainers</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00037">Container()</a>, and <a class="el" href="Manager_8cpp_source.html#l00032">Container()</a>.</p>
 
@@ -315,18 +320,19 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Any thread. Returns a snapshot of the handles of all containers, by value. </p>
 
-<p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00062">62</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   63</span>    {</div>
-<div class="line"><span class="lineno">   64</span>        std::lock_guard&lt;std::mutex&gt; lock(this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">mutexContainers</a>);</div>
-<div class="line"><span class="lineno">   65</span>        std::vector&lt;std::string&gt; handles;</div>
-<div class="line"><span class="lineno">   66</span> </div>
-<div class="line"><span class="lineno">   67</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;c : this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>)</div>
-<div class="line"><span class="lineno">   68</span>            handles.push_back(c.first);</div>
-<div class="line"><span class="lineno">   69</span> </div>
-<div class="line"><span class="lineno">   70</span>        <span class="keywordflow">return</span> handles;</div>
-<div class="line"><span class="lineno">   71</span>    }</div>
+<p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00078">78</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   79</span>    {</div>
+<div class="line"><span class="lineno">   80</span>        std::lock_guard&lt;std::mutex&gt; lock(this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">mutexContainers</a>);</div>
+<div class="line"><span class="lineno">   81</span>        std::vector&lt;std::string&gt; handles;</div>
+<div class="line"><span class="lineno">   82</span> </div>
+<div class="line"><span class="lineno">   83</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;c : this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>)</div>
+<div class="line"><span class="lineno">   84</span>            handles.push_back(c.<a class="code hl_variable" href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a>);</div>
+<div class="line"><span class="lineno">   85</span> </div>
+<div class="line"><span class="lineno">   86</span>        <span class="keywordflow">return</span> handles;</div>
+<div class="line"><span class="lineno">   87</span>    }</div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_ab661290d29332536903330a9fee3ab82"><div class="ttname"><a href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a></div><div class="ttdeci">auto first</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01292">test_Lifecycle.cpp:1292</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00081">containers</a>, and <a class="el" href="Manager_8hpp_source.html#l00082">mutexContainers</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00099">containers</a>, and <a class="el" href="Manager_8hpp_source.html#l00100">mutexContainers</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="test__Manager_8cpp_source.html#l00026">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00021">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01814">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00909">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00778">TEST_CASE()</a>, and <a class="el" href="test__Threading_8cpp_source.html#l00707">TEST_CASE()</a>.</p>
 
@@ -352,11 +358,11 @@ Private Attributes</h2></td></tr>
 <div class="fragment"><div class="line"><span class="lineno">   43</span>    {</div>
 <div class="line"><span class="lineno">   44</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a717de0ef5db5706cebae03ebe449773c">running</a>;</div>
 <div class="line"><span class="lineno">   45</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a717de0ef5db5706cebae03ebe449773c"><div class="ttname"><a href="classecs_1_1Manager.html#a717de0ef5db5706cebae03ebe449773c">ecs::Manager::running</a></div><div class="ttdeci">std::atomic&lt; bool &gt; running</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00086">Manager.hpp:86</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a717de0ef5db5706cebae03ebe449773c"><div class="ttname"><a href="classecs_1_1Manager.html#a717de0ef5db5706cebae03ebe449773c">ecs::Manager::running</a></div><div class="ttdeci">std::atomic&lt; bool &gt; running</div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00104">Manager.hpp:104</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00086">running</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00104">running</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="test__Threading_8cpp_source.html#l01001">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00038">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00033">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01060">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00955">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01814">TEST_CASE()</a>, and <a class="el" href="test__Container_8cpp_source.html#l00165">TEST_CASE()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="test__Lifecycle_8cpp_source.html#l02699">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01001">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02890">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00038">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00033">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01060">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00955">TEST_CASE()</a>, <a class="el" href="test__ProcessManager_8cpp_source.html#l00095">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01814">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00165">TEST_CASE()</a>, and <a class="el" href="Container_8cpp_source.html#l00277">ecs::Container::threadStart()</a>.</p>
 
 </div>
 </div>
@@ -378,50 +384,51 @@ Private Attributes</h2></td></tr>
 <p>Any thread. Routes a message to its destination container.</p>
 <p>The message must be a JSON object with a "destination" object that holds a non-empty text "container" and a non-empty text "system". Other fields are delivered unchanged. A message that breaks these rules throws std::runtime_error whose text names the missing or wrong field and, for a wrong type, the type that was found. The checks run before any lock is taken, so a rejected message changes nothing: no mailbox gains an entry and shutdown accounting is not touched. Throws std::runtime_error as well if the container or the system is unknown, or the manager is being destroyed. </p>
 
-<p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00073">73</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   74</span>    {</div>
-<div class="line"><span class="lineno">   75</span>        <span class="keyword">const</span> validation::Caller caller{<span class="keyword">nullptr</span>};</div>
-<div class="line"><span class="lineno">   76</span>        <span class="keyword">const</span> std::string &amp;dest_container = <a class="code hl_function" href="namespaceecs_1_1validation.html#a6aa6ce432887ab9972f91a68f6c9228e">validation::messageContainer</a>(message, caller);</div>
-<div class="line"><span class="lineno">   77</span>        <a class="code hl_function" href="namespaceecs_1_1validation.html#a7197af3722e2c3655bfe80fd97d4f46f">validation::messageSystem</a>(message, caller);</div>
-<div class="line"><span class="lineno">   78</span>        <a class="code hl_class" href="classecs_1_1Container.html">ecs::Container</a> *target = <span class="keyword">nullptr</span>;</div>
-<div class="line"><span class="lineno">   79</span>        {</div>
-<div class="line"><span class="lineno">   80</span>            std::lock_guard&lt;std::mutex&gt; lock(this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">mutexContainers</a>);</div>
-<div class="line"><span class="lineno">   81</span>            <span class="keyword">auto</span> it = this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>.find(dest_container);</div>
-<div class="line"><span class="lineno">   82</span>            <span class="keywordflow">if</span>(!this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a3460b89e41fa2df3d4313cf3308c854a">closing</a> &amp;&amp; it != this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>.end())</div>
-<div class="line"><span class="lineno">   83</span>            {</div>
-<div class="line"><span class="lineno">   84</span>                target = it-&gt;second.get();</div>
-<div class="line"><span class="lineno">   85</span>                this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#ad5f6c1890bb1f50aac5a48218e9d2eb1">sendsInFlight</a>++;</div>
-<div class="line"><span class="lineno">   86</span>            }</div>
-<div class="line"><span class="lineno">   87</span>        }</div>
-<div class="line"><span class="lineno">   88</span> </div>
-<div class="line"><span class="lineno">   89</span>        <span class="keywordflow">if</span>(target == <span class="keyword">nullptr</span>)</div>
-<div class="line"><span class="lineno">   90</span>        {</div>
-<div class="line"><span class="lineno">   91</span>            <span class="keyword">auto</span> err = <span class="stringliteral">&quot;ecs::Manager::MessageSubmit(): Container &quot;</span> + dest_container + <span class="stringliteral">&quot; not found.&quot;</span>;</div>
-<div class="line"><span class="lineno">   92</span>            <span class="keywordflow">throw</span> std::runtime_error(err);</div>
-<div class="line"><span class="lineno">   93</span>        }</div>
-<div class="line"><span class="lineno">   94</span> </div>
-<div class="line"><span class="lineno">   95</span>        <span class="keyword">struct </span>SendDone</div>
-<div class="line"><span class="lineno">   96</span>        {</div>
-<div class="line"><span class="lineno">   97</span>            Manager *manager;</div>
-<div class="line"><span class="lineno">   98</span>            ~SendDone()</div>
+<p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00089">89</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   90</span>    {</div>
+<div class="line"><span class="lineno">   91</span>        <span class="keyword">const</span> validation::Caller caller{<span class="keyword">nullptr</span>};</div>
+<div class="line"><span class="lineno">   92</span>        <span class="keyword">const</span> std::string &amp;dest_container = <a class="code hl_function" href="namespaceecs_1_1validation.html#a6aa6ce432887ab9972f91a68f6c9228e">validation::messageContainer</a>(message, caller);</div>
+<div class="line"><span class="lineno">   93</span>        <a class="code hl_function" href="namespaceecs_1_1validation.html#a7197af3722e2c3655bfe80fd97d4f46f">validation::messageSystem</a>(message, caller);</div>
+<div class="line"><span class="lineno">   94</span>        <a class="code hl_class" href="classecs_1_1Container.html">ecs::Container</a> *target = <span class="keyword">nullptr</span>;</div>
+<div class="line"><span class="lineno">   95</span>        {</div>
+<div class="line"><span class="lineno">   96</span>            std::lock_guard&lt;std::mutex&gt; lock(this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">mutexContainers</a>);</div>
+<div class="line"><span class="lineno">   97</span>            <span class="keyword">auto</span> it = this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>.find(dest_container);</div>
+<div class="line"><span class="lineno">   98</span>            <span class="keywordflow">if</span>(!this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a3460b89e41fa2df3d4313cf3308c854a">closing</a> &amp;&amp; it != this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>.end())</div>
 <div class="line"><span class="lineno">   99</span>            {</div>
-<div class="line"><span class="lineno">  100</span>                std::lock_guard&lt;std::mutex&gt; lock(this-&gt;manager-&gt;mutexContainers);</div>
-<div class="line"><span class="lineno">  101</span>                this-&gt;manager-&gt;sendsInFlight--;</div>
-<div class="line"><span class="lineno">  102</span>                <span class="keywordflow">if</span>(this-&gt;manager-&gt;sendsInFlight == 0 &amp;&amp; this-&gt;manager-&gt;closing)</div>
-<div class="line"><span class="lineno">  103</span>                    this-&gt;manager-&gt;sendsIdle.notify_all();</div>
-<div class="line"><span class="lineno">  104</span>            }</div>
-<div class="line"><span class="lineno">  105</span>        } done{<span class="keyword">this</span>};</div>
-<div class="line"><span class="lineno">  106</span> </div>
-<div class="line"><span class="lineno">  107</span>        target-&gt;<a class="code hl_function" href="classecs_1_1Container.html#af5b4fa4307961825080901ed8114427f">MessageSubmit</a>(message);</div>
-<div class="line"><span class="lineno">  108</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00075">Container.hpp:76</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_af5b4fa4307961825080901ed8114427f"><div class="ttname"><a href="classecs_1_1Container.html#af5b4fa4307961825080901ed8114427f">ecs::Container::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00385">Container.cpp:385</a></div></div>
+<div class="line"><span class="lineno">  100</span>                target = it-&gt;second.get();</div>
+<div class="line"><span class="lineno">  101</span>                this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#ad5f6c1890bb1f50aac5a48218e9d2eb1">sendsInFlight</a>++;</div>
+<div class="line"><span class="lineno">  102</span>            }</div>
+<div class="line"><span class="lineno">  103</span>        }</div>
+<div class="line"><span class="lineno">  104</span> </div>
+<div class="line"><span class="lineno">  105</span>        <span class="keywordflow">if</span>(target == <span class="keyword">nullptr</span>)</div>
+<div class="line"><span class="lineno">  106</span>        {</div>
+<div class="line"><span class="lineno">  107</span>            <span class="keyword">auto</span> err = <span class="stringliteral">&quot;ecs::Manager::MessageSubmit(): Container &quot;</span> + dest_container + <span class="stringliteral">&quot; not found.&quot;</span>;</div>
+<div class="line"><span class="lineno">  108</span>            <span class="keywordflow">throw</span> std::runtime_error(err);</div>
+<div class="line"><span class="lineno">  109</span>        }</div>
+<div class="line"><span class="lineno">  110</span> </div>
+<div class="line"><span class="lineno">  111</span>        <span class="keyword">struct </span>SendDone</div>
+<div class="line"><span class="lineno">  112</span>        {</div>
+<div class="line"><span class="lineno">  113</span>            Manager *<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><span class="lineno">  114</span>            ~SendDone()</div>
+<div class="line"><span class="lineno">  115</span>            {</div>
+<div class="line"><span class="lineno">  116</span>                std::lock_guard&lt;std::mutex&gt; lock(this-&gt;manager-&gt;mutexContainers);</div>
+<div class="line"><span class="lineno">  117</span>                this-&gt;manager-&gt;sendsInFlight--;</div>
+<div class="line"><span class="lineno">  118</span>                <span class="keywordflow">if</span>(this-&gt;manager-&gt;sendsInFlight == 0 &amp;&amp; this-&gt;manager-&gt;closing)</div>
+<div class="line"><span class="lineno">  119</span>                    this-&gt;manager-&gt;sendsIdle.notify_all();</div>
+<div class="line"><span class="lineno">  120</span>            }</div>
+<div class="line"><span class="lineno">  121</span>        } done{<span class="keyword">this</span>};</div>
+<div class="line"><span class="lineno">  122</span> </div>
+<div class="line"><span class="lineno">  123</span>        target-&gt;<a class="code hl_function" href="classecs_1_1Container.html#af5b4fa4307961825080901ed8114427f">MessageSubmit</a>(message);</div>
+<div class="line"><span class="lineno">  124</span>    }</div>
+<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00078">Container.hpp:79</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_af5b4fa4307961825080901ed8114427f"><div class="ttname"><a href="classecs_1_1Container.html#af5b4fa4307961825080901ed8114427f">ecs::Container::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00683">Container.cpp:683</a></div></div>
 <div class="ttc" id="anamespaceecs_1_1validation_html_a6aa6ce432887ab9972f91a68f6c9228e"><div class="ttname"><a href="namespaceecs_1_1validation.html#a6aa6ce432887ab9972f91a68f6c9228e">ecs::validation::messageContainer</a></div><div class="ttdeci">const std::string &amp; messageContainer(const nlohmann::json &amp;message, Caller caller)</div><div class="ttdef"><b>Definition</b> <a href="Validation_8hpp_source.html#l00091">Validation.hpp:91</a></div></div>
 <div class="ttc" id="anamespaceecs_1_1validation_html_a7197af3722e2c3655bfe80fd97d4f46f"><div class="ttname"><a href="namespaceecs_1_1validation.html#a7197af3722e2c3655bfe80fd97d4f46f">ecs::validation::messageSystem</a></div><div class="ttdeci">const std::string &amp; messageSystem(const nlohmann::json &amp;message, Caller caller)</div><div class="ttdef"><b>Definition</b> <a href="Validation_8hpp_source.html#l00085">Validation.hpp:85</a></div></div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_a39886ebc661220842cca88183f03e1c6"><div class="ttname"><a href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a></div><div class="ttdeci">ecs::Manager manager</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01289">test_Lifecycle.cpp:1289</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00084">closing</a>, <a class="el" href="Manager_8hpp_source.html#l00081">containers</a>, <a class="el" href="Validation_8hpp_source.html#l00091">ecs::validation::messageContainer()</a>, <a class="el" href="Container_8cpp_source.html#l00385">ecs::Container::MessageSubmit()</a>, <a class="el" href="Validation_8hpp_source.html#l00085">ecs::validation::messageSystem()</a>, <a class="el" href="Manager_8hpp_source.html#l00082">mutexContainers</a>, <a class="el" href="Manager_8hpp_source.html#l00085">sendsIdle</a>, and <a class="el" href="Manager_8hpp_source.html#l00083">sendsInFlight</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00102">closing</a>, <a class="el" href="Manager_8hpp_source.html#l00099">containers</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01289">manager</a>, <a class="el" href="Validation_8hpp_source.html#l00091">ecs::validation::messageContainer()</a>, <a class="el" href="Container_8cpp_source.html#l00683">ecs::Container::MessageSubmit()</a>, <a class="el" href="Validation_8hpp_source.html#l00085">ecs::validation::messageSystem()</a>, <a class="el" href="Manager_8hpp_source.html#l00100">mutexContainers</a>, <a class="el" href="Manager_8hpp_source.html#l00103">sendsIdle</a>, and <a class="el" href="Manager_8hpp_source.html#l00101">sendsInFlight</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="bench__message__submit_8cpp_source.html#l00033">main()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00044">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00559">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00394">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00627">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00499">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00966">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00830">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01086">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01814">TEST_CASE()</a>, and <a class="el" href="test__Threading_8cpp_source.html#l00463">TEST_CASE()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="bench__message__submit_8cpp_source.html#l00033">main()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00044">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00559">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00394">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l01318">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00627">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00499">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l00966">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00830">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01814">TEST_CASE()</a>, and <a class="el" href="test__Threading_8cpp_source.html#l00463">TEST_CASE()</a>.</p>
 
 </div>
 </div>
@@ -439,16 +446,30 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Any thread. Requests shutdown; idempotent, and the request is never withdrawn. </p>
+<p>Any thread. Sets <a class="el" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning()</a> to false, asks every world that has its own thread to stop, and waits for it (see above); idempotent, and the request is never withdrawn.</p>
+<p>From an application thread it blocks until every world that has its own thread has ended and delivered <a class="el" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown()</a> to its systems; afterwards no thread of this manager runs and no system is updated. Concurrent callers each return after that point. From a world thread it only requests, so it never waits for itself or for another world that is waiting for it; an application thread's later call completes the wait. Worlds driven by the application's own <a class="el" href="test__Lifecycle_8cpp.html#a71f74f11ed7240d70fab1feb70185260">Update()</a> calls are not stopped here (the library does not run application code on threads it does not own); stop them with <a class="el" href="classecs_1_1Container.html#adfec8a9d2fb3d296349d21476cd9bbc2">Container::Stop()</a> or by destroying them. A program that uses the process-wide manager calls ECS-&gt;<a class="el" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown()</a> from its main thread before main returns. </p>
 
 <p class="definition">Definition at line <a class="el" href="Manager_8cpp_source.html#l00047">47</a> of file <a class="el" href="Manager_8cpp_source.html">Manager.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   48</span>    {</div>
 <div class="line"><span class="lineno">   49</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a717de0ef5db5706cebae03ebe449773c">running</a> = <span class="keyword">false</span>;</div>
-<div class="line"><span class="lineno">   50</span>    }</div>
+<div class="line"><span class="lineno">   50</span> </div>
+<div class="line"><span class="lineno">   51</span>        <span class="comment">// The worlds are listed under the lock and asked to stop without it, so no lock is held while</span></div>
+<div class="line"><span class="lineno">   52</span>        <span class="comment">// a world runs user code.</span></div>
+<div class="line"><span class="lineno">   53</span>        std::vector&lt;ecs::Container *&gt; threaded;</div>
+<div class="line"><span class="lineno">   54</span>        {</div>
+<div class="line"><span class="lineno">   55</span>            std::lock_guard&lt;std::mutex&gt; lock(this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a393ffe8ba4eccbe8b844d34838511155">mutexContainers</a>);</div>
+<div class="line"><span class="lineno">   56</span>            <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;entry : this-&gt;<a class="code hl_variable" href="classecs_1_1Manager.html#a65d8e52ca4fcf97fb2a347667252da26">containers</a>) threaded.push_back(entry.second.<a class="code hl_function" href="namespacenlohmann_1_1detail.html#acc422c11342b31368f610b6f96fcedc6">get</a>());</div>
+<div class="line"><span class="lineno">   57</span>        }</div>
+<div class="line"><span class="lineno">   58</span> </div>
+<div class="line"><span class="lineno">   59</span>        std::erase_if(threaded, [](<a class="code hl_class" href="classecs_1_1Container.html">ecs::Container</a> *world) { <span class="keywordflow">return</span> !world-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a3a012018f995a82cf82cb23a75a8d820">managerStopRequest</a>(); });</div>
+<div class="line"><span class="lineno">   60</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> *world : threaded) world-&gt;managerStopWait();</div>
+<div class="line"><span class="lineno">   61</span>    }</div>
+<div class="ttc" id="aclassecs_1_1Container_html_a3a012018f995a82cf82cb23a75a8d820"><div class="ttname"><a href="classecs_1_1Container.html#a3a012018f995a82cf82cb23a75a8d820">ecs::Container::managerStopRequest</a></div><div class="ttdeci">bool managerStopRequest()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00182">Container.cpp:182</a></div></div>
+<div class="ttc" id="anamespacenlohmann_1_1detail_html_acc422c11342b31368f610b6f96fcedc6"><div class="ttname"><a href="namespacenlohmann_1_1detail.html#acc422c11342b31368f610b6f96fcedc6">nlohmann::detail::get</a></div><div class="ttdeci">auto get(const nlohmann::detail::iteration_proxy_value&lt; IteratorType &gt; &amp;i) -&gt; decltype(i.key())</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l04451">json.hpp:4451</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00086">running</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8hpp_source.html#l00099">containers</a>, <a class="el" href="Container_8cpp_source.html#l00182">ecs::Container::managerStopRequest()</a>, <a class="el" href="Container_8cpp_source.html#l00192">ecs::Container::managerStopWait()</a>, <a class="el" href="Manager_8hpp_source.html#l00100">mutexContainers</a>, and <a class="el" href="Manager_8hpp_source.html#l00104">running</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="test__Threading_8cpp_source.html#l01001">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00038">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00955">TEST_CASE()</a>, <a class="el" href="Container_8cpp_source.html#l00283">ecs::Container::threadFunc()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="test__Lifecycle_8cpp_source.html#l02699">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l03132">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02475">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02745">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01001">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l03092">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02890">TEST_CASE()</a>, <a class="el" href="test__Manager_8cpp_source.html#l00038">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02459">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02822">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l02410">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l00955">TEST_CASE()</a>, <a class="el" href="test__ProcessManager_8cpp_source.html#l00095">TEST_CASE()</a>, <a class="el" href="test__Lifecycle_8cpp_source.html#l03026">TEST_CASE()</a>, <a class="el" href="Container_8cpp_source.html#l00548">ecs::Container::threadFunc()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
 
 </div>
 </div>
@@ -473,9 +494,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00084">84</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00102">102</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00073">MessageSubmit()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00063">containerCreate()</a>, <a class="el" href="Manager_8cpp_source.html#l00089">MessageSubmit()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
 
 </div>
 </div>
@@ -499,9 +520,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00081">81</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00099">99</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00052">containerCreate()</a>, <a class="el" href="Manager_8cpp_source.html#l00062">ContainersGet()</a>, <a class="el" href="Manager_8cpp_source.html#l00073">MessageSubmit()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00063">containerCreate()</a>, <a class="el" href="Manager_8cpp_source.html#l00078">ContainersGet()</a>, <a class="el" href="Manager_8cpp_source.html#l00089">MessageSubmit()</a>, <a class="el" href="Manager_8cpp_source.html#l00047">Shutdown()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
 
 </div>
 </div>
@@ -525,9 +546,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00082">82</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00100">100</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00052">containerCreate()</a>, <a class="el" href="Manager_8cpp_source.html#l00062">ContainersGet()</a>, <a class="el" href="Manager_8cpp_source.html#l00073">MessageSubmit()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00063">containerCreate()</a>, <a class="el" href="Manager_8cpp_source.html#l00078">ContainersGet()</a>, <a class="el" href="Manager_8cpp_source.html#l00089">MessageSubmit()</a>, <a class="el" href="Manager_8cpp_source.html#l00047">Shutdown()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
 
 </div>
 </div>
@@ -551,7 +572,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00086">86</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00104">104</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00042">IsRunning()</a>, and <a class="el" href="Manager_8cpp_source.html#l00047">Shutdown()</a>.</p>
 
@@ -577,9 +598,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00085">85</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00103">103</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00073">MessageSubmit()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00089">MessageSubmit()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
 
 </div>
 </div>
@@ -603,9 +624,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00083">83</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Manager_8hpp_source.html#l00101">101</a> of file <a class="el" href="Manager_8hpp_source.html">Manager.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00073">MessageSubmit()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Manager_8cpp_source.html#l00089">MessageSubmit()</a>, and <a class="el" href="Manager_8cpp_source.html#l00013">~Manager()</a>.</p>
 
 </div>
 </div>
@@ -616,7 +637,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 06:28:36 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 08:31:59 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

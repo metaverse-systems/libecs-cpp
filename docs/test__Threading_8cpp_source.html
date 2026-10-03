@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.5.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.6.0</span>
    </div>
   </td>
  </tr>
@@ -247,7 +247,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>          std::atomic&lt;bool&gt; *done,</div>
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>          std::atomic&lt;int&gt; *inUpdate,</div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>          std::atomic&lt;int&gt; *errors)</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>          : manager(manager), destinationContainer(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(destinationContainer)),</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>          : <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>), destinationContainer(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(destinationContainer)),</div>
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>            destinationSystem(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(destinationSystem)), sender(sender), total(total), perPass(perPass), done(done),</div>
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>            inUpdate(inUpdate), errors(errors)</div>
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        {</div>
@@ -283,7 +283,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        }</div>
 <div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span> </div>
 <div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>      <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *manager;</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
 <div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        std::string destinationContainer;</div>
 <div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        std::string destinationSystem;</div>
 <div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        <span class="keywordtype">int</span> sender;</div>
@@ -388,7 +388,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>          <span class="keywordtype">int</span> passes,</div>
 <div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>          std::atomic&lt;int&gt; *completed,</div>
 <div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>          std::atomic&lt;int&gt; *errors)</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>          : manager(manager), destinationContainer(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(destinationContainer)), sender(sender), passes(passes),</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>          : <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>), destinationContainer(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(destinationContainer)), sender(sender), passes(passes),</div>
 <div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>            completed(completed), errors(errors)</div>
 <div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        {</div>
 <div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>            this-&gt;Handle = handle;</div>
@@ -424,7 +424,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>        }</div>
 <div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span> </div>
 <div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>      <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *manager;</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
 <div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>        std::string destinationContainer;</div>
 <div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>        <span class="keywordtype">int</span> sender;</div>
 <div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>        <span class="keywordtype">int</span> passes;</div>
@@ -436,7 +436,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>    <span class="keyword">class </span>ShutdownSystem : <span class="keyword">public</span> <a class="code hl_class" href="classecs_1_1System.html">ecs::System</a></div>
 <div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>    {</div>
 <div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>      <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>        ShutdownSystem(<span class="keyword">const</span> std::string &amp;handle, <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *manager) : manager(manager)</div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>        ShutdownSystem(<span class="keyword">const</span> std::string &amp;handle, <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *manager) : <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>)</div>
 <div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>        {</div>
 <div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>            this-&gt;Handle = handle;</div>
 <div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>            this-&gt;Timing.SetFrequency(0);</div>
@@ -453,7 +453,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>        }</div>
 <div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span> </div>
 <div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>      <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *manager;</div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
 <div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>    };</div>
 <div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>}</div>
 <div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span> </div>
@@ -470,8 +470,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span> </div>
 <div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>    <span class="keywordtype">bool</span> completed = withTimeout(</div>
 <div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>      [&amp;]() {</div>
-<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>          <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>          <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>          <span class="keyword">auto</span> recorder = std::make_unique&lt;RecorderSystem&gt;(<span class="stringliteral">&quot;recorder&quot;</span>);</div>
 <div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>          <span class="keyword">auto</span> recorded = recorder-&gt;recorded;</div>
 <div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>          container-&gt;System(std::move(recorder));</div>
@@ -486,7 +486,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span>                  {</div>
 <div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span>                      <span class="keywordflow">try</span></div>
 <div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span>                      {</div>
-<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span>                          manager.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, s, n));</div>
+<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span>                          <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, s, n));</div>
 <div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span>                      }</div>
 <div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>                      <span class="keywordflow">catch</span>(<span class="keyword">const</span> std::exception &amp;)</div>
 <div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>                      {</div>
@@ -553,13 +553,13 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00484" name="l00484"></a><span class="lineno">  484</span>          <span class="keyword">auto</span> recordedA = std::make_shared&lt;Recorded&gt;();</div>
 <div class="line"><a id="l00485" name="l00485"></a><span class="lineno">  485</span>          <span class="keyword">auto</span> recordedB = std::make_shared&lt;Recorded&gt;();</div>
 <div class="line"><a id="l00486" name="l00486"></a><span class="lineno">  486</span>          {</div>
-<div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span>              <span class="keyword">auto</span> manager = std::make_unique&lt;ecs::Manager&gt;();</div>
-<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span>              <span class="keyword">auto</span> a = manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;A&quot;</span>);</div>
-<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span>              <span class="keyword">auto</span> b = manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;B&quot;</span>);</div>
+<div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span>              <span class="keyword">auto</span> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a> = std::make_unique&lt;ecs::Manager&gt;();</div>
+<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span>              <span class="keyword">auto</span> a = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;A&quot;</span>);</div>
+<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span>              <span class="keyword">auto</span> b = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;B&quot;</span>);</div>
 <div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span>              a-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;RecorderSystem&gt;(<span class="stringliteral">&quot;recorder&quot;</span>, recordedA));</div>
 <div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span>              b-&gt;<a class="code hl_function" href="classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8">System</a>(std::make_unique&lt;RecorderSystem&gt;(<span class="stringliteral">&quot;recorder&quot;</span>, recordedB));</div>
-<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span>              a-&gt;System(std::make_unique&lt;PingSystem&gt;(<span class="stringliteral">&quot;ping&quot;</span>, manager.get(), <span class="stringliteral">&quot;B&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, SYSTEM_SENDER, PER_SYSTEM, 500, &amp;done, &amp;inUpdate, &amp;errors));</div>
-<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span>              b-&gt;System(std::make_unique&lt;PingSystem&gt;(<span class="stringliteral">&quot;ping&quot;</span>, manager.get(), <span class="stringliteral">&quot;A&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, SYSTEM_SENDER, PER_SYSTEM, 500, &amp;done, &amp;inUpdate, &amp;errors));</div>
+<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span>              a-&gt;System(std::make_unique&lt;PingSystem&gt;(<span class="stringliteral">&quot;ping&quot;</span>, <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.get(), <span class="stringliteral">&quot;B&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, SYSTEM_SENDER, PER_SYSTEM, 500, &amp;done, &amp;inUpdate, &amp;errors));</div>
+<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span>              b-&gt;System(std::make_unique&lt;PingSystem&gt;(<span class="stringliteral">&quot;ping&quot;</span>, <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.get(), <span class="stringliteral">&quot;A&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, SYSTEM_SENDER, PER_SYSTEM, 500, &amp;done, &amp;inUpdate, &amp;errors));</div>
 <div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span>              a-&gt;Start(100);</div>
 <div class="line"><a id="l00495" name="l00495"></a><span class="lineno">  495</span>              b-&gt;Start(100);</div>
 <div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span> </div>
@@ -576,7 +576,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span>                          {</div>
 <div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>                              <span class="keywordflow">try</span></div>
 <div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span>                              {</div>
-<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>                                  manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(target, <span class="stringliteral">&quot;recorder&quot;</span>, s, n));</div>
+<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>                                  <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(target, <span class="stringliteral">&quot;recorder&quot;</span>, s, n));</div>
 <div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span>                              }</div>
 <div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span>                              <span class="keywordflow">catch</span>(<span class="keyword">const</span> std::exception &amp;)</div>
 <div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span>                              {</div>
@@ -602,7 +602,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>              }</div>
 <div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>              countA = recordedA-&gt;count;</div>
 <div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>              countB = recordedB-&gt;count;</div>
-<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>              manager.reset();</div>
+<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>              <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.reset();</div>
 <div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>          }</div>
 <div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span> </div>
 <div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>          std::map&lt;int, int&gt; expected{{1, PER_THREAD}, {2, PER_THREAD}, {SYSTEM_SENDER, PER_SYSTEM}};</div>
@@ -637,8 +637,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>    <span class="keywordtype">bool</span> returned = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span> </div>
 <div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>    {</div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>        <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>        <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>        container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;BlockingSystem&gt;(<span class="stringliteral">&quot;blocker&quot;</span>, &amp;release, &amp;entered, &amp;received));</div>
 <div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>        container-&gt;Start(100);</div>
 <div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span> </div>
@@ -646,7 +646,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span> </div>
 <div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>        returned = withTimeout(</div>
 <div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>          [&amp;]() {</div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>              manager.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;blocker&quot;</span>, 0, 0));</div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>              <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;blocker&quot;</span>, 0, 0));</div>
 <div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>              stillBlocked = received.load() == 0;</div>
 <div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>          },</div>
 <div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>          10s,</div>
@@ -671,8 +671,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00599" data-start="{" data-end="}">
 <div class="line"><a id="l00599" name="l00599"></a><span class="lineno"><a class="line" href="test__Threading_8cpp.html#afad2d2bdea34bfff847db65eeebef13c">  599</a></span><a class="code hl_function" href="test__Threading_8cpp.html#a16127bffb0ac004e25b82f7af3b9def3">TEST_CASE</a>(<span class="stringliteral">&quot;A system messaging itself or a sibling is handled in a later update&quot;</span>, <span class="stringliteral">&quot;[Threading]&quot;</span>)</div>
 <div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>{</div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>    <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>    <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>    PassClock clock;</div>
 <div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span> </div>
 <div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>    <span class="keyword">auto</span> early = std::make_unique&lt;PassSystem&gt;(<span class="stringliteral">&quot;early&quot;</span>, &amp;clock, std::vector&lt;std::string&gt;{});</div>
@@ -701,16 +701,16 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00627" data-start="{" data-end="}">
 <div class="line"><a id="l00627" name="l00627"></a><span class="lineno"><a class="line" href="test__Threading_8cpp.html#a8d6987212f8c9681c85d37114afe03d5">  627</a></span><a class="code hl_function" href="test__Threading_8cpp.html#a16127bffb0ac004e25b82f7af3b9def3">TEST_CASE</a>(<span class="stringliteral">&quot;Messages to unknown or removed destinations are dropped safely&quot;</span>, <span class="stringliteral">&quot;[Threading]&quot;</span>)</div>
 <div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>{</div>
-<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>    <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>    <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>    <span class="keyword">auto</span> recorded = std::make_shared&lt;Recorded&gt;();</div>
 <div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>    container-&gt;System(std::make_unique&lt;RecorderSystem&gt;(<span class="stringliteral">&quot;steady&quot;</span>, recorded));</div>
 <div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span> </div>
-<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>    REQUIRE_THROWS_AS(manager.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;nowhere&quot;</span>, <span class="stringliteral">&quot;steady&quot;</span>, 0, 0)), std::runtime_error);</div>
-<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>    REQUIRE_THROWS_AS(manager.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;nobody&quot;</span>, 0, 1)), std::runtime_error);</div>
+<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>    REQUIRE_THROWS_AS(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;nowhere&quot;</span>, <span class="stringliteral">&quot;steady&quot;</span>, 0, 0)), std::runtime_error);</div>
+<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>    REQUIRE_THROWS_AS(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;nobody&quot;</span>, 0, 1)), std::runtime_error);</div>
 <div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span> </div>
 <div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>    <span class="comment">// The sender is still usable afterwards.</span></div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>    REQUIRE_NOTHROW(manager.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;steady&quot;</span>, 0, 2)));</div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>    REQUIRE_NOTHROW(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;steady&quot;</span>, 0, 2)));</div>
 <div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>    container-&gt;Update();</div>
 <div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>    REQUIRE(recorded-&gt;entries.size() == 1);</div>
 <div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>    REQUIRE(recorded-&gt;entries[0] == std::make_pair(0, 2));</div>
@@ -735,7 +735,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>                  {</div>
 <div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>                      <span class="keywordflow">try</span></div>
 <div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>                      {</div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>                          manager.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;churn&quot;</span>, s, n));</div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>                          <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;churn&quot;</span>, s, n));</div>
 <div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>                      }</div>
 <div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>                      <span class="keywordflow">catch</span>(<span class="keyword">const</span> std::runtime_error &amp;)</div>
 <div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>                      {</div>
@@ -786,7 +786,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>    <span class="keyword">constexpr</span> <span class="keywordtype">int</span> THREADS = 8;</div>
 <div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>    <span class="keyword">constexpr</span> <span class="keywordtype">int</span> PER_THREAD = 100;</div>
 <div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span> </div>
-<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
+<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
 <div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>    std::atomic&lt;bool&gt; stop{<span class="keyword">false</span>};</div>
 <div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span>    std::vector&lt;std::set&lt;std::string&gt;&gt; seen(THREADS);</div>
 <div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span>    std::vector&lt;std::set&lt;ecs::Container *&gt;&gt; created(THREADS);</div>
@@ -802,8 +802,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>                  go.arrive_and_wait();</div>
 <div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>                  <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; PER_THREAD &amp;&amp; !stop; i++)</div>
 <div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span>                  {</div>
-<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>                      created[t].insert(manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>());</div>
-<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span>                      <span class="keyword">auto</span> snapshot = manager.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>();</div>
+<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>                      created[t].insert(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>());</div>
+<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span>                      <span class="keyword">auto</span> snapshot = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>();</div>
 <div class="line"><a id="l00730" name="l00730"></a><span class="lineno">  730</span>                      std::set&lt;std::string&gt; distinct(snapshot.begin(), snapshot.end());</div>
 <div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>                      <span class="keywordflow">if</span>(distinct.size() != snapshot.size() || distinct.contains(<span class="stringliteral">&quot;&quot;</span>))</div>
 <div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span>                      {</div>
@@ -827,7 +827,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>        FAIL(<span class="stringliteral">&quot;the worlds were not created in time&quot;</span>);</div>
 <div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>    }</div>
 <div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span> </div>
-<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>    <span class="keyword">auto</span> handles = manager.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>();</div>
+<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>    <span class="keyword">auto</span> handles = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>();</div>
 <div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>    std::set&lt;std::string&gt; distinct(handles.begin(), handles.end());</div>
 <div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>    REQUIRE(badSnapshots == 0);</div>
 <div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>    REQUIRE(handles.size() == <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(THREADS) * PER_THREAD);</div>
@@ -846,10 +846,10 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;handle : set)</div>
 <div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>        {</div>
 <div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>            REQUIRE(distinct.contains(handle));</div>
-<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>            REQUIRE(pointers.contains(manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(handle)));</div>
+<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>            REQUIRE(pointers.contains(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(handle)));</div>
 <div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>        }</div>
 <div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>    }</div>
-<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>    REQUIRE(manager.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>().size() == handles.size());</div>
+<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>    REQUIRE(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>().size() == handles.size());</div>
 <div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span>}</div>
 </div>
 <div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span> </div>
@@ -859,7 +859,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>    <span class="keyword">constexpr</span> <span class="keywordtype">int</span> THREADS = 16;</div>
 <div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>    <span class="keyword">constexpr</span> <span class="keywordtype">int</span> HANDLES = 50;</div>
 <div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span> </div>
-<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
+<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
 <div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>    std::atomic&lt;bool&gt; stop{<span class="keyword">false</span>};</div>
 <div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>    std::vector&lt;std::vector&lt;ecs::Container *&gt;&gt; results(HANDLES, std::vector&lt;ecs::Container *&gt;(THREADS, <span class="keyword">nullptr</span>));</div>
 <div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span> </div>
@@ -874,7 +874,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>              {</div>
 <div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>                  threads.emplace_back([&amp;, h, t, handle]() {</div>
 <div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>                      go.arrive_and_wait();</div>
-<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>                      results[h][t] = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(handle);</div>
+<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>                      results[h][t] = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(handle);</div>
 <div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>                  });</div>
 <div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>              }</div>
 <div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>              go.arrive_and_wait();</div>
@@ -892,7 +892,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span>        FAIL(<span class="stringliteral">&quot;the lookups did not finish in time&quot;</span>);</div>
 <div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span>    }</div>
 <div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span> </div>
-<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>    <span class="keyword">auto</span> handles = manager.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>();</div>
+<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>    <span class="keyword">auto</span> handles = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>();</div>
 <div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>    REQUIRE(handles.size() == <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(HANDLES));</div>
 <div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> h = 0; h &lt; HANDLES; h++)</div>
 <div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>    {</div>
@@ -913,7 +913,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>    <span class="keyword">constexpr</span> <span class="keywordtype">int</span> SENDERS = 4;</div>
 <div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>    <span class="keyword">constexpr</span> <span class="keywordtype">int</span> AFTER_READY = 2000;</div>
 <div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span> </div>
-<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
+<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
 <div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>    std::atomic&lt;bool&gt; stop{<span class="keyword">false</span>};</div>
 <div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span>    std::atomic&lt;bool&gt; ready{<span class="keyword">false</span>};</div>
 <div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>    std::atomic&lt;int&gt; otherErrors{0};</div>
@@ -937,7 +937,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>                      }</div>
 <div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>                      <span class="keywordflow">try</span></div>
 <div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>                      {</div>
-<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>                          manager.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;late&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, s, n));</div>
+<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>                          <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;late&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, s, n));</div>
 <div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>                          accepted[s].emplace_back(s, n);</div>
 <div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>                      }</div>
 <div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>                      <span class="keywordflow">catch</span>(<span class="keyword">const</span> std::runtime_error &amp;)</div>
@@ -952,7 +952,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>          }</div>
 <div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span>          threads.emplace_back([&amp;]() {</div>
 <div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span>              go.arrive_and_wait();</div>
-<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>              <span class="keyword">auto</span> *late = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;late&quot;</span>);</div>
+<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>              <span class="keyword">auto</span> *late = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;late&quot;</span>);</div>
 <div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span>              late-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;RecorderSystem&gt;(<span class="stringliteral">&quot;recorder&quot;</span>, recorded));</div>
 <div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span>              ready = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00877" name="l00877"></a><span class="lineno">  877</span>          });</div>
@@ -971,7 +971,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00890" name="l00890"></a><span class="lineno">  890</span>    }</div>
 <div class="line"><a id="l00891" name="l00891"></a><span class="lineno">  891</span> </div>
 <div class="line"><a id="l00892" name="l00892"></a><span class="lineno">  892</span>    <span class="comment">// The world was never started, so the test thread delivers what was accepted.</span></div>
-<div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>    manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;late&quot;</span>)-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">Update</a>();</div>
+<div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>    <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;late&quot;</span>)-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">Update</a>();</div>
 <div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span> </div>
 <div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span>    std::vector&lt;std::pair&lt;int, int&gt;&gt; expected;</div>
 <div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span>    <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;list : accepted)</div>
@@ -1003,13 +1003,13 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00920" name="l00920"></a><span class="lineno">  920</span> </div>
 <div class="line"><a id="l00921" name="l00921"></a><span class="lineno">  921</span>    <span class="keywordtype">bool</span> completed = withTimeout(</div>
 <div class="line"><a id="l00922" name="l00922"></a><span class="lineno">  922</span>      [&amp;]() {</div>
-<div class="line"><a id="l00923" name="l00923"></a><span class="lineno">  923</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l00924" name="l00924"></a><span class="lineno">  924</span>          <span class="keyword">auto</span> a = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;A&quot;</span>);</div>
-<div class="line"><a id="l00925" name="l00925"></a><span class="lineno">  925</span>          <span class="keyword">auto</span> b = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;B&quot;</span>);</div>
+<div class="line"><a id="l00923" name="l00923"></a><span class="lineno">  923</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l00924" name="l00924"></a><span class="lineno">  924</span>          <span class="keyword">auto</span> a = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;A&quot;</span>);</div>
+<div class="line"><a id="l00925" name="l00925"></a><span class="lineno">  925</span>          <span class="keyword">auto</span> b = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;B&quot;</span>);</div>
 <div class="line"><a id="l00926" name="l00926"></a><span class="lineno">  926</span>          a-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;RecorderSystem&gt;(<span class="stringliteral">&quot;recorder&quot;</span>, recordedA));</div>
 <div class="line"><a id="l00927" name="l00927"></a><span class="lineno">  927</span>          b-&gt;<a class="code hl_function" href="classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8">System</a>(std::make_unique&lt;RecorderSystem&gt;(<span class="stringliteral">&quot;recorder&quot;</span>, recordedB));</div>
-<div class="line"><a id="l00928" name="l00928"></a><span class="lineno">  928</span>          a-&gt;System(std::make_unique&lt;ManagerCallerSystem&gt;(<span class="stringliteral">&quot;caller&quot;</span>, &amp;manager, <span class="stringliteral">&quot;B&quot;</span>, 1, PASSES, &amp;completedA, &amp;errors));</div>
-<div class="line"><a id="l00929" name="l00929"></a><span class="lineno">  929</span>          b-&gt;System(std::make_unique&lt;ManagerCallerSystem&gt;(<span class="stringliteral">&quot;caller&quot;</span>, &amp;manager, <span class="stringliteral">&quot;A&quot;</span>, 2, PASSES, &amp;completedB, &amp;errors));</div>
+<div class="line"><a id="l00928" name="l00928"></a><span class="lineno">  928</span>          a-&gt;System(std::make_unique&lt;ManagerCallerSystem&gt;(<span class="stringliteral">&quot;caller&quot;</span>, &amp;<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>, <span class="stringliteral">&quot;B&quot;</span>, 1, PASSES, &amp;completedA, &amp;errors));</div>
+<div class="line"><a id="l00929" name="l00929"></a><span class="lineno">  929</span>          b-&gt;System(std::make_unique&lt;ManagerCallerSystem&gt;(<span class="stringliteral">&quot;caller&quot;</span>, &amp;<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>, <span class="stringliteral">&quot;A&quot;</span>, 2, PASSES, &amp;completedB, &amp;errors));</div>
 <div class="line"><a id="l00930" name="l00930"></a><span class="lineno">  930</span>          a-&gt;Start(100);</div>
 <div class="line"><a id="l00931" name="l00931"></a><span class="lineno">  931</span>          b-&gt;Start(100);</div>
 <div class="line"><a id="l00932" name="l00932"></a><span class="lineno">  932</span> </div>
@@ -1017,7 +1017,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00934" name="l00934"></a><span class="lineno">  934</span>              <span class="keywordflow">return</span> completedA &gt;= PASSES &amp;&amp; completedB &gt;= PASSES &amp;&amp; recordedA-&gt;count &gt;= <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(PASSES) &amp;&amp;</div>
 <div class="line"><a id="l00935" name="l00935"></a><span class="lineno">  935</span>                     recordedB-&gt;count &gt;= <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(PASSES);</div>
 <div class="line"><a id="l00936" name="l00936"></a><span class="lineno">  936</span>          }, stop, 25s);</div>
-<div class="line"><a id="l00937" name="l00937"></a><span class="lineno">  937</span>          worlds = manager.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>().size();</div>
+<div class="line"><a id="l00937" name="l00937"></a><span class="lineno">  937</span>          worlds = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>().size();</div>
 <div class="line"><a id="l00938" name="l00938"></a><span class="lineno">  938</span>      },</div>
 <div class="line"><a id="l00939" name="l00939"></a><span class="lineno">  939</span>      30s,</div>
 <div class="line"><a id="l00940" name="l00940"></a><span class="lineno">  940</span>      stop);</div>
@@ -1041,7 +1041,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00956" name="l00956"></a><span class="lineno">  956</span>{</div>
 <div class="line"><a id="l00957" name="l00957"></a><span class="lineno">  957</span>    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> round = 0; round &lt; 20; round++)</div>
 <div class="line"><a id="l00958" name="l00958"></a><span class="lineno">  958</span>    {</div>
-<div class="line"><a id="l00959" name="l00959"></a><span class="lineno">  959</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
+<div class="line"><a id="l00959" name="l00959"></a><span class="lineno">  959</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
 <div class="line"><a id="l00960" name="l00960"></a><span class="lineno">  960</span>        std::atomic&lt;bool&gt; sawFalse{<span class="keyword">false</span>};</div>
 <div class="line"><a id="l00961" name="l00961"></a><span class="lineno">  961</span>        std::atomic&lt;bool&gt; reverted{<span class="keyword">false</span>};</div>
 <div class="line"><a id="l00962" name="l00962"></a><span class="lineno">  962</span>        std::atomic&lt;bool&gt; quit{<span class="keyword">false</span>};</div>
@@ -1051,7 +1051,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span>            <span class="keywordtype">bool</span> seenFalse = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00967" name="l00967"></a><span class="lineno">  967</span>            <span class="keywordflow">while</span>(!quit)</div>
 <div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span>            {</div>
-<div class="line"><a id="l00969" name="l00969"></a><span class="lineno">  969</span>                <span class="keywordflow">if</span>(!manager.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>())</div>
+<div class="line"><a id="l00969" name="l00969"></a><span class="lineno">  969</span>                <span class="keywordflow">if</span>(!<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>())</div>
 <div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span>                {</div>
 <div class="line"><a id="l00971" name="l00971"></a><span class="lineno">  971</span>                    seenFalse = true;</div>
 <div class="line"><a id="l00972" name="l00972"></a><span class="lineno">  972</span>                    sawFalse = true;</div>
@@ -1066,7 +1066,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00981" name="l00981"></a><span class="lineno">  981</span> </div>
 <div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span>        std::this_thread::sleep_for(3ms);</div>
 <div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span>        <span class="keyword">auto</span> requested = std::chrono::steady_clock::now();</div>
-<div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span>        manager.<a class="code hl_function" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown</a>();</div>
+<div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span>        <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown</a>();</div>
 <div class="line"><a id="l00985" name="l00985"></a><span class="lineno">  985</span>        <span class="keywordtype">bool</span> seen = waitUntil([&amp;]() { <span class="keywordflow">return</span> sawFalse.load(); }, never, 1s);</div>
 <div class="line"><a id="l00986" name="l00986"></a><span class="lineno">  986</span>        <span class="keyword">auto</span> delay = std::chrono::steady_clock::now() - requested;</div>
 <div class="line"><a id="l00987" name="l00987"></a><span class="lineno">  987</span> </div>
@@ -1079,7 +1079,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00994" name="l00994"></a><span class="lineno">  994</span>        REQUIRE(seen);</div>
 <div class="line"><a id="l00995" name="l00995"></a><span class="lineno">  995</span>        REQUIRE(delay &lt; 1s);</div>
 <div class="line"><a id="l00996" name="l00996"></a><span class="lineno">  996</span>        REQUIRE_FALSE(reverted);</div>
-<div class="line"><a id="l00997" name="l00997"></a><span class="lineno">  997</span>        REQUIRE_FALSE(manager.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>());</div>
+<div class="line"><a id="l00997" name="l00997"></a><span class="lineno">  997</span>        REQUIRE_FALSE(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>());</div>
 <div class="line"><a id="l00998" name="l00998"></a><span class="lineno">  998</span>    }</div>
 <div class="line"><a id="l00999" name="l00999"></a><span class="lineno">  999</span>}</div>
 </div>
@@ -1097,7 +1097,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01010" name="l01010"></a><span class="lineno"> 1010</span> </div>
 <div class="line"><a id="l01011" name="l01011"></a><span class="lineno"> 1011</span>    <span class="keywordtype">bool</span> completed = withTimeout(</div>
 <div class="line"><a id="l01012" name="l01012"></a><span class="lineno"> 1012</span>      [&amp;]() {</div>
-<div class="line"><a id="l01013" name="l01013"></a><span class="lineno"> 1013</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
+<div class="line"><a id="l01013" name="l01013"></a><span class="lineno"> 1013</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
 <div class="line"><a id="l01014" name="l01014"></a><span class="lineno"> 1014</span>          std::atomic&lt;bool&gt; halt{<span class="keyword">false</span>};</div>
 <div class="line"><a id="l01015" name="l01015"></a><span class="lineno"> 1015</span>          std::latch go(REQUESTERS + CREATORS + 1);</div>
 <div class="line"><a id="l01016" name="l01016"></a><span class="lineno"> 1016</span>          std::vector&lt;std::thread&gt; requesters;</div>
@@ -1106,7 +1106,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01019" name="l01019"></a><span class="lineno"> 1019</span>          {</div>
 <div class="line"><a id="l01020" name="l01020"></a><span class="lineno"> 1020</span>              requesters.emplace_back([&amp;]() {</div>
 <div class="line"><a id="l01021" name="l01021"></a><span class="lineno"> 1021</span>                  go.arrive_and_wait();</div>
-<div class="line"><a id="l01022" name="l01022"></a><span class="lineno"> 1022</span>                  manager.<a class="code hl_function" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown</a>();</div>
+<div class="line"><a id="l01022" name="l01022"></a><span class="lineno"> 1022</span>                  <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">Shutdown</a>();</div>
 <div class="line"><a id="l01023" name="l01023"></a><span class="lineno"> 1023</span>              });</div>
 <div class="line"><a id="l01024" name="l01024"></a><span class="lineno"> 1024</span>          }</div>
 <div class="line"><a id="l01025" name="l01025"></a><span class="lineno"> 1025</span>          <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; CREATORS; i++)</div>
@@ -1115,7 +1115,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01028" name="l01028"></a><span class="lineno"> 1028</span>                  go.arrive_and_wait();</div>
 <div class="line"><a id="l01029" name="l01029"></a><span class="lineno"> 1029</span>                  <span class="keywordflow">for</span>(<span class="keywordtype">int</span> n = 0; n &lt; WORLD_LIMIT &amp;&amp; !halt &amp;&amp; !stop; n++)</div>
 <div class="line"><a id="l01030" name="l01030"></a><span class="lineno"> 1030</span>                  {</div>
-<div class="line"><a id="l01031" name="l01031"></a><span class="lineno"> 1031</span>                      manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>();</div>
+<div class="line"><a id="l01031" name="l01031"></a><span class="lineno"> 1031</span>                      <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>();</div>
 <div class="line"><a id="l01032" name="l01032"></a><span class="lineno"> 1032</span>                  }</div>
 <div class="line"><a id="l01033" name="l01033"></a><span class="lineno"> 1033</span>              });</div>
 <div class="line"><a id="l01034" name="l01034"></a><span class="lineno"> 1034</span>          }</div>
@@ -1124,14 +1124,14 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01037" name="l01037"></a><span class="lineno"> 1037</span>          {</div>
 <div class="line"><a id="l01038" name="l01038"></a><span class="lineno"> 1038</span>              t.join();</div>
 <div class="line"><a id="l01039" name="l01039"></a><span class="lineno"> 1039</span>          }</div>
-<div class="line"><a id="l01040" name="l01040"></a><span class="lineno"> 1040</span>          runningAfter = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>();</div>
+<div class="line"><a id="l01040" name="l01040"></a><span class="lineno"> 1040</span>          runningAfter = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>();</div>
 <div class="line"><a id="l01041" name="l01041"></a><span class="lineno"> 1041</span>          std::this_thread::sleep_for(20ms);</div>
 <div class="line"><a id="l01042" name="l01042"></a><span class="lineno"> 1042</span>          halt = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l01043" name="l01043"></a><span class="lineno"> 1043</span>          <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;t : creators)</div>
 <div class="line"><a id="l01044" name="l01044"></a><span class="lineno"> 1044</span>          {</div>
 <div class="line"><a id="l01045" name="l01045"></a><span class="lineno"> 1045</span>              t.join();</div>
 <div class="line"><a id="l01046" name="l01046"></a><span class="lineno"> 1046</span>          }</div>
-<div class="line"><a id="l01047" name="l01047"></a><span class="lineno"> 1047</span>          runningLater = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>();</div>
+<div class="line"><a id="l01047" name="l01047"></a><span class="lineno"> 1047</span>          runningLater = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>();</div>
 <div class="line"><a id="l01048" name="l01048"></a><span class="lineno"> 1048</span>      },</div>
 <div class="line"><a id="l01049" name="l01049"></a><span class="lineno"> 1049</span>      60s,</div>
 <div class="line"><a id="l01050" name="l01050"></a><span class="lineno"> 1050</span>      stop);</div>
@@ -1153,11 +1153,11 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01064" name="l01064"></a><span class="lineno"> 1064</span> </div>
 <div class="line"><a id="l01065" name="l01065"></a><span class="lineno"> 1065</span>    <span class="keywordtype">bool</span> completed = withTimeout(</div>
 <div class="line"><a id="l01066" name="l01066"></a><span class="lineno"> 1066</span>      [&amp;]() {</div>
-<div class="line"><a id="l01067" name="l01067"></a><span class="lineno"> 1067</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l01068" name="l01068"></a><span class="lineno"> 1068</span>          <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
-<div class="line"><a id="l01069" name="l01069"></a><span class="lineno"> 1069</span>          container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;ShutdownSystem&gt;(<span class="stringliteral">&quot;stopper&quot;</span>, &amp;manager));</div>
+<div class="line"><a id="l01067" name="l01067"></a><span class="lineno"> 1067</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l01068" name="l01068"></a><span class="lineno"> 1068</span>          <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01069" name="l01069"></a><span class="lineno"> 1069</span>          container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;ShutdownSystem&gt;(<span class="stringliteral">&quot;stopper&quot;</span>, &amp;<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>));</div>
 <div class="line"><a id="l01070" name="l01070"></a><span class="lineno"> 1070</span>          container-&gt;Start(100);</div>
-<div class="line"><a id="l01071" name="l01071"></a><span class="lineno"> 1071</span>          observed = waitUntil([&amp;]() { <span class="keywordflow">return</span> !manager.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>(); }, stop, 1s);</div>
+<div class="line"><a id="l01071" name="l01071"></a><span class="lineno"> 1071</span>          observed = waitUntil([&amp;]() { <span class="keywordflow">return</span> !<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>(); }, stop, 1s);</div>
 <div class="line"><a id="l01072" name="l01072"></a><span class="lineno"> 1072</span>      },</div>
 <div class="line"><a id="l01073" name="l01073"></a><span class="lineno"> 1073</span>      30s,</div>
 <div class="line"><a id="l01074" name="l01074"></a><span class="lineno"> 1074</span>      stop);</div>
@@ -1187,12 +1187,12 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01096" name="l01096"></a><span class="lineno"> 1096</span>      [&amp;]() {</div>
 <div class="line"><a id="l01097" name="l01097"></a><span class="lineno"> 1097</span>          <span class="keywordflow">for</span>(<span class="keywordtype">int</span> round = 0; round &lt; ROUNDS &amp;&amp; !stop; round++)</div>
 <div class="line"><a id="l01098" name="l01098"></a><span class="lineno"> 1098</span>          {</div>
-<div class="line"><a id="l01099" name="l01099"></a><span class="lineno"> 1099</span>              <span class="keyword">auto</span> manager = std::make_unique&lt;ecs::Manager&gt;();</div>
-<div class="line"><a id="l01100" name="l01100"></a><span class="lineno"> 1100</span>              <span class="keyword">auto</span> container = manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01099" name="l01099"></a><span class="lineno"> 1099</span>              <span class="keyword">auto</span> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a> = std::make_unique&lt;ecs::Manager&gt;();</div>
+<div class="line"><a id="l01100" name="l01100"></a><span class="lineno"> 1100</span>              <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01101" name="l01101"></a><span class="lineno"> 1101</span>              container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;RecorderSystem&gt;(<span class="stringliteral">&quot;recorder&quot;</span>));</div>
 <div class="line"><a id="l01102" name="l01102"></a><span class="lineno"> 1102</span>              container-&gt;Start(100);</div>
 <div class="line"><a id="l01103" name="l01103"></a><span class="lineno"> 1103</span> </div>
-<div class="line"><a id="l01104" name="l01104"></a><span class="lineno"> 1104</span>              <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *raw = manager.get();</div>
+<div class="line"><a id="l01104" name="l01104"></a><span class="lineno"> 1104</span>              <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> *<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a0d734cb838288fff44855cbc5ea6c0ba">raw</a> = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.get();</div>
 <div class="line"><a id="l01105" name="l01105"></a><span class="lineno"> 1105</span>              std::atomic&lt;bool&gt; halt{<span class="keyword">false</span>};</div>
 <div class="line"><a id="l01106" name="l01106"></a><span class="lineno"> 1106</span>              std::atomic&lt;int&gt; sent{0};</div>
 <div class="line"><a id="l01107" name="l01107"></a><span class="lineno"> 1107</span>              std::latch go(SENDERS + 1);</div>
@@ -1205,7 +1205,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01114" name="l01114"></a><span class="lineno"> 1114</span>                      {</div>
 <div class="line"><a id="l01115" name="l01115"></a><span class="lineno"> 1115</span>                          <span class="keywordflow">try</span></div>
 <div class="line"><a id="l01116" name="l01116"></a><span class="lineno"> 1116</span>                          {</div>
-<div class="line"><a id="l01117" name="l01117"></a><span class="lineno"> 1117</span>                              raw-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, s, n));</div>
+<div class="line"><a id="l01117" name="l01117"></a><span class="lineno"> 1117</span>                              <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a0d734cb838288fff44855cbc5ea6c0ba">raw</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#af5b4fa4307961825080901ed8114427f">MessageSubmit</a>(message(<span class="stringliteral">&quot;world&quot;</span>, <span class="stringliteral">&quot;recorder&quot;</span>, s, n));</div>
 <div class="line"><a id="l01118" name="l01118"></a><span class="lineno"> 1118</span>                              sent++;</div>
 <div class="line"><a id="l01119" name="l01119"></a><span class="lineno"> 1119</span>                          }</div>
 <div class="line"><a id="l01120" name="l01120"></a><span class="lineno"> 1120</span>                          <span class="keywordflow">catch</span>(<span class="keyword">const</span> std::runtime_error &amp;)</div>
@@ -1225,7 +1225,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01134" name="l01134"></a><span class="lineno"> 1134</span>              }</div>
 <div class="line"><a id="l01135" name="l01135"></a><span class="lineno"> 1135</span>              delivered += <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(sent.load());</div>
 <div class="line"><a id="l01136" name="l01136"></a><span class="lineno"> 1136</span>              halt = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l01137" name="l01137"></a><span class="lineno"> 1137</span>              manager.reset();</div>
+<div class="line"><a id="l01137" name="l01137"></a><span class="lineno"> 1137</span>              <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.reset();</div>
 <div class="line"><a id="l01138" name="l01138"></a><span class="lineno"> 1138</span>              <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;t : senders)</div>
 <div class="line"><a id="l01139" name="l01139"></a><span class="lineno"> 1139</span>              {</div>
 <div class="line"><a id="l01140" name="l01140"></a><span class="lineno"> 1140</span>                  t.join();</div>
@@ -1305,8 +1305,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01215" name="l01215"></a><span class="lineno"> 1215</span> </div>
 <div class="line"><a id="l01216" name="l01216"></a><span class="lineno"> 1216</span>    <span class="keywordtype">bool</span> completed = withTimeout(</div>
 <div class="line"><a id="l01217" name="l01217"></a><span class="lineno"> 1217</span>      [&amp;]() {</div>
-<div class="line"><a id="l01218" name="l01218"></a><span class="lineno"> 1218</span>          <span class="keyword">auto</span> manager = std::make_unique&lt;ecs::Manager&gt;();</div>
-<div class="line"><a id="l01219" name="l01219"></a><span class="lineno"> 1219</span>          <span class="keyword">auto</span> container = manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01218" name="l01218"></a><span class="lineno"> 1218</span>          <span class="keyword">auto</span> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a> = std::make_unique&lt;ecs::Manager&gt;();</div>
+<div class="line"><a id="l01219" name="l01219"></a><span class="lineno"> 1219</span>          <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01220" name="l01220"></a><span class="lineno"> 1220</span>          <span class="comment">// The first destination is installed before anything logs, so no line goes to the default one.</span></div>
 <div class="line"><a id="l01221" name="l01221"></a><span class="lineno"> 1221</span>          tallies.push_back(std::make_shared&lt;LogTally&gt;());</div>
 <div class="line"><a id="l01222" name="l01222"></a><span class="lineno"> 1222</span>          container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a6dbcd98879f0a02ca893185e8a128b0e">LoggerSet</a>(tallyDestination(tallies.back()));</div>
@@ -1369,7 +1369,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01279" name="l01279"></a><span class="lineno"> 1279</span>              t.join();</div>
 <div class="line"><a id="l01280" name="l01280"></a><span class="lineno"> 1280</span>          }</div>
 <div class="line"><a id="l01281" name="l01281"></a><span class="lineno"> 1281</span>          <span class="comment">// Destroying the manager stops the world thread, so every line has been delivered after this.</span></div>
-<div class="line"><a id="l01282" name="l01282"></a><span class="lineno"> 1282</span>          manager.reset();</div>
+<div class="line"><a id="l01282" name="l01282"></a><span class="lineno"> 1282</span>          <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.reset();</div>
 <div class="line"><a id="l01283" name="l01283"></a><span class="lineno"> 1283</span>          tallies.insert(tallies.end(), replaced.begin(), replaced.end());</div>
 <div class="line"><a id="l01284" name="l01284"></a><span class="lineno"> 1284</span>      },</div>
 <div class="line"><a id="l01285" name="l01285"></a><span class="lineno"> 1285</span>      60s,</div>
@@ -1404,8 +1404,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01312" name="l01312"></a><span class="lineno"> 1312</span> </div>
 <div class="line"><a id="l01313" name="l01313"></a><span class="lineno"> 1313</span>    <span class="keywordtype">bool</span> completed = withTimeout(</div>
 <div class="line"><a id="l01314" name="l01314"></a><span class="lineno"> 1314</span>      [&amp;]() {</div>
-<div class="line"><a id="l01315" name="l01315"></a><span class="lineno"> 1315</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l01316" name="l01316"></a><span class="lineno"> 1316</span>          <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01315" name="l01315"></a><span class="lineno"> 1315</span>          <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l01316" name="l01316"></a><span class="lineno"> 1316</span>          <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01317" name="l01317"></a><span class="lineno"> 1317</span> </div>
 <div class="line"><a id="l01318" name="l01318"></a><span class="lineno"> 1318</span>          <span class="comment">// A destination that logs once per entry, with a depth counter so it cannot recurse forever.</span></div>
 <div class="line"><a id="l01319" name="l01319"></a><span class="lineno"> 1319</span>          <span class="keywordtype">int</span> depth = 0;</div>
@@ -1456,8 +1456,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen01363" data-start="{" data-end="}">
 <div class="line"><a id="l01363" name="l01363"></a><span class="lineno"><a class="line" href="test__Threading_8cpp.html#aae0f4a9629b61589ec906c71a4c8631c"> 1363</a></span><a class="code hl_function" href="test__Threading_8cpp.html#a16127bffb0ac004e25b82f7af3b9def3">TEST_CASE</a>(<span class="stringliteral">&quot;An empty destination accepts lines&quot;</span>, <span class="stringliteral">&quot;[Threading]&quot;</span>)</div>
 <div class="line"><a id="l01364" name="l01364"></a><span class="lineno"> 1364</span>{</div>
-<div class="line"><a id="l01365" name="l01365"></a><span class="lineno"> 1365</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l01366" name="l01366"></a><span class="lineno"> 1366</span>    <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01365" name="l01365"></a><span class="lineno"> 1365</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l01366" name="l01366"></a><span class="lineno"> 1366</span>    <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01367" name="l01367"></a><span class="lineno"> 1367</span>    <span class="keyword">auto</span> tally = std::make_shared&lt;LogTally&gt;();</div>
 <div class="line"><a id="l01368" name="l01368"></a><span class="lineno"> 1368</span> </div>
 <div class="line"><a id="l01369" name="l01369"></a><span class="lineno"> 1369</span>    container-&gt;LoggerSet(tallyDestination(tally));</div>
@@ -1485,7 +1485,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01392" name="l01392"></a><span class="lineno"> 1392</span>    {</div>
 <div class="line"><a id="l01393" name="l01393"></a><span class="lineno"> 1393</span>      <span class="keyword">public</span>:</div>
 <div class="line"><a id="l01394" name="l01394"></a><span class="lineno"> 1394</span>        StepSystem(<span class="keyword">const</span> std::string &amp;handle, std::shared_ptr&lt;std::vector&lt;std::string&gt;&gt; log, std::function&lt;<span class="keywordtype">void</span>(StepSystem &amp;)&gt; onUpdate = <span class="keyword">nullptr</span>)</div>
-<div class="line"><a id="l01395" name="l01395"></a><span class="lineno"> 1395</span>          : log(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(log)), onUpdate(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(onUpdate))</div>
+<div class="line"><a id="l01395" name="l01395"></a><span class="lineno"> 1395</span>          : log(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(log)), <a class="code hl_variable" href="test__Lifecycle_8cpp.html#aeb2010cb5da33c7588bfbeda2317dc76">onUpdate</a>(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#aeb2010cb5da33c7588bfbeda2317dc76">onUpdate</a>))</div>
 <div class="line"><a id="l01396" name="l01396"></a><span class="lineno"> 1396</span>        {</div>
 <div class="line"><a id="l01397" name="l01397"></a><span class="lineno"> 1397</span>            this-&gt;Handle = handle;</div>
 <div class="line"><a id="l01398" name="l01398"></a><span class="lineno"> 1398</span>            this-&gt;Timing.SetFrequency(0);</div>
@@ -1497,7 +1497,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01404" name="l01404"></a><span class="lineno"> 1404</span>            this-&gt;updates++;</div>
 <div class="line"><a id="l01405" name="l01405"></a><span class="lineno"> 1405</span>            <span class="keywordflow">if</span>(this-&gt;onUpdate)</div>
 <div class="line"><a id="l01406" name="l01406"></a><span class="lineno"> 1406</span>            {</div>
-<div class="line"><a id="l01407" name="l01407"></a><span class="lineno"> 1407</span>                this-&gt;onUpdate(*<span class="keyword">this</span>);</div>
+<div class="line"><a id="l01407" name="l01407"></a><span class="lineno"> 1407</span>                this-&gt;<a class="code hl_variable" href="test__Lifecycle_8cpp.html#aeb2010cb5da33c7588bfbeda2317dc76">onUpdate</a>(*<span class="keyword">this</span>);</div>
 <div class="line"><a id="l01408" name="l01408"></a><span class="lineno"> 1408</span>            }</div>
 <div class="line"><a id="l01409" name="l01409"></a><span class="lineno"> 1409</span>        }</div>
 <div class="line"><a id="l01410" name="l01410"></a><span class="lineno"> 1410</span> </div>
@@ -1507,7 +1507,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01414" name="l01414"></a><span class="lineno"> 1414</span>        }</div>
 <div class="line"><a id="l01415" name="l01415"></a><span class="lineno"> 1415</span> </div>
 <div class="line"><a id="l01416" name="l01416"></a><span class="lineno"> 1416</span>        std::shared_ptr&lt;std::vector&lt;std::string&gt;&gt; log;</div>
-<div class="line"><a id="l01417" name="l01417"></a><span class="lineno"> 1417</span>        std::function&lt;void(StepSystem &amp;)&gt; onUpdate;</div>
+<div class="line"><a id="l01417" name="l01417"></a><span class="lineno"> 1417</span>        std::function&lt;void(StepSystem &amp;)&gt; <a class="code hl_variable" href="test__Lifecycle_8cpp.html#aeb2010cb5da33c7588bfbeda2317dc76">onUpdate</a>;</div>
 <div class="line"><a id="l01418" name="l01418"></a><span class="lineno"> 1418</span>        <span class="keywordtype">int</span> updates = 0;</div>
 <div class="line"><a id="l01419" name="l01419"></a><span class="lineno"> 1419</span>    };</div>
 <div class="line"><a id="l01420" name="l01420"></a><span class="lineno"> 1420</span> </div>
@@ -1614,8 +1614,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01524" name="l01524"></a><span class="lineno"> 1524</span> </div>
 <div class="line"><a id="l01525" name="l01525"></a><span class="lineno"> 1525</span>    <span class="keywordtype">bool</span> completed = withTimeout(</div>
 <div class="line"><a id="l01526" name="l01526"></a><span class="lineno"> 1526</span>      [&amp;]() {</div>
-<div class="line"><a id="l01527" name="l01527"></a><span class="lineno"> 1527</span>          <span class="keyword">auto</span> manager = std::make_unique&lt;ecs::Manager&gt;();</div>
-<div class="line"><a id="l01528" name="l01528"></a><span class="lineno"> 1528</span>          <span class="keyword">auto</span> container = manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01527" name="l01527"></a><span class="lineno"> 1527</span>          <span class="keyword">auto</span> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a> = std::make_unique&lt;ecs::Manager&gt;();</div>
+<div class="line"><a id="l01528" name="l01528"></a><span class="lineno"> 1528</span>          <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01529" name="l01529"></a><span class="lineno"> 1529</span>          container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;ThreadIdSystem&gt;(<span class="stringliteral">&quot;thread&quot;</span>, worldThread));</div>
 <div class="line"><a id="l01530" name="l01530"></a><span class="lineno"> 1530</span>          container-&gt;Start(100);</div>
 <div class="line"><a id="l01531" name="l01531"></a><span class="lineno"> 1531</span>          arrived = waitUntil([&amp;]() { <span class="keywordflow">return</span> worldThread-&gt;load() != std::thread::id(); }, stop, 10s);</div>
@@ -1655,7 +1655,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01565" name="l01565"></a><span class="lineno"> 1565</span>              counted = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l01566" name="l01566"></a><span class="lineno"> 1566</span>          });</div>
 <div class="line"><a id="l01567" name="l01567"></a><span class="lineno"> 1567</span>          waitUntil([&amp;]() { <span class="keywordflow">return</span> counted.load(); }, stop, 10s);</div>
-<div class="line"><a id="l01568" name="l01568"></a><span class="lineno"> 1568</span>          manager.reset();</div>
+<div class="line"><a id="l01568" name="l01568"></a><span class="lineno"> 1568</span>          <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.reset();</div>
 <div class="line"><a id="l01569" name="l01569"></a><span class="lineno"> 1569</span>      },</div>
 <div class="line"><a id="l01570" name="l01570"></a><span class="lineno"> 1570</span>      60s,</div>
 <div class="line"><a id="l01571" name="l01571"></a><span class="lineno"> 1571</span>      stop);</div>
@@ -1670,7 +1670,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01580" name="l01580"></a><span class="lineno"> 1580</span>    REQUIRE(entitiesSeen == TOTAL);</div>
 <div class="line"><a id="l01581" name="l01581"></a><span class="lineno"> 1581</span>    REQUIRE(runs.size() == TOTAL);</div>
 <div class="line"><a id="l01582" name="l01582"></a><span class="lineno"> 1582</span> </div>
-<div class="line"><a id="l01583" name="l01583"></a><span class="lineno"> 1583</span>    std::map&lt;int, int&gt; last;</div>
+<div class="line"><a id="l01583" name="l01583"></a><span class="lineno"> 1583</span>    std::map&lt;int, int&gt; <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a>;</div>
 <div class="line"><a id="l01584" name="l01584"></a><span class="lineno"> 1584</span>    std::size_t offThread = 0;</div>
 <div class="line"><a id="l01585" name="l01585"></a><span class="lineno"> 1585</span>    std::size_t outOfOrder = 0;</div>
 <div class="line"><a id="l01586" name="l01586"></a><span class="lineno"> 1586</span>    <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;run : runs)</div>
@@ -1679,17 +1679,17 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01589" name="l01589"></a><span class="lineno"> 1589</span>        {</div>
 <div class="line"><a id="l01590" name="l01590"></a><span class="lineno"> 1590</span>            offThread++;</div>
 <div class="line"><a id="l01591" name="l01591"></a><span class="lineno"> 1591</span>        }</div>
-<div class="line"><a id="l01592" name="l01592"></a><span class="lineno"> 1592</span>        <span class="keyword">auto</span> found = last.find(run.submitter);</div>
-<div class="line"><a id="l01593" name="l01593"></a><span class="lineno"> 1593</span>        <span class="keywordflow">if</span>(found == last.end() ? run.index != 0 : run.index != found-&gt;second + 1)</div>
+<div class="line"><a id="l01592" name="l01592"></a><span class="lineno"> 1592</span>        <span class="keyword">auto</span> found = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a>.find(run.submitter);</div>
+<div class="line"><a id="l01593" name="l01593"></a><span class="lineno"> 1593</span>        <span class="keywordflow">if</span>(found == <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a>.end() ? run.index != 0 : run.index != found-&gt;second + 1)</div>
 <div class="line"><a id="l01594" name="l01594"></a><span class="lineno"> 1594</span>        {</div>
 <div class="line"><a id="l01595" name="l01595"></a><span class="lineno"> 1595</span>            outOfOrder++;</div>
 <div class="line"><a id="l01596" name="l01596"></a><span class="lineno"> 1596</span>        }</div>
-<div class="line"><a id="l01597" name="l01597"></a><span class="lineno"> 1597</span>        last[run.submitter] = run.index;</div>
+<div class="line"><a id="l01597" name="l01597"></a><span class="lineno"> 1597</span>        <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a>[run.submitter] = run.index;</div>
 <div class="line"><a id="l01598" name="l01598"></a><span class="lineno"> 1598</span>    }</div>
 <div class="line"><a id="l01599" name="l01599"></a><span class="lineno"> 1599</span>    REQUIRE(offThread == 0);</div>
 <div class="line"><a id="l01600" name="l01600"></a><span class="lineno"> 1600</span>    REQUIRE(outOfOrder == 0);</div>
-<div class="line"><a id="l01601" name="l01601"></a><span class="lineno"> 1601</span>    REQUIRE(last.size() == <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(SUBMITTERS));</div>
-<div class="line"><a id="l01602" name="l01602"></a><span class="lineno"> 1602</span>    <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;[submitter, index] : last)</div>
+<div class="line"><a id="l01601" name="l01601"></a><span class="lineno"> 1601</span>    REQUIRE(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a>.size() == <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(SUBMITTERS));</div>
+<div class="line"><a id="l01602" name="l01602"></a><span class="lineno"> 1602</span>    <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;[submitter, index] : <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a>)</div>
 <div class="line"><a id="l01603" name="l01603"></a><span class="lineno"> 1603</span>    {</div>
 <div class="line"><a id="l01604" name="l01604"></a><span class="lineno"> 1604</span>        REQUIRE(index == PER_SUBMITTER - 1);</div>
 <div class="line"><a id="l01605" name="l01605"></a><span class="lineno"> 1605</span>    }</div>
@@ -1699,8 +1699,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen01608" data-start="{" data-end="}">
 <div class="line"><a id="l01608" name="l01608"></a><span class="lineno"><a class="line" href="test__Threading_8cpp.html#af5c1ccc3a77916dc4ba066600fbe9c44"> 1608</a></span><a class="code hl_function" href="test__Threading_8cpp.html#a16127bffb0ac004e25b82f7af3b9def3">TEST_CASE</a>(<span class="stringliteral">&quot;Deferred changes do not run mid-pass&quot;</span>, <span class="stringliteral">&quot;[Threading]&quot;</span>)</div>
 <div class="line"><a id="l01609" name="l01609"></a><span class="lineno"> 1609</span>{</div>
-<div class="line"><a id="l01610" name="l01610"></a><span class="lineno"> 1610</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l01611" name="l01611"></a><span class="lineno"> 1611</span>    <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01610" name="l01610"></a><span class="lineno"> 1610</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l01611" name="l01611"></a><span class="lineno"> 1611</span>    <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01612" name="l01612"></a><span class="lineno"> 1612</span>    <span class="keyword">auto</span> log = std::make_shared&lt;std::vector&lt;std::string&gt;&gt;();</div>
 <div class="line"><a id="l01613" name="l01613"></a><span class="lineno"> 1613</span>    <span class="keywordtype">bool</span> deferred = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l01614" name="l01614"></a><span class="lineno"> 1614</span> </div>
@@ -1734,8 +1734,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen01641" data-start="{" data-end="}">
 <div class="line"><a id="l01641" name="l01641"></a><span class="lineno"><a class="line" href="test__Threading_8cpp.html#af7571b84e04087c9f5c96ac28f0e5138"> 1641</a></span><a class="code hl_function" href="test__Threading_8cpp.html#a16127bffb0ac004e25b82f7af3b9def3">TEST_CASE</a>(<span class="stringliteral">&quot;A throwing deferred change is handled like a throwing system&quot;</span>, <span class="stringliteral">&quot;[Threading]&quot;</span>)</div>
 <div class="line"><a id="l01642" name="l01642"></a><span class="lineno"> 1642</span>{</div>
-<div class="line"><a id="l01643" name="l01643"></a><span class="lineno"> 1643</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l01644" name="l01644"></a><span class="lineno"> 1644</span>    <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01643" name="l01643"></a><span class="lineno"> 1643</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l01644" name="l01644"></a><span class="lineno"> 1644</span>    <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01645" name="l01645"></a><span class="lineno"> 1645</span>    <span class="keyword">auto</span> log = std::make_shared&lt;std::vector&lt;std::string&gt;&gt;();</div>
 <div class="line"><a id="l01646" name="l01646"></a><span class="lineno"> 1646</span>    <span class="keyword">auto</span> system = container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;StepSystem&gt;(<span class="stringliteral">&quot;A&quot;</span>, log));</div>
 <div class="line"><a id="l01647" name="l01647"></a><span class="lineno"> 1647</span> </div>
@@ -1780,8 +1780,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01684" name="l01684"></a><span class="lineno"> 1684</span>    std::atomic&lt;int&gt; ran{0};</div>
 <div class="line"><a id="l01685" name="l01685"></a><span class="lineno"> 1685</span> </div>
 <div class="line"><a id="l01686" name="l01686"></a><span class="lineno"> 1686</span>    {</div>
-<div class="line"><a id="l01687" name="l01687"></a><span class="lineno"> 1687</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l01688" name="l01688"></a><span class="lineno"> 1688</span>        <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01687" name="l01687"></a><span class="lineno"> 1687</span>        <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l01688" name="l01688"></a><span class="lineno"> 1688</span>        <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01689" name="l01689"></a><span class="lineno"> 1689</span>        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> n = 0; n &lt; 100; n++)</div>
 <div class="line"><a id="l01690" name="l01690"></a><span class="lineno"> 1690</span>        {</div>
 <div class="line"><a id="l01691" name="l01691"></a><span class="lineno"> 1691</span>            container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a4d33b403b0ddc78a7b730225fd187d01">Defer</a>([token, &amp;ran]() { ran++; });</div>
@@ -1810,12 +1810,12 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01712" name="l01712"></a><span class="lineno"> 1712</span> </div>
 <div class="line"><a id="l01713" name="l01713"></a><span class="lineno"> 1713</span>    <span class="keywordtype">bool</span> completed = withTimeout(</div>
 <div class="line"><a id="l01714" name="l01714"></a><span class="lineno"> 1714</span>      [&amp;]() {</div>
-<div class="line"><a id="l01715" name="l01715"></a><span class="lineno"> 1715</span>          <span class="keyword">auto</span> manager = std::make_unique&lt;ecs::Manager&gt;();</div>
-<div class="line"><a id="l01716" name="l01716"></a><span class="lineno"> 1716</span>          <span class="keyword">auto</span> container = manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01715" name="l01715"></a><span class="lineno"> 1715</span>          <span class="keyword">auto</span> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a> = std::make_unique&lt;ecs::Manager&gt;();</div>
+<div class="line"><a id="l01716" name="l01716"></a><span class="lineno"> 1716</span>          <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01717" name="l01717"></a><span class="lineno"> 1717</span>          container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">System</a>(std::make_unique&lt;HoldSystem&gt;(<span class="stringliteral">&quot;hold&quot;</span>, hold));</div>
 <div class="line"><a id="l01718" name="l01718"></a><span class="lineno"> 1718</span>          container-&gt;Start(100);</div>
 <div class="line"><a id="l01719" name="l01719"></a><span class="lineno"> 1719</span> </div>
-<div class="line"><a id="l01720" name="l01720"></a><span class="lineno"> 1720</span>          <a class="code hl_class" href="classecs_1_1Container.html">ecs::Container</a> *raw = container;</div>
+<div class="line"><a id="l01720" name="l01720"></a><span class="lineno"> 1720</span>          <a class="code hl_class" href="classecs_1_1Container.html">ecs::Container</a> *<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a0d734cb838288fff44855cbc5ea6c0ba">raw</a> = container;</div>
 <div class="line"><a id="l01721" name="l01721"></a><span class="lineno"> 1721</span>          std::latch go(SENDERS);</div>
 <div class="line"><a id="l01722" name="l01722"></a><span class="lineno"> 1722</span>          std::vector&lt;std::thread&gt; senders;</div>
 <div class="line"><a id="l01723" name="l01723"></a><span class="lineno"> 1723</span>          <span class="keywordflow">for</span>(<span class="keywordtype">int</span> s = 0; s &lt; SENDERS; s++)</div>
@@ -1850,7 +1850,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01752" name="l01752"></a><span class="lineno"> 1752</span>          hold-&gt;armed = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l01753" name="l01753"></a><span class="lineno"> 1753</span>          held = waitUntil([&amp;]() { <span class="keywordflow">return</span> hold-&gt;held.load(); }, stop, 10s);</div>
 <div class="line"><a id="l01754" name="l01754"></a><span class="lineno"> 1754</span> </div>
-<div class="line"><a id="l01755" name="l01755"></a><span class="lineno"> 1755</span>          std::thread destroyer([&amp;]() { manager.reset(); });</div>
+<div class="line"><a id="l01755" name="l01755"></a><span class="lineno"> 1755</span>          std::thread destroyer([&amp;]() { <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.reset(); });</div>
 <div class="line"><a id="l01756" name="l01756"></a><span class="lineno"> 1756</span>          std::this_thread::sleep_for(50ms);</div>
 <div class="line"><a id="l01757" name="l01757"></a><span class="lineno"> 1757</span>          senderStop = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l01758" name="l01758"></a><span class="lineno"> 1758</span>          <span class="keywordflow">for</span>(<span class="keyword">auto</span> &amp;t : senders)</div>
@@ -1879,8 +1879,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen01780" data-start="{" data-end="}">
 <div class="line"><a id="l01780" name="l01780"></a><span class="lineno"><a class="line" href="test__Threading_8cpp.html#a76946b81fd3da371eb1b7ae5edee853d"> 1780</a></span><a class="code hl_function" href="test__Threading_8cpp.html#a16127bffb0ac004e25b82f7af3b9def3">TEST_CASE</a>(<span class="stringliteral">&quot;A world that is not running can be changed directly&quot;</span>, <span class="stringliteral">&quot;[Threading]&quot;</span>)</div>
 <div class="line"><a id="l01781" name="l01781"></a><span class="lineno"> 1781</span>{</div>
-<div class="line"><a id="l01782" name="l01782"></a><span class="lineno"> 1782</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> manager;</div>
-<div class="line"><a id="l01783" name="l01783"></a><span class="lineno"> 1783</span>    <span class="keyword">auto</span> container = manager.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
+<div class="line"><a id="l01782" name="l01782"></a><span class="lineno"> 1782</span>    <a class="code hl_class" href="classecs_1_1Manager.html">ecs::Manager</a> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>;</div>
+<div class="line"><a id="l01783" name="l01783"></a><span class="lineno"> 1783</span>    <span class="keyword">auto</span> container = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(<span class="stringliteral">&quot;world&quot;</span>);</div>
 <div class="line"><a id="l01784" name="l01784"></a><span class="lineno"> 1784</span>    <span class="keyword">auto</span> log = std::make_shared&lt;std::vector&lt;std::string&gt;&gt;();</div>
 <div class="line"><a id="l01785" name="l01785"></a><span class="lineno"> 1785</span> </div>
 <div class="line"><a id="l01786" name="l01786"></a><span class="lineno"> 1786</span>    <span class="keyword">auto</span> *entity = container-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">Entity</a>(<span class="stringliteral">&quot;first&quot;</span>);</div>
@@ -1951,13 +1951,13 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01849" name="l01849"></a><span class="lineno"> 1849</span> </div>
 <div class="line"><a id="l01850" name="l01850"></a><span class="lineno"> 1850</span>    <span class="keywordtype">bool</span> completed = withTimeout(</div>
 <div class="line"><a id="l01851" name="l01851"></a><span class="lineno"> 1851</span>      [&amp;]() {</div>
-<div class="line"><a id="l01852" name="l01852"></a><span class="lineno"> 1852</span>          <span class="keyword">auto</span> manager = std::make_unique&lt;ecs::Manager&gt;();</div>
+<div class="line"><a id="l01852" name="l01852"></a><span class="lineno"> 1852</span>          <span class="keyword">auto</span> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a> = std::make_unique&lt;ecs::Manager&gt;();</div>
 <div class="line"><a id="l01853" name="l01853"></a><span class="lineno"> 1853</span>          std::vector&lt;ecs::Container *&gt; worlds;</div>
 <div class="line"><a id="l01854" name="l01854"></a><span class="lineno"> 1854</span>          std::vector&lt;std::string&gt; handles;</div>
 <div class="line"><a id="l01855" name="l01855"></a><span class="lineno"> 1855</span>          <span class="keywordflow">for</span>(<span class="keywordtype">int</span> w = 0; w &lt; WORLDS; w++)</div>
 <div class="line"><a id="l01856" name="l01856"></a><span class="lineno"> 1856</span>          {</div>
 <div class="line"><a id="l01857" name="l01857"></a><span class="lineno"> 1857</span>              handles.push_back(<span class="stringliteral">&quot;world&quot;</span> + std::to_string(w));</div>
-<div class="line"><a id="l01858" name="l01858"></a><span class="lineno"> 1858</span>              worlds.push_back(manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(handles.back()));</div>
+<div class="line"><a id="l01858" name="l01858"></a><span class="lineno"> 1858</span>              worlds.push_back(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>(handles.back()));</div>
 <div class="line"><a id="l01859" name="l01859"></a><span class="lineno"> 1859</span>              worlds.back()-&gt;LoggerSet(destination());</div>
 <div class="line"><a id="l01860" name="l01860"></a><span class="lineno"> 1860</span>              worlds.back()-&gt;System(std::make_unique&lt;RecorderSystem&gt;(<span class="stringliteral">&quot;recorder&quot;</span>, recorded[w]));</div>
 <div class="line"><a id="l01861" name="l01861"></a><span class="lineno"> 1861</span>              worlds.back()-&gt;Start(100);</div>
@@ -1977,7 +1977,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01875" name="l01875"></a><span class="lineno"> 1875</span>                          <span class="keywordtype">int</span> target = (t + n) % WORLDS;</div>
 <div class="line"><a id="l01876" name="l01876"></a><span class="lineno"> 1876</span>                          <span class="keywordflow">try</span></div>
 <div class="line"><a id="l01877" name="l01877"></a><span class="lineno"> 1877</span>                          {</div>
-<div class="line"><a id="l01878" name="l01878"></a><span class="lineno"> 1878</span>                              manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(handles[target], <span class="stringliteral">&quot;recorder&quot;</span>, t, n));</div>
+<div class="line"><a id="l01878" name="l01878"></a><span class="lineno"> 1878</span>                              <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">MessageSubmit</a>(message(handles[target], <span class="stringliteral">&quot;recorder&quot;</span>, t, n));</div>
 <div class="line"><a id="l01879" name="l01879"></a><span class="lineno"> 1879</span>                              sent++;</div>
 <div class="line"><a id="l01880" name="l01880"></a><span class="lineno"> 1880</span>                          }</div>
 <div class="line"><a id="l01881" name="l01881"></a><span class="lineno"> 1881</span>                          <span class="keywordflow">catch</span>(<span class="keyword">const</span> std::runtime_error &amp;)</div>
@@ -1987,10 +1987,10 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01885" name="l01885"></a><span class="lineno"> 1885</span> </div>
 <div class="line"><a id="l01886" name="l01886"></a><span class="lineno"> 1886</span>                          <span class="keywordflow">if</span>(n % EVERY == EVERY - 1)</div>
 <div class="line"><a id="l01887" name="l01887"></a><span class="lineno"> 1887</span>                          {</div>
-<div class="line"><a id="l01888" name="l01888"></a><span class="lineno"> 1888</span>                              manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>();</div>
+<div class="line"><a id="l01888" name="l01888"></a><span class="lineno"> 1888</span>                              <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">Container</a>();</div>
 <div class="line"><a id="l01889" name="l01889"></a><span class="lineno"> 1889</span>                              created++;</div>
 <div class="line"><a id="l01890" name="l01890"></a><span class="lineno"> 1890</span> </div>
-<div class="line"><a id="l01891" name="l01891"></a><span class="lineno"> 1891</span>                              <span class="keyword">auto</span> snapshot = manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>();</div>
+<div class="line"><a id="l01891" name="l01891"></a><span class="lineno"> 1891</span>                              <span class="keyword">auto</span> snapshot = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>();</div>
 <div class="line"><a id="l01892" name="l01892"></a><span class="lineno"> 1892</span>                              std::set&lt;std::string&gt; distinct(snapshot.begin(), snapshot.end());</div>
 <div class="line"><a id="l01893" name="l01893"></a><span class="lineno"> 1893</span>                              <span class="keywordflow">if</span>(distinct.size() != snapshot.size() || snapshot.size() &lt; <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(WORLDS))</div>
 <div class="line"><a id="l01894" name="l01894"></a><span class="lineno"> 1894</span>                              {</div>
@@ -2008,7 +2008,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01906" name="l01906"></a><span class="lineno"> 1906</span>                              world-&gt;Log(<span class="stringliteral">&quot;stress line from thread &quot;</span> + std::to_string(t), <span class="stringliteral">&quot;info&quot;</span>);</div>
 <div class="line"><a id="l01907" name="l01907"></a><span class="lineno"> 1907</span>                              logged++;</div>
 <div class="line"><a id="l01908" name="l01908"></a><span class="lineno"> 1908</span> </div>
-<div class="line"><a id="l01909" name="l01909"></a><span class="lineno"> 1909</span>                              <span class="keywordflow">if</span>(!manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>())</div>
+<div class="line"><a id="l01909" name="l01909"></a><span class="lineno"> 1909</span>                              <span class="keywordflow">if</span>(!<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>())</div>
 <div class="line"><a id="l01910" name="l01910"></a><span class="lineno"> 1910</span>                              {</div>
 <div class="line"><a id="l01911" name="l01911"></a><span class="lineno"> 1911</span>                                  notRunning++;</div>
 <div class="line"><a id="l01912" name="l01912"></a><span class="lineno"> 1912</span>                              }</div>
@@ -2049,8 +2049,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01947" name="l01947"></a><span class="lineno"> 1947</span>          }</div>
 <div class="line"><a id="l01948" name="l01948"></a><span class="lineno"> 1948</span>          waitUntil([&amp;]() { <span class="keywordflow">return</span> counted.load() == WORLDS; }, stop, 10s);</div>
 <div class="line"><a id="l01949" name="l01949"></a><span class="lineno"> 1949</span> </div>
-<div class="line"><a id="l01950" name="l01950"></a><span class="lineno"> 1950</span>          handleCount = manager-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>().size();</div>
-<div class="line"><a id="l01951" name="l01951"></a><span class="lineno"> 1951</span>          manager.reset();</div>
+<div class="line"><a id="l01950" name="l01950"></a><span class="lineno"> 1950</span>          handleCount = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>-&gt;<a class="code hl_function" href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ContainersGet</a>().size();</div>
+<div class="line"><a id="l01951" name="l01951"></a><span class="lineno"> 1951</span>          <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>.reset();</div>
 <div class="line"><a id="l01952" name="l01952"></a><span class="lineno"> 1952</span>      },</div>
 <div class="line"><a id="l01953" name="l01953"></a><span class="lineno"> 1953</span>      60s,</div>
 <div class="line"><a id="l01954" name="l01954"></a><span class="lineno"> 1954</span>      stop);</div>
@@ -2092,21 +2092,22 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="ttc" id="aclassecs_1_1Component_html"><div class="ttname"><a href="classecs_1_1Component.html">ecs::Component</a></div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00011">Component.hpp:12</a></div></div>
 <div class="ttc" id="aclassecs_1_1Component_html_ae65b9bb278b2df7ea231941a98e1fdee"><div class="ttname"><a href="classecs_1_1Component.html#ae65b9bb278b2df7ea231941a98e1fdee">ecs::Component::Export</a></div><div class="ttdeci">virtual nlohmann::json Export() const =0</div></div>
-<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00075">Container.hpp:76</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a4d33b403b0ddc78a7b730225fd187d01"><div class="ttname"><a href="classecs_1_1Container.html#a4d33b403b0ddc78a7b730225fd187d01">ecs::Container::Defer</a></div><div class="ttdeci">void Defer(std::function&lt; void()&gt; fn)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00303">Container.cpp:303</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a5864d8fa020129153b2037d68c577073"><div class="ttname"><a href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">ecs::Container::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00358">Container.cpp:358</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a6dbcd98879f0a02ca893185e8a128b0e"><div class="ttname"><a href="classecs_1_1Container.html#a6dbcd98879f0a02ca893185e8a128b0e">ecs::Container::LoggerSet</a></div><div class="ttdeci">void LoggerSet(std::function&lt; void(const std::string &amp;, const std::string &amp;)&gt; fn)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00488">Container.cpp:488</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a9a0c9c1a24491b801182702a14fd23cd"><div class="ttname"><a href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">ecs::Container::Entity</a></div><div class="ttdeci">ecs::Entity * Entity(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00239">Container.cpp:239</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00154">Container.cpp:154</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00078">Container.hpp:79</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a4d33b403b0ddc78a7b730225fd187d01"><div class="ttname"><a href="classecs_1_1Container.html#a4d33b403b0ddc78a7b730225fd187d01">ecs::Container::Defer</a></div><div class="ttdeci">void Defer(std::function&lt; void()&gt; fn)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00595">Container.cpp:595</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a5864d8fa020129153b2037d68c577073"><div class="ttname"><a href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">ecs::Container::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00650">Container.cpp:650</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a6dbcd98879f0a02ca893185e8a128b0e"><div class="ttname"><a href="classecs_1_1Container.html#a6dbcd98879f0a02ca893185e8a128b0e">ecs::Container::LoggerSet</a></div><div class="ttdeci">void LoggerSet(std::function&lt; void(const std::string &amp;, const std::string &amp;)&gt; fn)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00791">Container.cpp:791</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a9a0c9c1a24491b801182702a14fd23cd"><div class="ttname"><a href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">ecs::Container::Entity</a></div><div class="ttdeci">ecs::Entity * Entity(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00491">Container.cpp:491</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00397">Container.cpp:397</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_af5b4fa4307961825080901ed8114427f"><div class="ttname"><a href="classecs_1_1Container.html#af5b4fa4307961825080901ed8114427f">ecs::Container::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00683">Container.cpp:683</a></div></div>
 <div class="ttc" id="aclassecs_1_1Entity_html_ab074dc6ad97a7be45cfbfe7bcc38c8f8"><div class="ttname"><a href="classecs_1_1Entity.html#ab074dc6ad97a7be45cfbfe7bcc38c8f8">ecs::Entity::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(ecs::Component *component)</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00043">Entity.cpp:43</a></div></div>
-<div class="ttc" id="aclassecs_1_1Manager_html"><div class="ttname"><a href="classecs_1_1Manager.html">ecs::Manager</a></div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00046">Manager.hpp:47</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html"><div class="ttname"><a href="classecs_1_1Manager.html">ecs::Manager</a></div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00049">Manager.hpp:50</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_a3c7085998ab4641d97e50e92ecc1b86a"><div class="ttname"><a href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">ecs::Manager::Shutdown</a></div><div class="ttdeci">void Shutdown()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00047">Manager.cpp:47</a></div></div>
-<div class="ttc" id="aclassecs_1_1Manager_html_a47605c588700bbd18f80a49a966f96ae"><div class="ttname"><a href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">ecs::Manager::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00073">Manager.cpp:73</a></div></div>
-<div class="ttc" id="aclassecs_1_1Manager_html_aa2ba08b80c1323aecd34af40c13d7358"><div class="ttname"><a href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ecs::Manager::ContainersGet</a></div><div class="ttdeci">std::vector&lt; std::string &gt; ContainersGet()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00062">Manager.cpp:62</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_a47605c588700bbd18f80a49a966f96ae"><div class="ttname"><a href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">ecs::Manager::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00089">Manager.cpp:89</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_aa2ba08b80c1323aecd34af40c13d7358"><div class="ttname"><a href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ecs::Manager::ContainersGet</a></div><div class="ttdeci">std::vector&lt; std::string &gt; ContainersGet()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00078">Manager.cpp:78</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_af0224464ed55aa2124d1bf00ea3b7624"><div class="ttname"><a href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">ecs::Manager::IsRunning</a></div><div class="ttdeci">bool IsRunning()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00042">Manager.cpp:42</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_af96d2ee8eb88a8c35adfb6015acf59bd"><div class="ttname"><a href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">ecs::Manager::Container</a></div><div class="ttdeci">ecs::Container * Container(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00032">Manager.cpp:32</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html"><div class="ttname"><a href="classecs_1_1System.html">ecs::System</a></div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00090">System.hpp:91</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a3ad78d3d7857d167a85aa93a9a3d44b7"><div class="ttname"><a href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">ecs::System::Update</a></div><div class="ttdeci">virtual void Update()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00103">System.hpp:103</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a3ad78d3d7857d167a85aa93a9a3d44b7"><div class="ttname"><a href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">ecs::System::Update</a></div><div class="ttdeci">virtual void Update()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00134">System.hpp:134</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a69d4c2c4a28d3d9181a13ea49b48303d"><div class="ttname"><a href="classecs_1_1System.html#a69d4c2c4a28d3d9181a13ea49b48303d">ecs::System::Log</a></div><div class="ttdeci">void Log(const std::string &amp;message, const std::string &amp;level)</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00153">System.cpp:153</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a9a07420a3b75f90051f4635cc0fad529"><div class="ttname"><a href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">ecs::System::Export</a></div><div class="ttdeci">virtual nlohmann::json Export() const =0</div></div>
 <div class="ttc" id="aclassecs_1_1System_html_ac70fac6ddc7d1816617fd04888dccdc8"><div class="ttname"><a href="classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8">ecs::System::System</a></div><div class="ttdeci">System()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00008">System.cpp:8</a></div></div>
@@ -2115,11 +2116,15 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html_af1650e004db368459b3c0db041b32adc"><div class="ttname"><a href="classnlohmann_1_1basic__json.html#af1650e004db368459b3c0db041b32adc">nlohmann::basic_json::get</a></div><div class="ttdeci">auto get() const noexcept(noexcept(std::declval&lt; const basic_json_t &amp; &gt;().template get_impl&lt; ValueType &gt;(detail::priority_tag&lt; 4 &gt; {}))) -&gt; decltype(std::declval&lt; const basic_json_t &amp; &gt;().template get_impl&lt; ValueType &gt;(detail::priority_tag&lt; 4 &gt; {}))</div><div class="ttdoc">get a (pointer) value (explicit)</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l18898">json.hpp:18898</a></div></div>
 <div class="ttc" id="aecs_8hpp_html"><div class="ttname"><a href="ecs_8hpp.html">ecs.hpp</a></div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l04470">json.hpp:4471</a></div></div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_a07978e60e3415eca4e8f5f01de4089bf"><div class="ttname"><a href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a></div><div class="ttdeci">auto last</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01294">test_Lifecycle.cpp:1294</a></div></div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_a0d734cb838288fff44855cbc5ea6c0ba"><div class="ttname"><a href="test__Lifecycle_8cpp.html#a0d734cb838288fff44855cbc5ea6c0ba">raw</a></div><div class="ttdeci">ecs::Container * raw</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01298">test_Lifecycle.cpp:1298</a></div></div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_a39886ebc661220842cca88183f03e1c6"><div class="ttname"><a href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a></div><div class="ttdeci">ecs::Manager manager</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01289">test_Lifecycle.cpp:1289</a></div></div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_aeb2010cb5da33c7588bfbeda2317dc76"><div class="ttname"><a href="test__Lifecycle_8cpp.html#aeb2010cb5da33c7588bfbeda2317dc76">onUpdate</a></div><div class="ttdeci">stopper onUpdate</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01299">test_Lifecycle.cpp:1299</a></div></div>
 <div class="ttc" id="atest__Threading_8cpp_html_a16127bffb0ac004e25b82f7af3b9def3"><div class="ttname"><a href="test__Threading_8cpp.html#a16127bffb0ac004e25b82f7af3b9def3">TEST_CASE</a></div><div class="ttdeci">TEST_CASE(&quot;Messages from 8 senders arrive exactly once and in order per sender&quot;, &quot;[Threading]&quot;)</div><div class="ttdef"><b>Definition</b> <a href="test__Threading_8cpp_source.html#l00394">test_Threading.cpp:394</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 06:28:36 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 08:31:59 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

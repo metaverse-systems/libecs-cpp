@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.5.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.6.0</span>
    </div>
   </td>
  </tr>
@@ -193,9 +193,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="test__Container_8cpp_source.html#l00035">35</a> of file <a class="el" href="test__Container_8cpp_source.html">test_Container.cpp</a>.</p>
 <div class="fragment"><div class="line"><span class="lineno">   35</span>{ this-&gt;<a class="code hl_variable" href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">Handle</a> = <span class="stringliteral">&quot;ThrowingSystem&quot;</span>; }</div>
-<div class="ttc" id="aclassecs_1_1System_html_a4255ae181870f88cc73fae39991d8be5"><div class="ttname"><a href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">ecs::System::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00116">System.hpp:116</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a4255ae181870f88cc73fae39991d8be5"><div class="ttname"><a href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">ecs::System::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00147">System.hpp:147</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="System_8hpp_source.html#l00116">ecs::System::Handle</a>.</p>
+<p class="reference">References <a class="el" href="System_8hpp_source.html#l00147">ecs::System::Handle</a>.</p>
 
 </div>
 </div>
@@ -257,7 +257,10 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>World thread only. </p>
+<p>Start-up notification. World thread only.</p>
+<p>Called exactly once per system, before its first <a class="el" href="classThrowingSystem.html#a10170a479ae32bf33ea55479a9cfb746">Update()</a>, whichever way the system arrived: it was registered before the world started, registered later from any world-thread code (including another system's <a class="el" href="classThrowingSystem.html#af60b3f247e9dc959f6d6d1335f03860d">Initialize()</a> or <a class="el" href="classThrowingSystem.html#a10170a479ae32bf33ea55479a9cfb746">Update()</a>, or a deferred function), registered in a world that the application drives with <a class="el" href="classThrowingSystem.html#a10170a479ae32bf33ea55479a9cfb746">Update()</a>, or registered as a replacement. Systems that are started together are started in registration order. A system removed before it was reached is never started.</p>
+<p>If <a class="el" href="classThrowingSystem.html#af60b3f247e9dc959f6d6d1335f03860d">Initialize()</a> throws, the error is logged with the system's identifier and rethrown once the start-up step has finished its bookkeeping. The system still counts as started: it is not started again, it is updated, and it receives <a class="el" href="classecs_1_1System.html#ad1a106d9cef7169e7a69a1e6efa2b0ea">Shutdown()</a> when it leaves the world.</p>
+<p>Logging with Container-&gt;<a class="el" href="classecs_1_1System.html#a69d4c2c4a28d3d9181a13ea49b48303d">Log()</a> works from here. </p>
 
 <p>Reimplemented from <a class="el" href="classecs_1_1System.html#a42f662283a9d918b857870e057af3683">ecs::System</a>.</p>
 
@@ -303,7 +306,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 06:28:36 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 08:31:59 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

@@ -1,12 +1,24 @@
 var searchData=
 [
-  ['thousands_5fsep_0',['thousands_sep',['../classnlohmann_1_1detail_1_1serializer.html#a78a6ae833bb6cf7f00cb0d51db114b14',1,'nlohmann::detail::serializer']]],
-  ['timers_1',['timers',['../classecs_1_1System.html#aab2df444b7cd664e5737d9ae16534989',1,'ecs::System']]],
-  ['timersadded_2',['timersAdded',['../classecs_1_1System.html#a2b1c5f7f87ea940e0b75ff79eaef1e54',1,'ecs::System']]],
-  ['timersdiscarded_3',['timersDiscarded',['../classecs_1_1System.html#a55275dcd8c7aa7c6f2a3cc452ae956c3',1,'ecs::System']]],
-  ['timerwalkdepth_4',['timerWalkDepth',['../classecs_1_1System.html#ae9e31254c1c0809262b17bfa5ff3d68e',1,'ecs::System']]],
-  ['timing_5',['timing',['../classecs_1_1System.html#ac1a961fcfde782c0cb9ead6700dc6e48',1,'ecs::System::Timing'],['../classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514',1,'ecs::Timer::timing']]],
-  ['token_5fbuffer_6',['token_buffer',['../classnlohmann_1_1detail_1_1lexer.html#ac4eaf39567bd5f0750e5d7e913fb474d',1,'nlohmann::detail::lexer']]],
-  ['token_5fstring_7',['token_string',['../classnlohmann_1_1detail_1_1lexer.html#a94aec416b883f742ba7f20bd16adb3c3',1,'nlohmann::detail::lexer']]],
-  ['type_8',['Type',['../classecs_1_1Component.html#a98d0cb9184cefc653e4b66dc289c7ee0',1,'ecs::Component']]]
+  ['sax_0',['sax',['../classnlohmann_1_1detail_1_1binary__reader.html#aba4d89d9d38235f72f60332d6c385222',1,'nlohmann::detail::binary_reader']]],
+  ['sb_1',['sb',['../classnlohmann_1_1detail_1_1input__stream__adapter.html#aa94582dc8262cf35dfcfbe7b7fcd6c6c',1,'nlohmann::detail::input_stream_adapter']]],
+  ['sendsidle_2',['sendsIdle',['../classecs_1_1Manager.html#a4ef53c664d5410c1249712593d9d185c',1,'ecs::Manager']]],
+  ['sendsinflight_3',['sendsInFlight',['../classecs_1_1Manager.html#ad5f6c1890bb1f50aac5a48218e9d2eb1',1,'ecs::Manager']]],
+  ['shutdown_4',['shutdown',['../structecs_1_1Container_1_1SystemSlot.html#a4458f5862fdf96059ea5af06c25ad2e5',1,'ecs::Container::SystemSlot']]],
+  ['sleepinterval_5',['sleepInterval',['../classecs_1_1Container.html#a6cbfbdfeb4b0054e8573758be916001b',1,'ecs::Container']]],
+  ['staging_6',['staging',['../classecs_1_1System.html#a02fad4631059f2099233306b1cad04a9',1,'ecs::System']]],
+  ['started_7',['started',['../structecs_1_1Container_1_1SystemSlot.html#ad6206a94bbd020136dc1c4219f61d148',1,'ecs::Container::SystemSlot']]],
+  ['startpending_8',['startPending',['../classecs_1_1Container.html#a4401316306624662be91c72db24be12e',1,'ecs::Container']]],
+  ['state_9',['state',['../classnlohmann_1_1detail_1_1serializer.html#a39b0975f219b542d7ca633652e925b4c',1,'nlohmann::detail::serializer']]],
+  ['stopdone_10',['stopDone',['../classecs_1_1Container.html#a0faea08f524bdc32fa6d97aedb029b3c',1,'ecs::Container']]],
+  ['stopper_11',['stopper',['../test__Lifecycle_8cpp.html#a06ad3ff44e801834fb757436d5476042',1,'test_Lifecycle.cpp']]],
+  ['stoppercounters_12',['stopperCounters',['../test__Lifecycle_8cpp.html#ab7c013863b4fd32e5cd46e51e5863821',1,'test_Lifecycle.cpp']]],
+  ['stoprequested_13',['stopRequested',['../classecs_1_1Container.html#a4676c70bb0d95acf6c34f56f326ae581',1,'ecs::Container']]],
+  ['str_14',['str',['../classnlohmann_1_1detail_1_1output__string__adapter.html#ae57cf7d5c5ec641e25860bb9fb8e6cb9',1,'nlohmann::detail::output_string_adapter']]],
+  ['stream_15',['stream',['../classnlohmann_1_1detail_1_1output__stream__adapter.html#aacc26af02e1e5a988bc5dbfb723b5562',1,'nlohmann::detail::output_stream_adapter']]],
+  ['string_16',['string',['../classnlohmann_1_1basic__json.html#ac32019eb29dc7bb4c326a233e0e2f0cb',1,'nlohmann::basic_json']]],
+  ['string_5fbuffer_17',['string_buffer',['../classnlohmann_1_1detail_1_1serializer.html#a9c9b7ca63a66e59e5e7ffe8a2acf5c8f',1,'nlohmann::detail::serializer']]],
+  ['system_18',['system',['../structecs_1_1Container_1_1SystemSlot.html#aa5cd1609e462b9c2bad6b3e949af055b',1,'ecs::Container::SystemSlot::system'],['../structecs_1_1Container_1_1RetiredSystem.html#a0b6e3b6baecc26575f23c391fab07a5c',1,'ecs::Container::RetiredSystem::system']]],
+  ['system_5forder_19',['system_order',['../classecs_1_1Container.html#a6ed83b88dd082fb7f5fc13a2f0e73dbe',1,'ecs::Container']]],
+  ['systems_20',['Systems',['../classecs_1_1Container.html#a257c63a8a2fcef68ffcc7d938910b486',1,'ecs::Container']]]
 ];
