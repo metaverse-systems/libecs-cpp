@@ -251,7 +251,9 @@ namespace ecs
         void ClockSet(const ecs::Clock *clock);
         /*! The whole milliseconds of this update's elapsed time, with the part of a millisecond that is
          *  left over carried into the next update, so the running total stays within a millisecond of the
-         *  true total. The same on every call during one update. World thread only. Deprecated: use
+         *  true total. The same on every call during one update. At most 4 294 967 295, which a single
+         *  update longer than about 49.7 days reaches; ElapsedGet() is never limited. World thread only.
+         *  Deprecated: use
          *  ElapsedGet() or ElapsedSecondsGet(). It stays for at least the next minor release and removal is
          *  not scheduled in this one. */
         [[deprecated("use ElapsedGet() or ElapsedSecondsGet() instead")]]

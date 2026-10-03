@@ -200,6 +200,7 @@ down is described in "Start-up, shutdown and stopping".
   not owned by what uses it and must outlive it. `System::ClockSet()` and `Container::ClockSet()` replace
   it (the world's call sets the clock of every system it holds and of every system registered later); the
   schedule, timers and elapsed measurement of each affected system start again from the new clock's time.
+  A null pointer selects the real steady clock again.
   The thread of a world that was started with `Start()` still waits on the real clock, so use a
   `ManualClock` with worlds that are driven by calls to `Update()`.
 
@@ -768,10 +769,10 @@ Migration:
 | `uint32_t ms = DeltaTimeGet();` | `ElapsedGet()` (microseconds) or `ElapsedSecondsGet()` (seconds, `double`) |
 | `Start(us)` | unchanged, or `Start(std::chrono::microseconds(us))` |
 
-The deprecated names compile with a notice and keep their previous units and meaning, apart from the two
+The deprecated names compile with a notice and keep their previous units and meaning, apart from the
 behaviours below. A floating-point timer length (`Timer("n", cb, 0.5)`) no longer compiles: pass a duration.
 
-Two behaviours to know about:
+Three behaviours to know about:
 
 * `DeltaTimeGet()` used to return the time since the previous call. It now returns the time of the
   current update, measured once. A system that read it only every Nth update used to see N updates of
@@ -780,6 +781,9 @@ Two behaviours to know about:
 * `DeltaTimeGet()` now carries the part of a millisecond that it cannot show into the next update, so the
   running total stays within a millisecond of the real one. A 33 333 microsecond step reads mostly 33 with
   a 34 about every third update, where it used to read 33 every time.
+* `DeltaTimeGet()` and `Timing::GetFrequency()` hold 32 bits and saturate at 4 294 967 295 (about 49.7 days
+  of milliseconds, and about 71 minutes of microseconds) instead of wrapping. `ElapsedGet()` and
+  `GetInterval()` are never limited.
 
 ### 1.7.0
 

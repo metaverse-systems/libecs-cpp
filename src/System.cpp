@@ -8,8 +8,9 @@
 
 namespace ecs
 {
-    // The constructors still initialise the deprecated lastTime member so that code built against it keeps
-    // its previous value; that is the only place the library names it.
+    // The constructors still initialise the deprecated lastTime member (with the construction time, as
+    // before) so that a subclass that names it still compiles; the member is never updated, and this
+    // is the only place the library names it.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     System::System():
