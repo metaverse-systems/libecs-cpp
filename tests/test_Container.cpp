@@ -675,11 +675,11 @@ TEST_CASE("Duplicate registration stays memory safe during and outside a pass", 
         REQUIRE(log.destroyCount("X1") == 1);
         REQUIRE(container->Systems.at(walkHandle("X")).get() == second);
 
-        // The handle has two update slots, so the replacement runs twice per pass.
+        // The handle has one update slot, so the replacement runs once per pass.
         walkPass(container, log);
-        REQUIRE(log.updateCount("X2") == 2);
+        REQUIRE(log.updateCount("X2") == 1);
         walkPass(container, log);
-        REQUIRE(log.updateCount("X2") == 2);
+        REQUIRE(log.updateCount("X2") == 1);
         REQUIRE(log.updateCount("X1") == 0);
         REQUIRE(log.destroyCount("X1") == 1);
         REQUIRE(log.destroyCount("X2") == 0);

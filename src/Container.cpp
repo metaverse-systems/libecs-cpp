@@ -153,31 +153,59 @@ namespace ecs
 
     ecs::System *Container::System(std::unique_ptr<ecs::System> system)
     {
+        const std::string prefix = "ecs::Container(\"" + this->Handle + "\")::System(): ";
+        if(!system)
+        {
+            throw std::runtime_error(prefix + "system is missing.");
+        }
+        if(system->Handle.empty())
+        {
+            throw std::runtime_error(prefix + "system handle is empty.");
+        }
+        if(system->Container != nullptr)
+        {
+            // The pointer aliases an object a world already owns, so it must not be deleted here.
+            const std::string name = system->Handle;
+            system.release();
+            throw std::runtime_error(prefix + "system \"" + name + "\" is already registered.");
+        }
+
         system->Container = this;
         system->Components = &(this->Components);
         const std::string handle = system->Handle;
         ecs::System *ptr = system.get();
-        {
-            std::lock_guard<std::mutex> guard(this->mailboxesLock);
-            this->mailboxes[handle] = system->mailbox;
-        }
 
         auto existing = this->Systems.find(handle);
         if(existing != this->Systems.end())
         {
+            // Same handle: the new instance takes the old one's place in the update order.
             std::unique_ptr<ecs::System> old = std::move(existing->second);
             for(auto &slot : this->system_order)
             {
-                if(slot.system == old.get()) slot.system = ptr;
+                if(slot.handle == handle) slot.system = ptr;
             }
             existing->second = std::move(system);
-            this->system_order.push_back(SystemSlot{handle, ptr});
+            {
+                std::lock_guard<std::mutex> guard(this->mailboxesLock);
+                this->mailboxes[handle] = ptr->mailbox;
+            }
             this->systemRetire(std::move(old));
             return ptr;
         }
 
-        this->Systems.emplace(handle, std::move(system));
         this->system_order.push_back(SystemSlot{handle, ptr});
+        try
+        {
+            this->Systems.emplace(handle, std::move(system));
+            std::lock_guard<std::mutex> guard(this->mailboxesLock);
+            this->mailboxes[handle] = ptr->mailbox;
+        }
+        catch(...)
+        {
+            this->Systems.erase(handle);
+            this->system_order.pop_back();
+            throw;
+        }
         return ptr;
     }
 

@@ -774,3 +774,427 @@ TEST_CASE("Concurrent invalid and valid senders", "[Validation]")
     REQUIRE(received == static_cast<std::size_t>(SENDERS * ROUNDS));
     REQUIRE(unique.size() == received);
 }
+
+namespace
+{
+    /*! Who was updated, in order, with the pass number the test was in. */
+    struct Trace
+    {
+        std::vector<std::pair<std::string, int>> entries;
+        int pass = 0;
+
+        /*! The handles updated in one pass, in order. */
+        std::vector<std::string> handlesIn(int pass) const
+        {
+            std::vector<std::string> out;
+            for(const auto &e : this->entries)
+            {
+                if(e.second == pass) out.push_back(e.first);
+            }
+            return out;
+        }
+
+        std::size_t countOf(const std::string &handle) const
+        {
+            return static_cast<std::size_t>(std::count_if(this->entries.begin(),
+              this->entries.end(),
+              [&](const auto &e) { return e.first == handle; }));
+        }
+    };
+
+    /*! What happened to one instance. Shared so it outlives the instance. */
+    struct Counters
+    {
+        int initialized = 0;
+        int updated = 0;
+        int destroyed = 0;
+    };
+
+    /*! Counts its own start-up, updates and destruction and records each update in a shared trace. The
+     *  optional hooks run inside Initialize() and Update(). */
+    class CountingSystem : public ecs::System
+    {
+      public:
+        CountingSystem(const std::string &handle, std::shared_ptr<Trace> trace, std::shared_ptr<Counters> counters)
+          : trace(std::move(trace)), counters(std::move(counters))
+        {
+            this->Handle = handle;
+            this->Timing.SetFrequency(0);
+        }
+
+        ~CountingSystem() override
+        {
+            this->counters->destroyed++;
+        }
+
+        void Initialize() override
+        {
+            this->counters->initialized++;
+            if(this->onInitialize) this->onInitialize();
+        }
+
+        void Update() override
+        {
+            this->counters->updated++;
+            this->trace->entries.emplace_back(this->Handle, this->trace->pass);
+            if(this->onUpdate) this->onUpdate();
+        }
+
+        json Export() const override
+        {
+            return json::object();
+        }
+
+        std::function<void()> onInitialize;
+        std::function<void()> onUpdate;
+        std::shared_ptr<Trace> trace;
+        std::shared_ptr<Counters> counters;
+    };
+
+    /*! A manager with one world and a shared trace. Systems are added by handle with their own counters. */
+    struct World
+    {
+        ecs::Manager manager;
+        ecs::Container *container = nullptr;
+        std::shared_ptr<Trace> trace = std::make_shared<Trace>();
+
+        World()
+        {
+            this->container = this->manager.Container("world");
+        }
+
+        /*! Registers a counting system and returns its counters. */
+        std::shared_ptr<Counters> add(const std::string &handle, CountingSystem **raw = nullptr)
+        {
+            auto counters = std::make_shared<Counters>();
+            auto system = std::make_unique<CountingSystem>(handle, this->trace, counters);
+            if(raw) *raw = system.get();
+            this->container->System(std::move(system));
+            return counters;
+        }
+
+        /*! A replacement system for the handle, not yet registered. */
+        std::unique_ptr<CountingSystem> make(const std::string &handle, std::shared_ptr<Counters> counters) const
+        {
+            return std::make_unique<CountingSystem>(handle, this->trace, std::move(counters));
+        }
+
+        void pass()
+        {
+            this->trace->pass++;
+            this->container->Update();
+        }
+
+        std::vector<std::string> handles() const
+        {
+            std::vector<std::string> out;
+            for(const auto &s : this->container->Systems) out.push_back(s.first);
+            std::sort(out.begin(), out.end());
+            return out;
+        }
+    };
+
+    const std::string registrationPrefix = "ecs::Container(\"world\")::System()";
+
+    /*! After a rejection a valid registration and an update pass must still work. */
+    void requireWorldUsable(World &world)
+    {
+        auto counters = world.add("usable-check");
+        world.pass();
+        REQUIRE(counters->updated == 1);
+        world.container->SystemDestroy("usable-check");
+        REQUIRE(world.container->Systems.count("usable-check") == 0);
+    }
+}
+
+TEST_CASE("Duplicate handle replaces, once", "[Validation]")
+{
+    World world;
+    auto a = world.add("A");
+    auto b = world.add("B");
+    auto c = world.add("C");
+    auto b2 = std::make_shared<Counters>();
+
+    ecs::System *replacement = world.container->System(world.make("B", b2));
+
+    REQUIRE(world.container->Systems.size() == 3);
+    REQUIRE(world.container->Systems.at("B").get() == replacement);
+
+    world.container->SystemsInitialize();
+    for(int i = 0; i < 10; i++) world.pass();
+
+    REQUIRE(b2->initialized == 1);
+    REQUIRE(b2->updated == 10);
+    REQUIRE(b->initialized == 0);
+    REQUIRE(b->updated == 0);
+    REQUIRE(b->destroyed == 1);
+    REQUIRE(b2->destroyed == 0);
+    REQUIRE(a->initialized == 1);
+    REQUIRE(c->initialized == 1);
+    REQUIRE(a->updated == 10);
+    REQUIRE(c->updated == 10);
+    for(int pass = 1; pass <= 10; pass++)
+    {
+        REQUIRE(world.trace->handlesIn(pass) == std::vector<std::string>{"A", "B", "C"});
+    }
+}
+
+TEST_CASE("Replacement keeps the order of other systems", "[Validation]")
+{
+    World world;
+    world.add("A");
+    world.add("B");
+    world.add("C");
+    world.add("D");
+
+    world.pass();
+    const auto before = world.trace->handlesIn(1);
+    REQUIRE(before == std::vector<std::string>{"A", "B", "C", "D"});
+
+    world.container->System(world.make("B", std::make_shared<Counters>()));
+    world.pass();
+    const auto after = world.trace->handlesIn(2);
+
+    auto without = [](std::vector<std::string> v) {
+        v.erase(std::remove(v.begin(), v.end(), "B"), v.end());
+        return v;
+    };
+    REQUIRE(without(after) == without(before));
+    REQUIRE(after == before);
+}
+
+TEST_CASE("Replacement receives later messages and drops pending ones", "[Validation]")
+{
+    ecs::Manager manager;
+    ecs::Container *container = manager.Container("world");
+    auto oldReceived = std::make_shared<std::vector<json>>();
+    auto newReceived = std::make_shared<std::vector<json>>();
+    container->System(std::make_unique<RecorderSystem>("B", oldReceived));
+
+    container->MessageSubmit(validMessage("world", "B", 1, 1));
+
+    ecs::System *replacement = container->System(std::make_unique<RecorderSystem>("B", newReceived));
+    REQUIRE(replacement->MessagesWaiting() == 0);
+
+    container->MessageSubmit(validMessage("world", "B", 1, 2));
+    manager.MessageSubmit(validMessage("world", "B", 1, 3));
+    REQUIRE(replacement->MessagesWaiting() == 2);
+
+    container->Update();
+
+    REQUIRE(oldReceived->empty());
+    REQUIRE(newReceived->size() == 2);
+    REQUIRE((*newReceived)[0]["number"] == 2);
+    REQUIRE((*newReceived)[1]["number"] == 3);
+}
+
+TEST_CASE("Replacement inside a pass", "[Validation]")
+{
+    SECTION("from an earlier system")
+    {
+        World world;
+        CountingSystem *a = nullptr;
+        world.add("A", &a);
+        auto b = world.add("B");
+        world.add("C");
+        auto b2 = std::make_shared<Counters>();
+        bool done = false;
+        a->onUpdate = [&]() {
+            if(done) return;
+            done = true;
+            world.container->System(world.make("B", b2));
+        };
+
+        world.pass();
+        REQUIRE(b->updated == 0);
+        REQUIRE(b2->updated <= 1);
+        REQUIRE(b2->initialized == 0);
+        REQUIRE(b->destroyed == 1);
+        const int afterFirst = b2->updated;
+
+        world.pass();
+        REQUIRE(b2->updated == afterFirst + 1);
+        REQUIRE(b->updated == 0);
+        REQUIRE(world.container->Systems.size() == 3);
+        REQUIRE(world.trace->handlesIn(2) == std::vector<std::string>{"A", "B", "C"});
+    }
+
+    SECTION("from the system being replaced")
+    {
+        World world;
+        world.add("A");
+        CountingSystem *b = nullptr;
+        auto bCounters = world.add("B", &b);
+        world.add("C");
+        auto b2 = std::make_shared<Counters>();
+        bool done = false;
+        int destroyedInside = -1;
+        b->onUpdate = [&]() {
+            if(done) return;
+            done = true;
+            world.container->System(world.make("B", b2));
+            destroyedInside = bCounters->destroyed;
+        };
+
+        world.pass();
+        REQUIRE(bCounters->updated == 1);
+        REQUIRE(b2->updated == 0);
+        REQUIRE(destroyedInside == 0);
+        REQUIRE(bCounters->destroyed == 1);
+        REQUIRE(world.trace->handlesIn(1) == std::vector<std::string>{"A", "B", "C"});
+
+        world.pass();
+        REQUIRE(b2->updated == 1);
+        REQUIRE(bCounters->updated == 1);
+        REQUIRE(world.trace->handlesIn(2) == std::vector<std::string>{"A", "B", "C"});
+    }
+}
+
+TEST_CASE("Replacement during the start-up walk", "[Validation]")
+{
+    World world;
+    CountingSystem *a = nullptr;
+    world.add("A", &a);
+    world.add("B");
+    auto c = world.add("C");
+    auto c2 = std::make_shared<Counters>();
+    a->onInitialize = [&]() { world.container->System(world.make("C", c2)); };
+
+    world.container->SystemsInitialize();
+
+    REQUIRE(c2->initialized == 1);
+    REQUIRE(c->initialized == 0);
+    REQUIRE(world.container->Systems.size() == 3);
+
+    world.pass();
+    REQUIRE(c2->updated == 1);
+    REQUIRE(c->updated == 0);
+    REQUIRE(c2->initialized == 1);
+}
+
+TEST_CASE("Removal after replacement leaves nothing", "[Validation]")
+{
+    World world;
+    world.add("A");
+    auto b = world.add("B");
+    world.add("C");
+    auto b2 = std::make_shared<Counters>();
+    world.container->System(world.make("B", b2));
+
+    world.pass();
+    REQUIRE(b2->updated == 1);
+
+    world.container->SystemDestroy("B");
+    REQUIRE(world.container->Systems.count("B") == 0);
+    REQUIRE(world.handles() == std::vector<std::string>{"A", "C"});
+    REQUIRE(b2->destroyed == 1);
+
+    world.pass();
+    world.pass();
+    REQUIRE(b2->updated == 1);
+    REQUIRE(b->updated == 0);
+    REQUIRE(world.trace->handlesIn(2) == std::vector<std::string>{"A", "C"});
+    REQUIRE(world.trace->handlesIn(3) == std::vector<std::string>{"A", "C"});
+    REQUIRE(world.trace->countOf("B") == 1);
+}
+
+TEST_CASE("Remove then register in one pass keeps its meaning", "[Validation]")
+{
+    World world;
+    CountingSystem *a = nullptr;
+    world.add("A", &a);
+    auto b = world.add("B");
+    world.add("C");
+    auto b2 = std::make_shared<Counters>();
+    bool done = false;
+    a->onUpdate = [&]() {
+        if(done) return;
+        done = true;
+        world.container->SystemDestroy("B");
+        world.container->System(world.make("B", b2));
+    };
+
+    world.pass();
+    REQUIRE(b->updated == 0);
+    REQUIRE(b2->updated == 0);
+    REQUIRE(world.trace->handlesIn(1) == std::vector<std::string>{"A", "C"});
+
+    world.pass();
+    REQUIRE(b2->updated == 1);
+    REQUIRE(world.trace->handlesIn(2) == std::vector<std::string>{"A", "C", "B"});
+}
+
+TEST_CASE("Null system is rejected", "[Validation]")
+{
+    World world;
+    world.add("A");
+    const auto before = world.handles();
+    const auto exported = world.container->Export().dump();
+
+    expectRejected([&]() { world.container->System(nullptr); }, registrationPrefix, "system is missing");
+
+    REQUIRE(world.handles() == before);
+    REQUIRE(world.container->Export().dump() == exported);
+    requireWorldUsable(world);
+}
+
+TEST_CASE("Empty handle is rejected", "[Validation]")
+{
+    World world;
+    world.add("A");
+    const auto before = world.handles();
+    auto counters = std::make_shared<Counters>();
+
+    expectRejected([&]() { world.container->System(world.make("", counters)); },
+      registrationPrefix,
+      "system handle is empty");
+
+    REQUIRE(world.handles() == before);
+    REQUIRE(counters->destroyed == 1);
+    requireWorldUsable(world);
+}
+
+TEST_CASE("Same object twice is rejected", "[Validation]")
+{
+    World world;
+    auto counters = std::make_shared<Counters>();
+    ecs::System *registered = world.container->System(world.make("A", counters));
+    world.add("B");
+
+    // The library releases this pointer when it rejects the call, so the object is not deleted here.
+    expectRejected([&]() { world.container->System(std::unique_ptr<ecs::System>(registered)); },
+      registrationPrefix,
+      "is already registered");
+
+    REQUIRE(counters->destroyed == 0);
+    REQUIRE(world.container->Systems.size() == 2);
+    REQUIRE(world.container->Systems.at("A").get() == registered);
+
+    world.pass();
+    REQUIRE(counters->updated == 1);
+    REQUIRE(world.trace->handlesIn(1) == std::vector<std::string>{"A", "B"});
+    requireWorldUsable(world);
+}
+
+TEST_CASE("Rejected registration leaves the world usable", "[Validation]")
+{
+    World world;
+    auto a = world.add("A");
+    world.pass();
+
+    for(int round = 0; round < 3; round++)
+    {
+        REQUIRE_THROWS_AS(world.container->System(nullptr), std::runtime_error);
+        REQUIRE_THROWS_AS(world.container->System(world.make("", std::make_shared<Counters>())), std::runtime_error);
+        ecs::System *registered = world.container->Systems.at("A").get();
+        REQUIRE_THROWS_AS(world.container->System(std::unique_ptr<ecs::System>(registered)), std::runtime_error);
+    }
+
+    REQUIRE(world.handles() == std::vector<std::string>{"A"});
+    auto z = world.add("Z");
+    world.pass();
+    REQUIRE(a->updated == 2);
+    REQUIRE(z->updated == 1);
+    REQUIRE(a->destroyed == 0);
+    REQUIRE(world.trace->handlesIn(2) == std::vector<std::string>{"A", "Z"});
+}
