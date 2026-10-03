@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.4.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.5.0</span>
    </div>
   </td>
  </tr>
@@ -11130,7 +11130,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l11164" name="l11164"></a><span class="lineno">11164</span> </div>
 <div class="foldopen" id="foldopen11165" data-start="{" data-end="}">
-<div class="line"><a id="l11165" name="l11165"></a><span class="lineno"><a class="line" href="classnlohmann_1_1detail_1_1parser.html#a94e7f8a0f880c20c8a48f591f56cbd85">11165</a></span>    std::string <a class="code hl_function" href="classnlohmann_1_1detail_1_1parser.html#a94e7f8a0f880c20c8a48f591f56cbd85">exception_message</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="classnlohmann_1_1detail_1_1parser.html#a5cb5ea47f09f116e71a908c556325710">token_type</a> <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">expected</a>, <span class="keyword">const</span> std::string&amp; <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">context</a>)</div>
+<div class="line"><a id="l11165" name="l11165"></a><span class="lineno"><a class="line" href="classnlohmann_1_1detail_1_1parser.html#a94e7f8a0f880c20c8a48f591f56cbd85">11165</a></span>    std::string <a class="code hl_function" href="classnlohmann_1_1detail_1_1parser.html#a94e7f8a0f880c20c8a48f591f56cbd85">exception_message</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="classnlohmann_1_1detail_1_1parser.html#a5cb5ea47f09f116e71a908c556325710">token_type</a> expected, <span class="keyword">const</span> std::string&amp; <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">context</a>)</div>
 <div class="line"><a id="l11166" name="l11166"></a><span class="lineno">11166</span>    {</div>
 <div class="line"><a id="l11167" name="l11167"></a><span class="lineno">11167</span>        std::string <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">error_msg</a> = <span class="stringliteral">&quot;syntax error &quot;</span>;</div>
 <div class="line"><a id="l11168" name="l11168"></a><span class="lineno">11168</span> </div>
@@ -11151,9 +11151,9 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l11183" name="l11183"></a><span class="lineno">11183</span>            <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">error_msg</a> += <span class="stringliteral">&quot;unexpected &quot;</span> + std::string(<a class="code hl_function" href="classnlohmann_1_1detail_1_1lexer__base.html#a3e49458ca35019e4db8a45629f5be192">lexer_t::token_type_name</a>(<a class="code hl_variable" href="classnlohmann_1_1detail_1_1parser.html#a307ed42d5f31a9c5bec991ceee87b0e7">last_token</a>));</div>
 <div class="line"><a id="l11184" name="l11184"></a><span class="lineno">11184</span>        }</div>
 <div class="line"><a id="l11185" name="l11185"></a><span class="lineno">11185</span> </div>
-<div class="line"><a id="l11186" name="l11186"></a><span class="lineno">11186</span>        <span class="keywordflow">if</span> (<a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">expected</a> != token_type::uninitialized)</div>
+<div class="line"><a id="l11186" name="l11186"></a><span class="lineno">11186</span>        <span class="keywordflow">if</span> (expected != token_type::uninitialized)</div>
 <div class="line"><a id="l11187" name="l11187"></a><span class="lineno">11187</span>        {</div>
-<div class="line"><a id="l11188" name="l11188"></a><span class="lineno">11188</span>            <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">error_msg</a> += <span class="stringliteral">&quot;; expected &quot;</span> + std::string(<a class="code hl_function" href="classnlohmann_1_1detail_1_1lexer__base.html#a3e49458ca35019e4db8a45629f5be192">lexer_t::token_type_name</a>(<a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">expected</a>));</div>
+<div class="line"><a id="l11188" name="l11188"></a><span class="lineno">11188</span>            <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">error_msg</a> += <span class="stringliteral">&quot;; expected &quot;</span> + std::string(<a class="code hl_function" href="classnlohmann_1_1detail_1_1lexer__base.html#a3e49458ca35019e4db8a45629f5be192">lexer_t::token_type_name</a>(expected));</div>
 <div class="line"><a id="l11189" name="l11189"></a><span class="lineno">11189</span>        }</div>
 <div class="line"><a id="l11190" name="l11190"></a><span class="lineno">11190</span> </div>
 <div class="line"><a id="l11191" name="l11191"></a><span class="lineno">11191</span>        <span class="keywordflow">return</span> <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a1ed8fc6239da25abcaf681d30ace4985af1f713c9e000f5d3f280adbd124df4f5">error_msg</a>;</div>
@@ -22539,7 +22539,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 05:27:12 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 06:28:36 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

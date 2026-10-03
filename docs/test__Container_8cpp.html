@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.4.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.5.0</span>
    </div>
   </td>
  </tr>
@@ -379,10 +379,10 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  518</span>    REQUIRE(log.destroyCount(<span class="stringliteral">&quot;B&quot;</span>) == 1);</div>
 <div class="line"><span class="lineno">  519</span>}</div>
 <div class="ttc" id="aclassecs_1_1Manager_html"><div class="ttname"><a href="classecs_1_1Manager.html">ecs::Manager</a></div><div class="ttdef"><b>Definition</b> <a href="Manager_8hpp_source.html#l00046">Manager.hpp:47</a></div></div>
-<div class="ttc" id="aclassecs_1_1Manager_html_af96d2ee8eb88a8c35adfb6015acf59bd"><div class="ttname"><a href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">ecs::Manager::Container</a></div><div class="ttdeci">ecs::Container * Container(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00030">Manager.cpp:30</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_af96d2ee8eb88a8c35adfb6015acf59bd"><div class="ttname"><a href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">ecs::Manager::Container</a></div><div class="ttdeci">ecs::Container * Container(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00032">Manager.cpp:32</a></div></div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html"><div class="ttname"><a href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a></div><div class="ttdoc">a class to store JSON values</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l17281">json.hpp:17282</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, <a class="el" href="json_8hpp_source.html#l19640">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;::contains()</a>, <a class="el" href="Container_8cpp_source.html#l00071">ecs::Container::Export()</a>, <a class="el" href="Container_8cpp_source.html#l00335">ecs::Container::MessageSubmit()</a>, and <a class="el" href="Container_8hpp_source.html#l00191">ecs::Container::Systems</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="json_8hpp_source.html#l19640">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;::contains()</a>, <a class="el" href="Container_8cpp_source.html#l00072">ecs::Container::Export()</a>, <a class="el" href="Container_8cpp_source.html#l00385">ecs::Container::MessageSubmit()</a>, and <a class="el" href="Container_8hpp_source.html#l00215">ecs::Container::Systems</a>.</p>
 
 </div>
 </div>
@@ -441,7 +441,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  626</span>}</div>
 <div class="ttc" id="aclassecs_1_1System_html"><div class="ttname"><a href="classecs_1_1System.html">ecs::System</a></div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00090">System.hpp:91</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>.</p>
 
 </div>
 </div>
@@ -509,9 +509,9 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  662</span>    REQUIRE(log.updates == Names{<span class="stringliteral">&quot;A&quot;</span>, <span class="stringliteral">&quot;C&quot;</span>});</div>
 <div class="line"><span class="lineno">  663</span>    REQUIRE(log.destroyCount(<span class="stringliteral">&quot;B&quot;</span>) == 1);</div>
 <div class="line"><span class="lineno">  664</span>}</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a6dbcd98879f0a02ca893185e8a128b0e"><div class="ttname"><a href="classecs_1_1Container.html#a6dbcd98879f0a02ca893185e8a128b0e">ecs::Container::LoggerSet</a></div><div class="ttdeci">void LoggerSet(std::function&lt; void(const std::string &amp;, const std::string &amp;)&gt; fn)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00437">Container.cpp:437</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a6dbcd98879f0a02ca893185e8a128b0e"><div class="ttname"><a href="classecs_1_1Container.html#a6dbcd98879f0a02ca893185e8a128b0e">ecs::Container::LoggerSet</a></div><div class="ttdeci">void LoggerSet(std::function&lt; void(const std::string &amp;, const std::string &amp;)&gt; fn)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00488">Container.cpp:488</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, <a class="el" href="Container_8cpp_source.html#l00437">ecs::Container::LoggerSet()</a>, <a class="el" href="Container_8hpp_source.html#l00191">ecs::Container::Systems</a>, and <a class="el" href="Container_8cpp_source.html#l00308">ecs::Container::Update()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="Container_8cpp_source.html#l00488">ecs::Container::LoggerSet()</a>, <a class="el" href="Container_8hpp_source.html#l00215">ecs::Container::Systems</a>, and <a class="el" href="Container_8cpp_source.html#l00358">ecs::Container::Update()</a>.</p>
 
 </div>
 </div>
@@ -574,7 +574,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  789</span>    REQUIRE(walkPass(container, log) == Names{<span class="stringliteral">&quot;A&quot;</span>, <span class="stringliteral">&quot;C&quot;</span>});</div>
 <div class="line"><span class="lineno">  790</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, <a class="el" href="Container_8cpp_source.html#l00437">ecs::Container::LoggerSet()</a>, <a class="el" href="Container_8hpp_source.html#l00191">ecs::Container::Systems</a>, and <a class="el" href="Container_8cpp_source.html#l00209">ecs::Container::SystemsInitialize()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="Container_8cpp_source.html#l00488">ecs::Container::LoggerSet()</a>, <a class="el" href="Container_8hpp_source.html#l00215">ecs::Container::Systems</a>, and <a class="el" href="Container_8cpp_source.html#l00259">ecs::Container::SystemsInitialize()</a>.</p>
 
 </div>
 </div>
@@ -614,9 +614,9 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  210</span>    }</div>
 <div class="line"><span class="lineno">  211</span>    REQUIRE(container-&gt;Entities.size() == 100);</div>
 <div class="line"><span class="lineno">  212</span>}</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a9a0c9c1a24491b801182702a14fd23cd"><div class="ttname"><a href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">ecs::Container::Entity</a></div><div class="ttdeci">ecs::Entity * Entity(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00189">Container.cpp:189</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a9a0c9c1a24491b801182702a14fd23cd"><div class="ttname"><a href="classecs_1_1Container.html#a9a0c9c1a24491b801182702a14fd23cd">ecs::Container::Entity</a></div><div class="ttdeci">ecs::Entity * Entity(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00239">Container.cpp:239</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00189">ecs::Container::Entity()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00239">ecs::Container::Entity()</a>.</p>
 
 </div>
 </div>
@@ -656,9 +656,9 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   85</span>    <span class="comment">// Manager destructor will join threads</span></div>
 <div class="line"><span class="lineno">   86</span>    REQUIRE(<span class="keyword">true</span>); <span class="comment">// If we get here without hanging, the test passes</span></div>
 <div class="line"><span class="lineno">   87</span>}</div>
-<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00153">Container.cpp:153</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00154">Container.cpp:154</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00153">ecs::Container::System()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00154">ecs::Container::System()</a>.</p>
 
 </div>
 </div>
@@ -702,7 +702,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   99</span>    REQUIRE(sameEntity == entity);</div>
 <div class="line"><span class="lineno">  100</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00189">ecs::Container::Entity()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00239">ecs::Container::Entity()</a>.</p>
 
 </div>
 </div>
@@ -744,9 +744,9 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  110</span>    REQUIRE_FALSE(container-&gt;Entities.contains(<span class="stringliteral">&quot;entity1&quot;</span>));</div>
 <div class="line"><span class="lineno">  111</span>}</div>
 <div class="ttc" id="aclassTestComponent_html"><div class="ttname"><a href="classTestComponent.html">TestComponent</a></div><div class="ttdef"><b>Definition</b> <a href="test__Container_8cpp_source.html#l00061">test_Container.cpp:62</a></div></div>
-<div class="ttc" id="aclassecs_1_1Entity_html_ab074dc6ad97a7be45cfbfe7bcc38c8f8"><div class="ttname"><a href="classecs_1_1Entity.html#ab074dc6ad97a7be45cfbfe7bcc38c8f8">ecs::Entity::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(ecs::Component *component)</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00034">Entity.cpp:34</a></div></div>
+<div class="ttc" id="aclassecs_1_1Entity_html_ab074dc6ad97a7be45cfbfe7bcc38c8f8"><div class="ttname"><a href="classecs_1_1Entity.html#ab074dc6ad97a7be45cfbfe7bcc38c8f8">ecs::Entity::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(ecs::Component *component)</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00043">Entity.cpp:43</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Entity_8cpp_source.html#l00034">ecs::Entity::Component()</a>, <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00189">ecs::Container::Entity()</a>.</p>
+<p class="reference">References <a class="el" href="Entity_8cpp_source.html#l00043">ecs::Entity::Component()</a>, <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00239">ecs::Container::Entity()</a>.</p>
 
 </div>
 </div>
@@ -790,7 +790,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  202</span>}</div>
 <div class="ttc" id="aclassecs_1_1System_html_a9a07420a3b75f90051f4635cc0fad529"><div class="ttname"><a href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">ecs::System::Export</a></div><div class="ttdeci">virtual nlohmann::json Export() const =0</div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, <a class="el" href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">ecs::System::Export()</a>, and <a class="el" href="Container_8cpp_source.html#l00153">ecs::Container::System()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">ecs::System::Export()</a>, and <a class="el" href="Container_8cpp_source.html#l00154">ecs::Container::System()</a>.</p>
 
 </div>
 </div>
@@ -833,11 +833,11 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  675</span>        REQUIRE(log.destroyCount(<span class="stringliteral">&quot;X1&quot;</span>) == 1);</div>
 <div class="line"><span class="lineno">  676</span>        REQUIRE(container-&gt;Systems.at(walkHandle(<span class="stringliteral">&quot;X&quot;</span>)).<a class="code hl_function" href="namespacenlohmann_1_1detail.html#acc422c11342b31368f610b6f96fcedc6">get</a>() == second);</div>
 <div class="line"><span class="lineno">  677</span> </div>
-<div class="line"><span class="lineno">  678</span>        <span class="comment">// The handle has two update slots, so the replacement runs twice per pass.</span></div>
+<div class="line"><span class="lineno">  678</span>        <span class="comment">// The handle has one update slot, so the replacement runs once per pass.</span></div>
 <div class="line"><span class="lineno">  679</span>        walkPass(container, log);</div>
-<div class="line"><span class="lineno">  680</span>        REQUIRE(log.updateCount(<span class="stringliteral">&quot;X2&quot;</span>) == 2);</div>
+<div class="line"><span class="lineno">  680</span>        REQUIRE(log.updateCount(<span class="stringliteral">&quot;X2&quot;</span>) == 1);</div>
 <div class="line"><span class="lineno">  681</span>        walkPass(container, log);</div>
-<div class="line"><span class="lineno">  682</span>        REQUIRE(log.updateCount(<span class="stringliteral">&quot;X2&quot;</span>) == 2);</div>
+<div class="line"><span class="lineno">  682</span>        REQUIRE(log.updateCount(<span class="stringliteral">&quot;X2&quot;</span>) == 1);</div>
 <div class="line"><span class="lineno">  683</span>        REQUIRE(log.updateCount(<span class="stringliteral">&quot;X1&quot;</span>) == 0);</div>
 <div class="line"><span class="lineno">  684</span>        REQUIRE(log.destroyCount(<span class="stringliteral">&quot;X1&quot;</span>) == 1);</div>
 <div class="line"><span class="lineno">  685</span>        REQUIRE(log.destroyCount(<span class="stringliteral">&quot;X2&quot;</span>) == 0);</div>
@@ -864,7 +864,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  706</span>}</div>
 <div class="ttc" id="anamespacenlohmann_1_1detail_html_acc422c11342b31368f610b6f96fcedc6"><div class="ttname"><a href="namespacenlohmann_1_1detail.html#acc422c11342b31368f610b6f96fcedc6">nlohmann::detail::get</a></div><div class="ttdeci">auto get(const nlohmann::detail::iteration_proxy_value&lt; IteratorType &gt; &amp;i) -&gt; decltype(i.key())</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l04451">json.hpp:4451</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, <a class="el" href="Container_8hpp_source.html#l00191">ecs::Container::Systems</a>, and <a class="el" href="Container_8cpp_source.html#l00308">ecs::Container::Update()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="Container_8hpp_source.html#l00215">ecs::Container::Systems</a>, and <a class="el" href="Container_8cpp_source.html#l00358">ecs::Container::Update()</a>.</p>
 
 </div>
 </div>
@@ -901,7 +901,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  116</span>    REQUIRE_NOTHROW(container-&gt;EntityDestroy(<span class="stringliteral">&quot;non-existent&quot;</span>));</div>
 <div class="line"><span class="lineno">  117</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>.</p>
 
 </div>
 </div>
@@ -946,7 +946,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  190</span>}</div>
 <div class="ttc" id="aclassecs_1_1System_html_ac70fac6ddc7d1816617fd04888dccdc8"><div class="ttname"><a href="classecs_1_1System.html#ac70fac6ddc7d1816617fd04888dccdc8">ecs::System::System</a></div><div class="ttdeci">System()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00008">System.cpp:8</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, <a class="el" href="System_8cpp_source.html#l00008">ecs::System::System()</a>, and <a class="el" href="Container_8cpp_source.html#l00153">ecs::Container::System()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="System_8cpp_source.html#l00008">ecs::System::System()</a>, and <a class="el" href="Container_8cpp_source.html#l00154">ecs::Container::System()</a>.</p>
 
 </div>
 </div>
@@ -991,7 +991,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  141</span>    REQUIRE_FALSE(container-&gt;Systems.contains(<span class="stringliteral">&quot;NonExistentSystem&quot;</span>));</div>
 <div class="line"><span class="lineno">  142</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00153">ecs::Container::System()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00154">ecs::Container::System()</a>.</p>
 
 </div>
 </div>
@@ -1033,7 +1033,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  127</span>    REQUIRE_THROWS_AS(container-&gt;MessageSubmit(message), std::runtime_error);</div>
 <div class="line"><span class="lineno">  128</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>.</p>
 
 </div>
 </div>
@@ -1102,7 +1102,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  454</span>    REQUIRE(log.destroyCount(<span class="stringliteral">&quot;B&quot;</span>) == 1);</div>
 <div class="line"><span class="lineno">  455</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8hpp_source.html#l00191">ecs::Container::Systems</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8hpp_source.html#l00215">ecs::Container::Systems</a>.</p>
 
 </div>
 </div>
@@ -1179,7 +1179,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  564</span>    }</div>
 <div class="line"><span class="lineno">  565</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>.</p>
 
 </div>
 </div>
@@ -1234,7 +1234,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  478</span>    REQUIRE(log.destroyCount(<span class="stringliteral">&quot;A&quot;</span>) == 1);</div>
 <div class="line"><span class="lineno">  479</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>.</p>
 
 </div>
 </div>
@@ -1299,7 +1299,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  598</span>    REQUIRE(log.destroyCount(<span class="stringliteral">&quot;B2&quot;</span>) == 0);</div>
 <div class="line"><span class="lineno">  599</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8hpp_source.html#l00191">ecs::Container::Systems</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8hpp_source.html#l00215">ecs::Container::Systems</a>.</p>
 
 </div>
 </div>
@@ -1338,7 +1338,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  149</span>    REQUIRE_THROWS_AS(container-&gt;SystemsInitialize(), std::runtime_error);</div>
 <div class="line"><span class="lineno">  150</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00153">ecs::Container::System()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00154">ecs::Container::System()</a>.</p>
 
 </div>
 </div>
@@ -1382,7 +1382,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  162</span>    REQUIRE_THROWS_AS(container-&gt;Update(), std::runtime_error);</div>
 <div class="line"><span class="lineno">  163</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>.</p>
 
 </div>
 </div>
@@ -1426,9 +1426,9 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  175</span>    }</div>
 <div class="line"><span class="lineno">  176</span>    REQUIRE_FALSE(manager.<a class="code hl_function" href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">IsRunning</a>());</div>
 <div class="line"><span class="lineno">  177</span>}</div>
-<div class="ttc" id="aclassecs_1_1Manager_html_af0224464ed55aa2124d1bf00ea3b7624"><div class="ttname"><a href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">ecs::Manager::IsRunning</a></div><div class="ttdeci">bool IsRunning()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00040">Manager.cpp:40</a></div></div>
+<div class="ttc" id="aclassecs_1_1Manager_html_af0224464ed55aa2124d1bf00ea3b7624"><div class="ttname"><a href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">ecs::Manager::IsRunning</a></div><div class="ttdeci">bool IsRunning()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00042">Manager.cpp:42</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Manager_8cpp_source.html#l00040">ecs::Manager::IsRunning()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Manager_8cpp_source.html#l00042">ecs::Manager::IsRunning()</a>.</p>
 
 </div>
 </div>
@@ -1486,7 +1486,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="aclassTestSystem_html"><div class="ttname"><a href="classTestSystem.html">TestSystem</a></div><div class="ttdef"><b>Definition</b> <a href="test__Container_8cpp_source.html#l00013">test_Container.cpp:14</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a4255ae181870f88cc73fae39991d8be5"><div class="ttname"><a href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">ecs::System::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00116">System.hpp:116</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="System_8hpp_source.html#l00116">ecs::System::Handle</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="System_8hpp_source.html#l00116">ecs::System::Handle</a>.</p>
 
 </div>
 </div>
@@ -1572,7 +1572,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  319</span>}</div>
 <div class="ttc" id="aclassecs_1_1System_html_a3ad78d3d7857d167a85aa93a9a3d44b7"><div class="ttname"><a href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">ecs::System::Update</a></div><div class="ttdeci">virtual void Update()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00103">System.hpp:103</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, <a class="el" href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">ecs::System::Export()</a>, and <a class="el" href="System_8hpp_source.html#l00103">ecs::System::Update()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">ecs::System::Export()</a>, and <a class="el" href="System_8hpp_source.html#l00103">ecs::System::Update()</a>.</p>
 
 </div>
 </div>
@@ -1632,7 +1632,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  256</span>}</div>
 <div class="ttc" id="aclassTestSystem_html_ac4b454503fcfd40ffd8b8d8d348d92b6"><div class="ttname"><a href="classTestSystem.html#ac4b454503fcfd40ffd8b8d8d348d92b6">TestSystem::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdef"><b>Definition</b> <a href="test__Container_8cpp_source.html#l00027">test_Container.cpp:27</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="test__Container_8cpp_source.html#l00027">TestSystem::Update()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="test__Container_8cpp_source.html#l00027">TestSystem::Update()</a>.</p>
 
 </div>
 </div>
@@ -1673,7 +1673,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  221</span>    REQUIRE_FALSE(container-&gt;Systems.contains(<span class="stringliteral">&quot;DestroyMe&quot;</span>));</div>
 <div class="line"><span class="lineno">  222</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00153">ecs::Container::System()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00154">ecs::Container::System()</a>.</p>
 
 </div>
 </div>
@@ -1713,7 +1713,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  264</span>    REQUIRE(container-&gt;Systems.contains(<span class="stringliteral">&quot;ExistingSystem&quot;</span>));</div>
 <div class="line"><span class="lineno">  265</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00153">ecs::Container::System()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, and <a class="el" href="Container_8cpp_source.html#l00154">ecs::Container::System()</a>.</p>
 
 </div>
 </div>
@@ -1750,7 +1750,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  227</span>    REQUIRE_NOTHROW(container-&gt;SystemDestroy(<span class="stringliteral">&quot;NonExistent&quot;</span>));</div>
 <div class="line"><span class="lineno">  228</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>.</p>
 
 </div>
 </div>
@@ -1833,14 +1833,14 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">  757</span>    }</div>
 <div class="line"><span class="lineno">  758</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00030">ecs::Manager::Container()</a>, <a class="el" href="Container_8hpp_source.html#l00191">ecs::Container::Systems</a>, and <a class="el" href="Container_8cpp_source.html#l00209">ecs::Container::SystemsInitialize()</a>.</p>
+<p class="reference">References <a class="el" href="Manager_8cpp_source.html#l00032">ecs::Manager::Container()</a>, <a class="el" href="Container_8hpp_source.html#l00215">ecs::Container::Systems</a>, and <a class="el" href="Container_8cpp_source.html#l00259">ecs::Container::SystemsInitialize()</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 05:27:13 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 06:28:36 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
