@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <thread>
 #include <memory>
+#include <mutex>
 #include <iostream>
 #include <functional>
 #include <libecs-cpp/json.hpp>
@@ -17,6 +18,7 @@ namespace ecs
     class System;
     class Component;
     class Entity;
+    struct Mailbox;
 
     class Container
     {
@@ -89,6 +91,9 @@ namespace ecs
          * the thread that drives its walks.
          */
         void Update();
+        /*! Routes a message to the system named in message["destination"]["system"]. Safe to call from
+         *  any thread. Throws std::runtime_error if the system is unknown; a system is addressable by
+         *  handle once it has been registered with System(). */
         void MessageSubmit(const nlohmann::json &message);
         void ResourceAdd(const std::string &name, ecs::Resource r);
         void Resources(const std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> &resources);
@@ -103,6 +108,9 @@ namespace ecs
         void LoggerSet(std::function<void(const std::string &, const std::string &)> fn);
         
       private:
+        /*! Maps system handles to their mailboxes so other threads can route without touching Systems. */
+        std::mutex mailboxesLock;
+        std::unordered_map<std::string, std::shared_ptr<ecs::Mailbox>> mailboxes;
         std::function<void(const std::string &, const std::string &)> logger;
         /*! One position in the update order. A null system marks a system removed during the current walk. */
         struct SystemSlot

@@ -145,6 +145,10 @@ namespace ecs
         system->Components = &(this->Components);
         const std::string handle = system->Handle;
         ecs::System *ptr = system.get();
+        {
+            std::lock_guard<std::mutex> guard(this->mailboxesLock);
+            this->mailboxes[handle] = system->mailbox;
+        }
 
         auto existing = this->Systems.find(handle);
         if(existing != this->Systems.end())
@@ -263,14 +267,22 @@ namespace ecs
     void Container::MessageSubmit(const nlohmann::json &message)
     {
         auto dest_system = message["destination"]["system"].get<std::string>();
-        if(!this->Systems.contains(dest_system))
+        std::shared_ptr<ecs::Mailbox> mailbox;
         {
-            auto err = "ecs::Container(\"" + message["destination"]["container"].get<std::string>() +
+            std::lock_guard<std::mutex> guard(this->mailboxesLock);
+            auto found = this->mailboxes.find(dest_system);
+            if(found != this->mailboxes.end()) mailbox = found->second;
+        }
+        if(!mailbox)
+        {
+            auto err = "ecs::Container(\"" + this->Handle +
                        "\")::MessageSubmit(): System " + dest_system + " not found.";
             throw std::runtime_error(err);
         }
 
-        this->Systems[dest_system]->MessageSubmit(message);
+        std::lock_guard<std::mutex> guard(mailbox->lock);
+        mailbox->pending.push_back(message);
+        mailbox->count.store(mailbox->pending.size());
     }
 
     void Container::EntityDestroy(const std::string &handle)
@@ -328,6 +340,10 @@ namespace ecs
 
         std::unique_ptr<ecs::System> removed = std::move(found->second);
         this->Systems.erase(found);
+        {
+            std::lock_guard<std::mutex> guard(this->mailboxesLock);
+            this->mailboxes.erase(target);
+        }
 
         this->systemRetire(std::move(removed));
     }

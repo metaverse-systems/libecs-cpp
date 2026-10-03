@@ -2,7 +2,7 @@ AM_CPPFLAGS = -I../include ${CATCH2_CFLAGS}
 AM_CXXFLAGS = -std=c++20 $(SANITIZER_CXXFLAGS)
 AM_LDFLAGS = $(SANITIZER_LDFLAGS)
 
-check_PROGRAMS = test_Manager test_System test_Entity test_Container test_Timing test_UpdateAllocation test_Uuid
+check_PROGRAMS = test_Manager test_System test_Entity test_Container test_Timing test_UpdateAllocation test_Uuid test_Threading
 
 TEST_EXTENSIONS = .sh
 LOG_COMPILER = $(SHELL) $(srcdir)/run-test.sh
@@ -23,7 +23,7 @@ check-local:
 	@echo "cross-compiling for $(if $(host_alias),$(host_alias),$(host)): test programs were built but not run"
 endif
 
-EXTRA_DIST = run-test.sh run-test-selftest.sh known-gaps.txt
+EXTRA_DIST = run-test.sh run-test-selftest.sh known-gaps.txt bench_update_pass.cpp bench_entity_creation.cpp
 
 test_Manager_SOURCES = test_Manager.cpp
 test_Manager_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
@@ -47,3 +47,7 @@ test_UpdateAllocation_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
 test_Uuid_SOURCES = test_Uuid.cpp
 test_Uuid_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
 test_Uuid_LDFLAGS = $(AM_LDFLAGS) -pthread
+
+test_Threading_SOURCES = test_Threading.cpp
+test_Threading_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
+test_Threading_LDFLAGS = $(AM_LDFLAGS) -pthread

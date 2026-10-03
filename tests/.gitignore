@@ -10,3 +10,5 @@ test_UpdateAllocation
 *.log
 *.trs
 *.exe
+test_Threading
+bench_update_pass

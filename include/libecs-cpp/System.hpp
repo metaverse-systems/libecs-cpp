@@ -3,6 +3,10 @@
 #include <string>
 #include <queue>
 #include <functional>
+#include <atomic>
+#include <memory>
+#include <mutex>
+#include <vector>
 #include <libecs-cpp/Timing.hpp>
 
 namespace ecs
@@ -57,6 +61,18 @@ namespace ecs
         std::function<void()> callback = nullptr;
     };
 
+    /*! Hand-off point for messages sent to one system. Internal: use System::MessageSubmit().
+     *
+     * Any thread appends to pending under lock. The world thread moves pending into the system's
+     * message queue. count mirrors pending.size() so the empty case needs no lock.
+     */
+    struct Mailbox
+    {
+        std::mutex lock;
+        std::vector<nlohmann::json> pending;
+        std::atomic<std::size_t> count{0};
+    };
+
     class System
     {
       public:
@@ -80,10 +96,15 @@ namespace ecs
         void UpdateSystem();
         std::string Handle;
         ecs::Container *Container = nullptr;
+        /*! Delivers a message to this system. Safe to call from any thread at any time. Returns without
+         *  waiting for the system's update; the system sees the message in a later update of its world.
+         *  Messages from one sender arrive in the order sent, each exactly once. */
         void MessageSubmit(const nlohmann::json &message);
         virtual nlohmann::json Export() const = 0;
         ecs::TypeEntityComponentList *Components = nullptr;
         ecs::Timing Timing;
+        /*! Counts delivered messages that have not been read, including ones not yet moved to the
+         *  message queue. Call from the world thread only. */
         size_t MessagesWaiting();
         uint32_t DeltaTimeGet();
         /*! Cancels every timer with this name. Safe to call from a timer callback, including for the
@@ -97,12 +118,16 @@ namespace ecs
         void Log(const std::string &message, const std::string &level);
       private:
         friend class ecs::Container;
+        std::shared_ptr<ecs::Mailbox> mailbox = std::make_shared<ecs::Mailbox>();
+        std::vector<nlohmann::json> staging;
+        void mailboxDrain();
         uint32_t timerWalkDepth = 0;
         bool timersDiscarded = false;
         std::vector<ecs::Timer> timersAdded;
         bool removed = false;
         void timerWalkFinish();
       protected:
+        /*! Messages ready to read. Touched by the world thread only. */
         std::queue<nlohmann::json> messages;
         std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
         std::unordered_map<std::string, std::vector<std::string>> componentsToDelete;

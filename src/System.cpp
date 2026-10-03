@@ -17,6 +17,7 @@ namespace ecs
 
     void System::UpdateSystem()
     {
+        this->mailboxDrain();
         this->timerWalkDepth++;
         try
         {
@@ -63,11 +64,29 @@ namespace ecs
 
     void System::MessageSubmit(const nlohmann::json &message)
     {
-        this->messages.push(message);
+        std::lock_guard<std::mutex> guard(this->mailbox->lock);
+        this->mailbox->pending.push_back(message);
+        this->mailbox->count.store(this->mailbox->pending.size());
+    }
+
+    void System::mailboxDrain()
+    {
+        if(this->mailbox->count.load() == 0) return;
+        {
+            std::lock_guard<std::mutex> guard(this->mailbox->lock);
+            std::swap(this->mailbox->pending, this->staging);
+            this->mailbox->count.store(0);
+        }
+        for(auto &message : this->staging)
+        {
+            this->messages.push(std::move(message));
+        }
+        this->staging.clear();
     }
 
     size_t System::MessagesWaiting()
     {
+        this->mailboxDrain();
         return this->messages.size();
     }
 
