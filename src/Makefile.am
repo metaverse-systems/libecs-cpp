@@ -18,7 +18,7 @@ noinst_HEADERS = Validation.hpp ConsoleLog.hpp
 
 libecs_cpp_la_CXXFLAGS = -std=c++20 -I../include -Werror -Wall $(SANITIZER_CXXFLAGS)
 
-libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Component.cpp Entity.cpp Uuid.cpp
+libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Entity.cpp Uuid.cpp
 libecs_cpp_la_LDFLAGS = -no-undefined -pthread $(SANITIZER_LDFLAGS)
 
 bin_PROGRAMS = example

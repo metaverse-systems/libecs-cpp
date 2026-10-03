@@ -21,7 +21,7 @@
 # Namespaces that come from internal headers in src/ and appear as weak symbols of inline functions.
 INTERNAL_NAMES="validation"
 # Types that hold data or inline code only, so the library has nothing to export for them.
-HEADER_ONLY="Resource Timing Mailbox Timer"
+HEADER_ONLY="Resource Timing Mailbox Timer Component"
 
 if [ $# -eq 0 ]; then
     set -- "${ECS_EXPORT_LIBRARY:-}" "${ECS_EXPORT_INCLUDE:-}"

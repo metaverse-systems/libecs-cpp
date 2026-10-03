@@ -168,3 +168,104 @@ TEST_CASE("Removing unregistered entities and components is a no-op", "[Entity]"
     REQUIRE(container->Entities.contains(handle));
     REQUIRE(container->ComponentHas(handle, "TestComponent"));
 }
+
+// A component has no identifier of its own: it is addressed by its entity and type.
+// The checks go through concepts so that a missing member makes the condition false instead of
+// being a hard error in the requires-expression.
+template <typename T>
+concept HasHandle = requires(T &t) { t.Handle; };
+
+template <typename T>
+concept HasEntityHandleAndType = requires(T &t) { t.EntityHandle; t.Type; };
+
+static_assert(!HasHandle<ecs::Component>, "Component must not carry a Handle");
+static_assert(HasEntityHandleAndType<ecs::Component>, "Component keeps EntityHandle and Type");
+
+namespace
+{
+    // Takes a configuration, passes it to the base and keeps nothing from it but what it reads itself.
+    class ConfiguredComponent : public ecs::Component
+    {
+      public:
+        ConfiguredComponent(const nlohmann::json &config)
+            : ecs::Component(config)
+        {
+            this->Type = "Configured";
+            this->label = config.value("label", std::string("none"));
+        }
+
+        nlohmann::json Export() const
+        {
+            return {{"label", this->label}};
+        }
+
+        std::string label;
+    };
+
+    // Does not read the configuration at all, whatever shape it has.
+    class IgnoringComponent : public ecs::Component
+    {
+      public:
+        IgnoringComponent(const nlohmann::json &config)
+            : ecs::Component(config)
+        {
+            this->Type = "Ignoring";
+        }
+
+        nlohmann::json Export() const
+        {
+            return nlohmann::json::object();
+        }
+    };
+}
+
+TEST_CASE("A component built from a configuration keeps its type and its own export", "[Entity]") {
+    auto container = ECS->Container();
+    auto entity = container->Entity("e");
+
+    auto component = entity->Component(std::make_unique<ConfiguredComponent>(nlohmann::json{{"label", "hello"}, {"extra", 7}}));
+
+    REQUIRE(component->Type == "Configured");
+    REQUIRE(component->EntityHandle == "e");
+    REQUIRE(component->Export() == nlohmann::json({{"label", "hello"}}));
+    REQUIRE(entity->Export()["Components"]["Configured"] == nlohmann::json({{"label", "hello"}}));
+}
+
+TEST_CASE("The component base does not read the configuration", "[Entity]") {
+    for(const nlohmann::json &config : {nlohmann::json(nullptr), nlohmann::json::array({1, 2, 3}), nlohmann::json("text"),
+                                         nlohmann::json{{"Handle", "from-config"}, {"Type", "from-config"}, {"EntityHandle", "from-config"}}})
+    {
+        IgnoringComponent component(config);
+        REQUIRE(component.Type == "Ignoring");
+        REQUIRE(component.EntityHandle.empty());
+        REQUIRE(component.Export() == nlohmann::json::object());
+    }
+}
+
+TEST_CASE("The exported content of a world with components is the expected JSON", "[Entity]") {
+    ecs::Manager manager;
+    auto world = manager.Container("world");
+    auto first = world->Entity("first");
+    first->Component(std::make_unique<ConfiguredComponent>(nlohmann::json{{"label", "a"}}));
+    first->Component(std::make_unique<IgnoringComponent>(nlohmann::json::object()));
+    world->Entity("second")->Component(std::make_unique<ConfiguredComponent>(nlohmann::json{{"label", "b"}}));
+
+    const nlohmann::json expected = {
+        {"Handle", "world"},
+        {"Entities",
+         {{"first",
+           {{"Handle", "first"},
+            {"Components", {{"Configured", {{"label", "a"}}}, {"Ignoring", nlohmann::json::object()}}}}},
+          {"second", {{"Handle", "second"}, {"Components", {{"Configured", {{"label", "b"}}}}}}}}}};
+
+    REQUIRE(world->Export() == expected);
+}
+
+TEST_CASE("The entity handle of a component is still set when it is attached", "[Entity]") {
+    auto container = ECS->Container();
+    auto entity = container->Entity("owner-entity");
+    auto component = entity->Component(std::make_unique<TestComponent>());
+
+    REQUIRE(component->EntityHandle == "owner-entity");
+    REQUIRE(container->ComponentGet("owner-entity", "TestComponent") == component);
+}

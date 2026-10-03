@@ -7,15 +7,22 @@
 
 namespace ecs
 {
-    /*! World thread only: a component lives in its world's tables, so it must be used and changed from
+    /*! A component has no identifier of its own: it is addressed by its entity (EntityHandle) and
+     *  its type (Type).
+     *
+     *  World thread only: a component lives in its world's tables, so it must be used and changed from
      *  the thread that drives the world (see Container). */
     class Component
     {
       public:
-        Component();
-        Component(const nlohmann::json &config);
+        Component() = default;
+
+        /*! The base does not read the configuration. A concrete type reads from it whatever it needs.
+         *  The constructor is not explicit, so a component that forwards its configuration to the base
+         *  keeps compiling. */
+        Component(const nlohmann::json &) {}
+
         virtual nlohmann::json Export() const = 0;
-        const std::string Handle;
         std::string Type;
         std::string EntityHandle;
         virtual ~Component() = default;
