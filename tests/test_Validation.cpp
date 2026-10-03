@@ -1256,10 +1256,10 @@ namespace
 
     const std::string attachmentPrefix = "ecs::Container(\"world\")::Component()";
 
-    std::shared_ptr<ecs::Component> probe(
+    std::unique_ptr<ecs::Component> probe(
       const std::string &type, const std::string &entityHandle, int value, std::shared_ptr<int> destroyed = nullptr)
     {
-        return std::make_shared<ProbeComponent>(type, entityHandle, value, std::move(destroyed));
+        return std::make_unique<ProbeComponent>(type, entityHandle, value, std::move(destroyed));
     }
 
     /*! The shape of a world's component table: for each type, the sorted entity handles that hold one. */
@@ -1315,7 +1315,7 @@ TEST_CASE("World rejects an invalid component", "[Validation]")
         world.container->Component(probe("Existing", "present", 1));
         world.container->EntityDestroy("gone");
 
-        std::shared_ptr<ecs::Component> bad;
+        std::unique_ptr<ecs::Component> bad;
         if(row.name == "component type is empty") bad = probe("", "present", 2);
         else if(row.name == "component entity handle is empty") bad = probe("Bad", "", 2);
         else if(row.name == "entity was never created") bad = probe("Bad", "ghost", 2);
@@ -1325,7 +1325,7 @@ TEST_CASE("World rejects an invalid component", "[Validation]")
         const auto shape = componentShape(*world.container);
         const auto typeCount = world.container->Components.size();
 
-        expectRejected([&]() { world.container->Component(bad); }, attachmentPrefix, row.phrase);
+        expectRejected([&]() { world.container->Component(std::move(bad)); }, attachmentPrefix, row.phrase);
 
         REQUIRE(world.container->Export().dump() == exported);
         REQUIRE(world.container->Components.size() == typeCount);
@@ -1338,7 +1338,7 @@ TEST_CASE("Entity rejects a null component and an empty type", "[Validation]")
 {
     World world;
     ecs::Entity *entity = world.container->Entity("eh");
-    entity->Component(new ProbeComponent("Existing", "", 1, nullptr));
+    entity->Component(std::make_unique<ProbeComponent>("Existing", "", 1, nullptr));
     const auto exported = world.container->Export().dump();
     const auto shape = componentShape(*world.container);
     const auto typeCount = world.container->Components.size();
@@ -1353,10 +1353,10 @@ TEST_CASE("Entity rejects a null component and an empty type", "[Validation]")
     {
         auto destroyed = std::make_shared<int>(0);
         // The world reports an empty type, so the text carries the world's prefix.
-        expectRejected([&]() { entity->Component(new ProbeComponent("", "", 2, destroyed)); },
+        expectRejected([&]() { entity->Component(std::make_unique<ProbeComponent>("", "", 2, destroyed)); },
           attachmentPrefix,
           "component type is empty");
-        // The entity owned the pointer from the call on, so the rejected object is deleted.
+        // The call took sole ownership, so the rejected component is released.
         REQUIRE(*destroyed == 1);
     }
 
@@ -1364,7 +1364,7 @@ TEST_CASE("Entity rejects a null component and an empty type", "[Validation]")
     REQUIRE(world.container->Components.size() == typeCount);
     REQUIRE(componentShape(*world.container) == shape);
 
-    auto again = entity->Component(new ProbeComponent("Later", "", 3, nullptr));
+    auto again = entity->Component(std::make_unique<ProbeComponent>("Later", "", 3, nullptr));
     REQUIRE(world.container->Components.at("Later").at("eh") == again);
 }
 
@@ -1380,7 +1380,7 @@ TEST_CASE("Valid attach through an entity", "[Validation]")
 {
     World world;
     ecs::Entity *entity = world.container->Entity("e1");
-    auto component = entity->Component(new ProbeComponent("Position", "", 5, nullptr));
+    auto component = entity->Component(std::make_unique<ProbeComponent>("Position", "", 5, nullptr));
 
     REQUIRE(component);
     REQUIRE(component->EntityHandle == "e1");
@@ -1399,8 +1399,8 @@ TEST_CASE("A second component of a type replaces the first", "[Validation]")
     auto firstDestroyed = std::make_shared<int>(0);
     auto secondDestroyed = std::make_shared<int>(0);
 
-    auto first = entity->Component(new ProbeComponent("T", "", 1, firstDestroyed));
-    auto second = entity->Component(new ProbeComponent("T", "", 2, secondDestroyed));
+    auto first = entity->Component(std::make_unique<ProbeComponent>("T", "", 1, firstDestroyed));
+    auto second = entity->Component(std::make_unique<ProbeComponent>("T", "", 2, secondDestroyed));
 
     REQUIRE(world.container->Components.at("T").size() == 1);
     REQUIRE(world.container->Components.at("T").at("e1") == second);
@@ -1426,14 +1426,14 @@ TEST_CASE("A second component of a type replaces the first", "[Validation]")
 TEST_CASE("The same type on two entities", "[Validation]")
 {
     World world;
-    auto a = world.container->Entity("a")->Component(new ProbeComponent("T", "", 1, nullptr));
-    auto b = world.container->Entity("b")->Component(new ProbeComponent("T", "", 2, nullptr));
+    auto a = world.container->Entity("a")->Component(std::make_unique<ProbeComponent>("T", "", 1, nullptr));
+    auto b = world.container->Entity("b")->Component(std::make_unique<ProbeComponent>("T", "", 2, nullptr));
 
     REQUIRE(world.container->Components.at("T").size() == 2);
     REQUIRE(world.container->Components.at("T").at("a") == a);
     REQUIRE(world.container->Components.at("T").at("b") == b);
 
-    auto a2 = world.container->Entity("a")->Component(new ProbeComponent("T", "", 3, nullptr));
+    auto a2 = world.container->Entity("a")->Component(std::make_unique<ProbeComponent>("T", "", 3, nullptr));
     REQUIRE(world.container->Components.at("T").size() == 2);
     REQUIRE(world.container->Components.at("T").at("a") == a2);
     REQUIRE(world.container->Components.at("T").at("b") == b);
@@ -1480,12 +1480,12 @@ TEST_CASE("Rejected attachment followed by valid", "[Validation]")
         REQUIRE_THROWS_AS(world.container->Component(probe("T", "", 1)), std::runtime_error);
         REQUIRE_THROWS_AS(world.container->Component(probe("T", "ghost", 1)), std::runtime_error);
         REQUIRE_THROWS_AS(world.container->Entity("present")->Component(nullptr), std::runtime_error);
-        REQUIRE_THROWS_AS(world.container->Entity("present")->Component(new ProbeComponent("", "", 1, nullptr)),
+        REQUIRE_THROWS_AS(world.container->Entity("present")->Component(std::make_unique<ProbeComponent>("", "", 1, nullptr)),
           std::runtime_error);
         requireAttachUsable(world);
     }
 
-    auto good = world.container->Entity("present")->Component(new ProbeComponent("Good", "", 4, nullptr));
+    auto good = world.container->Entity("present")->Component(std::make_unique<ProbeComponent>("Good", "", 4, nullptr));
     REQUIRE(world.container->Components.at("Good").at("present") == good);
     REQUIRE(world.container->Export()["Entities"]["present"]["Components"]["Good"]["value"] == 4);
 }

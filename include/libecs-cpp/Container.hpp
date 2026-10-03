@@ -168,12 +168,17 @@ namespace ecs
         ecs::System *System(std::unique_ptr<ecs::System> system);
         /*! Attaches a component to the entity named by its EntityHandle (world thread only).
          *
-         * Four attachments are rejected with std::runtime_error and leave the world unchanged: a null
-         * pointer, an empty Type, an empty EntityHandle, and an EntityHandle that names no entity in this
+         * The world becomes the sole owner from the moment of the call: the caller's handle is empty
+         * afterwards, whether the call is accepted or rejected, and a rejected component is released
+         * exactly once. Pass std::make_unique<T>(...) or std::move(handle); raw pointers, shared_ptrs and
+         * copies of a handle do not compile. Returns the stored component.
+         *
+         * Four attachments are rejected with std::runtime_error and leave the world unchanged: an empty
+         * handle, an empty Type, an empty EntityHandle, and an EntityHandle that names no entity in this
          * world. If the entity already has a component of the same Type, the new component replaces it, so
          * the entity has exactly one component of each type. Anyone holding a shared_ptr to the replaced
          * component keeps a valid object. The same type on a different entity is kept alongside. */
-        std::shared_ptr<ecs::Component> Component(std::shared_ptr<ecs::Component> c);
+        std::shared_ptr<ecs::Component> Component(std::unique_ptr<ecs::Component> component);
         /*! Looks up the component of the given type on the given entity, as kind T (world thread only).
          *
          * The result is empty when the entity has no component of that type, when the type has never been

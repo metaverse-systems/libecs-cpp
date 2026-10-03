@@ -1784,11 +1784,11 @@ TEST_CASE("A world that is not running can be changed directly", "[Threading]")
     auto log = std::make_shared<std::vector<std::string>>();
 
     auto *entity = container->Entity("first");
-    entity->Component(new MarkerComponent());
+    entity->Component(std::make_unique<MarkerComponent>());
     auto system = container->System(std::make_unique<StepSystem>("A", log));
 
     REQUIRE(container->Entities.size() == 1);
-    REQUIRE(container->Components["Marker"].contains("first"));
+    REQUIRE(container->ComponentHas("first", "Marker"));
     REQUIRE(container->Systems.contains("A"));
     REQUIRE(system != nullptr);
 
@@ -1805,7 +1805,7 @@ TEST_CASE("A world that is not running can be changed directly", "[Threading]")
     container->EntityDestroy("first");
     container->SystemDestroy("A");
     REQUIRE(container->Entities.size() == 1);
-    REQUIRE_FALSE(container->Components["Marker"].contains("first"));
+    REQUIRE_FALSE(container->ComponentHas("first", "Marker"));
     REQUIRE_FALSE(container->Systems.contains("A"));
     container->Update();
     REQUIRE(log->size() == 2);

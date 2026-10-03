@@ -40,17 +40,15 @@ namespace ecs
         return config;
     }
 
-    std::shared_ptr<ecs::Component> Entity::Component(ecs::Component *component)
+    std::shared_ptr<ecs::Component> Entity::Component(std::unique_ptr<ecs::Component> component)
     {
-        if(component == nullptr)
+        if(!component)
         {
             throw std::runtime_error("ecs::Entity(\"" + this->Handle + "\")::Component(): component is missing.");
         }
-        // The pointer is owned from here on, including when the world rejects it.
-        std::shared_ptr<ecs::Component> c(component);
-        c->EntityHandle = this->Handle;
-        this->Container->Component(c);
-        return c;
+        component->EntityHandle = this->Handle;
+        // A rejection releases the component once, inside the container call.
+        return this->Container->Component(std::move(component));
     }
 
     std::shared_ptr<ecs::Component> Entity::componentFind(const std::string &type) const

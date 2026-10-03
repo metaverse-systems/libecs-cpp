@@ -42,9 +42,9 @@ class VelocityLike : public ecs::Component
 namespace
 {
     /*! The only place the benchmark attaches a component. */
-    void attach(ecs::Entity *target, ecs::Component *component)
+    void attach(ecs::Entity *target, std::unique_ptr<ecs::Component> component)
     {
-        target->Component(component);
+        target->Component(std::move(component));
     }
 
     double perLookup(std::chrono::steady_clock::duration elapsed, std::size_t lookups)
@@ -68,10 +68,10 @@ int main()
     {
         handles.push_back("entity-" + std::to_string(i));
         auto *entity = container->Entity(handles.back());
-        attach(entity, new PositionLike());
+        attach(entity, std::make_unique<PositionLike>());
         if(i % 2 == 0)
         {
-            attach(entity, new VelocityLike());
+            attach(entity, std::make_unique<VelocityLike>());
         }
     }
 

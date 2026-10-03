@@ -251,10 +251,10 @@ namespace
         LookupWorld()
         {
             this->container = this->manager.Container("allocation-lookup");
-            this->container->Entity("present")->Component(new LookupComponent("LookupKind"));
+            this->container->Entity("present")->Component(std::make_unique<LookupComponent>("LookupKind"));
             this->container->Entity("bare");
-            this->container->Entity("other")->Component(new OtherLookupComponent());
-            this->container->Entity("long")->Component(new LookupComponent("VelocityComponent"));
+            this->container->Entity("other")->Component(std::make_unique<OtherLookupComponent>());
+            this->container->Entity("long")->Component(std::make_unique<LookupComponent>("VelocityComponent"));
         }
 
         ecs::Manager manager;

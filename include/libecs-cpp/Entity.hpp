@@ -24,12 +24,14 @@ namespace ecs
         nlohmann::json Export() const;
         ecs::Container *Container;
         const std::string Handle;
-        /*! Attaches a component to this entity, setting its EntityHandle. The library owns the raw pointer
-         *  from the moment of the call, including when the call is rejected, in which case the component is
-         *  deleted. A null pointer, an empty Type, and an entity whose Handle names no entity in its world throw
-         *  std::runtime_error and leave the world unchanged. A second component of the same Type replaces
-         *  the first; holders of the old component keep a valid object. */
-        std::shared_ptr<ecs::Component> Component(ecs::Component *component);
+        /*! Attaches a component to this entity, setting its EntityHandle. The world becomes the sole owner
+         *  from the moment of the call: the caller's handle is empty afterwards, whether the call is accepted
+         *  or rejected, and a rejected component is released exactly once. Pass std::make_unique<T>(...) or
+         *  std::move(handle); raw pointers, shared_ptrs and copies of a handle do not compile. Returns the
+         *  stored component. An empty handle, an empty Type, and an entity whose Handle names no entity in
+         *  its world throw std::runtime_error and leave the world unchanged. A second component of the
+         *  same Type replaces the first; holders of the old component keep a valid object. */
+        std::shared_ptr<ecs::Component> Component(std::unique_ptr<ecs::Component> component);
         /*! Looks up this entity's component of the given type, as kind T. Empty when the entity has no
          *  component of that type or the stored one is not a T; with the default kind any stored
          *  component is returned. Never throws, never changes the world, takes no lock and never

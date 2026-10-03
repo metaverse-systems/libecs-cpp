@@ -463,29 +463,30 @@ namespace ecs
         return ptr;
     }
 
-    std::shared_ptr<ecs::Component> Container::Component(std::shared_ptr<ecs::Component> c)
+    std::shared_ptr<ecs::Component> Container::Component(std::unique_ptr<ecs::Component> component)
     {
         const std::string prefix = "ecs::Container(\"" + this->Handle + "\")::Component(): ";
-        if(!c)
+        if(!component)
         {
             throw std::runtime_error(prefix + "component is missing.");
         }
-        if(c->Type.empty())
+        if(component->Type.empty())
         {
             throw std::runtime_error(prefix + "component type is empty.");
         }
-        if(c->EntityHandle.empty())
+        if(component->EntityHandle.empty())
         {
-            throw std::runtime_error(prefix + "component entity handle is empty (type \"" + c->Type + "\").");
+            throw std::runtime_error(prefix + "component entity handle is empty (type \"" + component->Type + "\").");
         }
-        if(this->Entities.find(c->EntityHandle) == this->Entities.end())
+        if(this->Entities.find(component->EntityHandle) == this->Entities.end())
         {
-            throw std::runtime_error(prefix + "entity \"" + c->EntityHandle + "\" does not exist (component type \"" + c->Type + "\").");
+            throw std::runtime_error(prefix + "entity \"" + component->EntityHandle + "\" does not exist (component type \"" + component->Type + "\").");
         }
 
         // A component of the same type already on this entity is replaced.
-        this->Components[c->Type][c->EntityHandle] = c;
-        return c;
+        std::shared_ptr<ecs::Component> stored(std::move(component));
+        this->Components[stored->Type][stored->EntityHandle] = stored;
+        return stored;
     }
 
     ecs::Entity *Container::Entity(const std::string &handle)

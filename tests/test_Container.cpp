@@ -104,7 +104,7 @@ TEST_CASE("Container destroys entities correctly", "[Container]") {
     auto container = manager.Container("test-container");
 
     auto entity = container->Entity("entity1");
-    entity->Component(new TestComponent());
+    entity->Component(std::make_unique<TestComponent>());
 
     container->EntityDestroy("entity1");
     REQUIRE_FALSE(container->Entities.contains("entity1"));

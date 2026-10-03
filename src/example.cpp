@@ -152,18 +152,18 @@ int main(int argc, char *argv[])
     nlohmann::json config;
     config["x"] = 1;
     config["y"] = 1;
-    e->Component(new PositionComponent(config));
+    e->Component(std::make_unique<PositionComponent>(config));
 
     /* Initialize a VelocityComponent and add it to the Entity 'e' */
     config["x"] = 1; // meters per second
     config["y"] = 0;
-    e->Component(new VelocityComponent(config));
+    e->Component(std::make_unique<VelocityComponent>(config));
 
     /* An entity with a position and no velocity: the system skips it */
     auto still = world->Entity();
     config["x"] = 5;
     config["y"] = 5;
-    still->Component(new PositionComponent(config));
+    still->Component(std::make_unique<PositionComponent>(config));
 
     /* Run container in its own thread */
     bool threaded = true;

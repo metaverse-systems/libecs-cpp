@@ -50,8 +50,8 @@ TEST_CASE("Entity can add and retrieve a component", "[Entity]") {
     auto entity = container->Entity();
     nlohmann::json config;
     config["value"] = 5;
-    entity->Component(new TestComponent(config));
-    auto retrievedComponent = container->Components["TestComponent"][entity->Handle];
+    entity->Component(std::make_unique<TestComponent>(config));
+    auto retrievedComponent = container->ComponentGet(entity->Handle, "TestComponent");
     REQUIRE(retrievedComponent != nullptr);
 }
 
@@ -60,9 +60,9 @@ TEST_CASE("Entity can destroy a component", "[Entity]") {
     auto entity = container->Entity();
     nlohmann::json config;
     config["value"] = 5;
-    entity->Component(new TestComponent(config));
+    entity->Component(std::make_unique<TestComponent>(config));
     entity->ComponentDestroy("TestComponent");
-    auto retrievedComponent = container->Components["TestComponent"][entity->Handle];
+    auto retrievedComponent = container->ComponentGet(entity->Handle, "TestComponent");
     REQUIRE(retrievedComponent == nullptr);
 }
 
@@ -96,17 +96,17 @@ TEST_CASE("EntityDestroy accepts the handle stored on the entity itself", "[Enti
     auto other = container->Entity("entity-two-handle-longer-than-thirty-two-characters");
     const std::string handle = entity->Handle;
     const std::string otherHandle = other->Handle;
-    entity->Component(new TestComponent());
-    entity->Component(new OtherComponent());
-    other->Component(new TestComponent());
+    entity->Component(std::make_unique<TestComponent>());
+    entity->Component(std::make_unique<OtherComponent>());
+    other->Component(std::make_unique<TestComponent>());
 
     container->EntityDestroy(entity->Handle);
 
     REQUIRE_FALSE(container->Entities.contains(handle));
-    REQUIRE_FALSE(container->Components["TestComponent"].contains(handle));
-    REQUIRE_FALSE(container->Components["OtherComponent"].contains(handle));
+    REQUIRE_FALSE(container->ComponentHas(handle, "TestComponent"));
+    REQUIRE_FALSE(container->ComponentHas(handle, "OtherComponent"));
     REQUIRE(container->Entities.contains(otherHandle));
-    REQUIRE(container->Components["TestComponent"].contains(otherHandle));
+    REQUIRE(container->ComponentHas(otherHandle, "TestComponent"));
 }
 
 TEST_CASE("Entity Destroy removes the entity and its components", "[Entity]") {
@@ -115,18 +115,18 @@ TEST_CASE("Entity Destroy removes the entity and its components", "[Entity]") {
     auto other = container->Entity("entity-two-handle-longer-than-thirty-two-characters");
     const std::string handle = entity->Handle;
     const std::string otherHandle = other->Handle;
-    entity->Component(new TestComponent());
-    entity->Component(new OtherComponent());
-    other->Component(new TestComponent());
+    entity->Component(std::make_unique<TestComponent>());
+    entity->Component(std::make_unique<OtherComponent>());
+    other->Component(std::make_unique<TestComponent>());
 
     entity->Destroy();
     // `entity` is not touched after this point.
 
     REQUIRE_FALSE(container->Entities.contains(handle));
-    REQUIRE_FALSE(container->Components["TestComponent"].contains(handle));
-    REQUIRE_FALSE(container->Components["OtherComponent"].contains(handle));
+    REQUIRE_FALSE(container->ComponentHas(handle, "TestComponent"));
+    REQUIRE_FALSE(container->ComponentHas(handle, "OtherComponent"));
     REQUIRE(container->Entities.contains(otherHandle));
-    REQUIRE(container->Components["TestComponent"].contains(otherHandle));
+    REQUIRE(container->ComponentHas(otherHandle, "TestComponent"));
 }
 
 TEST_CASE("ComponentDestroy accepts identifiers stored on the component itself", "[Entity]") {
@@ -135,14 +135,14 @@ TEST_CASE("ComponentDestroy accepts identifiers stored on the component itself",
     const std::string handle = entity->Handle;
 
     // Keep only a raw pointer so the container's map is the sole owner.
-    ecs::Component *c = entity->Component(new TestComponent()).get();
-    entity->Component(new OtherComponent());
-    REQUIRE(container->Components["TestComponent"][handle].get() == c);
+    ecs::Component *c = entity->Component(std::make_unique<TestComponent>()).get();
+    entity->Component(std::make_unique<OtherComponent>());
+    REQUIRE(container->ComponentGet(handle, "TestComponent").get() == c);
 
     container->ComponentDestroy(c->EntityHandle, c->Type);
 
-    REQUIRE_FALSE(container->Components["TestComponent"].contains(handle));
-    REQUIRE(container->Components["OtherComponent"].contains(handle));
+    REQUIRE_FALSE(container->ComponentHas(handle, "TestComponent"));
+    REQUIRE(container->ComponentHas(handle, "OtherComponent"));
     REQUIRE(container->Entities.contains(handle));
 }
 
@@ -150,7 +150,7 @@ TEST_CASE("Removing unregistered entities and components is a no-op", "[Entity]"
     auto container = ECS->Container();
     auto entity = container->Entity("entity-one-handle-longer-than-thirty-two-characters");
     const std::string handle = entity->Handle;
-    entity->Component(new TestComponent());
+    entity->Component(std::make_unique<TestComponent>());
 
     REQUIRE_NOTHROW(container->EntityDestroy(""));
     REQUIRE_NOTHROW(container->ComponentDestroy("unknown-entity-handle-longer-than-thirty-two", "TestComponent"));
@@ -158,5 +158,5 @@ TEST_CASE("Removing unregistered entities and components is a no-op", "[Entity]"
     REQUIRE_NOTHROW(container->ComponentDestroy("", ""));
 
     REQUIRE(container->Entities.contains(handle));
-    REQUIRE(container->Components["TestComponent"].contains(handle));
+    REQUIRE(container->ComponentHas(handle, "TestComponent"));
 }
