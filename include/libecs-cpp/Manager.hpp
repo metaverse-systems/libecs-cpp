@@ -50,10 +50,15 @@ namespace ecs
       public:
         Manager();
 
-        /** Exclusive. Shuts down (every threaded world is stopped and joined while all worlds still exist), waits for sends in progress, then destroys the containers. */
+        /** Exclusive. Runs Shutdown() first, so that every threaded world is stopped and joined, and its
+         *  systems are notified, while all worlds still exist. Then it closes the manager: later sends and
+         *  creation of worlds fail. Then it destroys the worlds, which stops and releases the worlds that
+         *  are driven by their owner's Update() calls. The process-wide ECS manager is never destroyed. */
         ~Manager();
 
-        /** Any thread. Returns the container with this handle, creating it if needed; the same handle always yields the same container. */
+        /** Any thread. Returns the container with this handle, creating it if needed; the same handle always yields the same container.
+         *  Throws std::runtime_error when a new world is asked for while the manager is being destroyed. A world created after
+         *  Shutdown() cannot be started with Start(). */
         ecs::Container *Container(const std::string &handle);
 
         /** Any thread. Creates a container with a generated unique handle. Throws std::runtime_error when a new world is asked for while the manager is being destroyed. */
@@ -65,7 +70,17 @@ namespace ecs
         /** Any thread. True until Shutdown() has been called. */
         bool IsRunning();
 
-        /** Any thread. Stops every threaded world and waits for it (see above); idempotent, and the request is never withdrawn. */
+        /** Any thread. Sets IsRunning() to false, asks every world to stop, and waits for it (see above);
+         *  idempotent, and the request is never withdrawn.
+         *
+         *  From an application thread it blocks until every world that has its own thread has ended and
+         *  delivered Shutdown() to its systems; afterwards no thread of this manager runs and no system
+         *  is updated. Concurrent callers each return after that point. From a world thread it only
+         *  requests, so it never waits for itself or for another world that is waiting for it; an
+         *  application thread's later call completes the wait. Worlds driven by the application's own
+         *  Update() calls are not stopped here (the library does not run application code on threads it
+         *  does not own); stop them with Container::Stop() or by destroying them. A program that uses the
+         *  process-wide manager calls ECS->Shutdown() from its main thread before main returns. */
         void Shutdown();
 
         /** Any thread. Routes a message to its destination container.

@@ -93,9 +93,40 @@ namespace ecs
         System();
         System(const std::string &handle);
         virtual ~System() = default;
-        /*! World thread only. */
+        /*! Start-up notification. World thread only.
+         *
+         * Called exactly once per system, before its first Update(), whichever way the system arrived: it
+         * was registered before the world started, registered later from any world-thread code
+         * (including another system's Initialize() or Update(), or a deferred function), registered in a
+         * world that the application drives with Update(), or registered as a replacement. Systems that
+         * are started together are started in registration order. A system removed before it was reached
+         * is never started.
+         *
+         * If Initialize() throws, the error is logged with the system's identifier and rethrown once the
+         * start-up step has finished its bookkeeping. The system still counts as started: it is not
+         * started again, it is updated, and it receives Shutdown() when it leaves the world.
+         *
+         * Logging with Container->Log() works from here.
+         */
         virtual void Initialize() {};
-        /*! World thread only. */
+        /*! Shutdown notification. World thread only, in the sense below.
+         *
+         * Called exactly once for every system that was started, and never for one that was not. It is
+         * called before the system is destroyed, and the system receives no update or routed message
+         * afterwards. The order is last registered first when a world stops or is destroyed.
+         *
+         * The thread depends on the path. A system removed or replaced is notified on the world thread, at
+         * the end of the walk that removed it (at once when removed outside a walk). When a world with its
+         * own thread stops, or its manager shuts down, the notification runs on that thread before it
+         * ends. When a world driven by the application's own Update() calls is stopped or destroyed, it
+         * runs on the thread that calls Stop() or destroys the world.
+         *
+         * An exception thrown from Shutdown() is logged at level "error" with the system's identifier and
+         * swallowed on every path; the other systems are still notified and released. A Shutdown() that
+         * blocks is waited for, not abandoned.
+         *
+         * Container->Log() works from Shutdown() and from the destructor of the system, on every path.
+         */
         virtual void Shutdown() {};
         /*! World thread only. */
         virtual void Configure(const nlohmann::json &config);

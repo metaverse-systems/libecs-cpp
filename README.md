@@ -63,7 +63,8 @@ sudo make install
 ## Changing systems and timers while they run
 
 Systems and timers can be added, removed and cleared from inside `Initialize()`, `Update()` and timer
-callbacks. The rules below describe what happens.
+callbacks. The rules below describe what happens. When a system is started and when it is told to shut
+down is described in "Start-up, shutdown and stopping".
 
 ### Terms
 
@@ -154,7 +155,147 @@ callbacks. The rules below describe what happens.
   add or remove systems, entities or components.
 * Calling `Update()` or `SystemsInitialize()` from inside a walk of the same container is memory safe, but
   no outcome is defined.
-* Notifying systems when they are removed, and starting systems that are added late.
+* Start-up and shutdown notifications, which are described in "Start-up, shutdown and stopping".
+
+## Start-up, shutdown and stopping
+
+A system has two notifications. `Initialize()` is the start-up notification and `Shutdown()` is the
+shutdown notification. Each is delivered exactly once per system, on every path by which a system comes
+into a world or leaves it. Both are called on the world thread unless the table below says otherwise, and
+`Container::Log()` works from both and from a system's destructor.
+
+### Start-up
+
+* A system is started before its first `Update()`, whichever way it arrived: registered before the world
+  started, registered later from world-thread code (another system's `Initialize()` or `Update()`, a timer
+  callback or a deferred function), registered in a world that the application drives with `Update()`,
+  or registered as a replacement for another system. The start happens on the world thread.
+* `Update()` runs the start-up step by itself, after the deferred functions and before the update walk,
+  so calling `SystemsInitialize()` is optional. Calling it, once or several times, never starts a system
+  twice.
+* Systems started in one step are started in registration order. A system registered during the step is
+  started by the next step, and is not updated in the pass that registered it. A system removed before the
+  step reached it is never started.
+* If `Initialize()` throws, the error is logged at level `error` with the system's identifier and
+  rethrown after the step has finished its bookkeeping. The system counts as started: it is not started
+  again, it is updated, and it receives `Shutdown()` when it leaves.
+
+### Shutdown
+
+* A system that was started receives `Shutdown()` exactly once before it is destroyed. A system that
+  was never started never receives it. After the notification the system is not updated and receives no
+  routed message.
+* When a world stops or is destroyed, the systems are shut down in the reverse of registration order,
+  with the world's tables and log destination still in place.
+* An exception thrown from `Shutdown()` is logged at level `error` with the system's identifier and
+  swallowed, on every path. The other systems are still notified and released, and nothing escapes a
+  destructor.
+* While a world is being torn down, a notification may remove a later system (it is notified once and
+  released), may register a system (it is not started and is released without a notification), and may
+  call `Container::Stop()` or `Manager::Shutdown()` (neither waits and neither repeats the teardown).
+* A `Shutdown()` that blocks is waited for. The library does not abandon a notification.
+
+The thread and the moment depend on the path:
+
+| Path | Thread that runs `Shutdown()` | When |
+|---|---|---|
+| `SystemDestroy()` outside a pass | The world thread (the caller) | During the call, before the system is destroyed |
+| `SystemDestroy()` inside a pass or a start-up step | The world thread | When the outermost pass or step ends |
+| Replacement (registering under a used identifier) | The world thread | When the outermost pass or step ends, or during the call outside one |
+| `Container::Stop()` on a world with its own thread | The world's own thread | After the pass in progress, before the thread ends |
+| `Manager::Shutdown()`, world with its own thread | The world's own thread | After the pass in progress, before the thread ends |
+| Destruction of a world with its own thread | The world's own thread | The destructor stops the thread first |
+| `Container::Stop()` on a world driven by `Update()` | The thread that calls `Stop()` | Before `Stop()` returns |
+| Destruction of a world driven by `Update()` | The thread that destroys the world | During the destructor |
+| `~Manager()` | Each threaded world's own thread, then the destroying thread for worlds driven by `Update()` | The destructor shuts down first, then destroys the worlds |
+
+### Starting a world
+
+`Start()` and `Start(interval)` take effect once. The first call on a world that has never been started,
+has not been asked to stop and belongs to a manager that is still running starts the world's thread. Every
+other call returns normally and does nothing: no second thread, no second start-up of any system, and the
+interval stays as it was. A world that has been stopped cannot be started again, and a world of a manager
+that has shut down cannot be started at all. Make a new world instead.
+
+### Stopping a world
+
+`Container::Stop()` is safe from any thread and can be called more than once.
+
+* From a thread that does not belong to the world, it asks the world to stop after the pass in progress
+  and returns after the world's thread has ended and every notification has been delivered. A world
+  driven by `Update()` has no thread, so it is torn down on the calling thread before `Stop()` returns.
+* From the world's own thread (a system, a timer callback, a deferred function or a `Shutdown()`), it only
+  asks and returns at once; the stop completes when the pass ends.
+* The wait for a stop does not depend on the update interval. An idle world with a 5 second interval stops
+  in milliseconds. The tick period is unchanged when no stop is requested.
+* After a stop, `Update()` does nothing, `Defer()` is dropped, and a system registered later is never
+  started.
+* Destroying a world stops it the same way and then releases it. Destruction is exclusive: no other
+  thread may use the world while it runs. A world driven by `Update()` is stopped by its owner, with
+  `Stop()` or by destroying it.
+
+### Manager shutdown and destruction
+
+* `Manager::Shutdown()` from an application thread sets `IsRunning()` to `false`, asks every world to
+  stop and returns after every world with its own thread has ended and delivered its notifications. After it
+  returns, no thread of the manager runs and no system is updated. It is idempotent, and concurrent callers
+  each return after the work is complete.
+* `Manager::Shutdown()` from a world thread only requests the stop and returns at once, so a system can
+  call it from `Update()` without waiting for itself, and two worlds can do it at the same time. The
+  wait is done by the application thread's later call.
+* Worlds driven by `Update()` are not stopped by the manager, because the library does not run application
+  code on threads it does not own. Stop them with `Stop()` or destroy them.
+* A world thread that fails (an exception from start-up or an update) logs the error, calls
+  `Manager::Shutdown()`, which now stops every world of the manager, delivers its own notifications and
+  ends.
+* `~Manager()` runs `Shutdown()` first, while every world still exists, so notifications that message
+  another world find it. It then closes the manager: later sends and creation of worlds fail with
+  `std::runtime_error`. Then the worlds are destroyed.
+
+### The process-wide manager
+
+`ECS` is never destroyed, so the library cannot stop its worlds at process exit. A program that uses it
+calls `ECS->Shutdown()` from its main thread before `main` returns. The library installs no automatic hook.
+
+### Examples
+
+A threaded world:
+
+```cpp
+ecs::Manager manager;
+ecs::Container *world = manager.Container("main");
+world->System(std::make_unique<MySystem>("my-system"));
+world->Start();            // MySystem::Initialize() runs on the world thread, then updates begin
+// ... the program runs ...
+manager.Shutdown();        // blocks until MySystem::Shutdown() has run and the thread has ended
+```
+
+A world driven by the application:
+
+```cpp
+ecs::Manager manager;
+ecs::Container *world = manager.Container("main");
+world->System(std::make_unique<MySystem>("my-system"));
+while (running)
+{
+    world->Update();       // starts any system not yet started, then updates
+}
+world->Stop();             // MySystem::Shutdown() runs here, on this thread
+```
+
+A program that uses the process-wide manager:
+
+```cpp
+int main()
+{
+    ecs::Container *world = ECS->Container("main");
+    world->System(std::make_unique<MySystem>("my-system"));
+    world->Start();
+    // ... the program runs ...
+    ECS->Shutdown();       // before main returns: stops every world and waits for it
+    return 0;
+}
+```
 
 ## Identifiers
 
@@ -290,10 +431,12 @@ and the update order stay usable from the world thread exactly as before.
 |---|---|---|
 | `Manager::Container(handle)`, `Manager::Container()` | Any thread | One world per handle even when many threads ask at once. The pointer is valid until the manager is destroyed. |
 | `Manager::ContainersGet()` | Any thread | A snapshot by value; worlds created later are not in it. |
-| `Manager::IsRunning()`, `Manager::Shutdown()` | Any thread | Atomic. Once `IsRunning()` returns `false` it never returns `true` again. Idempotent. |
+| `Manager::IsRunning()` | Any thread | Atomic. Once it returns `false` it never returns `true` again. |
+| `Manager::Shutdown()` | Any thread | Idempotent. From an application thread it blocks until every world with its own thread has stopped and delivered its notifications; from a world thread it only requests. See "Start-up, shutdown and stopping". |
 | `Manager::MessageSubmit(message)` | Any thread | Returns without waiting for the destination's update. Throws `std::runtime_error` if the message is malformed, the world or system is unknown, or the manager is being destroyed. A malformed message is rejected before any lock is taken. |
-| `Manager::~Manager()` | Exclusive | Waits for sends already in progress; later sends fail as unknown. The process-wide `ECS` manager is never destroyed. |
-| `Container::Start()`, `Start(interval)` | Once | Call once, from the thread that owns the world, before any other thread uses it. |
+| `Manager::~Manager()` | Exclusive | Shuts down first, waits for sends already in progress; later sends and new worlds fail. The process-wide `ECS` manager is never destroyed. |
+| `Container::Start()`, `Start(interval)` | Once | Call from the thread that owns the world, before any other thread uses it. A repeated call, a call after a stop and a call after manager shutdown do nothing. |
+| `Container::Stop()` | Any thread | From the world thread it only requests; elsewhere it returns once the world has been torn down. |
 | `Container::Defer(fn)` | Any thread | See "Deferred changes". |
 | `Container::MessageSubmit(message)` | Any thread | Throws `std::runtime_error` if the message is malformed or the system is unknown. The world name in the message is ignored. |
 | `Container::Log()`, `Container::LoggerSet()` | Any thread | Each line goes to exactly one destination. |
@@ -303,7 +446,7 @@ and the update order stay usable from the world thread exactly as before.
 | `Container::Entity()`, `EntityDestroy()`, `Component()`, `ComponentDestroy()` | World thread | |
 | `Container::ResourceAdd()`, `Resources()`, `ResourceGet()`, `Export()` | World thread | |
 | `Container::Entities`, `Components`, `Systems` | World thread | Public so systems can iterate them. |
-| `Container::~Container()` | Exclusive | Discards pending deferred changes unrun, stops and joins the thread. |
+| `Container::~Container()` | Exclusive | Discards pending deferred changes unrun, stops and joins the thread, delivers `Shutdown()` to every started system. |
 | `System::MessageSubmit(message)` | Any thread | The system must be alive. Routing through `Container` or `Manager` is safe against removal; a direct pointer is not. |
 | `System::MessagesWaiting()`, `messages` | World thread | `MessagesWaiting()` moves delivered messages into the queue, then counts the messages waiting to be read. |
 | `System::Initialize()`, `Update()`, `UpdateSystem()`, `Configure()`, `Export()`, `Shutdown()`, `TimerAdd()`, `TimerClear()`, `DeltaTimeGet()`, `Log()` | World thread | |
@@ -387,12 +530,14 @@ stay callable until then.
 
 ### Locks and deadlocks
 
-The library uses five mutexes: the manager's container table, and each container's mailbox table, deferred
-queue and log destination, plus one per system mailbox. Each is a leaf. A thread holds at most one of them
+The library uses six mutexes: the manager's container table, and each container's mailbox table, deferred
+queue, log destination and start/stop state (`lifecycleLock`), plus one per system mailbox. Each is a leaf. A thread holds at most one of them
 at a time, and none is held while user code runs (system methods, timer callbacks, message handlers, log
 destinations, deferred functions, or destructors of user objects). Sending never waits for a world to
-update; the only blocking wait on library state is `~Manager` waiting for sends in progress, and those never
-block (destroying a world also joins its thread). As a result, worlds whose systems send messages to each
+update; the blocking waits on library state are `~Manager` waiting for sends in progress (those never
+block), and an application thread waiting for a world's thread to end in `Stop()`, `Manager::Shutdown()` or a
+destructor. Code on a world thread never waits: a request from there to stop a world or the manager only
+records the request. As a result, worlds whose systems send messages to each
 other in both directions, or to themselves, cannot deadlock. An application's own locks are its own
 responsibility: do not hold one while calling a library function that your handlers also need under that
 lock.
@@ -401,10 +546,50 @@ lock.
 
 `Manager::Shutdown()` and `Manager::IsRunning()` are atomic. A request is visible to other threads in the
 next poll in practice. `IsRunning()` never goes back to `true`, and concurrent requests are idempotent. A
-request from inside a system is a single store and cannot deadlock. Requesting shutdown does not stop world
-threads or destroy worlds.
+request from inside a system only records the stop and cannot deadlock. A request from an application
+thread also stops every world that has its own thread and waits until it has ended, as described in
+"Start-up, shutdown and stopping". It does not destroy worlds.
 
 ## Release notes
+
+### 1.6.0
+
+New `Container::Stop()`. No existing signature changed and `System` is unchanged. `Container` gained
+private members at its end, so code that embeds a `Container` by value must be rebuilt; no plugin
+needs rebuilding. The behaviours below changed. See "Start-up, shutdown and stopping" for the rules.
+
+* `System::Shutdown()` now runs. Before, it was never called. A system that overrides it will start
+  running that code. It is called once for each started system, on these paths and threads:
+
+  | Path | Thread |
+  |---|---|
+  | `SystemDestroy()` or replacement | The world thread, when the system is released |
+  | `Container::Stop()` or `Manager::Shutdown()` on a world with its own thread | That world's thread, before it ends |
+  | Destruction of a world with its own thread, or of its manager | That world's thread, before it ends |
+  | `Container::Stop()` on a world driven by `Update()` | The thread that calls `Stop()` |
+  | Destruction of a world driven by `Update()`, or of its manager | The thread that destroys it |
+
+  Migration: check that every existing `Shutdown()` override is safe to run, that it uses only what is
+  still valid then (the world's tables and log destination are), and that it does not block for long.
+  Release resources there that were released by process exit before.
+* Systems registered after a world started, and systems in a world driven by `Update()`, are now started
+  with `Initialize()` before their first update. Before, they were never started unless the code called
+  `SystemsInitialize()`. Migration: remove code that relies on `Initialize()` being skipped for such a
+  system. Code that calls `SystemsInitialize()` itself keeps working and does not start a system twice.
+* `Start()` on a world that is started is a no-op, and a stopped world cannot be restarted. Before, a second
+  call started a second thread. Migration: make a new world to run again.
+* `Manager::Shutdown()` blocks until the worlds with their own threads have stopped, unless it is called
+  from a world thread, where it only requests. Before, it returned at once. Migration: do not call it while
+  holding a lock that a system also takes; polling `IsRunning()` is unaffected.
+* A world thread that fails, in start-up or in an update, now stops every other world of its manager, because
+  it calls `Manager::Shutdown()`. Migration: if the other worlds must outlive a failure, catch the error in
+  the system.
+* `Update()` after a world has been stopped does nothing, and `Defer()` after a stop is dropped. Migration:
+  stop a world only when it is finished.
+* The program template and `src/example.cpp` call `ECS->Shutdown()` after their loops. Migration: add the call
+  to an existing program that relies on process exit to end its world threads, before `main` returns.
+
+No plugin rebuild is required.
 
 ### 1.5.0
 

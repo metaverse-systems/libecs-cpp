@@ -46,7 +46,7 @@ namespace ecs
      *
      * | Member | Class |
      * |---|---|
-     * | Start(), Start(interval) | Once: call once, from the thread that owns the world, before any other thread uses it |
+     * | Start(), Start(interval) | Once: call from the thread that owns the world, before any other thread uses it; a repeated call is a no-op |
      * | Defer(fn) | Any thread |
      * | MessageSubmit(message) | Any thread |
      * | Log(message, level), LoggerSet(fn) | Any thread |
@@ -59,8 +59,9 @@ namespace ecs
      * | Entities, Components, Systems | World thread (public so systems can iterate them) |
      * | ~Container() | Exclusive: discards pending deferred changes unrun, stops and joins the thread, delivers Shutdown() to every started system |
      *
-     * Locks: the library uses five mutexes, and each one is a leaf: Manager's container table, this
-     * class's mailbox table, deferred queue and log destination, and each system's mailbox. A thread
+     * Locks: the library uses six mutexes, and each one is a leaf: Manager's container table, this
+     * class's mailbox table, deferred queue, log destination and start/stop state, and each system's
+     * mailbox. A thread
      * holds at most one at any moment, and none is held while user code runs (system methods, timer
      * callbacks, message handlers, log destinations, deferred functions or destructors of user
      * objects). Sending a message never waits for a world to update. Worlds whose systems message each
@@ -82,12 +83,35 @@ namespace ecs
         Container(ecs::Manager *manager);
         Container(ecs::Manager *manager, const std::string &handle);
         ~Container();
-        /*! Starts the world's own thread. Call it once, from the thread that owns the world, before any
-         *  other thread uses the world. */
+        /*! Starts the world's own thread with the default interval (30 passes a second). Call it once,
+         *  from the thread that owns the world, before any other thread uses the world.
+         *
+         * The first call on a world that has never been started, has not been asked to stop, and belongs
+         * to a manager that is still running starts the thread. Every other call is a no-op that returns
+         * normally: calling Start() again does not start a second thread, does not start any system a
+         * second time and does not change the interval. A world that has stopped cannot be started
+         * again; make a new world instead. On the thread, systems are started (System::Initialize())
+         * before the first pass, and again whenever a system has been registered since.
+         *
+         * A world that is never given a thread is driven by the application's calls to Update(). The
+         * manager does not stop such a world; its owner stops it with Stop() or by destroying it.
+         */
         void Start();
+        /*! As Start(), with the time between passes in microseconds. The interval does not delay a stop:
+         *  a stop request ends the wait at once. */
         void Start(uint32_t);
         /*! Stops the world and delivers System::Shutdown() once to every system that was started and has
-         *  not been shut down yet, last registered first. Calling it again does nothing.
+         *  not been shut down yet, last registered first. Calling it again does nothing. Safe from any
+         *  thread.
+         *
+         * Called from a thread other than the world's, it asks the world to stop after the pass in
+         * progress and returns after the world's thread has ended and every notification has been
+         * delivered; the wait does not depend on the update interval (an idle world stops within a
+         * quarter of a second). Called from the world's own thread (a system, a timer callback or a
+         * deferred function) it only asks, returns at once, and the stop completes when the pass ends.
+         * Concurrent callers all return after the stop is complete. A stopped world cannot be restarted.
+         * The destructor does the same stop and is the only call that releases the world; no other
+         * thread may use the world while it runs.
          *
          * A world without a thread is torn down on the calling thread before the call returns. Errors
          * thrown by Shutdown() are logged at level "error" with the system's identifier and swallowed, and
@@ -100,7 +124,7 @@ namespace ecs
         /*! Calls Initialize() once on every registered system that has not been started yet, in
          *  registration order. Update() does this by itself before the update walk whenever a system
          *  has been registered since the last time, so calling it is optional, and calling it again
-         *  never starts a system twice.
+         *  never starts a system twice. It does nothing once the world has been stopped.
          *
          * This is a walk. A system registered during it does not get Initialize() from this call and is
          * started and updated from the next Update(). A system removed during it is not initialized if it has not
@@ -121,10 +145,15 @@ namespace ecs
          * rejected call destroys the system that was passed in, except for an already registered object:
          * that one belongs to its world, so the pointer is released and the object is not deleted.
          *
+         * A system registered at any time is started (System::Initialize()) once, on the world thread,
+         * before its first Update(): at the next start-up step, which Update() runs before the update
+         * walk. A system registered after the world has been stopped is never started and is released
+         * without a notification.
+         *
          * Registering a system under the Handle of a system that is still registered replaces it. The new
          * instance takes the old one's place in the update order, is started and updated once, and
-         * receives messages sent after the call. Messages still waiting for the old instance are
-         * discarded with it. The old instance stays in memory until the outermost walk ends, but is not
+         * receives messages sent after the call. The old instance receives Shutdown() if it was started.
+         * Messages still waiting for the old instance are discarded with it. The old instance stays in memory until the outermost walk ends, but is not
          * visited again. Raw pointers to the replaced system must not be used after the call.
          * System::Container is set by registration only.
          */
@@ -172,7 +201,9 @@ namespace ecs
          *
          * Before any system is updated, the functions handed to Defer() run, unless this call is made from
          * inside a walk or from inside a deferred function. If one of them throws, the rest still run and
-         * the first exception is rethrown before any system is updated.
+         * the first exception is rethrown before any system is updated. Then the start-up step runs, which
+         * calls Initialize() on every system not yet started, and then the update walk. After the world
+         * has been stopped or destroyed, Update() does nothing.
          *
          * Adding or removing systems never changes the relative order of the others. A system removed
          * earlier in the pass is skipped. A system added during the pass is first updated in the next one.
