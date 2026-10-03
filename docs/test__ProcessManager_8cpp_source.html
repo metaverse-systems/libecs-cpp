@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.8.0</span>
    </div>
   </td>
  </tr>
@@ -125,7 +125,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        RecordingSystem(<span class="keyword">const</span> std::string &amp;handle, std::shared_ptr&lt;Record&gt; record)</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>            : <a class="code hl_namespace" href="namespaceecs.html">ecs</a>::<a class="code hl_function" href="test__Lifecycle_8cpp.html#a76fb7b28dd49aab83783c52fc168210a">System</a>(handle), record(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(record))</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        {</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            this-&gt;Timing.SetFrequency(0);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            this-&gt;Timing.SetInterval(std::chrono::microseconds(0));</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        }</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <a class="code hl_class" href="classnlohmann_1_1basic__json.html">nlohmann::json</a> <a class="code hl_function" href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">Export</a>()<span class="keyword"> const</span></div>
@@ -212,20 +212,20 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    }</div>
 <div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>}</div>
 </div>
-<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00397">Container.cpp:397</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00417">Container.cpp:417</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_a3c7085998ab4641d97e50e92ecc1b86a"><div class="ttname"><a href="classecs_1_1Manager.html#a3c7085998ab4641d97e50e92ecc1b86a">ecs::Manager::Shutdown</a></div><div class="ttdeci">void Shutdown()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00047">Manager.cpp:47</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_af0224464ed55aa2124d1bf00ea3b7624"><div class="ttname"><a href="classecs_1_1Manager.html#af0224464ed55aa2124d1bf00ea3b7624">ecs::Manager::IsRunning</a></div><div class="ttdeci">bool IsRunning()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00042">Manager.cpp:42</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_af96d2ee8eb88a8c35adfb6015acf59bd"><div class="ttname"><a href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">ecs::Manager::Container</a></div><div class="ttdeci">ecs::Container * Container(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00032">Manager.cpp:32</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html"><div class="ttname"><a href="classecs_1_1System.html">ecs::System</a></div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00090">System.hpp:91</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a3ad78d3d7857d167a85aa93a9a3d44b7"><div class="ttname"><a href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">ecs::System::Update</a></div><div class="ttdeci">virtual void Update()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00134">System.hpp:134</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a4255ae181870f88cc73fae39991d8be5"><div class="ttname"><a href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">ecs::System::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00147">System.hpp:147</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a42f662283a9d918b857870e057af3683"><div class="ttname"><a href="classecs_1_1System.html#a42f662283a9d918b857870e057af3683">ecs::System::Initialize</a></div><div class="ttdeci">virtual void Initialize()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00111">System.hpp:111</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html"><div class="ttname"><a href="classecs_1_1System.html">ecs::System</a></div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00152">System.hpp:153</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a3ad78d3d7857d167a85aa93a9a3d44b7"><div class="ttname"><a href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">ecs::System::Update</a></div><div class="ttdeci">virtual void Update()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00196">System.hpp:196</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a4255ae181870f88cc73fae39991d8be5"><div class="ttname"><a href="classecs_1_1System.html#a4255ae181870f88cc73fae39991d8be5">ecs::System::Handle</a></div><div class="ttdeci">std::string Handle</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00212">System.hpp:212</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a42f662283a9d918b857870e057af3683"><div class="ttname"><a href="classecs_1_1System.html#a42f662283a9d918b857870e057af3683">ecs::System::Initialize</a></div><div class="ttdeci">virtual void Initialize()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00173">System.hpp:173</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a9a07420a3b75f90051f4635cc0fad529"><div class="ttname"><a href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">ecs::System::Export</a></div><div class="ttdeci">virtual nlohmann::json Export() const =0</div></div>
-<div class="ttc" id="aclassecs_1_1System_html_ad1a106d9cef7169e7a69a1e6efa2b0ea"><div class="ttname"><a href="classecs_1_1System.html#ad1a106d9cef7169e7a69a1e6efa2b0ea">ecs::System::Shutdown</a></div><div class="ttdeci">virtual void Shutdown()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00130">System.hpp:130</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_ad1a106d9cef7169e7a69a1e6efa2b0ea"><div class="ttname"><a href="classecs_1_1System.html#ad1a106d9cef7169e7a69a1e6efa2b0ea">ecs::System::Shutdown</a></div><div class="ttdeci">virtual void Shutdown()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00192">System.hpp:192</a></div></div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html"><div class="ttname"><a href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a></div><div class="ttdoc">a class to store JSON values</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l17281">json.hpp:17282</a></div></div>
 <div class="ttc" id="aecs_8hpp_html"><div class="ttname"><a href="ecs_8hpp.html">ecs.hpp</a></div></div>
 <div class="ttc" id="aecs_8hpp_html_aefd947cd309ef7f716ceaeb01f95ffae"><div class="ttname"><a href="ecs_8hpp.html#aefd947cd309ef7f716ceaeb01f95ffae">ECS</a></div><div class="ttdeci">ecs::Manager * ECS</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00005">Manager.cpp:5</a></div></div>
-<div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00008">Component.hpp:9</a></div></div>
+<div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition</b> <a href="Clock_8hpp_source.html#l00009">Clock.hpp:10</a></div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l04470">json.hpp:4471</a></div></div>
 <div class="ttc" id="atest__Lifecycle_8cpp_html_a76fb7b28dd49aab83783c52fc168210a"><div class="ttname"><a href="test__Lifecycle_8cpp.html#a76fb7b28dd49aab83783c52fc168210a">System</a></div><div class="ttdeci">world System(std::move(first))</div></div>
 <div class="ttc" id="atest__Lifecycle_8cpp_html_ac51c075718f875265563464f6ed1f4e5"><div class="ttname"><a href="test__Lifecycle_8cpp.html#ac51c075718f875265563464f6ed1f4e5">CHECK</a></div><div class="ttdeci">CHECK(firstCounters-&gt;shutdown.load()==1)</div></div>
@@ -233,7 +233,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 10:00:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 11:36:27 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

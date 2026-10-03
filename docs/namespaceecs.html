@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.8.0</span>
    </div>
   </td>
  </tr>
@@ -85,6 +85,8 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Clock.html">Clock</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Component.html">Component</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Container.html">Container</a></td></tr>
@@ -95,7 +97,11 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1Manager.html">Manager</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1ManualClock.html">ManualClock</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecs_1_1Resource.html">Resource</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1SteadyClock.html">SteadyClock</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecs_1_1System.html">System</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -115,6 +121,10 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a0debd1a08c6c5374b1d31afca05e4b14" id="r_a0debd1a08c6c5374b1d31afca05e4b14"><td class="memItemLeft" align="right" valign="top">constexpr std::chrono::microseconds&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a> = std::chrono::hours(24 * 36525)</td></tr>
+<tr class="separator:a0debd1a08c6c5374b1d31afca05e4b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa86fb70eb64d24d431d5b2d69a3b6b8e" id="r_aa86fb70eb64d24d431d5b2d69a3b6b8e"><td class="memItemLeft" align="right" valign="top">constexpr std::chrono::microseconds&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecs.html#aa86fb70eb64d24d431d5b2d69a3b6b8e">DEFAULT_INTERVAL</a> {1000000 / 30}</td></tr>
+<tr class="separator:aa86fb70eb64d24d431d5b2d69a3b6b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31627b2bb184cb041faf0a440b83b173" id="r_a31627b2bb184cb041faf0a440b83b173"><td class="memItemLeft" align="right" valign="top">constexpr uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecs.html#a31627b2bb184cb041faf0a440b83b173">MAX_CATCHUP</a> = 2</td></tr>
 <tr class="separator:a31627b2bb184cb041faf0a440b83b173"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -153,6 +163,34 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="aa86fb70eb64d24d431d5b2d69a3b6b8e" name="aa86fb70eb64d24d431d5b2d69a3b6b8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa86fb70eb64d24d431d5b2d69a3b6b8e">&#9670;&#160;</a></span>DEFAULT_INTERVAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::chrono::microseconds ecs::DEFAULT_INTERVAL {1000000 / 30}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The interval of a new schedule: 33 333 microseconds, about 30 updates a second. </p>
+
+<p class="definition">Definition at line <a class="el" href="Timing_8hpp_source.html#l00017">17</a> of file <a class="el" href="Timing_8hpp_source.html">Timing.hpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   17</span>{1000000 / 30};</div>
+</div><!-- fragment -->
+<p class="reference">Referenced by <a class="el" href="test__Elapsed_8cpp_source.html#l00509">TEST_CASE()</a>, and <a class="el" href="test__Timing_8cpp_source.html#l00362">TEST_CASE()</a>.</p>
+
+</div>
+</div>
 <a id="a31627b2bb184cb041faf0a440b83b173" name="a31627b2bb184cb041faf0a440b83b173"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a31627b2bb184cb041faf0a440b83b173">&#9670;&#160;</a></span>MAX_CATCHUP</h2>
 
@@ -172,17 +210,45 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Maximum number of intervals to catch up after a stall. Beyond this, the schedule snaps forward to avoid a burst of updates. </p>
 
-<p class="definition">Definition at line <a class="el" href="Timing_8hpp_source.html#l00010">10</a> of file <a class="el" href="Timing_8hpp_source.html">Timing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Timing_8hpp_source.html#l00021">21</a> of file <a class="el" href="Timing_8hpp_source.html">Timing.hpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="Timing_8hpp_source.html#l00019">ecs::Timing::ShouldUpdate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>, and <a class="el" href="test__Timing_8cpp_source.html#l00398">TEST_CASE()</a>.</p>
+
+</div>
+</div>
+<a id="a0debd1a08c6c5374b1d31afca05e4b14" name="a0debd1a08c6c5374b1d31afca05e4b14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0debd1a08c6c5374b1d31afca05e4b14">&#9670;&#160;</a></span>MAX_INTERVAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::chrono::microseconds ecs::MAX_INTERVAL = std::chrono::hours(24 * 36525)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The longest interval or timer length that is accepted: 100 years of 365.25 days. </p>
+
+<p class="definition">Definition at line <a class="el" href="Timing_8hpp_source.html#l00014">14</a> of file <a class="el" href="Timing_8hpp_source.html">Timing.hpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="Timing_8hpp_source.html#l00132">ecs::Timing::checked()</a>, <a class="el" href="System_8hpp_source.html#l00104">ecs::Timer::fromSeconds()</a>, <a class="el" href="Container_8cpp_source.html#l00312">ecs::Container::Start()</a>, <a class="el" href="test__Timing_8cpp_source.html#l00362">TEST_CASE()</a>, <a class="el" href="test__Elapsed_8cpp_source.html#l00237">TEST_CASE()</a>, <a class="el" href="test__Timing_8cpp_source.html#l00194">TEST_CASE()</a>, <a class="el" href="test__Elapsed_8cpp_source.html#l00849">TEST_CASE()</a>, <a class="el" href="System_8hpp_source.html#l00037">ecs::Timer::Timer()</a>, <a class="el" href="System_8cpp_source.html#l00210">ecs::System::TimerAdd()</a>, and <a class="el" href="System_8hpp_source.html#l00085">ecs::Timer::valid()</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 10:00:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 11:36:28 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

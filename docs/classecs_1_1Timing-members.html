@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.8.0</span>
    </div>
   </td>
  </tr>
@@ -79,17 +79,23 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="classecs_1_1Timing.html">ecs::Timing</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a6cd8942e211c4c5bef32cfec7b1a0144">getCurrentMicroseconds</a>()</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a06289b3580a43ad2fbccffd3e41a577b">checked</a>(std::chrono::microseconds interval)</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a4b2a6ae91c978ef89aa85788f49b4c2f">GetFrequency</a>() const</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#ab8158dbbcf0f71f58d28206a5b4f0af9">lastUpdateTime</a></td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a33c0e17ff73e7e4a8ec7e192879b6b49">GetInterval</a>() const</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timing.html#ae0c7a006efa9d4038a192dee61b2fe55">lastUpdateTime</a></td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a54f68e412ecaf460560ee28e696c7934">Restart</a>(std::chrono::microseconds now)</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a29f8f3635d3868cde9af2343ff01a04f">SetFrequency</a>(uint32_t frequency)</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a9d3b20c7d5b4032496535ad9ad03c8ca">SetInterval</a>(std::chrono::microseconds interval)</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timing.html#aff4495842286c5653f80be6600b270c3">ShouldUpdate</a>(std::chrono::microseconds now)</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a2e79ef06cf5ce82f9dedf40891b45934">ShouldUpdate</a>()</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a1dfadf49da551e3be08e424d938ac36d">Timing</a>(uint32_t frequency=1000000/30)</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a91aa0f0bc55785e8f5a19e84a7f5ce60">updateFrequency</a></td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timing.html#accee8e4fc1f0c545e732077cc344698f">steadyNow</a>()</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a63a22b9d5a08c011104e9bef54229d85">Timing</a>(std::chrono::microseconds interval=DEFAULT_INTERVAL)</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a86525e522155aadd52e6cc582c4ed897">Timing</a>(uint32_t frequency)</td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timing.html#a80bdebdbf40901166590c98fc7aea7a0">updateInterval</a></td><td class="entry"><a class="el" href="classecs_1_1Timing.html">ecs::Timing</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 10:00:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 11:36:28 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

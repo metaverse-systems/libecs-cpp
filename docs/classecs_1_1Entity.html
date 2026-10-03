@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.8.0</span>
    </div>
   </td>
  </tr>
@@ -88,11 +88,13 @@ Collaboration diagram for ecs::Entity:</div>
 <div class="dyncontent">
 <div class="center"><img src="classecs_1_1Entity__coll__graph.png" border="0" usemap="#aecs_1_1Entity_coll__map" alt="Collaboration graph"/></div>
 <map name="aecs_1_1Entity_coll__map" id="aecs_1_1Entity_coll__map">
-<area shape="rect" title=" " alt="" coords="17,181,108,207"/>
-<area shape="rect" href="classecs_1_1Container.html" title=" " alt="" coords="5,93,120,119"/>
-<area shape="poly" title=" " alt="" coords="65,133,65,181,60,181,60,133"/>
-<area shape="rect" href="classecs_1_1Manager.html" title=" " alt="" coords="8,5,117,31"/>
-<area shape="poly" title=" " alt="" coords="65,45,65,93,60,93,60,45"/>
+<area shape="rect" title=" " alt="" coords="76,181,167,207"/>
+<area shape="rect" href="classecs_1_1Container.html" title=" " alt="" coords="64,93,179,119"/>
+<area shape="poly" title=" " alt="" coords="124,133,124,181,119,181,119,133"/>
+<area shape="rect" href="classecs_1_1Manager.html" title=" " alt="" coords="5,5,115,31"/>
+<area shape="poly" title=" " alt="" coords="76,41,94,68,113,92,109,95,90,71,72,44"/>
+<area shape="rect" href="classecs_1_1Clock.html" title=" " alt="" coords="139,5,227,31"/>
+<area shape="poly" title=" " alt="" coords="172,45,155,71,135,95,131,91,151,68,168,42"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -233,9 +235,9 @@ Private Member Functions</h2></td></tr>
 <div class="line"><span class="lineno">   50</span>        <span class="comment">// A rejection releases the component once, inside the container call.</span></div>
 <div class="line"><span class="lineno">   51</span>        <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#abda38faef643ddea8f9d8de10ad2fa6f">Component</a>(std::move(component));</div>
 <div class="line"><span class="lineno">   52</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_abda38faef643ddea8f9d8de10ad2fa6f"><div class="ttname"><a href="classecs_1_1Container.html#abda38faef643ddea8f9d8de10ad2fa6f">ecs::Container::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(std::unique_ptr&lt; ecs::Component &gt; component)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00466">Container.cpp:466</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_abda38faef643ddea8f9d8de10ad2fa6f"><div class="ttname"><a href="classecs_1_1Container.html#abda38faef643ddea8f9d8de10ad2fa6f">ecs::Container::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(std::unique_ptr&lt; ecs::Component &gt; component)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00488">Container.cpp:488</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8cpp_source.html#l00466">ecs::Container::Component()</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
+<p class="reference">References <a class="el" href="Container_8cpp_source.html#l00488">ecs::Container::Component()</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="test__Validation_8cpp_source.html#l01395">TEST_CASE()</a>, <a class="el" href="test__Threading_8cpp_source.html#l01780">TEST_CASE()</a>, <a class="el" href="test__Container_8cpp_source.html#l00102">TEST_CASE()</a>, <a class="el" href="test__Validation_8cpp_source.html#l01337">TEST_CASE()</a>, and <a class="el" href="test__Validation_8cpp_source.html#l01379">TEST_CASE()</a>.</p>
 
@@ -261,9 +263,9 @@ Private Member Functions</h2></td></tr>
 <div class="fragment"><div class="line"><span class="lineno">   75</span>    {</div>
 <div class="line"><span class="lineno">   76</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#aa39a74f84349e007bb4219251a37dbd1">ComponentDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>, type);</div>
 <div class="line"><span class="lineno">   77</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_aa39a74f84349e007bb4219251a37dbd1"><div class="ttname"><a href="classecs_1_1Container.html#aa39a74f84349e007bb4219251a37dbd1">ecs::Container::ComponentDestroy</a></div><div class="ttdeci">void ComponentDestroy(const std::string &amp;entity, const std::string &amp;type)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00747">Container.cpp:747</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aa39a74f84349e007bb4219251a37dbd1"><div class="ttname"><a href="classecs_1_1Container.html#aa39a74f84349e007bb4219251a37dbd1">ecs::Container::ComponentDestroy</a></div><div class="ttdeci">void ComponentDestroy(const std::string &amp;entity, const std::string &amp;type)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00770">Container.cpp:770</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8cpp_source.html#l00747">ecs::Container::ComponentDestroy()</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
+<p class="reference">References <a class="el" href="Container_8cpp_source.html#l00770">ecs::Container::ComponentDestroy()</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="test__Access_8cpp_source.html#l00272">TEST_CASE()</a>.</p>
 
@@ -307,9 +309,9 @@ Private Member Functions</h2></td></tr>
 <div class="line"><span class="lineno">   65</span>        }</div>
 <div class="line"><span class="lineno">   66</span>        <span class="keywordflow">return</span> byEntity-&gt;second ? &amp;byEntity-&gt;second : <span class="keyword">nullptr</span>;</div>
 <div class="line"><span class="lineno">   67</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a6636742fd18a1acc8cfd040a2e9f73a7"><div class="ttname"><a href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">ecs::Container::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList Components</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00317">Container.hpp:317</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a6636742fd18a1acc8cfd040a2e9f73a7"><div class="ttname"><a href="classecs_1_1Container.html#a6636742fd18a1acc8cfd040a2e9f73a7">ecs::Container::Components</a></div><div class="ttdeci">ecs::TypeEntityComponentList Components</div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00333">Container.hpp:333</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00317">ecs::Container::Components</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00333">ecs::Container::Components</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="Entity_8hpp_source.html#l00043">ComponentGet()</a>, and <a class="el" href="Entity_8cpp_source.html#l00069">ComponentHas()</a>.</p>
 
@@ -413,9 +415,9 @@ template&lt;class T  = ecs::Component&gt; </div>
 <div class="fragment"><div class="line"><span class="lineno">   80</span>    {</div>
 <div class="line"><span class="lineno">   81</span>        this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#aa829b0bd9d26729d00393ea4ccaa7b5d">Container</a>-&gt;<a class="code hl_function" href="classecs_1_1Container.html#a7fb9378c11ac55f929249d52a0fdd066">EntityDestroy</a>(this-&gt;<a class="code hl_variable" href="classecs_1_1Entity.html#acd3b2e6f744c9dbbafa52abe97183599">Handle</a>);</div>
 <div class="line"><span class="lineno">   82</span>    }</div>
-<div class="ttc" id="aclassecs_1_1Container_html_a7fb9378c11ac55f929249d52a0fdd066"><div class="ttname"><a href="classecs_1_1Container.html#a7fb9378c11ac55f929249d52a0fdd066">ecs::Container::EntityDestroy</a></div><div class="ttdeci">void EntityDestroy(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00706">Container.cpp:706</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a7fb9378c11ac55f929249d52a0fdd066"><div class="ttname"><a href="classecs_1_1Container.html#a7fb9378c11ac55f929249d52a0fdd066">ecs::Container::EntityDestroy</a></div><div class="ttdeci">void EntityDestroy(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00729">Container.cpp:729</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8cpp_source.html#l00706">ecs::Container::EntityDestroy()</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
+<p class="reference">References <a class="el" href="Container_8cpp_source.html#l00729">ecs::Container::EntityDestroy()</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
 
 </div>
 </div>
@@ -453,7 +455,7 @@ template&lt;class T  = ecs::Component&gt; </div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html"><div class="ttname"><a href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a></div><div class="ttdoc">a class to store JSON values</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l17281">json.hpp:17282</a></div></div>
 <div class="ttc" id="aclassnlohmann_1_1basic__json_html_acdf9b3aab82dcf443dd91ca5ec06b80c"><div class="ttname"><a href="classnlohmann_1_1basic__json.html#acdf9b3aab82dcf443dd91ca5ec06b80c">nlohmann::basic_json::find</a></div><div class="ttdeci">iterator find(KeyT &amp;&amp;key)</div><div class="ttdoc">find an element in a JSON object</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l19600">json.hpp:19600</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00317">ecs::Container::Components</a>, <a class="el" href="json_8hpp_source.html#l19600">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;::find()</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
+<p class="reference">References <a class="el" href="Container_8hpp_source.html#l00333">ecs::Container::Components</a>, <a class="el" href="json_8hpp_source.html#l19600">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType &gt;::find()</a>, and <a class="el" href="Entity_8hpp_source.html#l00026">Handle</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="test__Validation_8cpp_source.html#l01379">TEST_CASE()</a>.</p>
 
@@ -501,7 +503,7 @@ template&lt;class T  = ecs::Component&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 10:00:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 11:36:28 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

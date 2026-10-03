@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.8.0</span>
    </div>
   </td>
  </tr>
@@ -84,26 +84,42 @@ $(function() {
 <code>#include &lt;chrono&gt;</code><br />
 <code>#include &lt;numeric&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;random&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for test_Timing.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="test__Timing_8cpp__incl.png" border="0" usemap="#atests_2test__Timing_8cpp" alt=""/></div>
 <map name="atests_2test__Timing_8cpp" id="atests_2test__Timing_8cpp">
-<area shape="rect" title=" " alt="" coords="296,5,459,31"/>
+<area shape="rect" title=" " alt="" coords="432,5,595,31"/>
 <area shape="rect" title=" " alt="" coords="5,79,160,104"/>
-<area shape="poly" title=" " alt="" coords="331,33,144,78,143,73,329,28"/>
-<area shape="rect" href="Timing_8hpp.html" title=" " alt="" coords="235,79,400,104"/>
-<area shape="poly" title=" " alt="" coords="369,33,338,70,334,66,365,29"/>
-<area shape="rect" title=" " alt="" coords="173,152,240,177"/>
-<area shape="poly" title=" " alt="" coords="307,33,262,51,242,64,225,80,212,108,208,138,203,137,206,107,221,77,239,60,260,46,305,28"/>
-<area shape="rect" title=" " alt="" coords="335,152,420,177"/>
-<area shape="poly" title=" " alt="" coords="390,30,410,62,416,83,415,105,397,142,392,140,409,103,410,84,405,65,385,32"/>
-<area shape="rect" title=" " alt="" coords="475,79,539,104"/>
-<area shape="poly" title=" " alt="" coords="399,28,474,69,472,74,397,33"/>
-<area shape="rect" title=" " alt="" coords="563,79,637,104"/>
-<area shape="poly" title=" " alt="" coords="414,28,552,72,550,77,412,33"/>
-<area shape="poly" title=" " alt="" coords="301,106,238,147,235,142,298,102"/>
-<area shape="poly" title=" " alt="" coords="329,103,361,140,357,143,325,106"/>
+<area shape="poly" title=" " alt="" coords="445,33,166,79,165,74,444,28"/>
+<area shape="rect" href="Timing_8hpp.html" title=" " alt="" coords="285,79,451,104"/>
+<area shape="poly" title=" " alt="" coords="491,33,405,75,403,70,489,28"/>
+<area shape="rect" title=" " alt="" coords="139,152,224,177"/>
+<area shape="poly" title=" " alt="" coords="432,29,347,46,303,61,261,81,226,110,199,142,195,138,222,106,259,76,301,56,345,41,431,24"/>
+<area shape="rect" title=" " alt="" coords="248,152,315,177"/>
+<area shape="poly" title=" " alt="" coords="432,31,337,50,299,64,275,80,269,93,267,108,273,138,268,139,262,108,264,92,271,77,296,59,336,45,431,26"/>
+<area shape="rect" title=" " alt="" coords="421,152,488,177"/>
+<area shape="poly" title=" " alt="" coords="511,32,467,140,462,138,506,30"/>
+<area shape="rect" title=" " alt="" coords="513,152,599,177"/>
+<area shape="poly" title=" " alt="" coords="519,30,551,138,546,139,514,32"/>
+<area shape="rect" title=" " alt="" coords="576,79,640,104"/>
+<area shape="poly" title=" " alt="" coords="530,29,583,68,580,72,527,33"/>
+<area shape="rect" title=" " alt="" coords="664,79,739,104"/>
+<area shape="poly" title=" " alt="" coords="544,28,659,71,657,76,543,33"/>
+<area shape="rect" title=" " alt="" coords="763,79,835,104"/>
+<area shape="poly" title=" " alt="" coords="560,28,750,75,749,80,559,33"/>
+<area shape="rect" title=" " alt="" coords="859,79,922,104"/>
+<area shape="poly" title=" " alt="" coords="587,28,705,48,846,76,845,81,704,53,586,33"/>
+<area shape="poly" title=" " alt="" coords="339,107,225,149,224,145,337,102"/>
+<area shape="poly" title=" " alt="" coords="356,106,308,145,304,141,352,102"/>
+<area shape="poly" title=" " alt="" coords="384,102,432,141,428,145,380,106"/>
+<area shape="poly" title=" " alt="" coords="399,102,513,144,512,149,397,107"/>
+<area shape="rect" title=" " alt="" coords="339,152,397,177"/>
+<area shape="poly" title=" " alt="" coords="371,104,371,138,365,138,365,104"/>
 </map>
 </div>
 </div>
@@ -111,18 +127,518 @@ Include dependency graph for test_Timing.cpp:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a55d0a510b98c7cedb504f8edd28e896a" id="r_a55d0a510b98c7cedb504f8edd28e896a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a55d0a510b98c7cedb504f8edd28e896a">TEST_CASE</a> (&quot;Timing remainder-carry keeps drift-free average&quot;, &quot;[timing][T1b]&quot;)</td></tr>
-<tr class="separator:a55d0a510b98c7cedb504f8edd28e896a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a3baa8f5c6c360c6acfffc3afc4ccc4" id="r_a8a3baa8f5c6c360c6acfffc3afc4ccc4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a8a3baa8f5c6c360c6acfffc3afc4ccc4">TEST_CASE</a> (&quot;Timing stall clamp prevents burst after long stall&quot;, &quot;[timing][T1c]&quot;)</td></tr>
-<tr class="separator:a8a3baa8f5c6c360c6acfffc3afc4ccc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5905a4a0676b390155fed1687b3b7c08" id="r_a5905a4a0676b390155fed1687b3b7c08"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a5905a4a0676b390155fed1687b3b7c08">TEST_CASE</a> (&quot;Timing remainder-carry keeps drift-free average&quot;, &quot;[timing][T1b][smoke]&quot;)</td></tr>
+<tr class="separator:a5905a4a0676b390155fed1687b3b7c08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0ded31d200e002de00ce93e0676fa10" id="r_af0ded31d200e002de00ce93e0676fa10"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#af0ded31d200e002de00ce93e0676fa10">TEST_CASE</a> (&quot;Timing stall clamp prevents burst after long stall&quot;, &quot;[timing][T1c][smoke]&quot;)</td></tr>
+<tr class="separator:af0ded31d200e002de00ce93e0676fa10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac52958bf78ed6f8f3a82b14f1087d5c3" id="r_ac52958bf78ed6f8f3a82b14f1087d5c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#ac52958bf78ed6f8f3a82b14f1087d5c3">TEST_CASE</a> (&quot;Timing with frequency 0 always fires&quot;, &quot;[timing][T1d]&quot;)</td></tr>
 <tr class="separator:ac52958bf78ed6f8f3a82b14f1087d5c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4788925a5e91a3039f23d74b7cb2adac" id="r_a4788925a5e91a3039f23d74b7cb2adac"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a4788925a5e91a3039f23d74b7cb2adac">TEST_CASE</a> (&quot;Timing three-tier cycle intervals&quot;, &quot;[timing][T1b]&quot;)</td></tr>
 <tr class="separator:a4788925a5e91a3039f23d74b7cb2adac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0fa08c998dc28383fcdb41a0e27bca8" id="r_ac0fa08c998dc28383fcdb41a0e27bca8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#ac0fa08c998dc28383fcdb41a0e27bca8">TEST_CASE</a> (&quot;Schedule lengths from one second to thirty days&quot;, &quot;[Timing]&quot;)</td></tr>
+<tr class="separator:ac0fa08c998dc28383fcdb41a0e27bca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa372aaeefc2aefbcece753c96dad2ccb" id="r_aa372aaeefc2aefbcece753c96dad2ccb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#aa372aaeefc2aefbcece753c96dad2ccb">TEST_CASE</a> (&quot;Maximum and invalid intervals&quot;, &quot;[Timing]&quot;)</td></tr>
+<tr class="separator:aa372aaeefc2aefbcece753c96dad2ccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a797e675b5aa20285db01179ebad650c7" id="r_a797e675b5aa20285db01179ebad650c7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a797e675b5aa20285db01179ebad650c7">TEST_CASE</a> (&quot;Zero interval is due on every call&quot;, &quot;[Timing]&quot;)</td></tr>
+<tr class="separator:a797e675b5aa20285db01179ebad650c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e48d7152f6f74b1a649f7eabb4a8b50" id="r_a6e48d7152f6f74b1a649f7eabb4a8b50"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a6e48d7152f6f74b1a649f7eabb4a8b50">TEST_CASE</a> (&quot;Drift-free on a coarse grid&quot;, &quot;[Timing]&quot;)</td></tr>
+<tr class="separator:a6e48d7152f6f74b1a649f7eabb4a8b50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a344b1ca7b98a7852772d06ef2f5d5335" id="r_a344b1ca7b98a7852772d06ef2f5d5335"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a344b1ca7b98a7852772d06ef2f5d5335">TEST_CASE</a> (&quot;Stall snaps forward&quot;, &quot;[Timing]&quot;)</td></tr>
+<tr class="separator:a344b1ca7b98a7852772d06ef2f5d5335"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a719b918bce2444ec13edcfcd8dc2f4f1" id="r_a719b918bce2444ec13edcfcd8dc2f4f1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a719b918bce2444ec13edcfcd8dc2f4f1">TEST_CASE</a> (&quot;Sequence matches the old algorithm&quot;, &quot;[Timing]&quot;)</td></tr>
+<tr class="separator:a719b918bce2444ec13edcfcd8dc2f4f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cc3264a4875bdcb3a3a8866e274d07d" id="r_a0cc3264a4875bdcb3a3a8866e274d07d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a0cc3264a4875bdcb3a3a8866e274d07d">TEST_CASE</a> (&quot;GetInterval round-trips&quot;, &quot;[Timing]&quot;)</td></tr>
+<tr class="separator:a0cc3264a4875bdcb3a3a8866e274d07d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98cc1beae0e9014b4984bf21094842ac" id="r_a98cc1beae0e9014b4984bf21094842ac"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a98cc1beae0e9014b4984bf21094842ac">TEST_CASE</a> (&quot;Remainder carry keeps the average on explicit instants&quot;, &quot;[Timing]&quot;)</td></tr>
+<tr class="separator:a98cc1beae0e9014b4984bf21094842ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9665f0fa631831e7679f75461186e304" id="r_a9665f0fa631831e7679f75461186e304"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__Timing_8cpp.html#a9665f0fa631831e7679f75461186e304">TEST_CASE</a> (&quot;A long stall fires once on explicit instants&quot;, &quot;[Timing]&quot;)</td></tr>
+<tr class="separator:a9665f0fa631831e7679f75461186e304"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a55d0a510b98c7cedb504f8edd28e896a" name="a55d0a510b98c7cedb504f8edd28e896a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55d0a510b98c7cedb504f8edd28e896a">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/4]</span></h2>
+<a id="a9665f0fa631831e7679f75461186e304" name="a9665f0fa631831e7679f75461186e304"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9665f0fa631831e7679f75461186e304">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;A long stall fires once on explicit instants&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;&#160;</td>
+          <td class="paramname">[Timing]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00398">398</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  399</span>{</div>
+<div class="line"><span class="lineno">  400</span>    <span class="keywordflow">for</span> (int64_t interval : {int64_t(100000), int64_t(54926), int64_t(109851), int64_t(164777)})</div>
+<div class="line"><span class="lineno">  401</span>    {</div>
+<div class="line"><span class="lineno">  402</span>        INFO(<span class="stringliteral">&quot;interval &quot;</span> &lt;&lt; interval &lt;&lt; <span class="stringliteral">&quot; us&quot;</span>);</div>
+<div class="line"><span class="lineno">  403</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(us(interval));</div>
+<div class="line"><span class="lineno">  404</span>        timing.Restart(us(0));</div>
+<div class="line"><span class="lineno">  405</span> </div>
+<div class="line"><span class="lineno">  406</span>        <span class="comment">// Longer than the catch-up limit of whole intervals.</span></div>
+<div class="line"><span class="lineno">  407</span>        <span class="keyword">const</span> int64_t stalled = (<a class="code hl_variable" href="namespaceecs.html#a31627b2bb184cb041faf0a440b83b173">MAX_CATCHUP</a> + 1) * interval + interval / 2;</div>
+<div class="line"><span class="lineno">  408</span>        REQUIRE(timing.ShouldUpdate(us(stalled)));</div>
+<div class="line"><span class="lineno">  409</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(stalled)));</div>
+<div class="line"><span class="lineno">  410</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(stalled + interval - 1)));</div>
+<div class="line"><span class="lineno">  411</span>        REQUIRE(timing.ShouldUpdate(us(stalled + interval)));</div>
+<div class="line"><span class="lineno">  412</span>    }</div>
+<div class="line"><span class="lineno">  413</span>}</div>
+<div class="ttc" id="aclassecs_1_1Timing_html"><div class="ttname"><a href="classecs_1_1Timing.html">ecs::Timing</a></div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00037">Timing.hpp:38</a></div></div>
+<div class="ttc" id="anamespaceecs_html_a31627b2bb184cb041faf0a440b83b173"><div class="ttname"><a href="namespaceecs.html#a31627b2bb184cb041faf0a440b83b173">ecs::MAX_CATCHUP</a></div><div class="ttdeci">constexpr uint32_t MAX_CATCHUP</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00021">Timing.hpp:21</a></div></div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00021">ecs::MAX_CATCHUP</a>, <a class="el" href="Timing_8hpp_source.html#l00093">ecs::Timing::Restart()</a>, and <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
+
+</div>
+</div>
+<a id="a6e48d7152f6f74b1a649f7eabb4a8b50" name="a6e48d7152f6f74b1a649f7eabb4a8b50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e48d7152f6f74b1a649f7eabb4a8b50">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Drift-free on a coarse grid&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;&#160;</td>
+          <td class="paramname">[Timing]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00267">267</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  268</span>{</div>
+<div class="line"><span class="lineno">  269</span>    <span class="keyword">constexpr</span> int64_t grid = 33333;</div>
+<div class="line"><span class="lineno">  270</span>    <span class="keyword">constexpr</span> int64_t hour = 3600LL * 1000000LL;</div>
+<div class="line"><span class="lineno">  271</span>    <span class="keyword">const</span> int64_t intervals[] = {109850, 54925, 109849, 164774};</div>
+<div class="line"><span class="lineno">  272</span> </div>
+<div class="line"><span class="lineno">  273</span>    <span class="keywordflow">for</span> (int64_t interval : intervals)</div>
+<div class="line"><span class="lineno">  274</span>    {</div>
+<div class="line"><span class="lineno">  275</span>        INFO(<span class="stringliteral">&quot;interval &quot;</span> &lt;&lt; interval &lt;&lt; <span class="stringliteral">&quot; us&quot;</span>);</div>
+<div class="line"><span class="lineno">  276</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(us(interval));</div>
+<div class="line"><span class="lineno">  277</span>        timing.Restart(us(0));</div>
+<div class="line"><span class="lineno">  278</span> </div>
+<div class="line"><span class="lineno">  279</span>        int64_t fires = 0;</div>
+<div class="line"><span class="lineno">  280</span>        int64_t now = 0;</div>
+<div class="line"><span class="lineno">  281</span>        <span class="keywordflow">for</span> (now = grid; now &lt;= hour; now += grid)</div>
+<div class="line"><span class="lineno">  282</span>        {</div>
+<div class="line"><span class="lineno">  283</span>            <span class="keywordflow">if</span> (timing.ShouldUpdate(us(now)))</div>
+<div class="line"><span class="lineno">  284</span>                ++fires;</div>
+<div class="line"><span class="lineno">  285</span>        }</div>
+<div class="line"><span class="lineno">  286</span>        <span class="keyword">const</span> int64_t <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a> = now - grid;</div>
+<div class="line"><span class="lineno">  287</span>        <span class="keyword">const</span> int64_t whole = <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a> / interval;</div>
+<div class="line"><span class="lineno">  288</span>        REQUIRE(fires &gt;= whole - 1);</div>
+<div class="line"><span class="lineno">  289</span>        REQUIRE(fires &lt;= whole + 1);</div>
+<div class="line"><span class="lineno">  290</span>    }</div>
+<div class="line"><span class="lineno">  291</span>}</div>
+<div class="ttc" id="atest__Lifecycle_8cpp_html_a07978e60e3415eca4e8f5f01de4089bf"><div class="ttname"><a href="test__Lifecycle_8cpp.html#a07978e60e3415eca4e8f5f01de4089bf">last</a></div><div class="ttdeci">auto last</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01294">test_Lifecycle.cpp:1294</a></div></div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="test__Lifecycle_8cpp_source.html#l01294">last</a>, <a class="el" href="Timing_8hpp_source.html#l00093">ecs::Timing::Restart()</a>, and <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
+
+</div>
+</div>
+<a id="a0cc3264a4875bdcb3a3a8866e274d07d" name="a0cc3264a4875bdcb3a3a8866e274d07d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cc3264a4875bdcb3a3a8866e274d07d">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GetInterval round-trips&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;&#160;</td>
+          <td class="paramname">[Timing]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00362">362</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  363</span>{</div>
+<div class="line"><span class="lineno">  364</span>    REQUIRE(<a class="code hl_variable" href="namespaceecs.html#aa86fb70eb64d24d431d5b2d69a3b6b8e">DEFAULT_INTERVAL</a> == us(33333));</div>
+<div class="line"><span class="lineno">  365</span>    REQUIRE(<a class="code hl_class" href="classecs_1_1Timing.html">Timing</a>().GetInterval() == <a class="code hl_variable" href="namespaceecs.html#aa86fb70eb64d24d431d5b2d69a3b6b8e">DEFAULT_INTERVAL</a>);</div>
+<div class="line"><span class="lineno">  366</span> </div>
+<div class="line"><span class="lineno">  367</span>    <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing;</div>
+<div class="line"><span class="lineno">  368</span>    <span class="keywordflow">for</span> (int64_t value : {int64_t(0), int64_t(1), int64_t(33333), int64_t(7200) * 1000000, <a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a>.count()})</div>
+<div class="line"><span class="lineno">  369</span>    {</div>
+<div class="line"><span class="lineno">  370</span>        timing.<a class="code hl_function" href="classecs_1_1Timing.html#a9d3b20c7d5b4032496535ad9ad03c8ca">SetInterval</a>(us(value));</div>
+<div class="line"><span class="lineno">  371</span>        REQUIRE(timing.<a class="code hl_function" href="classecs_1_1Timing.html#a33c0e17ff73e7e4a8ec7e192879b6b49">GetInterval</a>() == us(value));</div>
+<div class="line"><span class="lineno">  372</span>    }</div>
+<div class="line"><span class="lineno">  373</span>}</div>
+<div class="ttc" id="aclassecs_1_1Timing_html_a33c0e17ff73e7e4a8ec7e192879b6b49"><div class="ttname"><a href="classecs_1_1Timing.html#a33c0e17ff73e7e4a8ec7e192879b6b49">ecs::Timing::GetInterval</a></div><div class="ttdeci">std::chrono::microseconds GetInterval() const</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00106">Timing.hpp:106</a></div></div>
+<div class="ttc" id="aclassecs_1_1Timing_html_a9d3b20c7d5b4032496535ad9ad03c8ca"><div class="ttname"><a href="classecs_1_1Timing.html#a9d3b20c7d5b4032496535ad9ad03c8ca">ecs::Timing::SetInterval</a></div><div class="ttdeci">void SetInterval(std::chrono::microseconds interval)</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00100">Timing.hpp:100</a></div></div>
+<div class="ttc" id="anamespaceecs_html_a0debd1a08c6c5374b1d31afca05e4b14"><div class="ttname"><a href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">ecs::MAX_INTERVAL</a></div><div class="ttdeci">constexpr std::chrono::microseconds MAX_INTERVAL</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00014">Timing.hpp:14</a></div></div>
+<div class="ttc" id="anamespaceecs_html_aa86fb70eb64d24d431d5b2d69a3b6b8e"><div class="ttname"><a href="namespaceecs.html#aa86fb70eb64d24d431d5b2d69a3b6b8e">ecs::DEFAULT_INTERVAL</a></div><div class="ttdeci">constexpr std::chrono::microseconds DEFAULT_INTERVAL</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00017">Timing.hpp:17</a></div></div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00017">ecs::DEFAULT_INTERVAL</a>, <a class="el" href="Timing_8hpp_source.html#l00106">ecs::Timing::GetInterval()</a>, <a class="el" href="Timing_8hpp_source.html#l00014">ecs::MAX_INTERVAL</a>, and <a class="el" href="Timing_8hpp_source.html#l00100">ecs::Timing::SetInterval()</a>.</p>
+
+</div>
+</div>
+<a id="aa372aaeefc2aefbcece753c96dad2ccb" name="aa372aaeefc2aefbcece753c96dad2ccb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa372aaeefc2aefbcece753c96dad2ccb">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Maximum and invalid intervals&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;&#160;</td>
+          <td class="paramname">[Timing]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00194">194</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  195</span>{</div>
+<div class="line"><span class="lineno">  196</span>    SECTION(<span class="stringliteral">&quot;the maximum is a hundred years&quot;</span>)</div>
+<div class="line"><span class="lineno">  197</span>    {</div>
+<div class="line"><span class="lineno">  198</span>        REQUIRE(<a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a> == std::chrono::hours(24 * 36525));</div>
+<div class="line"><span class="lineno">  199</span>    }</div>
+<div class="line"><span class="lineno">  200</span> </div>
+<div class="line"><span class="lineno">  201</span>    SECTION(<span class="stringliteral">&quot;the maximum is accepted without overflow&quot;</span>)</div>
+<div class="line"><span class="lineno">  202</span>    {</div>
+<div class="line"><span class="lineno">  203</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(<a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a>);</div>
+<div class="line"><span class="lineno">  204</span>        REQUIRE(timing.GetInterval() == <a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a>);</div>
+<div class="line"><span class="lineno">  205</span> </div>
+<div class="line"><span class="lineno">  206</span>        timing.Restart(<a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a>);</div>
+<div class="line"><span class="lineno">  207</span>        REQUIRE_FALSE(timing.ShouldUpdate(<a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a> + <a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a> - us(1)));</div>
+<div class="line"><span class="lineno">  208</span>        REQUIRE(timing.ShouldUpdate(<a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a> + <a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a>));</div>
+<div class="line"><span class="lineno">  209</span> </div>
+<div class="line"><span class="lineno">  210</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> other(us(1000));</div>
+<div class="line"><span class="lineno">  211</span>        REQUIRE_NOTHROW(other.SetInterval(<a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a>));</div>
+<div class="line"><span class="lineno">  212</span>        REQUIRE(other.GetInterval() == <a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a>);</div>
+<div class="line"><span class="lineno">  213</span>        other.Restart(us(0));</div>
+<div class="line"><span class="lineno">  214</span>        REQUIRE_FALSE(other.ShouldUpdate(<a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a> - us(1)));</div>
+<div class="line"><span class="lineno">  215</span>        REQUIRE(other.ShouldUpdate(<a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a>));</div>
+<div class="line"><span class="lineno">  216</span>    }</div>
+<div class="line"><span class="lineno">  217</span> </div>
+<div class="line"><span class="lineno">  218</span>    SECTION(<span class="stringliteral">&quot;values outside zero to the maximum are rejected&quot;</span>)</div>
+<div class="line"><span class="lineno">  219</span>    {</div>
+<div class="line"><span class="lineno">  220</span>        <span class="keyword">const</span> micros bad[] = {</div>
+<div class="line"><span class="lineno">  221</span>            <a class="code hl_variable" href="namespaceecs.html#a0debd1a08c6c5374b1d31afca05e4b14">MAX_INTERVAL</a> + us(1),</div>
+<div class="line"><span class="lineno">  222</span>            micros::max(),</div>
+<div class="line"><span class="lineno">  223</span>            us(-1),</div>
+<div class="line"><span class="lineno">  224</span>            micros::min(),</div>
+<div class="line"><span class="lineno">  225</span>        };</div>
+<div class="line"><span class="lineno">  226</span>        <span class="keywordflow">for</span> (micros value : bad)</div>
+<div class="line"><span class="lineno">  227</span>        {</div>
+<div class="line"><span class="lineno">  228</span>            INFO(<span class="stringliteral">&quot;value &quot;</span> &lt;&lt; <a class="code hl_enumvalue" href="namespacenlohmann_1_1detail.html#a59e696b1dad6d0d99c172ac4518c2042a2063c1608d6e0baf80249c42e2be5804">value</a>.count() &lt;&lt; <span class="stringliteral">&quot; us&quot;</span>);</div>
+<div class="line"><span class="lineno">  229</span>            REQUIRE_THROWS_AS(<a class="code hl_class" href="classecs_1_1Timing.html">Timing</a>(value), std::runtime_error);</div>
+<div class="line"><span class="lineno">  230</span> </div>
+<div class="line"><span class="lineno">  231</span>            <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(us(5000));</div>
+<div class="line"><span class="lineno">  232</span>            REQUIRE_THROWS_AS(timing.SetInterval(value), std::runtime_error);</div>
+<div class="line"><span class="lineno">  233</span>            REQUIRE(timing.GetInterval() == us(5000));</div>
+<div class="line"><span class="lineno">  234</span>        }</div>
+<div class="line"><span class="lineno">  235</span>    }</div>
+<div class="line"><span class="lineno">  236</span>}</div>
+<div class="ttc" id="anamespacenlohmann_1_1detail_html_a59e696b1dad6d0d99c172ac4518c2042a2063c1608d6e0baf80249c42e2be5804"><div class="ttname"><a href="namespacenlohmann_1_1detail.html#a59e696b1dad6d0d99c172ac4518c2042a2063c1608d6e0baf80249c42e2be5804">nlohmann::detail::parse_event_t::value</a></div><div class="ttdeci">@ value</div><div class="ttdoc">the parser finished reading a JSON value</div></div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00106">ecs::Timing::GetInterval()</a>, <a class="el" href="Timing_8hpp_source.html#l00014">ecs::MAX_INTERVAL</a>, <a class="el" href="Timing_8hpp_source.html#l00093">ecs::Timing::Restart()</a>, <a class="el" href="Timing_8hpp_source.html#l00100">ecs::Timing::SetInterval()</a>, and <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
+
+</div>
+</div>
+<a id="a98cc1beae0e9014b4984bf21094842ac" name="a98cc1beae0e9014b4984bf21094842ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98cc1beae0e9014b4984bf21094842ac">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Remainder carry keeps the average on explicit instants&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;&#160;</td>
+          <td class="paramname">[Timing]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00375">375</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  376</span>{</div>
+<div class="line"><span class="lineno">  377</span>    <span class="keyword">constexpr</span> int64_t step = 33333;</div>
+<div class="line"><span class="lineno">  378</span>    <span class="keyword">constexpr</span> <span class="keywordtype">int</span> steps = 60;</div>
+<div class="line"><span class="lineno">  379</span> </div>
+<div class="line"><span class="lineno">  380</span>    <span class="keywordflow">for</span> (int64_t interval : {int64_t(109850), int64_t(54926), int64_t(109851), int64_t(164777)})</div>
+<div class="line"><span class="lineno">  381</span>    {</div>
+<div class="line"><span class="lineno">  382</span>        INFO(<span class="stringliteral">&quot;interval &quot;</span> &lt;&lt; interval &lt;&lt; <span class="stringliteral">&quot; us&quot;</span>);</div>
+<div class="line"><span class="lineno">  383</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(us(interval));</div>
+<div class="line"><span class="lineno">  384</span>        timing.Restart(us(0));</div>
+<div class="line"><span class="lineno">  385</span> </div>
+<div class="line"><span class="lineno">  386</span>        <span class="keywordtype">int</span> fires = 0;</div>
+<div class="line"><span class="lineno">  387</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; steps; ++i)</div>
+<div class="line"><span class="lineno">  388</span>        {</div>
+<div class="line"><span class="lineno">  389</span>            <span class="keywordflow">if</span> (timing.ShouldUpdate(us(i * step)))</div>
+<div class="line"><span class="lineno">  390</span>                ++fires;</div>
+<div class="line"><span class="lineno">  391</span>        }</div>
+<div class="line"><span class="lineno">  392</span>        <span class="keyword">const</span> int64_t whole = ((steps - 1) * step) / interval;</div>
+<div class="line"><span class="lineno">  393</span>        REQUIRE(fires &gt;= whole - 1);</div>
+<div class="line"><span class="lineno">  394</span>        REQUIRE(fires &lt;= whole + 1);</div>
+<div class="line"><span class="lineno">  395</span>    }</div>
+<div class="line"><span class="lineno">  396</span>}</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00093">ecs::Timing::Restart()</a>, and <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
+
+</div>
+</div>
+<a id="ac0fa08c998dc28383fcdb41a0e27bca8" name="ac0fa08c998dc28383fcdb41a0e27bca8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0fa08c998dc28383fcdb41a0e27bca8">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Schedule lengths from one second to thirty days&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;&#160;</td>
+          <td class="paramname">[Timing]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00152">152</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  153</span>{</div>
+<div class="line"><span class="lineno">  154</span>    <span class="keyword">const</span> micros lengths[] = {</div>
+<div class="line"><span class="lineno">  155</span>        std::chrono::seconds(1),</div>
+<div class="line"><span class="lineno">  156</span>        std::chrono::minutes(70),</div>
+<div class="line"><span class="lineno">  157</span>        std::chrono::hours(2),</div>
+<div class="line"><span class="lineno">  158</span>        std::chrono::hours(24),</div>
+<div class="line"><span class="lineno">  159</span>        std::chrono::hours(24 * 30),</div>
+<div class="line"><span class="lineno">  160</span>    };</div>
+<div class="line"><span class="lineno">  161</span> </div>
+<div class="line"><span class="lineno">  162</span>    <span class="keywordflow">for</span> (micros length : lengths)</div>
+<div class="line"><span class="lineno">  163</span>    {</div>
+<div class="line"><span class="lineno">  164</span>        INFO(<span class="stringliteral">&quot;length &quot;</span> &lt;&lt; length.count() &lt;&lt; <span class="stringliteral">&quot; us&quot;</span>);</div>
+<div class="line"><span class="lineno">  165</span> </div>
+<div class="line"><span class="lineno">  166</span>        SECTION(<span class="stringliteral">&quot;not due one microsecond early, due on time&quot;</span>)</div>
+<div class="line"><span class="lineno">  167</span>        {</div>
+<div class="line"><span class="lineno">  168</span>            <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(length);</div>
+<div class="line"><span class="lineno">  169</span>            timing.Restart(us(0));</div>
+<div class="line"><span class="lineno">  170</span>            REQUIRE_FALSE(timing.ShouldUpdate(length - us(1)));</div>
+<div class="line"><span class="lineno">  171</span>            REQUIRE(timing.ShouldUpdate(length));</div>
+<div class="line"><span class="lineno">  172</span>            REQUIRE_FALSE(timing.ShouldUpdate(length));</div>
+<div class="line"><span class="lineno">  173</span>        }</div>
+<div class="line"><span class="lineno">  174</span> </div>
+<div class="line"><span class="lineno">  175</span>        SECTION(<span class="stringliteral">&quot;on a 33333 us pass grid&quot;</span>)</div>
+<div class="line"><span class="lineno">  176</span>        {</div>
+<div class="line"><span class="lineno">  177</span>            <span class="keyword">constexpr</span> int64_t grid = 33333;</div>
+<div class="line"><span class="lineno">  178</span>            <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(length);</div>
+<div class="line"><span class="lineno">  179</span>            timing.Restart(us(0));</div>
+<div class="line"><span class="lineno">  180</span>            <span class="keyword">const</span> int64_t dueStep = (length.count() + grid - 1) / grid;</div>
+<div class="line"><span class="lineno">  181</span> </div>
+<div class="line"><span class="lineno">  182</span>            <span class="comment">// Only the passes around the due time are evaluated. A pass that is not due leaves the</span></div>
+<div class="line"><span class="lineno">  183</span>            <span class="comment">// schedule alone, so skipping the earlier ones changes nothing.</span></div>
+<div class="line"><span class="lineno">  184</span>            <span class="keywordflow">for</span> (int64_t step = dueStep - 3; step &lt; dueStep; ++step)</div>
+<div class="line"><span class="lineno">  185</span>            {</div>
+<div class="line"><span class="lineno">  186</span>                REQUIRE_FALSE(timing.ShouldUpdate(us(step * grid)));</div>
+<div class="line"><span class="lineno">  187</span>            }</div>
+<div class="line"><span class="lineno">  188</span>            REQUIRE(timing.ShouldUpdate(us(dueStep * grid)));</div>
+<div class="line"><span class="lineno">  189</span>            REQUIRE_FALSE(timing.ShouldUpdate(us((dueStep + 1) * grid)));</div>
+<div class="line"><span class="lineno">  190</span>        }</div>
+<div class="line"><span class="lineno">  191</span>    }</div>
+<div class="line"><span class="lineno">  192</span>}</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00093">ecs::Timing::Restart()</a>, and <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
+
+</div>
+</div>
+<a id="a719b918bce2444ec13edcfcd8dc2f4f1" name="a719b918bce2444ec13edcfcd8dc2f4f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a719b918bce2444ec13edcfcd8dc2f4f1">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Sequence matches the old algorithm&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;&#160;</td>
+          <td class="paramname">[Timing]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00336">336</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  337</span>{</div>
+<div class="line"><span class="lineno">  338</span>    <span class="keyword">const</span> int64_t intervals[] = {1, 33333, 54925, 109850, 1000000, 7200LL * 1000000LL};</div>
+<div class="line"><span class="lineno">  339</span> </div>
+<div class="line"><span class="lineno">  340</span>    <span class="keywordflow">for</span> (int64_t interval : intervals)</div>
+<div class="line"><span class="lineno">  341</span>    {</div>
+<div class="line"><span class="lineno">  342</span>        INFO(<span class="stringliteral">&quot;interval &quot;</span> &lt;&lt; interval &lt;&lt; <span class="stringliteral">&quot; us&quot;</span>);</div>
+<div class="line"><span class="lineno">  343</span>        std::mt19937 random(12345);</div>
+<div class="line"><span class="lineno">  344</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(us(interval));</div>
+<div class="line"><span class="lineno">  345</span>        timing.Restart(us(0));</div>
+<div class="line"><span class="lineno">  346</span>        ReferenceSchedule reference{<span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(interval), 0};</div>
+<div class="line"><span class="lineno">  347</span> </div>
+<div class="line"><span class="lineno">  348</span>        int64_t now = 0;</div>
+<div class="line"><span class="lineno">  349</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 20000; ++i)</div>
+<div class="line"><span class="lineno">  350</span>        {</div>
+<div class="line"><span class="lineno">  351</span>            <span class="comment">// Mostly small steps, now and then a stall of many intervals.</span></div>
+<div class="line"><span class="lineno">  352</span>            <span class="keyword">const</span> uint32_t pick = random();</div>
+<div class="line"><span class="lineno">  353</span>            int64_t step = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(pick % 40000);</div>
+<div class="line"><span class="lineno">  354</span>            <span class="keywordflow">if</span> (pick % 97 == 0)</div>
+<div class="line"><span class="lineno">  355</span>                step = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(random() % (5 * interval + 1));</div>
+<div class="line"><span class="lineno">  356</span>            now += step;</div>
+<div class="line"><span class="lineno">  357</span>            REQUIRE(timing.ShouldUpdate(us(now)) == reference.step(<span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(now)));</div>
+<div class="line"><span class="lineno">  358</span>        }</div>
+<div class="line"><span class="lineno">  359</span>    }</div>
+<div class="line"><span class="lineno">  360</span>}</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00093">ecs::Timing::Restart()</a>, and <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
+
+</div>
+</div>
+<a id="a344b1ca7b98a7852772d06ef2f5d5335" name="a344b1ca7b98a7852772d06ef2f5d5335"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a344b1ca7b98a7852772d06ef2f5d5335">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Stall snaps forward&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;&#160;</td>
+          <td class="paramname">[Timing]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00293">293</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  294</span>{</div>
+<div class="line"><span class="lineno">  295</span>    <span class="keyword">constexpr</span> int64_t interval = 100000;</div>
+<div class="line"><span class="lineno">  296</span> </div>
+<div class="line"><span class="lineno">  297</span>    SECTION(<span class="stringliteral">&quot;the first call right after creation is not due&quot;</span>)</div>
+<div class="line"><span class="lineno">  298</span>    {</div>
+<div class="line"><span class="lineno">  299</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(std::chrono::hours(1));</div>
+<div class="line"><span class="lineno">  300</span>        REQUIRE_FALSE(timing.ShouldUpdate());</div>
+<div class="line"><span class="lineno">  301</span>    }</div>
+<div class="line"><span class="lineno">  302</span> </div>
+<div class="line"><span class="lineno">  303</span>    SECTION(<span class="stringliteral">&quot;the first fire is one full interval after the start&quot;</span>)</div>
+<div class="line"><span class="lineno">  304</span>    {</div>
+<div class="line"><span class="lineno">  305</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(us(interval));</div>
+<div class="line"><span class="lineno">  306</span>        timing.Restart(us(500));</div>
+<div class="line"><span class="lineno">  307</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(500)));</div>
+<div class="line"><span class="lineno">  308</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(500 + interval - 1)));</div>
+<div class="line"><span class="lineno">  309</span>        REQUIRE(timing.ShouldUpdate(us(500 + interval)));</div>
+<div class="line"><span class="lineno">  310</span>    }</div>
+<div class="line"><span class="lineno">  311</span> </div>
+<div class="line"><span class="lineno">  312</span>    SECTION(<span class="stringliteral">&quot;a gap of two intervals is caught up and stays on the grid&quot;</span>)</div>
+<div class="line"><span class="lineno">  313</span>    {</div>
+<div class="line"><span class="lineno">  314</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(us(interval));</div>
+<div class="line"><span class="lineno">  315</span>        timing.Restart(us(0));</div>
+<div class="line"><span class="lineno">  316</span>        REQUIRE(timing.ShouldUpdate(us(2 * interval + 50000)));</div>
+<div class="line"><span class="lineno">  317</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(2 * interval + 50000)));</div>
+<div class="line"><span class="lineno">  318</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(3 * interval - 1)));</div>
+<div class="line"><span class="lineno">  319</span>        REQUIRE(timing.ShouldUpdate(us(3 * interval)));</div>
+<div class="line"><span class="lineno">  320</span>    }</div>
+<div class="line"><span class="lineno">  321</span> </div>
+<div class="line"><span class="lineno">  322</span>    SECTION(<span class="stringliteral">&quot;a gap of three or more intervals fires once and snaps forward&quot;</span>)</div>
+<div class="line"><span class="lineno">  323</span>    {</div>
+<div class="line"><span class="lineno">  324</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(us(interval));</div>
+<div class="line"><span class="lineno">  325</span>        timing.Restart(us(0));</div>
+<div class="line"><span class="lineno">  326</span>        <span class="keyword">const</span> int64_t stalled = 3 * interval + 50000;</div>
+<div class="line"><span class="lineno">  327</span>        REQUIRE(timing.ShouldUpdate(us(stalled)));</div>
+<div class="line"><span class="lineno">  328</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(stalled)));</div>
+<div class="line"><span class="lineno">  329</span>        <span class="comment">// On the old grid the next fire would be at four intervals.</span></div>
+<div class="line"><span class="lineno">  330</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(4 * interval)));</div>
+<div class="line"><span class="lineno">  331</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(stalled + interval - 1)));</div>
+<div class="line"><span class="lineno">  332</span>        REQUIRE(timing.ShouldUpdate(us(stalled + interval)));</div>
+<div class="line"><span class="lineno">  333</span>    }</div>
+<div class="line"><span class="lineno">  334</span>}</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00093">ecs::Timing::Restart()</a>, and <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
+
+</div>
+</div>
+<a id="a5905a4a0676b390155fed1687b3b7c08" name="a5905a4a0676b390155fed1687b3b7c08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5905a4a0676b390155fed1687b3b7c08">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/13]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -137,7 +653,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&quot;&quot;&#160;</td>
-          <td class="paramname">[timing][T1b]&#160;</td>
+          <td class="paramname">[timing][T1b][smoke]&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -147,36 +663,33 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00015">15</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   16</span>{</div>
-<div class="line"><span class="lineno">   17</span>    <span class="keyword">constexpr</span> uint32_t freq = 109850;</div>
-<div class="line"><span class="lineno">   18</span>    <span class="keyword">constexpr</span> int64_t step = 33333;</div>
-<div class="line"><span class="lineno">   19</span>    <span class="keyword">constexpr</span> <span class="keywordtype">int</span> steps = 60;</div>
-<div class="line"><span class="lineno">   20</span>    <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(freq);</div>
-<div class="line"><span class="lineno">   21</span> </div>
-<div class="line"><span class="lineno">   22</span>    <span class="keyword">auto</span> start = std::chrono::steady_clock::now();</div>
-<div class="line"><span class="lineno">   23</span>    <span class="keywordtype">int</span> fires = 0;</div>
-<div class="line"><span class="lineno">   24</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; steps; ++i)</div>
-<div class="line"><span class="lineno">   25</span>    {</div>
-<div class="line"><span class="lineno">   26</span>        std::this_thread::sleep_until(start + std::chrono::microseconds(i * step));</div>
-<div class="line"><span class="lineno">   27</span>        <span class="keywordflow">if</span> (timing.ShouldUpdate())</div>
-<div class="line"><span class="lineno">   28</span>            ++fires;</div>
-<div class="line"><span class="lineno">   29</span>    }</div>
-<div class="line"><span class="lineno">   30</span>    <span class="keyword">auto</span> end = std::chrono::steady_clock::now();</div>
-<div class="line"><span class="lineno">   31</span>    int64_t elapsed_us = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(end - start).count();</div>
-<div class="line"><span class="lineno">   32</span>    int64_t expected = elapsed_us / freq;</div>
-<div class="line"><span class="lineno">   33</span> </div>
-<div class="line"><span class="lineno">   34</span>    REQUIRE(fires &gt;= expected - 1);</div>
-<div class="line"><span class="lineno">   35</span>    REQUIRE(fires &lt;= expected + 1);</div>
-<div class="line"><span class="lineno">   36</span>}</div>
-<div class="ttc" id="aclassecs_1_1Timing_html"><div class="ttname"><a href="classecs_1_1Timing.html">ecs::Timing</a></div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00012">Timing.hpp:13</a></div></div>
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00023">23</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   24</span>{</div>
+<div class="line"><span class="lineno">   25</span>    <span class="keyword">constexpr</span> int64_t freq = 109850;</div>
+<div class="line"><span class="lineno">   26</span>    <span class="keyword">constexpr</span> int64_t step = 33333;</div>
+<div class="line"><span class="lineno">   27</span>    <span class="keyword">constexpr</span> <span class="keywordtype">int</span> steps = 60;</div>
+<div class="line"><span class="lineno">   28</span>    <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing{std::chrono::microseconds(freq)};</div>
+<div class="line"><span class="lineno">   29</span> </div>
+<div class="line"><span class="lineno">   30</span>    <span class="keyword">auto</span> start = std::chrono::steady_clock::now();</div>
+<div class="line"><span class="lineno">   31</span>    <span class="keywordtype">int</span> fires = 0;</div>
+<div class="line"><span class="lineno">   32</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; steps; ++i)</div>
+<div class="line"><span class="lineno">   33</span>    {</div>
+<div class="line"><span class="lineno">   34</span>        std::this_thread::sleep_until(start + std::chrono::microseconds(i * step));</div>
+<div class="line"><span class="lineno">   35</span>        <span class="keywordflow">if</span> (timing.ShouldUpdate())</div>
+<div class="line"><span class="lineno">   36</span>            ++fires;</div>
+<div class="line"><span class="lineno">   37</span>    }</div>
+<div class="line"><span class="lineno">   38</span>    <span class="keyword">auto</span> end = std::chrono::steady_clock::now();</div>
+<div class="line"><span class="lineno">   39</span>    int64_t elapsed_us = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(end - start).count();</div>
+<div class="line"><span class="lineno">   40</span>    int64_t expected = elapsed_us / freq;</div>
+<div class="line"><span class="lineno">   41</span> </div>
+<div class="line"><span class="lineno">   42</span>    REQUIRE(fires &gt;= expected - 1);</div>
+<div class="line"><span class="lineno">   43</span>    REQUIRE(fires &lt;= expected + 1);</div>
+<div class="line"><span class="lineno">   44</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00019">ecs::Timing::ShouldUpdate()</a>.</p>
-
 </div>
 </div>
-<a id="a8a3baa8f5c6c360c6acfffc3afc4ccc4" name="a8a3baa8f5c6c360c6acfffc3afc4ccc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a3baa8f5c6c360c6acfffc3afc4ccc4">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/4]</span></h2>
+<a id="af0ded31d200e002de00ce93e0676fa10" name="af0ded31d200e002de00ce93e0676fa10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0ded31d200e002de00ce93e0676fa10">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/13]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -191,7 +704,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&quot;&quot;&#160;</td>
-          <td class="paramname">[timing][T1c]&#160;</td>
+          <td class="paramname">[timing][T1c][smoke]&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -201,34 +714,35 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00039">39</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   40</span>{</div>
-<div class="line"><span class="lineno">   41</span>    <span class="keyword">constexpr</span> uint32_t freq = 100000; <span class="comment">// 10 Hz, 100 ms intervals</span></div>
-<div class="line"><span class="lineno">   42</span>    <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(freq);</div>
-<div class="line"><span class="lineno">   43</span> </div>
-<div class="line"><span class="lineno">   44</span>    <span class="comment">// Let it fire once immediately (initialized in the past)</span></div>
-<div class="line"><span class="lineno">   45</span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a> = timing.ShouldUpdate();</div>
-<div class="line"><span class="lineno">   46</span>    (void)<a class="code hl_variable" href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a>;</div>
-<div class="line"><span class="lineno">   47</span> </div>
-<div class="line"><span class="lineno">   48</span>    <span class="comment">// Stall for longer than MAX_CATCHUP * freq (2 * 100ms = 200ms)</span></div>
-<div class="line"><span class="lineno">   49</span>    std::this_thread::sleep_for(std::chrono::milliseconds(250));</div>
-<div class="line"><span class="lineno">   50</span> </div>
-<div class="line"><span class="lineno">   51</span>    <span class="comment">// Should fire once, then NOT fire again immediately (snapped forward)</span></div>
-<div class="line"><span class="lineno">   52</span>    <span class="keywordtype">bool</span> after_stall = timing.ShouldUpdate();</div>
-<div class="line"><span class="lineno">   53</span>    REQUIRE(after_stall == <span class="keyword">true</span>);</div>
-<div class="line"><span class="lineno">   54</span> </div>
-<div class="line"><span class="lineno">   55</span>    <span class="comment">// Immediately check again — should NOT fire (snapped to now)</span></div>
-<div class="line"><span class="lineno">   56</span>    <span class="keywordtype">bool</span> immediate = timing.ShouldUpdate();</div>
-<div class="line"><span class="lineno">   57</span>    REQUIRE(immediate == <span class="keyword">false</span>);</div>
-<div class="line"><span class="lineno">   58</span>}</div>
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00047">47</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   48</span>{</div>
+<div class="line"><span class="lineno">   49</span>    <span class="keyword">constexpr</span> int64_t freq = 100000; <span class="comment">// 10 Hz, 100 ms intervals</span></div>
+<div class="line"><span class="lineno">   50</span>    <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing{std::chrono::microseconds(freq)};</div>
+<div class="line"><span class="lineno">   51</span> </div>
+<div class="line"><span class="lineno">   52</span>    <span class="comment">// A new schedule starts its first interval at creation, so it is not due yet.</span></div>
+<div class="line"><span class="lineno">   53</span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a> = timing.<a class="code hl_function" href="classecs_1_1Timing.html#aff4495842286c5653f80be6600b270c3">ShouldUpdate</a>();</div>
+<div class="line"><span class="lineno">   54</span>    REQUIRE(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a> == <span class="keyword">false</span>);</div>
+<div class="line"><span class="lineno">   55</span> </div>
+<div class="line"><span class="lineno">   56</span>    <span class="comment">// Stall for longer than MAX_CATCHUP * freq (2 * 100ms = 200ms)</span></div>
+<div class="line"><span class="lineno">   57</span>    std::this_thread::sleep_for(std::chrono::milliseconds(250));</div>
+<div class="line"><span class="lineno">   58</span> </div>
+<div class="line"><span class="lineno">   59</span>    <span class="comment">// The stall is longer than one interval, so it fires once, then NOT again immediately (snapped forward)</span></div>
+<div class="line"><span class="lineno">   60</span>    <span class="keywordtype">bool</span> after_stall = timing.ShouldUpdate();</div>
+<div class="line"><span class="lineno">   61</span>    REQUIRE(after_stall == <span class="keyword">true</span>);</div>
+<div class="line"><span class="lineno">   62</span> </div>
+<div class="line"><span class="lineno">   63</span>    <span class="comment">// Immediately check again — should NOT fire (snapped to now)</span></div>
+<div class="line"><span class="lineno">   64</span>    <span class="keywordtype">bool</span> immediate = timing.ShouldUpdate();</div>
+<div class="line"><span class="lineno">   65</span>    REQUIRE(immediate == <span class="keyword">false</span>);</div>
+<div class="line"><span class="lineno">   66</span>}</div>
+<div class="ttc" id="aclassecs_1_1Timing_html_aff4495842286c5653f80be6600b270c3"><div class="ttname"><a href="classecs_1_1Timing.html#aff4495842286c5653f80be6600b270c3">ecs::Timing::ShouldUpdate</a></div><div class="ttdeci">bool ShouldUpdate(std::chrono::microseconds now)</div><div class="ttdef"><b>Definition</b> <a href="Timing_8hpp_source.html#l00058">Timing.hpp:58</a></div></div>
 <div class="ttc" id="atest__Lifecycle_8cpp_html_ab661290d29332536903330a9fee3ab82"><div class="ttname"><a href="test__Lifecycle_8cpp.html#ab661290d29332536903330a9fee3ab82">first</a></div><div class="ttdeci">auto first</div><div class="ttdef"><b>Definition</b> <a href="test__Lifecycle_8cpp_source.html#l01292">test_Lifecycle.cpp:1292</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="test__Lifecycle_8cpp_source.html#l01292">first</a>, and <a class="el" href="Timing_8hpp_source.html#l00019">ecs::Timing::ShouldUpdate()</a>.</p>
+<p class="reference">References <a class="el" href="test__Lifecycle_8cpp_source.html#l01292">first</a>, and <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
 
 </div>
 </div>
 <a id="a4788925a5e91a3039f23d74b7cb2adac" name="a4788925a5e91a3039f23d74b7cb2adac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4788925a5e91a3039f23d74b7cb2adac">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4788925a5e91a3039f23d74b7cb2adac">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/13]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -253,48 +767,48 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00071">71</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   72</span>{</div>
-<div class="line"><span class="lineno">   73</span>    <span class="comment">// These are the expected CycleIntervalMicros values from zzt_system.</span></div>
-<div class="line"><span class="lineno">   74</span>    <span class="comment">// Tier 1 (gameSpeed 1-3): ~54925 µs → ~18.21 Hz</span></div>
-<div class="line"><span class="lineno">   75</span>    <span class="comment">// Tier 2 (gameSpeed 4-6): ~109849 µs → ~9.10 Hz</span></div>
-<div class="line"><span class="lineno">   76</span>    <span class="comment">// Tier 3 (gameSpeed 7-9): ~164774 µs → ~6.07 Hz</span></div>
-<div class="line"><span class="lineno">   77</span>    <span class="comment">// We can&#39;t call zzt_system::CycleIntervalMicros here (different package),</span></div>
-<div class="line"><span class="lineno">   78</span>    <span class="comment">// but we verify the math:</span></div>
-<div class="line"><span class="lineno">   79</span>    <span class="comment">// PC_TIMER_TICK_SECONDS = 65536.0 / 1193182.0 ≈ 0.0549247</span></div>
-<div class="line"><span class="lineno">   80</span>    <span class="comment">// Tier 1: ceil(1*2/6) = 1 tick → 1 * 0.0549247 * 1e6 ≈ 54925 µs</span></div>
-<div class="line"><span class="lineno">   81</span>    <span class="comment">// Tier 2: ceil(4*2/6) = 2 ticks → 2 * 0.0549247 * 1e6 ≈ 109849 µs</span></div>
-<div class="line"><span class="lineno">   82</span>    <span class="comment">// Tier 3: ceil(7*2/6) = 3 ticks → 3 * 0.0549247 * 1e6 ≈ 164774 µs</span></div>
-<div class="line"><span class="lineno">   83</span>    <span class="keyword">constexpr</span> <span class="keywordtype">double</span> pc_tick = 65536.0 / 1193182.0;</div>
-<div class="line"><span class="lineno">   84</span> </div>
-<div class="line"><span class="lineno">   85</span>    <span class="keyword">auto</span> tier1_us = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(std::ceil(1 * pc_tick * 1e6));</div>
-<div class="line"><span class="lineno">   86</span>    <span class="keyword">auto</span> tier2_us = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(std::ceil(2 * pc_tick * 1e6));</div>
-<div class="line"><span class="lineno">   87</span>    <span class="keyword">auto</span> tier3_us = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(std::ceil(3 * pc_tick * 1e6));</div>
-<div class="line"><span class="lineno">   88</span> </div>
-<div class="line"><span class="lineno">   89</span>    <span class="comment">// Tier 1: ~18.21 Hz</span></div>
-<div class="line"><span class="lineno">   90</span>    <span class="keywordtype">double</span> tier1_hz = 1e6 / tier1_us;</div>
-<div class="line"><span class="lineno">   91</span>    REQUIRE(tier1_hz &gt; 17.0);</div>
-<div class="line"><span class="lineno">   92</span>    REQUIRE(tier1_hz &lt; 20.0);</div>
-<div class="line"><span class="lineno">   93</span> </div>
-<div class="line"><span class="lineno">   94</span>    <span class="comment">// Tier 2: ~9.10 Hz</span></div>
-<div class="line"><span class="lineno">   95</span>    <span class="keywordtype">double</span> tier2_hz = 1e6 / tier2_us;</div>
-<div class="line"><span class="lineno">   96</span>    REQUIRE(tier2_hz &gt; 8.0);</div>
-<div class="line"><span class="lineno">   97</span>    REQUIRE(tier2_hz &lt; 10.5);</div>
-<div class="line"><span class="lineno">   98</span> </div>
-<div class="line"><span class="lineno">   99</span>    <span class="comment">// Tier 3: ~6.07 Hz</span></div>
-<div class="line"><span class="lineno">  100</span>    <span class="keywordtype">double</span> tier3_hz = 1e6 / tier3_us;</div>
-<div class="line"><span class="lineno">  101</span>    REQUIRE(tier3_hz &gt; 5.0);</div>
-<div class="line"><span class="lineno">  102</span>    REQUIRE(tier3_hz &lt; 7.5);</div>
-<div class="line"><span class="lineno">  103</span> </div>
-<div class="line"><span class="lineno">  104</span>    <span class="comment">// Verify tier separation</span></div>
-<div class="line"><span class="lineno">  105</span>    REQUIRE(tier1_us &lt; tier2_us);</div>
-<div class="line"><span class="lineno">  106</span>    REQUIRE(tier2_us &lt; tier3_us);</div>
-<div class="line"><span class="lineno">  107</span>}</div>
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00079">79</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   80</span>{</div>
+<div class="line"><span class="lineno">   81</span>    <span class="comment">// These are the expected CycleIntervalMicros values from zzt_system.</span></div>
+<div class="line"><span class="lineno">   82</span>    <span class="comment">// Tier 1 (gameSpeed 1-3): ~54925 µs → ~18.21 Hz</span></div>
+<div class="line"><span class="lineno">   83</span>    <span class="comment">// Tier 2 (gameSpeed 4-6): ~109849 µs → ~9.10 Hz</span></div>
+<div class="line"><span class="lineno">   84</span>    <span class="comment">// Tier 3 (gameSpeed 7-9): ~164774 µs → ~6.07 Hz</span></div>
+<div class="line"><span class="lineno">   85</span>    <span class="comment">// We can&#39;t call zzt_system::CycleIntervalMicros here (different package),</span></div>
+<div class="line"><span class="lineno">   86</span>    <span class="comment">// but we verify the math:</span></div>
+<div class="line"><span class="lineno">   87</span>    <span class="comment">// PC_TIMER_TICK_SECONDS = 65536.0 / 1193182.0 ≈ 0.0549247</span></div>
+<div class="line"><span class="lineno">   88</span>    <span class="comment">// Tier 1: ceil(1*2/6) = 1 tick → 1 * 0.0549247 * 1e6 ≈ 54925 µs</span></div>
+<div class="line"><span class="lineno">   89</span>    <span class="comment">// Tier 2: ceil(4*2/6) = 2 ticks → 2 * 0.0549247 * 1e6 ≈ 109849 µs</span></div>
+<div class="line"><span class="lineno">   90</span>    <span class="comment">// Tier 3: ceil(7*2/6) = 3 ticks → 3 * 0.0549247 * 1e6 ≈ 164774 µs</span></div>
+<div class="line"><span class="lineno">   91</span>    <span class="keyword">constexpr</span> <span class="keywordtype">double</span> pc_tick = 65536.0 / 1193182.0;</div>
+<div class="line"><span class="lineno">   92</span> </div>
+<div class="line"><span class="lineno">   93</span>    <span class="keyword">auto</span> tier1_us = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(std::ceil(1 * pc_tick * 1e6));</div>
+<div class="line"><span class="lineno">   94</span>    <span class="keyword">auto</span> tier2_us = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(std::ceil(2 * pc_tick * 1e6));</div>
+<div class="line"><span class="lineno">   95</span>    <span class="keyword">auto</span> tier3_us = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(std::ceil(3 * pc_tick * 1e6));</div>
+<div class="line"><span class="lineno">   96</span> </div>
+<div class="line"><span class="lineno">   97</span>    <span class="comment">// Tier 1: ~18.21 Hz</span></div>
+<div class="line"><span class="lineno">   98</span>    <span class="keywordtype">double</span> tier1_hz = 1e6 / tier1_us;</div>
+<div class="line"><span class="lineno">   99</span>    REQUIRE(tier1_hz &gt; 17.0);</div>
+<div class="line"><span class="lineno">  100</span>    REQUIRE(tier1_hz &lt; 20.0);</div>
+<div class="line"><span class="lineno">  101</span> </div>
+<div class="line"><span class="lineno">  102</span>    <span class="comment">// Tier 2: ~9.10 Hz</span></div>
+<div class="line"><span class="lineno">  103</span>    <span class="keywordtype">double</span> tier2_hz = 1e6 / tier2_us;</div>
+<div class="line"><span class="lineno">  104</span>    REQUIRE(tier2_hz &gt; 8.0);</div>
+<div class="line"><span class="lineno">  105</span>    REQUIRE(tier2_hz &lt; 10.5);</div>
+<div class="line"><span class="lineno">  106</span> </div>
+<div class="line"><span class="lineno">  107</span>    <span class="comment">// Tier 3: ~6.07 Hz</span></div>
+<div class="line"><span class="lineno">  108</span>    <span class="keywordtype">double</span> tier3_hz = 1e6 / tier3_us;</div>
+<div class="line"><span class="lineno">  109</span>    REQUIRE(tier3_hz &gt; 5.0);</div>
+<div class="line"><span class="lineno">  110</span>    REQUIRE(tier3_hz &lt; 7.5);</div>
+<div class="line"><span class="lineno">  111</span> </div>
+<div class="line"><span class="lineno">  112</span>    <span class="comment">// Verify tier separation</span></div>
+<div class="line"><span class="lineno">  113</span>    REQUIRE(tier1_us &lt; tier2_us);</div>
+<div class="line"><span class="lineno">  114</span>    REQUIRE(tier2_us &lt; tier3_us);</div>
+<div class="line"><span class="lineno">  115</span>}</div>
 </div><!-- fragment -->
 </div>
 </div>
 <a id="ac52958bf78ed6f8f3a82b14f1087d5c3" name="ac52958bf78ed6f8f3a82b14f1087d5c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac52958bf78ed6f8f3a82b14f1087d5c3">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac52958bf78ed6f8f3a82b14f1087d5c3">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[12/13]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -319,23 +833,82 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00061">61</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   62</span>{</div>
-<div class="line"><span class="lineno">   63</span>    <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(0);</div>
-<div class="line"><span class="lineno">   64</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 100; ++i)</div>
-<div class="line"><span class="lineno">   65</span>    {</div>
-<div class="line"><span class="lineno">   66</span>        REQUIRE(timing.ShouldUpdate() == <span class="keyword">true</span>);</div>
-<div class="line"><span class="lineno">   67</span>    }</div>
-<div class="line"><span class="lineno">   68</span>}</div>
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00069">69</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   70</span>{</div>
+<div class="line"><span class="lineno">   71</span>    <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(std::chrono::microseconds(0));</div>
+<div class="line"><span class="lineno">   72</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 100; ++i)</div>
+<div class="line"><span class="lineno">   73</span>    {</div>
+<div class="line"><span class="lineno">   74</span>        REQUIRE(timing.ShouldUpdate() == <span class="keyword">true</span>);</div>
+<div class="line"><span class="lineno">   75</span>    }</div>
+<div class="line"><span class="lineno">   76</span>}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00019">ecs::Timing::ShouldUpdate()</a>.</p>
+<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
+
+</div>
+</div>
+<a id="a797e675b5aa20285db01179ebad650c7" name="a797e675b5aa20285db01179ebad650c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a797e675b5aa20285db01179ebad650c7">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[13/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Zero interval is due on every call&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;&#160;</td>
+          <td class="paramname">[Timing]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="test__Timing_8cpp_source.html#l00238">238</a> of file <a class="el" href="test__Timing_8cpp_source.html">test_Timing.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  239</span>{</div>
+<div class="line"><span class="lineno">  240</span>    SECTION(<span class="stringliteral">&quot;every call is due and the state is left alone&quot;</span>)</div>
+<div class="line"><span class="lineno">  241</span>    {</div>
+<div class="line"><span class="lineno">  242</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(us(0));</div>
+<div class="line"><span class="lineno">  243</span>        timing.Restart(us(1000));</div>
+<div class="line"><span class="lineno">  244</span>        REQUIRE(timing.ShouldUpdate(us(1000)));</div>
+<div class="line"><span class="lineno">  245</span>        REQUIRE(timing.ShouldUpdate(us(1000)));</div>
+<div class="line"><span class="lineno">  246</span>        REQUIRE(timing.ShouldUpdate(us(5000)));</div>
+<div class="line"><span class="lineno">  247</span>        REQUIRE(timing.ShouldUpdate(us(5000)));</div>
+<div class="line"><span class="lineno">  248</span>        REQUIRE(timing.ShouldUpdate(us(0)));</div>
+<div class="line"><span class="lineno">  249</span> </div>
+<div class="line"><span class="lineno">  250</span>        <span class="comment">// The schedule still starts at 1000 us because the zero-interval calls did not move it.</span></div>
+<div class="line"><span class="lineno">  251</span>        timing.SetInterval(us(10000));</div>
+<div class="line"><span class="lineno">  252</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(10999)));</div>
+<div class="line"><span class="lineno">  253</span>        REQUIRE(timing.ShouldUpdate(us(11000)));</div>
+<div class="line"><span class="lineno">  254</span>    }</div>
+<div class="line"><span class="lineno">  255</span> </div>
+<div class="line"><span class="lineno">  256</span>    SECTION(<span class="stringliteral">&quot;an instant earlier than the last one counts as no time passed&quot;</span>)</div>
+<div class="line"><span class="lineno">  257</span>    {</div>
+<div class="line"><span class="lineno">  258</span>        <a class="code hl_class" href="classecs_1_1Timing.html">Timing</a> timing(std::chrono::milliseconds(100));</div>
+<div class="line"><span class="lineno">  259</span>        timing.Restart(std::chrono::seconds(1));</div>
+<div class="line"><span class="lineno">  260</span>        REQUIRE_FALSE(timing.ShouldUpdate(std::chrono::milliseconds(500)));</div>
+<div class="line"><span class="lineno">  261</span>        REQUIRE_FALSE(timing.ShouldUpdate(us(0)));</div>
+<div class="line"><span class="lineno">  262</span>        REQUIRE_FALSE(timing.ShouldUpdate(std::chrono::milliseconds(1099)));</div>
+<div class="line"><span class="lineno">  263</span>        REQUIRE(timing.ShouldUpdate(std::chrono::milliseconds(1100)));</div>
+<div class="line"><span class="lineno">  264</span>    }</div>
+<div class="line"><span class="lineno">  265</span>}</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="Timing_8hpp_source.html#l00093">ecs::Timing::Restart()</a>, <a class="el" href="Timing_8hpp_source.html#l00100">ecs::Timing::SetInterval()</a>, and <a class="el" href="Timing_8hpp_source.html#l00058">ecs::Timing::ShouldUpdate()</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 10:00:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 11:36:28 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

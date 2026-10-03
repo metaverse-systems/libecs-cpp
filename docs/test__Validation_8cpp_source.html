@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.8.0</span>
    </div>
   </td>
  </tr>
@@ -111,7 +111,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>          : received(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(received))</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        {</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>            this-&gt;Handle = handle;</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            this-&gt;Timing.SetFrequency(0);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            this-&gt;Timing.SetInterval(std::chrono::microseconds(0));</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        }</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">Update</a>()<span class="keyword"> override</span></div>
@@ -138,7 +138,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>          : <a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>(<a class="code hl_variable" href="test__Lifecycle_8cpp.html#a39886ebc661220842cca88183f03e1c6">manager</a>), catching(catching)</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        {</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            this-&gt;Handle = handle;</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            this-&gt;Timing.SetFrequency(0);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            this-&gt;Timing.SetInterval(std::chrono::microseconds(0));</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        }</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">Update</a>()<span class="keyword"> override</span></div>
@@ -905,7 +905,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>          : trace(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(trace)), counters(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(counters))</div>
 <div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>        {</div>
 <div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>            this-&gt;Handle = handle;</div>
-<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>            this-&gt;Timing.SetFrequency(0);</div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>            this-&gt;Timing.SetInterval(std::chrono::microseconds(0));</div>
 <div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>        }</div>
 <div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span> </div>
 <div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span>        ~CountingSystem()<span class="keyword"> override</span></div>
@@ -923,7 +923,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span><span class="keyword">        </span>{</div>
 <div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>            this-&gt;counters-&gt;updated++;</div>
 <div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>            this-&gt;trace-&gt;entries.emplace_back(this-&gt;Handle, this-&gt;trace-&gt;pass);</div>
-<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>            <span class="keywordflow">if</span>(this-&gt;onUpdate) this-&gt;<a class="code hl_variable" href="test__Lifecycle_8cpp.html#aeb2010cb5da33c7588bfbeda2317dc76">onUpdate</a>();</div>
+<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>            <span class="keywordflow">if</span>(this-&gt;<a class="code hl_variable" href="test__Lifecycle_8cpp.html#aeb2010cb5da33c7588bfbeda2317dc76">onUpdate</a>) this-&gt;<a class="code hl_variable" href="test__Lifecycle_8cpp.html#aeb2010cb5da33c7588bfbeda2317dc76">onUpdate</a>();</div>
 <div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>        }</div>
 <div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span> </div>
 <div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>        <a class="code hl_typedef" href="namespacenlohmann.html#a2bfd99e845a2e5cd90aeaf1b1431f474">json</a> <a class="code hl_function" href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">Export</a>()<span class="keyword"> const override</span></div>
@@ -1609,10 +1609,10 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="ttc" id="aclassecs_1_1Component_html"><div class="ttname"><a href="classecs_1_1Component.html">ecs::Component</a></div><div class="ttdef"><b>Definition</b> <a href="Component_8hpp_source.html#l00012">Component.hpp:13</a></div></div>
 <div class="ttc" id="aclassecs_1_1Component_html_ae65b9bb278b2df7ea231941a98e1fdee"><div class="ttname"><a href="classecs_1_1Component.html#ae65b9bb278b2df7ea231941a98e1fdee">ecs::Component::Export</a></div><div class="ttdeci">virtual nlohmann::json Export() const =0</div></div>
-<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00080">Container.hpp:81</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_a5864d8fa020129153b2037d68c577073"><div class="ttname"><a href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">ecs::Container::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00651">Container.cpp:651</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00397">Container.cpp:397</a></div></div>
-<div class="ttc" id="aclassecs_1_1Container_html_af5b4fa4307961825080901ed8114427f"><div class="ttname"><a href="classecs_1_1Container.html#af5b4fa4307961825080901ed8114427f">ecs::Container::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00684">Container.cpp:684</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html"><div class="ttname"><a href="classecs_1_1Container.html">ecs::Container</a></div><div class="ttdef"><b>Definition</b> <a href="Container_8hpp_source.html#l00085">Container.hpp:86</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_a5864d8fa020129153b2037d68c577073"><div class="ttname"><a href="classecs_1_1Container.html#a5864d8fa020129153b2037d68c577073">ecs::Container::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00673">Container.cpp:673</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_aceb387510babce9202c55c9935db6cbb"><div class="ttname"><a href="classecs_1_1Container.html#aceb387510babce9202c55c9935db6cbb">ecs::Container::System</a></div><div class="ttdeci">ecs::System * System(std::unique_ptr&lt; ecs::System &gt; system)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00417">Container.cpp:417</a></div></div>
+<div class="ttc" id="aclassecs_1_1Container_html_af5b4fa4307961825080901ed8114427f"><div class="ttname"><a href="classecs_1_1Container.html#af5b4fa4307961825080901ed8114427f">ecs::Container::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="Container_8cpp_source.html#l00707">Container.cpp:707</a></div></div>
 <div class="ttc" id="aclassecs_1_1Entity_html"><div class="ttname"><a href="classecs_1_1Entity.html">ecs::Entity</a></div><div class="ttdef"><b>Definition</b> <a href="Entity_8hpp_source.html#l00018">Entity.hpp:19</a></div></div>
 <div class="ttc" id="aclassecs_1_1Entity_html_a273a2367f71281fc07272da6c6e17936"><div class="ttname"><a href="classecs_1_1Entity.html#a273a2367f71281fc07272da6c6e17936">ecs::Entity::Component</a></div><div class="ttdeci">std::shared_ptr&lt; ecs::Component &gt; Component(std::unique_ptr&lt; ecs::Component &gt; component)</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00043">Entity.cpp:43</a></div></div>
 <div class="ttc" id="aclassecs_1_1Entity_html_a7c063976528df7261dfcb068b06c118e"><div class="ttname"><a href="classecs_1_1Entity.html#a7c063976528df7261dfcb068b06c118e">ecs::Entity::Export</a></div><div class="ttdeci">nlohmann::json Export() const</div><div class="ttdef"><b>Definition</b> <a href="Entity_8cpp_source.html#l00026">Entity.cpp:26</a></div></div>
@@ -1620,11 +1620,11 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassecs_1_1Manager_html_a47605c588700bbd18f80a49a966f96ae"><div class="ttname"><a href="classecs_1_1Manager.html#a47605c588700bbd18f80a49a966f96ae">ecs::Manager::MessageSubmit</a></div><div class="ttdeci">void MessageSubmit(const nlohmann::json &amp;message)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00089">Manager.cpp:89</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_aa2ba08b80c1323aecd34af40c13d7358"><div class="ttname"><a href="classecs_1_1Manager.html#aa2ba08b80c1323aecd34af40c13d7358">ecs::Manager::ContainersGet</a></div><div class="ttdeci">std::vector&lt; std::string &gt; ContainersGet()</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00078">Manager.cpp:78</a></div></div>
 <div class="ttc" id="aclassecs_1_1Manager_html_af96d2ee8eb88a8c35adfb6015acf59bd"><div class="ttname"><a href="classecs_1_1Manager.html#af96d2ee8eb88a8c35adfb6015acf59bd">ecs::Manager::Container</a></div><div class="ttdeci">ecs::Container * Container(const std::string &amp;handle)</div><div class="ttdef"><b>Definition</b> <a href="Manager_8cpp_source.html#l00032">Manager.cpp:32</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html"><div class="ttname"><a href="classecs_1_1System.html">ecs::System</a></div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00090">System.hpp:91</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a3ad78d3d7857d167a85aa93a9a3d44b7"><div class="ttname"><a href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">ecs::System::Update</a></div><div class="ttdeci">virtual void Update()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00134">System.hpp:134</a></div></div>
-<div class="ttc" id="aclassecs_1_1System_html_a42f662283a9d918b857870e057af3683"><div class="ttname"><a href="classecs_1_1System.html#a42f662283a9d918b857870e057af3683">ecs::System::Initialize</a></div><div class="ttdeci">virtual void Initialize()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00111">System.hpp:111</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html"><div class="ttname"><a href="classecs_1_1System.html">ecs::System</a></div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00152">System.hpp:153</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a3ad78d3d7857d167a85aa93a9a3d44b7"><div class="ttname"><a href="classecs_1_1System.html#a3ad78d3d7857d167a85aa93a9a3d44b7">ecs::System::Update</a></div><div class="ttdeci">virtual void Update()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00196">System.hpp:196</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_a42f662283a9d918b857870e057af3683"><div class="ttname"><a href="classecs_1_1System.html#a42f662283a9d918b857870e057af3683">ecs::System::Initialize</a></div><div class="ttdeci">virtual void Initialize()</div><div class="ttdef"><b>Definition</b> <a href="System_8hpp_source.html#l00173">System.hpp:173</a></div></div>
 <div class="ttc" id="aclassecs_1_1System_html_a9a07420a3b75f90051f4635cc0fad529"><div class="ttname"><a href="classecs_1_1System.html#a9a07420a3b75f90051f4635cc0fad529">ecs::System::Export</a></div><div class="ttdeci">virtual nlohmann::json Export() const =0</div></div>
-<div class="ttc" id="aclassecs_1_1System_html_ae5a9adaed132a1265bd68cea438ba569"><div class="ttname"><a href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">ecs::System::MessagesWaiting</a></div><div class="ttdeci">size_t MessagesWaiting()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00087">System.cpp:87</a></div></div>
+<div class="ttc" id="aclassecs_1_1System_html_ae5a9adaed132a1265bd68cea438ba569"><div class="ttname"><a href="classecs_1_1System.html#ae5a9adaed132a1265bd68cea438ba569">ecs::System::MessagesWaiting</a></div><div class="ttdeci">size_t MessagesWaiting()</div><div class="ttdef"><b>Definition</b> <a href="System_8cpp_source.html#l00102">System.cpp:102</a></div></div>
 <div class="ttc" id="aecs_8hpp_html"><div class="ttname"><a href="ecs_8hpp.html">ecs.hpp</a></div></div>
 <div class="ttc" id="anamespacenlohmann_1_1detail_html_a59e696b1dad6d0d99c172ac4518c2042a2063c1608d6e0baf80249c42e2be5804"><div class="ttname"><a href="namespacenlohmann_1_1detail.html#a59e696b1dad6d0d99c172ac4518c2042a2063c1608d6e0baf80249c42e2be5804">nlohmann::detail::parse_event_t::value</a></div><div class="ttdeci">@ value</div><div class="ttdoc">the parser finished reading a JSON value</div></div>
 <div class="ttc" id="anamespacenlohmann_html_a2bfd99e845a2e5cd90aeaf1b1431f474"><div class="ttname"><a href="namespacenlohmann.html#a2bfd99e845a2e5cd90aeaf1b1431f474">nlohmann::json</a></div><div class="ttdeci">basic_json&lt;&gt; json</div><div class="ttdoc">default specialization</div><div class="ttdef"><b>Definition</b> <a href="json_8hpp_source.html#l03337">json.hpp:3337</a></div></div>
@@ -1637,7 +1637,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 10:00:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 11:36:27 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

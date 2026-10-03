@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.7.0</span>
+   <div id="projectname">libecs-cpp<span id="projectnumber">&#160;1.8.0</span>
    </div>
   </td>
  </tr>
@@ -82,17 +82,22 @@ $(function() {
   <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timer.html#a93846655ea8f3de5c69dc3d301935bfb">callback</a></td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timer.html#a5eddf2cc453035413f0a34e00aa63c7a">CallbackRun</a>()</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timer.html#a7cd445c83e967ef0ce23ef47a9fb5bcf">discarded</a></td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timer.html#af3851ced4fa0171446888050f9584127">due</a>()</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timer.html#af142dcd50ab829e7cd07034c65368097">due</a>(std::chrono::microseconds now)</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timer.html#aede93b803be028a06b9d42179b0b8897">ecs::System</a></td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">friend</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timer.html#a36429005e7d9569ab72cc5f28cbe60a6">fire</a>()</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timer.html#aa845fc2f5c378db49a7678bb8d21bd82">fromSeconds</a>(T seconds)</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timer.html#aa5388e6fd4cab2ec3db7be17c2ed3774">length</a></td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timer.html#a81899849b46416267cfa9fb188e0536a">Name</a></td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timer.html#adc22e07651981116a37a16f1315ebcde">Repeat</a></td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timer.html#a25b2aaae7a897a4946af15e41585f401">Timer</a>(std::string name, std::function&lt; void()&gt; callback, uint32_t interval=30, bool repeat=true)</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timer.html#a3559a6a1341654ddc863053b9f540a16">start</a>(std::chrono::microseconds now)</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timer.html#a4584ca4cb10cf775641bd4a735268576">Timer</a>(std::string name, std::function&lt; void()&gt; callback, std::chrono::microseconds interval=std::chrono::seconds(30), bool repeat=true)</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timer.html#aebe41f274da8527f00d4b2cb5429a3b6">Timer</a>(std::string name, std::function&lt; void()&gt; callback, T seconds, bool repeat=true)</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classecs_1_1Timer.html#a9edb5c8acba41f27a61909022813d514">timing</a></td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classecs_1_1Timer.html#ae9e82019a2109310d70c30e2a1d31fbb">valid</a>() const</td><td class="entry"><a class="el" href="classecs_1_1Timer.html">ecs::Timer</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 3 2026 10:00:25 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Oct 3 2026 11:36:28 for libecs-cpp by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

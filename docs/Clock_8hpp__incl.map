@@ -1,0 +1,13 @@
+<map id="include/libecs&#45;cpp/Clock.hpp" name="include/libecs&#45;cpp/Clock.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="151,5,289,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,72,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,48,79,90,77,85,176,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="96,93,163,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="200,48,155,86,151,82,196,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="187,93,253,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="223,46,223,79,217,79,217,46"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="278,93,365,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="246,43,297,82,294,87,243,48"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="389,93,448,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="269,43,378,86,376,91,267,48"/>
+</map>

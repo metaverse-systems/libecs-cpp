@@ -1,13 +1,16 @@
 <map id="TestSystem" name="TestSystem">
-<area shape="rect" id="Node000001" title=" " alt="" coords="79,256,177,281"/>
-<area shape="rect" id="Node000002" href="$classecs_1_1System.html" title=" " alt="" coords="77,181,179,207"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,220,113,239,117,255,112,256,108,239,108,220"/>
-<area shape="poly" id="edge5_Node000001_Node000002" title=" " alt="" coords="131,221,131,256,125,256,125,221"/>
-<area shape="poly" id="edge6_Node000001_Node000002" title=" " alt="" coords="148,220,148,239,144,256,139,255,143,239,143,220"/>
-<area shape="rect" id="Node000003" href="$classecs_1_1Container.html" title=" " alt="" coords="5,93,120,119"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="79,129,98,156,119,180,115,183,94,159,75,132"/>
-<area shape="rect" id="Node000004" href="$classecs_1_1Manager.html" title=" " alt="" coords="8,5,117,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="65,45,65,93,60,93,60,45"/>
-<area shape="rect" id="Node000005" href="$classecs_1_1Timing.html" title=" " alt="" coords="145,93,242,119"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="183,133,166,159,143,183,139,179,162,156,179,130"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="162,256,259,281"/>
+<area shape="rect" id="Node000002" href="$classecs_1_1System.html" title=" " alt="" coords="160,181,261,207"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="196,220,196,239,200,255,194,256,190,239,191,220"/>
+<area shape="poly" id="edge7_Node000001_Node000002" title=" " alt="" coords="213,221,213,256,208,256,208,221"/>
+<area shape="poly" id="edge8_Node000001_Node000002" title=" " alt="" coords="231,220,231,239,227,256,222,255,226,239,225,220"/>
+<area shape="rect" id="Node000003" href="$classecs_1_1Container.html" title=" " alt="" coords="48,93,163,119"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="113,131,126,156,144,169,164,179,162,184,141,174,122,159,108,133"/>
+<area shape="rect" id="Node000004" href="$classecs_1_1Manager.html" title=" " alt="" coords="5,5,115,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="59,44,64,68,73,81,86,91,82,95,69,85,59,70,54,45"/>
+<area shape="rect" id="Node000005" href="$classecs_1_1Clock.html" title=" " alt="" coords="152,5,240,31"/>
+<area shape="poly" id="edge6_Node000002_Node000005" title=" " alt="" coords="201,44,212,181,207,181,195,45"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="173,41,155,57,118,95,114,91,152,53,169,37"/>
+<area shape="rect" id="Node000006" href="$classecs_1_1Timing.html" title=" " alt="" coords="274,93,371,119"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="298,129,228,183,224,179,295,125"/>
 </map>
