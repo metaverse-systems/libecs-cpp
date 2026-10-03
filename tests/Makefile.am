@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src ${CATCH2_CFLAGS}
-AM_CXXFLAGS = -std=c++20 $(SANITIZER_CXXFLAGS)
+AM_CXXFLAGS = -std=c++20 -Wall $(WERROR_CXXFLAGS) $(SANITIZER_CXXFLAGS)
 AM_LDFLAGS = $(SANITIZER_LDFLAGS)
 
 check_PROGRAMS = test_Manager test_System test_Entity test_Container test_Timing test_Elapsed test_Compatibility test_UpdateAllocation test_Uuid test_Threading test_Validation test_Lifecycle test_ProcessManager test_Access test_Logging test_Resources test_Export

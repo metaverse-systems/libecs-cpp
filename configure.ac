@@ -55,7 +55,19 @@ AS_CASE(["$sanitizer"],
 	],
 	[AC_MSG_ERROR([invalid value '$sanitizer' for --enable-sanitizer; accepted values are: no, address, thread])])
 
+AC_ARG_ENABLE([werror],
+	AS_HELP_STRING([--enable-werror=@<:@no|yes@:>@],
+		[Treat compiler warnings as errors in the library, the sample and the tests [default=no]]),
+	[werror="${enableval}"],
+	[werror="no"])
+
+AS_CASE(["$werror"],
+	[no], [WERROR_CXXFLAGS=],
+	[yes], [WERROR_CXXFLAGS=-Werror],
+	[AC_MSG_ERROR([invalid value '$werror' for --enable-werror; accepted values are: no, yes])])
+
 AC_SUBST([cross_compiling])
+AC_SUBST([WERROR_CXXFLAGS])
 AC_SUBST([SANITIZER])
 AC_SUBST([SANITIZER_CXXFLAGS])
 AC_SUBST([SANITIZER_LDFLAGS])

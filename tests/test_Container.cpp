@@ -272,6 +272,7 @@ TEST_CASE("Container Export includes entities and systems", "[Container]") {
     auto container = manager.Container("test-container");
     container->System(std::make_unique<TestSystem>());
     auto entity = container->Entity("entity1");
+    REQUIRE(entity != nullptr);
 
     auto exported = container->Export();
     REQUIRE(exported["Handle"] == "test-container");

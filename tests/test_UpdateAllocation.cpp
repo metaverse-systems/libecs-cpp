@@ -100,6 +100,12 @@ void *operator new[](std::size_t size, std::align_val_t al, const std::nothrow_t
     return alignedAlloc(size, static_cast<std::size_t>(al));
 }
 
+// The replacement delete functions release memory that the replacement new functions above allocate with
+// malloc; GCC cannot see that pairing and reports a mismatch once it inlines them.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmismatched-new-delete"
+#endif
 void operator delete(void *p) noexcept { std::free(p); }
 void operator delete[](void *p) noexcept { std::free(p); }
 void operator delete(void *p, std::size_t) noexcept { std::free(p); }
@@ -112,6 +118,9 @@ void operator delete(void *p, std::size_t, std::align_val_t) noexcept { alignedF
 void operator delete[](void *p, std::size_t, std::align_val_t) noexcept { alignedFree(p); }
 void operator delete(void *p, std::align_val_t, const std::nothrow_t &) noexcept { alignedFree(p); }
 void operator delete[](void *p, std::align_val_t, const std::nothrow_t &) noexcept { alignedFree(p); }
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 namespace
 {
