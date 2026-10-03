@@ -333,5 +333,11 @@ namespace ecs
         /*! Waits until the world's thread has ended (one caller joins, the others wait), or tears down a
          *  world that has no thread on the calling thread. */
         void waitStopped();
+        /*! For the manager. Requests the stop of a world that has its own thread and says whether it has
+         *  one; a world without a thread is left alone. */
+        bool managerStopRequest();
+        /*! For the manager. Waits until the world's thread has ended, unless called from a world thread,
+         *  which only requests. */
+        void managerStopWait();
     };
 }

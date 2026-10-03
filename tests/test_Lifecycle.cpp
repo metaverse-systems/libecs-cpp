@@ -953,6 +953,47 @@ namespace
             return d;
         }});
 
+        // No assertions run inside this one: it runs on a watchdog worker thread.
+        rows.push_back({"Manager::Shutdown()", true, [](EventLog &log) {
+            ecs::Manager manager;
+            Departure d;
+            d.reverse = true;
+            d.onWorldThread = true;
+            auto *world = manager.Container("departure");
+            d.subjects = addSystems(world, log, 4);
+            world->Start(200);
+            const auto limit = std::chrono::seconds(20 * kSanitizerFactor);
+            for(const auto &c : d.subjects)
+            {
+                waitUntil([&] { return c->update.load() >= 1; }, limit);
+            }
+            manager.Shutdown();
+            // The world has ended when Shutdown() returns: nothing is updated or notified afterwards.
+            const int updates = d.subjects[0]->update.load();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            if(d.subjects[0]->update.load() != updates) d.subjects.clear();
+            return d;
+        }});
+
+        // No assertions run inside this one: it runs on a watchdog worker thread.
+        rows.push_back({"manager destruction", true, [](EventLog &log) {
+            Departure d;
+            d.reverse = true;
+            d.onWorldThread = true;
+            {
+                ecs::Manager manager;
+                auto *world = manager.Container("departure");
+                d.subjects = addSystems(world, log, 4);
+                world->Start(200);
+                const auto limit = std::chrono::seconds(20 * kSanitizerFactor);
+                for(const auto &c : d.subjects)
+                {
+                    waitUntil([&] { return c->update.load() >= 1; }, limit);
+                }
+            }
+            return d;
+        }});
+
         return rows;
     }
 }
@@ -2121,4 +2162,992 @@ TEST_CASE("Stop and start loop", "[Lifecycle]")
     const StartStopLoop r = withTimeout([&] { return startStopLoop(iterations); }, watchdogLimit());
     CHECK(r.iterations == iterations);
     CHECK(r.consistent == iterations);
+}
+
+// Cases that cover what a manager does to its worlds when it shuts down and when it is destroyed.
+
+namespace
+{
+#if defined(__SANITIZE_THREAD__)
+    constexpr int kThreadFactor = 4;
+#elif defined(__has_feature)
+#if __has_feature(thread_sanitizer)
+    constexpr int kThreadFactor = 4;
+#else
+    constexpr int kThreadFactor = 1;
+#endif
+#else
+    constexpr int kThreadFactor = 1;
+#endif
+
+    // Set when the thread that touched it ends. A world thread touches it from Update().
+    struct EndMark
+    {
+        std::atomic<bool> *flag = nullptr;
+
+        ~EndMark()
+        {
+            if(this->flag) this->flag->store(true);
+        }
+    };
+
+    thread_local EndMark endMark;
+
+    // Worlds of one manager that run on their own threads, with the systems they hold. Declare it before
+    // the manager so the end flags outlive every world thread.
+    struct Fleet
+    {
+        std::vector<ecs::Container *> worlds;
+        // Per world, in registration order.
+        std::vector<std::vector<std::shared_ptr<Counters>>> counters;
+        std::vector<std::unique_ptr<std::atomic<bool>>> ended;
+    };
+
+    using Customize = std::function<void(ecs::Container *, int, int, CountingSystem &)>;
+
+    // Builds threaded worlds named <prefix><n> holding systems named <prefix><n>-s<i>, starts them and
+    // waits until every system has been updated.
+    void fleetBuild(Fleet &fleet, ecs::Manager &manager, EventLog &log, int worlds, int perWorld, uint32_t interval,
+                    const std::string &prefix, const Customize &customize = nullptr)
+    {
+        for(int w = 0; w < worlds; w++)
+        {
+            fleet.ended.push_back(std::make_unique<std::atomic<bool>>(false));
+        }
+        for(int w = 0; w < worlds; w++)
+        {
+            auto *world = manager.Container(prefix + std::to_string(w));
+            fleet.worlds.push_back(world);
+            fleet.counters.emplace_back();
+            std::atomic<bool> *flag = fleet.ended[w].get();
+            for(int i = 0; i < perWorld; i++)
+            {
+                auto system = std::make_unique<CountingSystem>(&log, prefix + std::to_string(w) + "-s" + std::to_string(i));
+                if(customize) customize(world, w, i, *system);
+                auto previous = system->onUpdate;
+                system->onUpdate = [previous, flag] {
+                    endMark.flag = flag;
+                    if(previous) previous();
+                };
+                fleet.counters.back().push_back(system->counters);
+                world->System(std::move(system));
+            }
+        }
+        for(auto *world : fleet.worlds) world->Start(interval);
+        const auto limit = std::chrono::seconds(20 * kSanitizerFactor);
+        for(const auto &perWorldCounters : fleet.counters)
+        {
+            for(const auto &c : perWorldCounters)
+            {
+                waitUntil([&] { return c->update.load() >= 1; }, limit);
+            }
+        }
+    }
+
+    bool fleetEnded(const Fleet &fleet)
+    {
+        for(const auto &flag : fleet.ended)
+        {
+            if(!flag->load()) return false;
+        }
+        return true;
+    }
+
+    // Every system was started once and notified once, last registered first within its world.
+    bool fleetNotifiedOnce(const Fleet &fleet)
+    {
+        for(const auto &perWorldCounters : fleet.counters)
+        {
+            for(size_t i = 0; i < perWorldCounters.size(); i++)
+            {
+                const auto &c = perWorldCounters[i];
+                if(c->initialize.load() != 1 || c->shutdown.load() != 1) return false;
+                if(i > 0 && c->shutdownSequence.load() >= perWorldCounters[i - 1]->shutdownSequence.load()) return false;
+            }
+        }
+        return true;
+    }
+
+    long fleetUpdates(const Fleet &fleet)
+    {
+        long total = 0;
+        for(const auto &perWorldCounters : fleet.counters)
+        {
+            for(const auto &c : perWorldCounters) total += c->update.load();
+        }
+        return total;
+    }
+
+    bool fleetAllNotified(const Fleet &fleet)
+    {
+        for(const auto &perWorldCounters : fleet.counters)
+        {
+            for(const auto &c : perWorldCounters)
+            {
+                if(c->shutdown.load() < 1) return false;
+            }
+        }
+        return true;
+    }
+
+    nlohmann::json messageBetween(const std::string &container, const std::string &system)
+    {
+        nlohmann::json message;
+        message["destination"]["container"] = container;
+        message["destination"]["system"] = system;
+        return message;
+    }
+
+    // What became of the sends one test made through a manager.
+    struct SendTally
+    {
+        std::atomic<int> delivered{0};
+        std::atomic<int> refused{0};
+        std::atomic<int> other{0};
+        std::atomic<long> longestMs{0};
+
+        int attempts() const { return this->delivered.load() + this->refused.load() + this->other.load(); }
+    };
+
+    // A send is delivered or refused with std::runtime_error; anything else is counted as "other".
+    void trySend(ecs::Manager *manager, const std::shared_ptr<SendTally> &tally, const std::string &container,
+                 const std::string &system)
+    {
+        const auto begin = Clock::now();
+        try
+        {
+            manager->MessageSubmit(messageBetween(container, system));
+            tally->delivered++;
+        }
+        catch(const std::runtime_error &)
+        {
+            tally->refused++;
+        }
+        catch(...)
+        {
+            tally->other++;
+        }
+        const long took = millisecondsSince(begin);
+        long seen = tally->longestMs.load();
+        while(took > seen && !tally->longestMs.compare_exchange_weak(seen, took)) {}
+    }
+
+    struct ShutdownRuns
+    {
+        int repetitions = 0;
+        int allEnded = 0;
+        int notifiedOnce = 0;
+        int frozen = 0;
+        int notRunning = 0;
+    };
+
+    ShutdownRuns managerShutdownRuns(int repetitions)
+    {
+        ShutdownRuns out;
+        for(int rep = 0; rep < repetitions; rep++)
+        {
+            EventLog log;
+            Fleet fleet;
+            ecs::Manager manager;
+            fleetBuild(fleet, manager, log, 4, 2, 200, "w");
+            manager.Shutdown();
+
+            out.repetitions++;
+            if(fleetEnded(fleet)) out.allEnded++;
+            if(fleetNotifiedOnce(fleet)) out.notifiedOnce++;
+            if(!manager.IsRunning()) out.notRunning++;
+            const long updates = fleetUpdates(fleet);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            if(fleetUpdates(fleet) == updates) out.frozen++;
+        }
+        return out;
+    }
+}
+
+TEST_CASE("Manager shutdown stops every world and waits", "[Lifecycle]")
+{
+    const int repetitions = 500;
+    const ShutdownRuns r = withTimeout([&] { return managerShutdownRuns(repetitions); }, watchdogLimit());
+    CHECK(r.repetitions == repetitions);
+    CHECK(r.allEnded == repetitions);
+    CHECK(r.notifiedOnce == repetitions);
+    CHECK(r.frozen == repetitions);
+    CHECK(r.notRunning == repetitions);
+}
+
+TEST_CASE("Repeated and concurrent shutdown", "[Lifecycle]")
+{
+    SECTION("twice in a row")
+    {
+        const bool ok = withTimeout([] {
+            EventLog log;
+            Fleet fleet;
+            ecs::Manager manager;
+            fleetBuild(fleet, manager, log, 4, 2, 200, "w");
+            manager.Shutdown();
+            const bool first = fleetEnded(fleet) && fleetNotifiedOnce(fleet);
+            manager.Shutdown();
+            return first && fleetEnded(fleet) && fleetNotifiedOnce(fleet);
+        }, watchdogLimit());
+        CHECK(ok);
+    }
+
+    SECTION("from four threads at once")
+    {
+        const int repetitions = 50;
+        const int good = withTimeout([&] {
+            int count = 0;
+            for(int rep = 0; rep < repetitions; rep++)
+            {
+                EventLog log;
+                Fleet fleet;
+                ecs::Manager manager;
+                fleetBuild(fleet, manager, log, 4, 2, 200, "w");
+                std::atomic<int> arrived{0};
+                std::atomic<int> returnedComplete{0};
+                std::vector<std::thread> callers;
+                for(int i = 0; i < 4; i++)
+                {
+                    callers.emplace_back([&] {
+                        arrived++;
+                        waitUntil([&] { return arrived.load() == 4; }, std::chrono::seconds(20 * kSanitizerFactor));
+                        manager.Shutdown();
+                        if(fleetEnded(fleet) && fleetAllNotified(fleet)) returnedComplete++;
+                    });
+                }
+                for(auto &caller : callers) caller.join();
+                if(returnedComplete.load() == 4 && fleetNotifiedOnce(fleet)) count++;
+            }
+            return count;
+        }, watchdogLimit());
+        CHECK(good == repetitions);
+    }
+}
+
+TEST_CASE("Manager shutdown time with a long interval", "[Lifecycle]")
+{
+    const long took = withTimeout([] {
+        EventLog log;
+        Fleet fleet;
+        ecs::Manager manager;
+        // 5 s between passes.
+        fleetBuild(fleet, manager, log, 4, 1, 5000000, "w");
+        const auto begin = Clock::now();
+        manager.Shutdown();
+        const long ms = millisecondsSince(begin);
+        return fleetEnded(fleet) && fleetNotifiedOnce(fleet) ? ms : 1000000L;
+    }, watchdogLimit());
+    CHECK(took < 250 * kSanitizerFactor);
+}
+
+TEST_CASE("Caller-driven worlds are not stopped by the manager", "[Lifecycle]")
+{
+    const auto result = withTimeout([] {
+        struct Result
+        {
+            int notifiedBefore = -1;
+            int notifiedAfterStop = -1;
+            bool stopOnThisThread = false;
+            bool noThreadAfterStart = false;
+            bool startThrew = false;
+        } out;
+        EventLog log;
+        ecs::Manager manager;
+        auto *world = manager.Container("driven");
+        auto counters = addSystems(world, log, 2);
+        passes(world, 3);
+        manager.Shutdown();
+        out.notifiedBefore = counters[0]->shutdown.load() + counters[1]->shutdown.load();
+
+        const int updates = counters[0]->update.load();
+        const auto threadBefore = counters[0]->updateThread();
+        try
+        {
+            world->Start();
+        }
+        catch(...)
+        {
+            out.startThrew = true;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        out.noThreadAfterStart = counters[0]->update.load() == updates && counters[0]->updateThread() == threadBefore;
+
+        world->Stop();
+        out.notifiedAfterStop = counters[0]->shutdown.load() + counters[1]->shutdown.load();
+        out.stopOnThisThread = counters[0]->shutdownThread() == std::this_thread::get_id()
+            && counters[1]->shutdownThread() == std::this_thread::get_id();
+        return out;
+    }, watchdogLimit());
+    CHECK(result.notifiedBefore == 0);
+    CHECK_FALSE(result.startThrew);
+    CHECK(result.noThreadAfterStart);
+    CHECK(result.notifiedAfterStop == 2);
+    CHECK(result.stopOnThisThread);
+}
+
+namespace
+{
+    struct SelfShutdowns
+    {
+        int repetitions = 0;
+        int returnedAtOnce = 0;
+        int notNested = 0;
+        int stoppedAfterPass = 0;
+        int notifiedOnce = 0;
+        int ended = 0;
+    };
+
+    // One world whose system asks its own manager to shut down from its update.
+    SelfShutdowns shutdownFromOwnSystem(int repetitions)
+    {
+        SelfShutdowns out;
+        for(int rep = 0; rep < repetitions; rep++)
+        {
+            EventLog log;
+            Fleet fleet;
+            ecs::Manager manager;
+            auto armed = std::make_shared<std::atomic<bool>>(false);
+            auto callMs = std::make_shared<std::atomic<long>>(-1);
+            auto updatesAtCall = std::make_shared<std::atomic<int>>(-1);
+            auto shutdownAtReturn = std::make_shared<std::atomic<int>>(-1);
+            fleetBuild(fleet, manager, log, 1, 1, 500, "self", [&](ecs::Container *, int, int, CountingSystem &system) {
+                auto counters = system.counters;
+                ecs::Manager *raw = &manager;
+                system.onUpdate = [raw, counters, armed, callMs, updatesAtCall, shutdownAtReturn] {
+                    if(!armed->load() || callMs->load() >= 0) return;
+                    updatesAtCall->store(counters->update.load());
+                    const auto begin = Clock::now();
+                    raw->Shutdown();
+                    shutdownAtReturn->store(counters->shutdown.load());
+                    callMs->store(millisecondsSince(begin));
+                };
+            });
+            armed->store(true);
+            waitUntil([&] { return callMs->load() >= 0; }, std::chrono::seconds(20 * kSanitizerFactor));
+            // The application thread's own request completes the wait.
+            manager.Shutdown();
+
+            const auto &c = fleet.counters[0][0];
+            out.repetitions++;
+            if(callMs->load() >= 0 && callMs->load() < 250 * kSanitizerFactor) out.returnedAtOnce++;
+            if(shutdownAtReturn->load() == 0) out.notNested++;
+            if(c->update.load() == updatesAtCall->load()) out.stoppedAfterPass++;
+            if(fleetNotifiedOnce(fleet)) out.notifiedOnce++;
+            if(fleetEnded(fleet)) out.ended++;
+        }
+        return out;
+    }
+
+    // Two worlds whose systems ask for the shutdown at the same moment.
+    SelfShutdowns shutdownFromTwoWorlds(int repetitions)
+    {
+        SelfShutdowns out;
+        for(int rep = 0; rep < repetitions; rep++)
+        {
+            EventLog log;
+            Fleet fleet;
+            ecs::Manager manager;
+            auto armed = std::make_shared<std::atomic<bool>>(false);
+            auto arrived = std::make_shared<std::atomic<int>>(0);
+            auto worst = std::make_shared<std::atomic<long>>(-1);
+            auto done = std::make_shared<std::atomic<int>>(0);
+            fleetBuild(fleet, manager, log, 2, 1, 500, "two", [&](ecs::Container *, int, int, CountingSystem &system) {
+                ecs::Manager *raw = &manager;
+                auto once = std::make_shared<std::atomic<bool>>(false);
+                system.onUpdate = [raw, armed, arrived, worst, done, once] {
+                    if(!armed->load() || once->exchange(true)) return;
+                    arrived->fetch_add(1);
+                    waitUntil([&] { return arrived->load() == 2; }, std::chrono::seconds(20 * kSanitizerFactor));
+                    const auto begin = Clock::now();
+                    raw->Shutdown();
+                    const long took = millisecondsSince(begin);
+                    long seen = worst->load();
+                    while(took > seen && !worst->compare_exchange_weak(seen, took)) {}
+                    done->fetch_add(1);
+                };
+            });
+            armed->store(true);
+            waitUntil([&] { return done->load() == 2; }, std::chrono::seconds(20 * kSanitizerFactor));
+            manager.Shutdown();
+
+            out.repetitions++;
+            if(done->load() == 2 && worst->load() < 250 * kSanitizerFactor) out.returnedAtOnce++;
+            if(fleetNotifiedOnce(fleet)) out.notifiedOnce++;
+            if(fleetEnded(fleet)) out.ended++;
+        }
+        return out;
+    }
+
+    struct CrossShutdown
+    {
+        long callMs = -1;
+        bool returnedBeforeEnd = false;
+        bool finishedAfterWait = false;
+        bool notifiedOnce = false;
+    };
+
+    // A system of one world asks for the shutdown while another world's notification takes a while.
+    CrossShutdown shutdownOfOtherWorld()
+    {
+        CrossShutdown out;
+        EventLog log;
+        Fleet fleet;
+        ecs::Manager manager;
+        auto armed = std::make_shared<std::atomic<bool>>(false);
+        auto finished = std::make_shared<std::atomic<bool>>(false);
+        auto callMs = std::make_shared<std::atomic<long>>(-1);
+        auto beforeEnd = std::make_shared<std::atomic<int>>(-1);
+        fleetBuild(fleet, manager, log, 2, 1, 1000000, "cross", [&](ecs::Container *, int w, int, CountingSystem &system) {
+            if(w == 0)
+            {
+                ecs::Manager *raw = &manager;
+                system.onUpdate = [raw, armed, finished, callMs, beforeEnd] {
+                    if(!armed->load() || callMs->load() >= 0) return;
+                    const auto begin = Clock::now();
+                    raw->Shutdown();
+                    callMs->store(millisecondsSince(begin));
+                    beforeEnd->store(finished->load() ? 0 : 1);
+                };
+            }
+            else
+            {
+                system.onShutdown = [finished] {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                    finished->store(true);
+                };
+            }
+        });
+        // Wake world 0 so that it runs a pass now rather than after the long interval.
+        armed->store(true);
+        waitUntil([&] { return callMs->load() >= 0; }, std::chrono::seconds(20 * kSanitizerFactor));
+        out.callMs = callMs->load();
+        out.returnedBeforeEnd = beforeEnd->load() == 1;
+        manager.Shutdown();
+        out.finishedAfterWait = finished->load();
+        out.notifiedOnce = fleetNotifiedOnce(fleet) && fleetEnded(fleet);
+        return out;
+    }
+}
+
+TEST_CASE("Shutdown from inside a system", "[Lifecycle]")
+{
+    const int repetitions = 500;
+
+    SECTION("one world, repeated")
+    {
+        const SelfShutdowns r = withTimeout([&] { return shutdownFromOwnSystem(repetitions); }, watchdogLimit());
+        CHECK(r.repetitions == repetitions);
+        CHECK(r.returnedAtOnce == repetitions);
+        CHECK(r.notNested == repetitions);
+        CHECK(r.stoppedAfterPass == repetitions);
+        CHECK(r.notifiedOnce == repetitions);
+        CHECK(r.ended == repetitions);
+    }
+
+    SECTION("two worlds at the same time")
+    {
+        const SelfShutdowns r = withTimeout([&] { return shutdownFromTwoWorlds(repetitions); }, watchdogLimit());
+        CHECK(r.repetitions == repetitions);
+        CHECK(r.returnedAtOnce == repetitions);
+        CHECK(r.notifiedOnce == repetitions);
+        CHECK(r.ended == repetitions);
+    }
+
+    SECTION("a request about another world returns at once")
+    {
+        const CrossShutdown r = withTimeout([] { return shutdownOfOtherWorld(); }, watchdogLimit());
+        CHECK(r.callMs >= 0);
+        CHECK(r.callMs < 150 * kSanitizerFactor);
+        CHECK(r.returnedBeforeEnd);
+        CHECK(r.finishedAfterWait);
+        CHECK(r.notifiedOnce);
+    }
+}
+
+TEST_CASE("A failing world thread stops the others", "[Lifecycle]")
+{
+    struct Result
+    {
+        bool allNotified = false;
+        bool notRunning = false;
+        int errorLines = 0;
+        bool notifiedOnce = false;
+        bool ended = false;
+    };
+    const Result r = withTimeout([] {
+        Result out;
+        EventLog log;
+        auto sink = std::make_shared<LogSink>();
+        Fleet fleet;
+        ecs::Manager manager;
+        auto armed = std::make_shared<std::atomic<bool>>(false);
+        fleetBuild(fleet, manager, log, 3, 2, 500, "fail", [&](ecs::Container *, int w, int i, CountingSystem &system) {
+            if(w == 0 && i == 1)
+            {
+                system.onUpdate = [armed] {
+                    if(armed->load()) throw std::runtime_error("update failed on purpose");
+                };
+            }
+        });
+        sinkInstall(fleet.worlds[0], sink);
+        armed->store(true);
+        // Nobody asks for the shutdown: the failing world does.
+        out.allNotified = waitUntil([&] { return fleetAllNotified(fleet); }, std::chrono::seconds(20 * kSanitizerFactor));
+        out.notRunning = !manager.IsRunning();
+        for(const auto &line : sink->snapshot())
+        {
+            if(line.second == "error") out.errorLines++;
+        }
+        manager.Shutdown();
+        out.notifiedOnce = fleetNotifiedOnce(fleet);
+        out.ended = fleetEnded(fleet);
+        return out;
+    }, watchdogLimit());
+    CHECK(r.allNotified);
+    CHECK(r.notRunning);
+    CHECK(r.errorLines >= 1);
+    CHECK(r.notifiedOnce);
+    CHECK(r.ended);
+}
+
+TEST_CASE("Changes and requests during teardown", "[Lifecycle]")
+{
+    // The notification asks its world to stop and its manager to shut down, and records how long that took.
+    struct Calls
+    {
+        std::atomic<int> made{0};
+        std::atomic<long> longestMs{0};
+    };
+
+    auto requests = [](ecs::Container *world, ecs::Manager *manager, const std::shared_ptr<Calls> &calls) {
+        return [world, manager, calls] {
+            const auto begin = Clock::now();
+            world->Stop();
+            manager->Shutdown();
+            const long took = millisecondsSince(begin);
+            long seen = calls->longestMs.load();
+            while(took > seen && !calls->longestMs.compare_exchange_weak(seen, took)) {}
+            calls->made++;
+        };
+    };
+
+    SECTION("during the stop of a threaded world")
+    {
+        const bool ok = withTimeout([&] {
+            EventLog log;
+            Fleet fleet;
+            ecs::Manager manager;
+            auto calls = std::make_shared<Calls>();
+            fleetBuild(fleet, manager, log, 1, 2, 500, "t", [&](ecs::Container *world, int, int i, CountingSystem &system) {
+                if(i == 1) system.onShutdown = requests(world, &manager, calls);
+            });
+            fleet.worlds[0]->Stop();
+            return calls->made.load() == 1 && calls->longestMs.load() < 250 * kSanitizerFactor
+                && fleetNotifiedOnce(fleet) && fleetEnded(fleet);
+        }, watchdogLimit());
+        CHECK(ok);
+    }
+
+    SECTION("during the destruction of a manager with threaded worlds")
+    {
+        const bool ok = withTimeout([&] {
+            EventLog log;
+            Fleet fleet;
+            auto calls = std::make_shared<Calls>();
+            {
+                ecs::Manager manager;
+                fleetBuild(fleet, manager, log, 3, 2, 500, "t", [&](ecs::Container *world, int, int i, CountingSystem &system) {
+                    if(i == 1) system.onShutdown = requests(world, &manager, calls);
+                });
+            }
+            return calls->made.load() == 3 && calls->longestMs.load() < 250 * kSanitizerFactor
+                && fleetNotifiedOnce(fleet) && fleetEnded(fleet);
+        }, watchdogLimit());
+        CHECK(ok);
+    }
+
+    SECTION("during the destruction of a manager with a caller-driven world")
+    {
+        const bool ok = withTimeout([&] {
+            EventLog log;
+            auto calls = std::make_shared<Calls>();
+            std::vector<std::shared_ptr<Counters>> counters;
+            {
+                ecs::Manager manager;
+                auto *world = manager.Container("driven");
+                counters = addSystems(world, log, 3);
+                static_cast<CountingSystem *>(world->Systems.at("s3").get())->onShutdown = requests(world, &manager, calls);
+                passes(world, 2);
+            }
+            bool notified = true;
+            for(const auto &c : counters) notified = notified && c->shutdown.load() == 1;
+            return calls->made.load() == 1 && calls->longestMs.load() < 250 * kSanitizerFactor && notified;
+        }, watchdogLimit());
+        CHECK(ok);
+    }
+}
+
+TEST_CASE("Messages to a stopping world", "[Lifecycle]")
+{
+    struct Result
+    {
+        int attempts = 0;
+        int other = 0;
+        long longestMs = -1;
+        int updatesAfterShutdown = -1;
+        bool notifiedOnce = false;
+        bool ended = false;
+    };
+    const Result r = withTimeout([] {
+        Result out;
+        EventLog log;
+        Fleet fleet;
+        ecs::Manager manager;
+        auto armed = std::make_shared<std::atomic<bool>>(false);
+        auto tally = std::make_shared<SendTally>();
+        auto receiverDone = std::make_shared<std::atomic<bool>>(false);
+        auto violations = std::make_shared<std::atomic<int>>(0);
+        ecs::Manager *raw = &manager;
+        // World 0 sends to the system of world 1, which takes a while to shut down.
+        fleetBuild(fleet, manager, log, 2, 1, 200, "m", [&](ecs::Container *, int w, int, CountingSystem &system) {
+            if(w == 0)
+            {
+                system.onUpdate = [raw, armed, tally] {
+                    if(armed->load()) trySend(raw, tally, "m1", "m1-s0");
+                };
+                system.onShutdown = [raw, armed, tally] {
+                    if(!armed->load()) return;
+                    for(int i = 0; i < 20; i++)
+                    {
+                        trySend(raw, tally, "m1", "m1-s0");
+                        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                    }
+                };
+            }
+            else
+            {
+                system.onUpdate = [receiverDone, violations] {
+                    if(receiverDone->load()) violations->fetch_add(1);
+                };
+                system.onShutdown = [receiverDone] {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                    receiverDone->store(true);
+                };
+            }
+        });
+        armed->store(true);
+        waitUntil([&] { return tally->attempts() >= 100; }, std::chrono::seconds(20 * kSanitizerFactor));
+        manager.Shutdown();
+
+        out.attempts = tally->attempts();
+        out.other = tally->other.load();
+        out.longestMs = tally->longestMs.load();
+        out.updatesAfterShutdown = violations->load();
+        out.notifiedOnce = fleetNotifiedOnce(fleet);
+        out.ended = fleetEnded(fleet);
+        return out;
+    }, watchdogLimit());
+    CHECK(r.attempts >= 100);
+    CHECK(r.other == 0);
+    CHECK(r.longestMs < 150 * kSanitizerFactor);
+    CHECK(r.updatesAfterShutdown == 0);
+    CHECK(r.notifiedOnce);
+    CHECK(r.ended);
+}
+
+TEST_CASE("IsRunning is false immediately", "[Lifecycle]")
+{
+    struct Result
+    {
+        bool sawFalse = false;
+        bool shutdownStillRunning = false;
+        long seenAfterMs = -1;
+        bool notifiedOnce = false;
+    };
+    const Result r = withTimeout([] {
+        Result out;
+        EventLog log;
+        Fleet fleet;
+        ecs::Manager manager;
+        fleetBuild(fleet, manager, log, 2, 1, 500, "poll", [&](ecs::Container *, int, int, CountingSystem &system) {
+            system.onShutdown = [] { std::this_thread::sleep_for(std::chrono::milliseconds(300)); };
+        });
+        std::atomic<bool> returned{false};
+        const auto begin = Clock::now();
+        std::thread caller([&] {
+            manager.Shutdown();
+            returned.store(true);
+        });
+        out.sawFalse = waitUntil([&] { return !manager.IsRunning(); }, std::chrono::seconds(20 * kSanitizerFactor));
+        out.seenAfterMs = millisecondsSince(begin);
+        out.shutdownStillRunning = !returned.load();
+        caller.join();
+        out.notifiedOnce = fleetNotifiedOnce(fleet);
+        return out;
+    }, watchdogLimit());
+    CHECK(r.sawFalse);
+    // The flag is visible while the call is still waiting for the notifications.
+    CHECK(r.shutdownStillRunning);
+    CHECK(r.seenAfterMs < 250 * kSanitizerFactor);
+    CHECK(r.notifiedOnce);
+}
+
+namespace
+{
+    struct DestructionLoop
+    {
+        int iterations = 0;
+        int allNotified = 0;
+        int allEnded = 0;
+        int unexpectedErrors = 0;
+    };
+
+    // Four worlds whose systems send each other messages all the time, then the manager goes away.
+    DestructionLoop destroyInteractingWorlds(int iterations)
+    {
+        DestructionLoop out;
+        for(int iteration = 0; iteration < iterations; iteration++)
+        {
+            EventLog log;
+            Fleet fleet;
+            auto tally = std::make_shared<SendTally>();
+            auto armed = std::make_shared<std::atomic<bool>>(false);
+            {
+                ecs::Manager manager;
+                ecs::Manager *raw = &manager;
+                fleetBuild(fleet, manager, log, 4, 2, 200, "d", [&](ecs::Container *, int w, int i, CountingSystem &system) {
+                    const std::string next = "d" + std::to_string((w + 1) % 4);
+                    const std::string target = next + "-s" + std::to_string(i);
+                    system.onUpdate = [raw, armed, tally, next, target] {
+                        if(armed->load()) trySend(raw, tally, next, target);
+                    };
+                });
+                armed->store(true);
+                waitUntil([&] { return tally->attempts() >= 20; }, std::chrono::seconds(20 * kSanitizerFactor));
+            }
+            out.iterations++;
+            if(fleetNotifiedOnce(fleet)) out.allNotified++;
+            if(fleetEnded(fleet)) out.allEnded++;
+            out.unexpectedErrors += tally->other.load();
+        }
+        return out;
+    }
+}
+
+TEST_CASE("Destruction loop with interacting worlds", "[Lifecycle]")
+{
+    const int iterations = 500 / kThreadFactor;
+    const DestructionLoop r = withTimeout([&] { return destroyInteractingWorlds(iterations); }, watchdogLimit());
+    CHECK(r.iterations == iterations);
+    CHECK(r.allNotified == iterations);
+    CHECK(r.allEnded == iterations);
+    CHECK(r.unexpectedErrors == 0);
+}
+
+TEST_CASE("A notification that sends a message during manager destruction", "[Lifecycle]")
+{
+    struct Result
+    {
+        int attempts = 0;
+        int other = 0;
+        bool notifiedOnce = false;
+        bool drivenNotified = false;
+    };
+    const Result r = withTimeout([] {
+        Result out;
+        EventLog log;
+        Fleet fleet;
+        auto tally = std::make_shared<SendTally>();
+        std::vector<std::shared_ptr<Counters>> driven;
+        const std::vector<std::pair<std::string, std::string>> everyone = {
+            {"n0", "n0-s0"}, {"n0", "n0-s1"}, {"n1", "n1-s0"}, {"n1", "n1-s1"}, {"c", "s1"}, {"c", "s2"}};
+        {
+            ecs::Manager manager;
+            ecs::Manager *raw = &manager;
+            auto sendToEveryone = [raw, tally, everyone] {
+                for(const auto &[container, system] : everyone) trySend(raw, tally, container, system);
+            };
+            fleetBuild(fleet, manager, log, 2, 2, 500, "n", [&](ecs::Container *, int, int, CountingSystem &system) {
+                system.onShutdown = sendToEveryone;
+            });
+            auto *world = manager.Container("c");
+            driven = addSystems(world, log, 2);
+            for(const char *handle : {"s1", "s2"})
+            {
+                static_cast<CountingSystem *>(world->Systems.at(handle).get())->onShutdown = sendToEveryone;
+            }
+            passes(world, 2);
+        }
+        out.attempts = tally->attempts();
+        out.other = tally->other.load();
+        out.notifiedOnce = fleetNotifiedOnce(fleet) && fleetEnded(fleet);
+        out.drivenNotified = driven[0]->shutdown.load() == 1 && driven[1]->shutdown.load() == 1;
+        return out;
+    }, watchdogLimit());
+    // Each of the six systems sent to all six: delivered to a world that still exists or refused.
+    CHECK(r.attempts == 36);
+    CHECK(r.other == 0);
+    CHECK(r.notifiedOnce);
+    CHECK(r.drivenNotified);
+}
+
+TEST_CASE("World creation while closing", "[Lifecycle]")
+{
+    // 1 created, 0 refused with std::runtime_error, 2 anything else, -1 not asked.
+    SECTION("before the manager is closing")
+    {
+        const int outcome = withTimeout([] {
+            EventLog log;
+            Fleet fleet;
+            auto outcome = std::make_shared<std::atomic<int>>(-1);
+            ecs::Manager manager;
+            ecs::Manager *raw = &manager;
+            fleetBuild(fleet, manager, log, 1, 1, 500, "e", [&](ecs::Container *, int, int, CountingSystem &system) {
+                system.onShutdown = [raw, outcome] {
+                    try
+                    {
+                        outcome->store(raw->Container("created-in-notification") != nullptr ? 1 : 2);
+                    }
+                    catch(const std::runtime_error &)
+                    {
+                        outcome->store(0);
+                    }
+                    catch(...)
+                    {
+                        outcome->store(2);
+                    }
+                };
+            });
+            manager.Shutdown();
+            return outcome->load();
+        }, watchdogLimit());
+        CHECK(outcome == 1);
+    }
+
+    SECTION("while the manager is being destroyed")
+    {
+        const int outcome = withTimeout([] {
+            EventLog log;
+            auto outcome = std::make_shared<std::atomic<int>>(-1);
+            {
+                ecs::Manager manager;
+                ecs::Manager *raw = &manager;
+                auto *world = manager.Container("driven");
+                addSystems(world, log, 1);
+                static_cast<CountingSystem *>(world->Systems.at("s1").get())->onShutdown = [raw, outcome] {
+                    try
+                    {
+                        raw->Container("too-late");
+                        outcome->store(1);
+                    }
+                    catch(const std::runtime_error &)
+                    {
+                        outcome->store(0);
+                    }
+                    catch(...)
+                    {
+                        outcome->store(2);
+                    }
+                };
+                passes(world, 2);
+            }
+            return outcome->load();
+        }, watchdogLimit());
+        CHECK(outcome == 0);
+    }
+}
+
+TEST_CASE("Destroying one world leaves the others running", "[Lifecycle]")
+{
+    struct Result
+    {
+        bool soloNotifiedOnce = false;
+        bool siblingKeptRunning = false;
+        int siblingNotifiedEarly = -1;
+        bool siblingNotifiedOnce = false;
+    };
+    const Result r = withTimeout([] {
+        Result out;
+        EventLog log;
+        ecs::Manager manager;
+        auto solo = std::make_unique<ecs::Container>(&manager, "solo");
+        auto *sibling = manager.Container("sibling");
+        auto soloCounters = addSystems(solo.get(), log, 2);
+        auto siblingSystem = std::make_unique<CountingSystem>(&log, "sibling-s0");
+        auto siblingCounters = siblingSystem->counters;
+        sibling->System(std::move(siblingSystem));
+        solo->Start(200);
+        sibling->Start(200);
+        const auto limit = std::chrono::seconds(20 * kSanitizerFactor);
+        waitUntil([&] { return soloCounters[0]->update.load() >= 1 && siblingCounters->update.load() >= 1; }, limit);
+
+        solo.reset();
+        out.soloNotifiedOnce = soloCounters[0]->shutdown.load() == 1 && soloCounters[1]->shutdown.load() == 1;
+        const int updates = siblingCounters->update.load();
+        out.siblingKeptRunning = waitUntil([&] { return siblingCounters->update.load() >= updates + 20; }, limit);
+        out.siblingNotifiedEarly = siblingCounters->shutdown.load();
+
+        manager.Shutdown();
+        out.siblingNotifiedOnce = siblingCounters->shutdown.load() == 1;
+        return out;
+    }, watchdogLimit());
+    CHECK(r.soloNotifiedOnce);
+    CHECK(r.siblingKeptRunning);
+    CHECK(r.siblingNotifiedEarly == 0);
+    CHECK(r.siblingNotifiedOnce);
+}
+
+TEST_CASE("A notification may log during manager destruction", "[Lifecycle]")
+{
+    EventLog log;
+    auto sink = std::make_shared<LogSink>();
+
+    auto build = [&](ecs::Manager &manager) {
+        auto *threaded = manager.Container("threaded");
+        sinkInstall(threaded, sink);
+        threaded->System(loggingSystem(log, "a"));
+        threaded->System(loggingSystem(log, "b"));
+        threaded->Start(200);
+        return threaded;
+    };
+
+    SECTION("the lines from Shutdown() and from destructors reach the destination")
+    {
+        withTimeout([&] {
+            ecs::Manager manager;
+            build(manager);
+            auto *driven = manager.Container("driven");
+            sinkInstall(driven, sink);
+            driven->System(loggingSystem(log, "c"));
+            driven->System(loggingSystem(log, "d"));
+            passes(driven, 2);
+            waitUntil([&] { return sink->count("initializing b") >= 1; }, std::chrono::seconds(20 * kSanitizerFactor));
+            return 0;
+        }, watchdogLimit());
+
+        for(const std::string handle : {"a", "b", "c", "d"})
+        {
+            const long down = sink->indexOf("shutting down " + handle);
+            const long gone = sink->indexOf("destroying " + handle);
+            CHECK(sink->count("shutting down " + handle) == 1);
+            CHECK(sink->count("destroying " + handle) == 1);
+            CHECK(down >= 0);
+            CHECK(gone >= 0);
+            CHECK(down < gone);
+        }
+    }
+
+    SECTION("lines from Shutdown() reach the destination before it returns")
+    {
+        const int seen = withTimeout([&] {
+            ecs::Manager manager;
+            build(manager);
+            waitUntil([&] { return sink->count("initializing b") >= 1; }, std::chrono::seconds(20 * kSanitizerFactor));
+            manager.Shutdown();
+            return sink->count("shutting down a") + sink->count("shutting down b");
+        }, watchdogLimit());
+        CHECK(seen == 2);
+        CHECK(sink->count("destroying a") == 1);
+        CHECK(sink->count("destroying b") == 1);
+    }
 }

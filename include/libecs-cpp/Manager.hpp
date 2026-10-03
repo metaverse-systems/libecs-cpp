@@ -33,8 +33,10 @@ namespace ecs
      *   manager is destroyed.
      * - Shutdown guarantee: IsRunning() and Shutdown() are atomic. Once IsRunning() has returned false
      *   it never returns true again, and repeated or concurrent requests are idempotent. A request
-     *   made from inside a system is a single store and cannot deadlock. Requesting shutdown does not
-     *   stop world threads or destroy worlds.
+     *   made from a thread that runs world code (a system's Update(), Initialize() or Shutdown()) only
+     *   requests the stop of the worlds and returns at once; from any other thread, Shutdown() returns
+     *   after every threaded world has stopped, its thread has ended and its systems have been shut
+     *   down. Worlds driven by their owner's calls to Update() are not touched; the owner stops them.
      * - MessageSubmit() returns without waiting for the destination's update and throws
      *   std::runtime_error if the world is unknown. Callers on other threads should catch it.
      * - Destruction: the destructor waits for sends already in progress; sends that start later fail
@@ -48,13 +50,13 @@ namespace ecs
       public:
         Manager();
 
-        /** Exclusive. Requests shutdown, waits for sends in progress, then destroys the containers. */
+        /** Exclusive. Shuts down (every threaded world is stopped and joined while all worlds still exist), waits for sends in progress, then destroys the containers. */
         ~Manager();
 
         /** Any thread. Returns the container with this handle, creating it if needed; the same handle always yields the same container. */
         ecs::Container *Container(const std::string &handle);
 
-        /** Any thread. Creates a container with a generated unique handle. */
+        /** Any thread. Creates a container with a generated unique handle. Throws std::runtime_error when a new world is asked for while the manager is being destroyed. */
         ecs::Container *Container();
 
         /** Any thread. Returns a snapshot of the handles of all containers, by value. */
@@ -63,7 +65,7 @@ namespace ecs
         /** Any thread. True until Shutdown() has been called. */
         bool IsRunning();
 
-        /** Any thread. Requests shutdown; idempotent, and the request is never withdrawn. */
+        /** Any thread. Stops every threaded world and waits for it (see above); idempotent, and the request is never withdrawn. */
         void Shutdown();
 
         /** Any thread. Routes a message to its destination container.

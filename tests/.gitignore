@@ -15,3 +15,4 @@ bench_update_pass
 test_Validation
 bench_message_submit
 test_Lifecycle
+test_ProcessManager

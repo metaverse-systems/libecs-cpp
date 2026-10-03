@@ -47,6 +47,17 @@ namespace ecs
     void Manager::Shutdown()
     {
         this->running = false;
+
+        // The worlds are listed under the lock and asked to stop without it, so no lock is held while
+        // a world runs user code.
+        std::vector<ecs::Container *> threaded;
+        {
+            std::lock_guard<std::mutex> lock(this->mutexContainers);
+            for(auto &entry : this->containers) threaded.push_back(entry.second.get());
+        }
+
+        std::erase_if(threaded, [](ecs::Container *world) { return !world->managerStopRequest(); });
+        for(auto *world : threaded) world->managerStopWait();
     }
 
     ecs::Container *Manager::containerCreate(const std::string &handle)
@@ -54,6 +65,11 @@ namespace ecs
         std::lock_guard<std::mutex> lock(this->mutexContainers);
         if(!this->containers.contains(handle))
         {
+            if(this->closing)
+            {
+                throw std::runtime_error("ecs::Manager::Container(): the manager is shutting down, container " +
+                                         handle + " was not created.");
+            }
             this->containers[handle] = std::make_unique<ecs::Container>(this, handle);
         }
         return this->containers[handle].get();

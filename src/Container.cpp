@@ -179,6 +179,23 @@ namespace ecs
         this->lifecycleChanged.wait(lock, [this] { return this->joined; });
     }
 
+    bool Container::managerStopRequest()
+    {
+        {
+            std::lock_guard<std::mutex> guard(this->lifecycleLock);
+            if(!this->threadStarted) return false;
+        }
+        this->requestStop();
+        return true;
+    }
+
+    void Container::managerStopWait()
+    {
+        // A world thread never waits: the world it would wait for may be waiting for it.
+        if(worldContext != nullptr) return;
+        this->waitStopped();
+    }
+
     void Container::Stop()
     {
         this->requestStop();

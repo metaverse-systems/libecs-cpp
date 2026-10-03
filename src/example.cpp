@@ -3,6 +3,8 @@
 #include <memory>
 #include <chrono>
 #include <thread>
+#include <csignal>
+#include <cstdlib>
 
 class PositionComponent : public ecs::Component
 {
@@ -50,6 +52,17 @@ class VelocityComponent : public ecs::Component
     ~VelocityComponent() {}
 };
 
+namespace
+{
+    /* Set by Ctrl-C so the main loop can end and shut the worlds down cleanly */
+    volatile std::sig_atomic_t interrupted = 0;
+
+    void onInterrupt(int)
+    {
+        interrupted = 1;
+    }
+}
+
 class PhysicsSystem : public ecs::System
 {
   public:
@@ -63,6 +76,18 @@ class PhysicsSystem : public ecs::System
         nlohmann::json config;
         config["Handle"] = this->Handle;
         return config;
+    }
+
+    /* Called once on the world's thread, before the first Update() */
+    void Initialize()
+    {
+        std::cout << this->Handle << " started" << std::endl;
+    }
+
+    /* Called once on the world's thread when the system is removed or the world stops */
+    void Shutdown()
+    {
+        std::cout << this->Handle << " shut down" << std::endl;
     }
 
     void Update()
@@ -95,8 +120,15 @@ class PhysicsSystem : public ecs::System
     }
 };
 
-int main(int /* argc */, char * /* argv */[])
+int main(int argc, char *argv[])
 {
+    /* Seconds to run, 0 means until interrupted */
+    long seconds = 3;
+    if(argc > 1) seconds = std::strtol(argv[1], nullptr, 10);
+    if(seconds < 0) seconds = 0;
+
+    std::signal(SIGINT, onInterrupt);
+
     auto world = ECS->Container();
 
     world->System(std::make_unique<PhysicsSystem>());
@@ -127,16 +159,24 @@ int main(int /* argc */, char * /* argv */[])
     threaded = false;
 #endif
 
+    /* Printed before the world runs so its output is not mixed with the world thread's */
+    std::cout << world->Export() << std::endl;
+
     if(threaded) world->Start();
     else world->SystemsInitialize();
 
-    std::cout << world->Export() << std::endl;
-
-    while(ECS->IsRunning())
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
+    while(ECS->IsRunning() && !interrupted && (seconds == 0 || std::chrono::steady_clock::now() < deadline))
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         if(!threaded) world->Update();
     }
+
+    /* Stops every threaded world and waits until they have ended and their systems were shut down */
+    ECS->Shutdown();
+
+    /* A world driven from this thread is stopped by its owner */
+    if(!threaded) world->Stop();
 
     return 0;
 }
