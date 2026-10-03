@@ -435,6 +435,73 @@ ecs::Uuid("550e8400-e29b-41d4-a716-44665544000g"): invalid character 'g' at posi
 The installed `ecs-cpp.pc` provides `-std=c++20 -pthread` in its compile flags. A consumer that wants a
 later standard must put its own `-std=` after the pkg-config flags.
 
+### System and component identifiers
+
+A system's identifier is `System::Handle`. It is a `const std::string` that the base constructor sets and
+nothing can change afterwards: `ecs::System()` generates a UUID, and `ecs::System("name")` uses the name
+given. A system has exactly the identifier its constructor gave it; there is no later assignment, so a
+system cannot be named twice. A subclass names itself in its initialiser list:
+
+```cpp
+class Loader : public ecs::System
+{
+  public:
+    Loader() : ecs::System("game/Loader") {}
+    nlohmann::json Export() const override { return {}; }
+};
+```
+
+An empty identifier is still refused when the system is registered.
+
+A component has no identifier of its own. It is addressed by the entity it is attached to
+(`EntityHandle`) and its `Type`, for example with `Entity::Component()` and `Container::ComponentGet()`.
+
+## Logging
+
+`Container::Log(message, level = "info")` and `System::Log(message, level = "info")` take the same
+default severity: a call with no severity is `info`. The usual levels are `error`, `warning`, `info` and
+`debug`; any other name is passed on as given.
+
+**Default destination.** Each world starts with a destination that writes `[level] message`. Lines at
+`error` and `warning` go to standard error and every other line goes to standard output.
+
+**Colour.** The tag is coloured only when the stream it is written to is an interactive terminal. Output
+redirected to a file or a pipe carries no escape sequences. The environment variable `NO_COLOR`, when set
+to a non-empty value, turns colour off on a terminal too. The two streams are decided separately (a
+terminal on standard output with standard error redirected is coloured on one and plain on the other).
+The decision is made once, when the world is created. Redirecting a stream later does not change it.
+On Windows a stream counts as a terminal when it is a real console that accepts virtual terminal
+processing.
+
+**Replacing the destination.** `LoggerSet(fn)` installs a function that receives exactly
+`(message, level)`: plain text, with no colour and no other decoration. Colour belongs to the default
+destination only. The rules for calling it from several threads are in "Log destination".
+
+**Lines logged before registration.** A system may call `Log()` in its constructor, before it belongs to
+a world. Those lines are held and delivered to the world's destination, in the order they were logged and
+each with the system's identifier as a prefix, when the system is registered with `Container::System()`,
+before the world starts the system. A registration that is refused delivers nothing and the lines stay
+held. A destination that throws does not undo the registration and does not stop the remaining lines.
+Known limit: held lines have no cap, so a system that logs without limit before it is registered holds
+them all in memory.
+
+**Library warnings.** The library writes nothing to the console outside the default destination. A
+warning it raises itself, for example `componentsClear()` on a system that has no world, goes through the
+system's `Log()` like any other line, so it reaches a replacement destination and is held when there is
+no world yet.
+
+## Exported names
+
+The shared library exports `ECS`, the `ecs::` names declared in the installed public headers and the
+reserved names the toolchain adds, and nothing else. The default log destination and its helpers have
+internal linkage; before 2.0.0 the library also exported a global `loggerFunction`. `tests/check-exports.sh`
+enforces the rule on a built library: it lists the defined dynamic symbols with `nm -D --defined-only -C`,
+fails on a global-namespace symbol that `ecs.hpp` does not declare, fails on an `ecs::` name that no
+public header declares, and fails when a class or function defined in a public header has no symbol in
+the library (types that are only code in a header are listed in the script). It prints each offending name
+and exits non-zero. `tests/check-exports-selftest.sh` checks the checker against small objects that
+leak a name and objects that do not.
+
 ## Input validation
 
 Message submission, system registration, component attachment and the `Entity` constructors check their
@@ -621,7 +688,8 @@ and the update order stay usable from the world thread exactly as before.
 | `System::MessageSubmit(message)` | Any thread | The system must be alive. Routing through `Container` or `Manager` is safe against removal; a direct pointer is not. |
 | `System::MessagesWaiting()`, `messages` | World thread | `MessagesWaiting()` moves delivered messages into the queue, then counts the messages waiting to be read. |
 | `System::Initialize()`, `Update()`, `UpdateSystem()`, `Configure()`, `Export()`, `Shutdown()`, `TimerAdd()`, `TimerClear()`, `ElapsedGet()`, `ElapsedSecondsGet()`, `ClockSet()`, `Log()` | World thread | Time reads change nothing. The older `DeltaTimeGet()` is in the table of old names. |
-| `System::Handle`, `Container`, `Components`, `Timing` | World thread | Set during registration. |
+| `System::Container`, `Components`, `Timing` | World thread | Set during registration. |
+| `System::Handle` | Any thread | Given by the constructor and never changes. |
 | `Entity`, `Component` | World thread | They change the world's tables. |
 
 ### Messages
@@ -723,6 +791,65 @@ thread also stops every world that has its own thread and waits until it has end
 "Start-up, shutdown and stopping". It does not destroy worlds.
 
 ## Release notes
+
+### 2.0.0
+
+Consistent logging, a system identifier that cannot change and a smaller public surface. This is a major
+release: the layout of the base classes changes, and `System::Handle` can no longer be assigned.
+
+**Rebuild every system plugin and every component plugin** (`the-seed build`). Removing
+`Component::Handle` shrinks the `Component` base class, and `System::Handle` is now `const`. Plugins
+compile these base classes into themselves, so a plugin built against 1.8.0 and loaded by 2.0.0 is not
+supported: its behaviour is undefined. Loading was tried with minimal plugins. A component plugin built
+against 1.8.0 does not load, because the constructor it calls is no longer exported by the library. A
+system plugin that reads a component's `Type` and `EntityHandle` reads them from the old, shifted
+positions and the program crashed. A system plugin that does nothing with components happened to run, but
+that is luck of its layout and not something to rely on. Projects require `ecs-cpp >= 2.0.0`; libthe-seed
+0.3.3 and the project templates of the-seed 1.8.0 do, and `configure` refuses a 1.8.0 install.
+
+The shared-object name stays `libecs-cpp.so.0`. No libtool version-info is set for this library, so the
+loader cannot tell 1.8.0 and 2.0.0 apart by name; the versioning of the shared object is planned
+separately. Until then the rebuild rule above and the `ecs-cpp >= 2.0.0` requirement are what keep the
+two apart.
+
+Changed:
+
+* `Component::Handle` is removed. A component has no identifier of its own; address it by its entity and
+  type. The two `Component` constructors are defined in the header and the library no longer builds a
+  `Component.cpp`.
+* `System::Handle` is a `const std::string`. It is set only by the base constructor `System(handle)`
+  (or generated by `System()`), and cannot be assigned afterwards.
+* `System::Log(message, level)` takes `level = "info"`, the same default as `Container::Log`.
+* Lines a system logs before it is registered are delivered to the world's destination at registration,
+  in order, before the world starts the system. Before, they waited inside the system until its next
+  `Log()` call after registration, and a system that never logged again never delivered them.
+* The default destination colours a stream only when it is an interactive terminal, and not when
+  `NO_COLOR` is set to a non-empty value. Redirected output is plain text. Before, every line carried
+  escape sequences.
+* A warning from the library itself (`componentsClear()` with no world) goes through the log destination
+  instead of straight to standard output.
+* Exported names: the global `loggerFunction` is no longer exported. Only `ECS` and the public `ecs::`
+  names are, and `tests/check-exports.sh` keeps it that way.
+* The private `Container::system_order` is now `systemOrder`.
+
+Migration:
+
+| Before | After |
+|---|---|
+| `Foo() { this->Handle = "name"; }` in a system | `Foo() : ecs::System("name") {}` |
+| `system->Handle = "name";` after construction | Not possible. Pass the name to the constructor. |
+| Reading `component->Handle` | No replacement. Address a component by `EntityHandle` and `Type`. |
+| `this->Log("text", "info")` | Unchanged. `this->Log("text")` now means `info`. |
+| A log destination that stripped colour codes | Remove the stripping. A replacement destination receives plain text. |
+| Relying on colour in a redirected file | Gone. Colour appears on a terminal only; `NO_COLOR` turns it off there too. |
+| Lines logged in a constructor arriving late | They now reach the destination at registration. |
+| System and component plugins built against 1.8.0 | Rebuild all of them with `the-seed build`. |
+| `PKG_CHECK_MODULES([LIBECS], [ecs-cpp >= 1.8.0])` | `ecs-cpp >= 2.0.0`; the soname is unchanged (`libecs-cpp.so.0`). |
+
+Tests: `test_Logging` (default severity, held lines, colour decisions, the library warning and
+construction-time identifiers), `test_Resources` and `test_Export` are new, as are the script tests
+`run-logging.sh`, `check-exports.sh`, `check-exports-selftest.sh`, `check-style.sh` and
+`check-style-selftest.sh`.
 
 ### 1.8.0
 
@@ -946,7 +1073,12 @@ combined output of a failing run is in `tests/test-suite.log`.
 The programs are `test_Manager`, `test_System`, `test_Entity`, `test_Container`, `test_Timing` (schedule
 arithmetic, with explicit instants), `test_Elapsed` (elapsed time, the first update, stalls and the world
 clock, on a controlled clock), `test_Compatibility` (the deprecated names), `test_UpdateAllocation`,
-`test_Uuid`, `test_Threading`, `test_Validation`, `test_Lifecycle`, `test_ProcessManager` and `test_Access`.
+`test_Uuid`, `test_Threading`, `test_Validation`, `test_Lifecycle`, `test_ProcessManager`, `test_Access`,
+`test_Logging` (severity, held lines, colour, the library warning, construction-time identifiers),
+`test_Resources` and `test_Export`. The script tests are `run-test-selftest.sh`, `run-example.sh`,
+`run-logging.sh` (console writes outside the default destination, and output to a file and a terminal),
+`check-exports.sh` and `check-exports-selftest.sh` (exported names) and `check-style.sh` with
+`check-style-selftest.sh` (`this->` and member naming).
 
 The tests need Catch2 v3 (`catch2-with-main` in pkg-config), for example `sudo apt install catch2`.
 
