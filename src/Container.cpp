@@ -27,6 +27,31 @@ auto loggerFunction = [](const std::string &message, const std::string &level) {
 };
 namespace ecs
 {
+    namespace
+    {
+        /*! Non-null on a thread that is running world code (the world's thread, Update(), SystemsInitialize()
+         *  or teardown). A stop requested from such a thread never waits. */
+        thread_local const Container *worldContext = nullptr;
+
+        class WorldContextScope
+        {
+          public:
+            explicit WorldContextScope(const Container *container): previous(worldContext)
+            {
+                worldContext = container;
+            }
+            ~WorldContextScope()
+            {
+                worldContext = this->previous;
+            }
+            WorldContextScope(const WorldContextScope &) = delete;
+            WorldContextScope &operator=(const WorldContextScope &) = delete;
+
+          private:
+            const Container *previous;
+        };
+    }
+
     Container::Container(ecs::Manager *manager):
         Manager(manager), Handle(ecs::Uuid().Get())
     {
@@ -74,16 +99,10 @@ namespace ecs
     Container::~Container()
     {
         this->deferredClose();
-        if(this->containerThread.joinable())
-        {
-            // The world's own thread delivers the notifications before it ends.
-            this->containerThread.request_stop();
-            this->containerThread.join();
-        }
-        else
-        {
-            this->teardown();
-        }
+        // A threaded world delivers its notifications on its own thread before it ends; a world without
+        // one is torn down here.
+        this->requestStop();
+        this->waitStopped();
 
         // The logger, the mailbox table and the other members still exist here, so a system may log
         // from its destructor.
@@ -118,18 +137,67 @@ namespace ecs
         }
     }
 
-    void Container::Stop()
+    void Container::requestStop()
     {
-        if(this->containerThread.joinable())
+        std::stop_source source;
         {
-            this->containerThread.request_stop();
-            if(std::this_thread::get_id() != this->containerThread.get_id())
-            {
-                this->containerThread.join();
-            }
+            std::lock_guard<std::mutex> guard(this->lifecycleLock);
+            this->stopRequested.store(true);
+            if(this->threadStarted) source = this->containerThread.get_stop_source();
+        }
+        // Stop callbacks run on this thread, so no lock is held here.
+        source.request_stop();
+        this->lifecycleChanged.notify_all();
+    }
+
+    void Container::waitStopped()
+    {
+        std::unique_lock<std::mutex> lock(this->lifecycleLock);
+        if(!this->threadStarted)
+        {
+            lock.unlock();
+            this->teardown();
             return;
         }
-        this->teardown();
+        if(this->joined) return;
+        if(this->containerThread.joinable() && this->containerThread.get_id() == std::this_thread::get_id())
+        {
+            // Called on the world's own thread: it cannot wait for itself.
+            return;
+        }
+        if(!this->joining && this->containerThread.joinable())
+        {
+            this->joining = true;
+            std::jthread thread = std::move(this->containerThread);
+            lock.unlock();
+            thread.join();
+            lock.lock();
+            this->joined = true;
+            this->lifecycleChanged.notify_all();
+            return;
+        }
+        this->lifecycleChanged.wait(lock, [this] { return this->joined; });
+    }
+
+    void Container::Stop()
+    {
+        this->requestStop();
+        if(worldContext != nullptr && worldContext != this)
+        {
+            // Another world's thread only requests; the application thread does the waiting.
+            return;
+        }
+        if(worldContext == this)
+        {
+            bool threaded;
+            {
+                std::lock_guard<std::mutex> guard(this->lifecycleLock);
+                threaded = this->threadStarted;
+            }
+            // On its own thread a threaded world ends its loop and tears down by itself.
+            if(threaded) return;
+        }
+        this->waitStopped();
     }
 
     void Container::systemNotify(ecs::System *system)
@@ -163,6 +231,7 @@ namespace ecs
     {
         if(this->tearingDown || this->tornDown) return;
         this->tearingDown = true;
+        WorldContextScope context(this);
         this->deferredClose();
         {
             WalkScope walk(this);
@@ -188,15 +257,44 @@ namespace ecs
         this->tornDown = true;
     }
 
+    void Container::threadStart(const uint32_t *interval)
+    {
+        const char *refusal = nullptr;
+        {
+            std::lock_guard<std::mutex> guard(this->lifecycleLock);
+            if(this->threadStarted && !this->stopRequested.load())
+            {
+                // Already running: nothing to do.
+                return;
+            }
+            if(this->stopRequested.load())
+            {
+                refusal = "Start() ignored: the world has been stopped.";
+            }
+            else if(this->Manager != nullptr && !this->Manager->IsRunning())
+            {
+                refusal = "Start() ignored: the manager has shut down.";
+            }
+            else
+            {
+                if(interval != nullptr) this->sleepInterval = *interval;
+                this->ownsThread.store(true);
+                this->threadStarted = true;
+                this->containerThread = std::jthread([this](std::stop_token st) { this->threadFunc(st); });
+                return;
+            }
+        }
+        this->Log("[" + this->Handle + "] " + refusal, "warning");
+    }
+
     void Container::Start()
     {
-        this->containerThread = std::jthread([this](std::stop_token st) { this->threadFunc(st); });
+        this->threadStart(nullptr);
     }
 
     void Container::Start(uint32_t interval)
     {
-        this->sleepInterval = interval;
-        this->Start();
+        this->threadStart(&interval);
     }
 
     nlohmann::json Container::Export() const
@@ -395,6 +493,7 @@ namespace ecs
 
     void Container::SystemsInitialize()
     {
+        WorldContextScope context(this);
         this->systemsStart();
     }
 
@@ -431,13 +530,20 @@ namespace ecs
 
     void Container::threadFunc(std::stop_token stopToken)
     {
+        WorldContextScope context(this);
         try
         {
-            this->SystemsInitialize();
+            if(!stopToken.stop_requested()) this->SystemsInitialize();
 
             while(!stopToken.stop_requested())
             {
-                std::this_thread::sleep_for(std::chrono::microseconds(this->sleepInterval));
+                {
+                    // Ends early, with the lock released, as soon as a stop is requested.
+                    std::unique_lock<std::mutex> lock(this->lifecycleLock);
+                    this->lifecycleChanged.wait_for(lock, stopToken, std::chrono::microseconds(this->sleepInterval),
+                                                    [this] { return this->stopRequested.load(); });
+                }
+                if(stopToken.stop_requested() || this->stopRequested.load()) break;
                 this->Update();
             }
         }
@@ -449,6 +555,11 @@ namespace ecs
         }
         // Notifications are delivered on this thread before it ends.
         this->teardown();
+        {
+            std::lock_guard<std::mutex> guard(this->lifecycleLock);
+            this->stopDone = true;
+        }
+        this->lifecycleChanged.notify_all();
     }
 
     void Container::Defer(std::function<void()> fn)
@@ -509,6 +620,8 @@ namespace ecs
     void Container::Update()
     {
         if(this->tornDown || this->tearingDown) return;
+        if(this->ownsThread.load() && this->stopRequested.load()) return;
+        WorldContextScope context(this);
         if(this->walkDepth == 0 && !this->draining && this->deferredCount.load() != 0)
             this->deferredRun();
         if(this->startPending && this->walkDepth == 0)

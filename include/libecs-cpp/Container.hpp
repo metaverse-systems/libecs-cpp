@@ -9,6 +9,7 @@
 #include <atomic>
 #include <iostream>
 #include <functional>
+#include <condition_variable>
 #include <libecs-cpp/json.hpp>
 #include <libecs-cpp/Resource.hpp>
 #include <libecs-cpp/Component.hpp>
@@ -75,6 +76,8 @@ namespace ecs
      */
     class Container
     {
+        friend class Manager;
+
       public:
         Container(ecs::Manager *manager);
         Container(ecs::Manager *manager, const std::string &handle);
@@ -306,5 +309,29 @@ namespace ecs
         bool tornDown = false;
         /*! Sends Shutdown() to every started system, last registered first, then releases what was removed. */
         void teardown();
+
+        /*! Guards threadStarted, joining, joined, stopDone and the thread object's hand-over. A leaf lock:
+         *  nothing else is taken and no user code runs while it is held. */
+        std::mutex lifecycleLock;
+        std::condition_variable_any lifecycleChanged;
+        /*! The world's own thread has been created. Under lifecycleLock. */
+        bool threadStarted = false;
+        /*! Set under lifecycleLock, readable without it. */
+        std::atomic<bool> stopRequested{false};
+        /*! The world's thread has finished teardown. Under lifecycleLock. */
+        bool stopDone = false;
+        /*! One caller has taken the thread to join it. Under lifecycleLock. */
+        bool joining = false;
+        /*! The world's thread has ended. Under lifecycleLock. */
+        bool joined = false;
+        /*! True once the world's own thread exists; set before the thread starts and never cleared. */
+        std::atomic<bool> ownsThread{false};
+        /*! Starts the thread once, if no stop was requested and the manager is running. */
+        void threadStart(const uint32_t *interval);
+        /*! Marks the stop as requested and wakes the world's thread. Takes no lock while calling out. */
+        void requestStop();
+        /*! Waits until the world's thread has ended (one caller joins, the others wait), or tears down a
+         *  world that has no thread on the calling thread. */
+        void waitStopped();
     };
 }

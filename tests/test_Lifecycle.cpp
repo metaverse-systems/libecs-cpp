@@ -914,6 +914,28 @@ namespace
         }});
 
         // No assertions run inside this one: it runs on a watchdog worker thread.
+        rows.push_back({"Stop() of a threaded world", true, [](EventLog &log) {
+            ecs::Manager manager;
+            auto world = std::make_unique<ecs::Container>(&manager, "departure");
+            Departure d;
+            d.reverse = true;
+            d.onWorldThread = true;
+            d.subjects = addSystems(world.get(), log, 4);
+            world->Start(200);
+            const auto limit = std::chrono::seconds(20 * kSanitizerFactor);
+            for(const auto &c : d.subjects)
+            {
+                waitUntil([&] { return c->update.load() >= 1; }, limit);
+            }
+            world->Stop();
+            // The world has ended when Stop() returns: nothing is updated or notified afterwards.
+            const int updates = d.subjects[0]->update.load();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            if(d.subjects[0]->update.load() != updates) d.subjects.clear();
+            return d;
+        }});
+
+        // No assertions run inside this one: it runs on a watchdog worker thread.
         rows.push_back({"destruction of a threaded world", true, [](EventLog &log) {
             ecs::Manager manager;
             auto world = std::make_unique<ecs::Container>(&manager, "departure");
@@ -1474,4 +1496,629 @@ TEST_CASE("Systems may log while being torn down", "[Lifecycle]")
             CHECK(down < gone);
         }
     }
+}
+
+namespace
+{
+    using Clock = std::chrono::steady_clock;
+
+    std::chrono::seconds watchdogLimit()
+    {
+        return std::chrono::seconds(60 * kSanitizerFactor);
+    }
+
+    long millisecondsSince(Clock::time_point start)
+    {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - start).count();
+    }
+
+    // Waits until the system has been updated at least once.
+    bool waitForUpdate(const std::shared_ptr<Counters> &c)
+    {
+        return waitUntil([&] { return c->update.load() >= 1; }, std::chrono::seconds(20 * kSanitizerFactor));
+    }
+
+    // What a test saw of a world that was started many times.
+    struct RepeatedStart
+    {
+        int starts = 0;
+        std::thread::id threadBefore;
+        std::thread::id threadAfter;
+        int passesInWindow = 0;
+        bool threwOnStart = false;
+    };
+
+    RepeatedStart startManyTimes(bool differentIntervals)
+    {
+        RepeatedStart out;
+        EventLog log;
+        ecs::Manager manager;
+        auto world = std::make_unique<ecs::Container>(&manager, "repeated");
+        auto system = std::make_unique<CountingSystem>(&log, "subject");
+        auto counters = system->counters;
+        world->System(std::move(system));
+        // Every 20 ms.
+        world->Start(20000);
+        waitForUpdate(counters);
+        out.threadBefore = counters->updateThread();
+        try
+        {
+            for(int i = 0; i < 99; i++)
+            {
+                if(differentIntervals) world->Start(1000 + i);
+                else world->Start(20000);
+            }
+        }
+        catch(...)
+        {
+            out.threwOnStart = true;
+        }
+        const int before = counters->update.load();
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        out.passesInWindow = counters->update.load() - before;
+        out.threadAfter = counters->updateThread();
+        out.starts = counters->initialize.load();
+        return out;
+    }
+}
+
+TEST_CASE("Start called 100 times", "[Lifecycle]")
+{
+    const bool differentIntervals = GENERATE(false, true);
+    DYNAMIC_SECTION(std::string(differentIntervals ? "with different intervals" : "with the same interval"))
+    {
+        const RepeatedStart r = withTimeout([&] { return startManyTimes(differentIntervals); }, watchdogLimit());
+        CHECK_FALSE(r.threwOnStart);
+        CHECK(r.starts == 1);
+        CHECK(r.threadBefore != std::thread::id());
+        CHECK(r.threadAfter == r.threadBefore);
+        // 500 ms at 20 ms is 25 passes. A changed interval would give several hundred.
+        CHECK(r.passesInWindow >= 5);
+        CHECK(r.passesInWindow <= 40);
+    }
+}
+
+namespace
+{
+    struct AfterStop
+    {
+        int startsBefore = 0;
+        int startsAfter = 0;
+        int updatesBefore = 0;
+        int updatesAfter = 0;
+        int shutdownsAfter = 0;
+        std::thread::id threadBefore;
+        std::thread::id threadAfter;
+        bool threw = false;
+    };
+
+    AfterStop startAfter(bool managerShutdown)
+    {
+        AfterStop out;
+        EventLog log;
+        ecs::Manager manager;
+        auto world = std::make_unique<ecs::Container>(&manager, "after");
+        auto system = std::make_unique<CountingSystem>(&log, "subject");
+        auto counters = system->counters;
+        world->System(std::move(system));
+        if(managerShutdown)
+        {
+            manager.Shutdown();
+        }
+        else
+        {
+            world->Start(1000);
+            waitForUpdate(counters);
+            world->Stop();
+        }
+        out.startsBefore = counters->initialize.load();
+        out.updatesBefore = counters->update.load();
+        out.threadBefore = counters->updateThread();
+        try
+        {
+            world->Start();
+            world->Start(500);
+        }
+        catch(...)
+        {
+            out.threw = true;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        out.startsAfter = counters->initialize.load();
+        out.updatesAfter = counters->update.load();
+        out.shutdownsAfter = counters->shutdown.load();
+        out.threadAfter = counters->updateThread();
+        return out;
+    }
+}
+
+TEST_CASE("Start after Stop does nothing", "[Lifecycle]")
+{
+    const AfterStop r = withTimeout([] { return startAfter(false); }, watchdogLimit());
+    CHECK_FALSE(r.threw);
+    CHECK(r.startsBefore == 1);
+    CHECK(r.startsAfter == 1);
+    CHECK(r.updatesAfter == r.updatesBefore);
+    CHECK(r.shutdownsAfter == 1);
+    CHECK(r.threadAfter == r.threadBefore);
+}
+
+TEST_CASE("Start after manager shutdown does nothing", "[Lifecycle]")
+{
+    const AfterStop r = withTimeout([] { return startAfter(true); }, watchdogLimit());
+    CHECK_FALSE(r.threw);
+    // No thread was created: the system was never started or updated.
+    CHECK(r.startsAfter == 0);
+    CHECK(r.updatesAfter == 0);
+    CHECK(r.updatesBefore == 0);
+}
+
+namespace
+{
+    // The system's start-up waits on a gate that the test opens.
+    struct Gate
+    {
+        std::atomic<bool> open{false};
+    };
+
+    struct GatedStart
+    {
+        bool startReturnedWhileBlocked = false;
+        int startsAfterStart = -1;
+        int startsAfterRelease = 0;
+        std::thread::id initializeThread;
+        std::thread::id updateThread;
+    };
+
+    GatedStart startGated()
+    {
+        GatedStart out;
+        EventLog log;
+        ecs::Manager manager;
+        auto world = std::make_unique<ecs::Container>(&manager, "gated");
+        auto gate = std::make_shared<Gate>();
+        auto system = std::make_unique<CountingSystem>(&log, "subject");
+        auto counters = system->counters;
+        system->onInitialize = [gate] {
+            waitUntil([&] { return gate->open.load(); }, std::chrono::seconds(20 * kSanitizerFactor));
+        };
+        world->System(std::move(system));
+
+        // If Start() ran the start-up on the calling thread it would block on the gate here.
+        std::promise<void> returned;
+        auto returnedFuture = returned.get_future();
+        std::thread caller([&] { world->Start(1000); returned.set_value(); });
+        out.startReturnedWhileBlocked = returnedFuture.wait_for(std::chrono::seconds(5 * kSanitizerFactor)) == std::future_status::ready;
+        gate->open.store(true);
+        caller.join();
+        out.startsAfterStart = counters->update.load();
+        waitForUpdate(counters);
+        out.startsAfterRelease = counters->initialize.load();
+        out.initializeThread = counters->initializeThread();
+        out.updateThread = counters->updateThread();
+        return out;
+    }
+}
+
+TEST_CASE("Start on a caller-driven world", "[Lifecycle]")
+{
+    SECTION("Start only starts the thread")
+    {
+        const GatedStart r = withTimeout([] { return startGated(); }, watchdogLimit());
+        CHECK(r.startReturnedWhileBlocked);
+        CHECK(r.startsAfterStart == 0);
+        CHECK(r.startsAfterRelease == 1);
+        CHECK(r.initializeThread != std::this_thread::get_id());
+        CHECK(r.initializeThread == r.updateThread);
+    }
+
+    SECTION("without Start the first Update() starts the systems")
+    {
+        EventLog log;
+        ecs::Manager manager;
+        auto *world = manager.Container("driven");
+        Subject subject = makeSubject(log, "subject");
+        registerSubject(world, subject);
+        CHECK(subject.counters->initialize.load() == 0);
+        world->Update();
+        CHECK(subject.counters->initialize.load() == 1);
+        CHECK(subject.counters->initializeThread() == std::this_thread::get_id());
+        CHECK(subject.counters->startSequence.load() < subject.counters->firstUpdateSequence.load());
+    }
+}
+
+namespace
+{
+    // Time Stop() or destruction of an idle threaded world.
+    long idleStopTime(uint32_t interval, bool byDestruction)
+    {
+        EventLog log;
+        ecs::Manager manager;
+        auto world = std::make_unique<ecs::Container>(&manager, "idle");
+        world->System(std::make_unique<CountingSystem>(&log, "subject"));
+        world->Start(interval);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        const auto begin = Clock::now();
+        if(byDestruction) world.reset();
+        else world->Stop();
+        return millisecondsSince(begin);
+    }
+
+    struct StopTimeRow
+    {
+        std::string name;
+        uint32_t interval;
+        bool byDestruction;
+    };
+}
+
+TEST_CASE("Stop time is independent of the interval", "[Lifecycle]")
+{
+    const std::vector<StopTimeRow> table{
+        {"Stop() with a 5 s interval", 5000000, false},
+        {"destruction with a 5 s interval", 5000000, true},
+        {"Stop() with a 1 ms interval", 1000, false},
+        {"destruction with a 1 ms interval", 1000, true},
+    };
+    const auto row = GENERATE_COPY(from_range(table));
+    DYNAMIC_SECTION(row.name)
+    {
+        const long elapsed = withTimeout([&] { return idleStopTime(row.interval, row.byDestruction); }, watchdogLimit());
+        CHECK(elapsed < 250 * kSanitizerFactor);
+    }
+}
+
+namespace
+{
+    struct FrozenWorld
+    {
+        int updatesAtReturn = 0;
+        int updatesLater = 0;
+        int shutdowns = 0;
+        int starts = 0;
+    };
+
+    FrozenWorld stopAndWatch()
+    {
+        FrozenWorld out;
+        EventLog log;
+        ecs::Manager manager;
+        auto world = std::make_unique<ecs::Container>(&manager, "frozen");
+        auto system = std::make_unique<CountingSystem>(&log, "subject");
+        auto counters = system->counters;
+        world->System(std::move(system));
+        world->Start(1000);
+        waitUntil([&] { return counters->update.load() >= 5; }, std::chrono::seconds(20 * kSanitizerFactor));
+        world->Stop();
+        out.updatesAtReturn = counters->update.load();
+        // The count never changes during the 200 ms that follow.
+        bool changed = false;
+        for(int i = 0; i < 20; i++)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            if(counters->update.load() != out.updatesAtReturn) changed = true;
+        }
+        out.updatesLater = changed ? -1 : out.updatesAtReturn;
+        out.shutdowns = counters->shutdown.load();
+        out.starts = counters->initialize.load();
+        return out;
+    }
+}
+
+TEST_CASE("No update after the stop request is observed", "[Lifecycle]")
+{
+    const FrozenWorld r = withTimeout([] { return stopAndWatch(); }, watchdogLimit());
+    CHECK(r.updatesAtReturn >= 5);
+    CHECK(r.updatesLater == r.updatesAtReturn);
+    CHECK(r.starts == 1);
+    CHECK(r.shutdowns == 1);
+}
+
+namespace
+{
+    struct SlowShutdown
+    {
+        bool finishedAtReturn = false;
+        long elapsed = 0;
+        int notifications = 0;
+    };
+
+    SlowShutdown stopSlowShutdown()
+    {
+        SlowShutdown out;
+        EventLog log;
+        ecs::Manager manager;
+        auto world = std::make_unique<ecs::Container>(&manager, "slow");
+        auto system = std::make_unique<CountingSystem>(&log, "subject");
+        auto counters = system->counters;
+        auto finished = std::make_shared<std::atomic<bool>>(false);
+        system->onShutdown = [finished] {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            finished->store(true);
+        };
+        world->System(std::move(system));
+        world->Start(1000);
+        waitForUpdate(counters);
+        const auto begin = Clock::now();
+        world->Stop();
+        out.elapsed = millisecondsSince(begin);
+        out.finishedAtReturn = finished->load();
+        out.notifications = counters->shutdown.load();
+        return out;
+    }
+}
+
+TEST_CASE("Stop waits for the notification", "[Lifecycle]")
+{
+    const SlowShutdown r = withTimeout([] { return stopSlowShutdown(); }, watchdogLimit());
+    CHECK(r.finishedAtReturn);
+    CHECK(r.notifications == 1);
+    CHECK(r.elapsed >= 90);
+}
+
+namespace
+{
+    struct ConcurrentStops
+    {
+        std::vector<int> finishedAtReturn;
+        int notifications = 0;
+    };
+
+    ConcurrentStops stopFromManyThreads()
+    {
+        ConcurrentStops out;
+        EventLog log;
+        ecs::Manager manager;
+        auto world = std::make_unique<ecs::Container>(&manager, "concurrent");
+        auto system = std::make_unique<CountingSystem>(&log, "subject");
+        auto counters = system->counters;
+        auto finished = std::make_shared<std::atomic<bool>>(false);
+        system->onShutdown = [finished] {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            finished->store(true);
+        };
+        world->System(std::move(system));
+        world->Start(1000);
+        waitForUpdate(counters);
+
+        constexpr int callers = 4;
+        std::atomic<bool> go{false};
+        std::vector<int> seen(callers, 0);
+        std::vector<std::thread> threads;
+        for(int i = 0; i < callers; i++)
+        {
+            threads.emplace_back([&, i] {
+                while(!go.load()) std::this_thread::yield();
+                world->Stop();
+                seen[i] = finished->load() ? 1 : 0;
+            });
+        }
+        go.store(true);
+        for(auto &t : threads) t.join();
+        out.finishedAtReturn = seen;
+        out.notifications = counters->shutdown.load();
+        return out;
+    }
+}
+
+TEST_CASE("Concurrent Stop callers", "[Lifecycle]")
+{
+    const ConcurrentStops r = withTimeout([] { return stopFromManyThreads(); }, watchdogLimit());
+    REQUIRE(r.finishedAtReturn.size() == 4);
+    for(int seen : r.finishedAtReturn) CHECK(seen == 1);
+    CHECK(r.notifications == 1);
+}
+
+namespace
+{
+    struct SelfStops
+    {
+        int repetitions = 0;
+        int returnedAtOnce = 0;
+        int notNested = 0;
+        int updatedOnce = 0;
+        int notifiedOnce = 0;
+        int laterStopAtOnce = 0;
+    };
+
+    SelfStops stopFromOwnUpdate(int repetitions)
+    {
+        SelfStops out;
+        EventLog log;
+        ecs::Manager manager;
+        for(int rep = 0; rep < repetitions; rep++)
+        {
+            auto world = std::make_unique<ecs::Container>(&manager, "self");
+            auto system = std::make_unique<CountingSystem>(&log, "subject");
+            auto counters = system->counters;
+            auto callMs = std::make_shared<std::atomic<long>>(-1);
+            auto shutdownAtReturn = std::make_shared<std::atomic<int>>(-1);
+            auto done = std::make_shared<std::atomic<bool>>(false);
+            ecs::Container *raw = world.get();
+            system->onUpdate = [raw, counters, callMs, shutdownAtReturn, done] {
+                if(done->exchange(true)) return;
+                const auto begin = Clock::now();
+                raw->Stop();
+                callMs->store(millisecondsSince(begin));
+                shutdownAtReturn->store(counters->shutdown.load());
+            };
+            world->System(std::move(system));
+            world->Start(500);
+            waitUntil([&] { return callMs->load() >= 0; }, std::chrono::seconds(20 * kSanitizerFactor));
+            const auto begin = Clock::now();
+            world->Stop();
+            const long later = millisecondsSince(begin);
+
+            out.repetitions++;
+            if(callMs->load() >= 0 && callMs->load() < 250 * kSanitizerFactor) out.returnedAtOnce++;
+            if(shutdownAtReturn->load() == 0) out.notNested++;
+            if(counters->update.load() == 1) out.updatedOnce++;
+            if(counters->shutdown.load() == 1) out.notifiedOnce++;
+            if(later < 250 * kSanitizerFactor) out.laterStopAtOnce++;
+        }
+        return out;
+    }
+}
+
+TEST_CASE("Stop from a world thread only requests", "[Lifecycle]")
+{
+    const int repetitions = 500 / kSanitizerFactor;
+    const SelfStops r = withTimeout([&] { return stopFromOwnUpdate(repetitions); }, watchdogLimit());
+    CHECK(r.repetitions == repetitions);
+    CHECK(r.returnedAtOnce == repetitions);
+    CHECK(r.notNested == repetitions);
+    CHECK(r.updatedOnce == repetitions);
+    CHECK(r.notifiedOnce == repetitions);
+    CHECK(r.laterStopAtOnce == repetitions);
+}
+
+namespace
+{
+    struct CrossStop
+    {
+        bool returnedBeforeEnd = false;
+        long callMs = -1;
+        bool finishedAfterTestStop = false;
+        int notifications = 0;
+    };
+
+    CrossStop stopOtherWorld()
+    {
+        CrossStop out;
+        EventLog log;
+        ecs::Manager manager;
+        auto a = std::make_unique<ecs::Container>(&manager, "a");
+        auto b = std::make_unique<ecs::Container>(&manager, "b");
+
+        auto bSystem = std::make_unique<CountingSystem>(&log, "b-subject");
+        auto bCounters = bSystem->counters;
+        auto finished = std::make_shared<std::atomic<bool>>(false);
+        bSystem->onShutdown = [finished] {
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            finished->store(true);
+        };
+        b->System(std::move(bSystem));
+
+        auto aSystem = std::make_unique<CountingSystem>(&log, "a-subject");
+        auto aCounters = aSystem->counters;
+        auto done = std::make_shared<std::atomic<bool>>(false);
+        auto callMs = std::make_shared<std::atomic<long>>(-1);
+        auto beforeEnd = std::make_shared<std::atomic<int>>(-1);
+        ecs::Container *rawB = b.get();
+        aSystem->onUpdate = [rawB, bCounters, finished, done, callMs, beforeEnd] {
+            if(bCounters->update.load() < 1 || done->exchange(true)) return;
+            const auto begin = Clock::now();
+            rawB->Stop();
+            callMs->store(millisecondsSince(begin));
+            beforeEnd->store(finished->load() ? 0 : 1);
+        };
+        a->System(std::move(aSystem));
+
+        b->Start(1000);
+        a->Start(1000);
+        waitUntil([&] { return callMs->load() >= 0; }, std::chrono::seconds(20 * kSanitizerFactor));
+        out.callMs = callMs->load();
+        out.returnedBeforeEnd = beforeEnd->load() == 1;
+        b->Stop();
+        out.finishedAfterTestStop = finished->load();
+        out.notifications = bCounters->shutdown.load();
+        a->Stop();
+        return out;
+    }
+}
+
+TEST_CASE("Stop of another world from a system returns at once", "[Lifecycle]")
+{
+    const CrossStop r = withTimeout([] { return stopOtherWorld(); }, watchdogLimit());
+    CHECK(r.callMs >= 0);
+    CHECK(r.callMs < 150 * kSanitizerFactor);
+    CHECK(r.returnedBeforeEnd);
+    CHECK(r.finishedAfterTestStop);
+    CHECK(r.notifications == 1);
+}
+
+namespace
+{
+    struct Ticks
+    {
+        std::vector<Clock::time_point> times;
+        int64_t spanMicroseconds = 0;
+        int64_t expected = 0;
+    };
+
+    Ticks measureTicks()
+    {
+        Ticks out;
+        constexpr int64_t interval = 20000;
+        EventLog log;
+        std::mutex lock;
+        ecs::Manager manager;
+        auto world = std::make_unique<ecs::Container>(&manager, "ticks");
+        auto system = std::make_unique<CountingSystem>(&log, "subject");
+        auto counters = system->counters;
+        system->onUpdate = [&] {
+            std::lock_guard<std::mutex> guard(lock);
+            out.times.push_back(Clock::now());
+        };
+        world->System(std::move(system));
+        world->Start(static_cast<uint32_t>(interval));
+        waitForUpdate(counters);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        world->Stop();
+        std::lock_guard<std::mutex> guard(lock);
+        if(out.times.size() >= 2)
+        {
+            out.spanMicroseconds = std::chrono::duration_cast<std::chrono::microseconds>(out.times.back() - out.times.front()).count();
+            out.expected = out.spanMicroseconds / interval;
+        }
+        return out;
+    }
+}
+
+TEST_CASE("Tick period is unchanged", "[Lifecycle]")
+{
+    const Ticks r = withTimeout([] { return measureTicks(); }, watchdogLimit());
+    REQUIRE(r.times.size() >= 2);
+    // The same rule as test_Timing: the number of passes matches the whole intervals that elapsed, within one.
+    const int64_t intervals = static_cast<int64_t>(r.times.size()) - 1;
+    CHECK(intervals >= r.expected - 1);
+    CHECK(intervals <= r.expected + 1);
+    CHECK(r.expected >= 40);
+}
+
+namespace
+{
+    struct StartStopLoop
+    {
+        int iterations = 0;
+        int consistent = 0;
+    };
+
+    StartStopLoop startStopLoop(int iterations)
+    {
+        StartStopLoop out;
+        EventLog log;
+        ecs::Manager manager;
+        for(int i = 0; i < iterations; i++)
+        {
+            auto world = std::make_unique<ecs::Container>(&manager, "loop");
+            auto system = std::make_unique<CountingSystem>(&log, "subject");
+            auto counters = system->counters;
+            world->System(std::move(system));
+            world->Start(100);
+            world->Stop();
+            out.iterations++;
+            // A system that was started was notified exactly once; one that was not, never.
+            if(counters->shutdown.load() == counters->initialize.load() && counters->initialize.load() <= 1) out.consistent++;
+        }
+        return out;
+    }
+}
+
+TEST_CASE("Stop and start loop", "[Lifecycle]")
+{
+    const int iterations = 500 / kSanitizerFactor;
+    const StartStopLoop r = withTimeout([&] { return startStopLoop(iterations); }, watchdogLimit());
+    CHECK(r.iterations == iterations);
+    CHECK(r.consistent == iterations);
 }
