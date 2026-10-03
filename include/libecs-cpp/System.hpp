@@ -267,8 +267,10 @@ namespace ecs
          *  same world. A timer added during this system's timer walk is considered from its next update.
          *  From Update() the timer is added at once. */
         void TimerAdd(Timer timer);
-        /*! World thread only. */
-        void Log(const std::string &message, const std::string &level);
+        /*! Sends a message to the world's log destination with this system's identifier as a prefix.
+         *  A message with no severity is "info", as on the world's own Log(). The usual severity names are
+         *  "error", "warning", "info" and "debug"; any other name is passed on as given. World thread only. */
+        void Log(const std::string &message, const std::string &level = "info");
       private:
         friend class ecs::Container;
         std::shared_ptr<ecs::Mailbox> mailbox = std::make_shared<ecs::Mailbox>();

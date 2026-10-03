@@ -270,3 +270,81 @@ TEST_CASE("A system that logs from its destructor reaches the destination when t
     REQUIRE(recorder->contains("[teardown] shutdown", "warning"));
     REQUIRE(recorder->contains("[teardown] destroyed", "info"));
 }
+
+TEST_CASE("A system logging without a severity delivers info", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+    auto *system = world->System(std::make_unique<LoggingSystem>("speaker"));
+
+    system->Log("m");
+
+    const std::vector<Recorder::Line> expected = {{"[speaker] m", "info"}};
+    REQUIRE(recorder.snapshot() == expected);
+}
+
+TEST_CASE("A world logging without a severity delivers info", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+
+    world->Log("m");
+
+    const std::vector<Recorder::Line> expected = {{"m", "info"}};
+    REQUIRE(recorder.snapshot() == expected);
+}
+
+TEST_CASE("A system and its world deliver the same severity for the same call", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+    auto *system = world->System(std::make_unique<LoggingSystem>("speaker"));
+
+    world->Log("m");
+    system->Log("m");
+
+    const auto lines = recorder.snapshot();
+    REQUIRE(lines.size() == 2);
+    REQUIRE(lines[0].second == lines[1].second);
+    REQUIRE(lines[0].second == "info");
+}
+
+TEST_CASE("An explicit severity is delivered as given", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+    auto *system = world->System(std::make_unique<LoggingSystem>("speaker"));
+
+    const std::vector<std::string> levels = {"error", "warning", "debug", "info", "no-such-severity"};
+    for(const auto &level : levels)
+    {
+        system->Log("from system", level);
+        world->Log("from world", level);
+    }
+
+    const auto lines = recorder.snapshot();
+    REQUIRE(lines.size() == levels.size() * 2);
+    for(size_t i = 0; i < levels.size(); ++i)
+    {
+        INFO("level: " << levels[i]);
+        REQUIRE(lines[i * 2] == Recorder::Line("[speaker] from system", levels[i]));
+        REQUIRE(lines[i * 2 + 1] == Recorder::Line("from world", levels[i]));
+    }
+}
+
+TEST_CASE("A call written with the severity as a second argument still behaves the same", "[Logging]") {
+    ecs::Manager manager;
+    auto world = manager.Container("logging");
+    Recorder recorder;
+    recorder.install(world);
+    auto *system = world->System(std::make_unique<LoggingSystem>("speaker"));
+
+    system->Log("m", "warning");
+
+    const std::vector<Recorder::Line> expected = {{"[speaker] m", "warning"}};
+    REQUIRE(recorder.snapshot() == expected);
+}
