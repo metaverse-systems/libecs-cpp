@@ -53,7 +53,7 @@ jobs:
           SANITIZER: ${{ matrix.sanitizer }}
         run: |
           ./autogen.sh
-          ./configure --enable-werror=yes ${SANITIZER:+--enable-sanitizer=$SANITIZER}
+          ./configure --enable-werror=yes --enable-tests=yes ${SANITIZER:+--enable-sanitizer=$SANITIZER}
 
       - name: Check the build uses no processor-specific flags
         run: |

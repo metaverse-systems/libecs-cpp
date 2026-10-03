@@ -29,7 +29,41 @@ AC_PROG_CXX
 AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE([enable])
 
-PKG_CHECK_MODULES([CATCH2], [catch2-with-main])
+AC_ARG_ENABLE([tests],
+	AS_HELP_STRING([--enable-tests=@<:@auto|yes|no@:>@],
+		[Build the tests; they need Catch2 v3, pkg-config name catch2-with-main [default=auto]]),
+	[tests="${enableval}"],
+	[tests="auto"])
+
+tests_disabled_by_option=no
+AS_CASE(["$tests"],
+	[no], [
+		tests_enabled=no
+		tests_disabled_by_option=yes
+		tests_reason="--enable-tests=no"
+	],
+	[auto|yes], [
+		dnl The lookup is written out instead of using PKG_CHECK_MODULES so that
+		dnl nothing about the test framework is declared when the tests are off.
+		AC_MSG_CHECKING([for the test framework (catch2-with-main)])
+		AS_IF([$PKG_CONFIG --exists catch2-with-main],
+			[
+				AC_MSG_RESULT([yes])
+				TEST_FRAMEWORK_CFLAGS=`$PKG_CONFIG --cflags catch2-with-main`
+				TEST_FRAMEWORK_LIBS=`$PKG_CONFIG --libs catch2-with-main`
+				tests_enabled=yes
+				tests_reason="found"
+			],
+			[
+				AC_MSG_RESULT([no])
+				AS_IF([test "$tests" = yes],
+					[AC_MSG_ERROR([--enable-tests=yes requires Catch2 v3 (pkg-config module catch2-with-main); install it (Debian/Ubuntu: apt install catch2) or use --enable-tests=auto])])
+				tests_enabled=no
+				tests_reason="not found"
+			])
+	],
+	[AC_MSG_ERROR([invalid value '$tests' for --enable-tests; accepted values are: auto, yes, no])])
+
 
 AC_ARG_ENABLE([sanitizer],
 	AS_HELP_STRING([--enable-sanitizer=@<:@no|address|thread@:>@],
@@ -68,14 +102,22 @@ AS_CASE(["$werror"],
 
 AC_SUBST([cross_compiling])
 AC_SUBST([WERROR_CXXFLAGS])
+AC_SUBST([TEST_FRAMEWORK_CFLAGS])
+AC_SUBST([TEST_FRAMEWORK_LIBS])
 AC_SUBST([SANITIZER])
 AC_SUBST([SANITIZER_CXXFLAGS])
 AC_SUBST([SANITIZER_LDFLAGS])
 
 AM_CONDITIONAL([CROSS_COMPILING], [test "$cross_compiling" = yes])
+AM_CONDITIONAL([ENABLE_TESTS], [test "$tests_enabled" = yes])
+AM_CONDITIONAL([TESTS_DISABLED_BY_OPTION], [test "$tests_disabled_by_option" = yes])
 
 AC_CONFIG_FILES([Doxyfile])
 AC_CONFIG_FILES([ecs-cpp.pc])
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
 AC_OUTPUT
+
+AC_MSG_NOTICE([tests: $tests_enabled ($tests_reason)])
+AC_MSG_NOTICE([warnings as errors: $werror])
+AC_MSG_NOTICE([sanitizer: $SANITIZER])
 
