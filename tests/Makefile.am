@@ -12,18 +12,20 @@ AM_TESTS_ENVIRONMENT = \
 	ECS_SANITIZER='@SANITIZER@'; export ECS_SANITIZER; \
 	ECS_KNOWN_GAPS_FILE='$(srcdir)/known-gaps.txt'; export ECS_KNOWN_GAPS_FILE; \
 	ECS_TEST_PROGRAMS='$(check_PROGRAMS)'; export ECS_TEST_PROGRAMS; \
+	ECS_EXPORT_LIBRARY='../src/.libs/libecs-cpp.so'; export ECS_EXPORT_LIBRARY; \
+	ECS_EXPORT_INCLUDE='$(top_srcdir)/include'; export ECS_EXPORT_INCLUDE; \
 	ASAN_OPTIONS='halt_on_error=1:detect_leaks=1:abort_on_error=0:print_summary=1'; export ASAN_OPTIONS; \
 	UBSAN_OPTIONS='halt_on_error=1:print_stacktrace=1:print_summary=1'; export UBSAN_OPTIONS; \
 	TSAN_OPTIONS='halt_on_error=0:exitcode=66:second_deadlock_stack=1:print_summary=1'; export TSAN_OPTIONS;
 
 if !CROSS_COMPILING
-TESTS = $(check_PROGRAMS) run-test-selftest.sh run-example.sh run-logging.sh
+TESTS = $(check_PROGRAMS) run-test-selftest.sh run-example.sh run-logging.sh check-exports-selftest.sh check-exports.sh
 else
 check-local:
 	@echo "cross-compiling for $(if $(host_alias),$(host_alias),$(host)): test programs were built but not run"
 endif
 
-EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh run-logging.sh known-gaps.txt bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp
+EXTRA_DIST = run-test.sh run-test-selftest.sh run-example.sh run-logging.sh check-exports.sh check-exports-selftest.sh known-gaps.txt bench_update_pass.cpp bench_entity_creation.cpp bench_message_submit.cpp bench_component_get.cpp
 
 test_Manager_SOURCES = test_Manager.cpp
 test_Manager_LDADD = ../src/libecs-cpp.la ${CATCH2_LIBS}
