@@ -59,9 +59,9 @@ namespace ecs
      * | Entities, Components, Systems | World thread (public so systems can iterate them) |
      * | ~Container() | Exclusive: discards pending deferred changes unrun, stops and joins the thread, delivers Shutdown() to every started system |
      *
-     * Locks: the library uses six mutexes, and each one is a leaf: Manager's container table, this
-     * class's mailbox table, deferred queue, log destination and start/stop state, and each system's
-     * mailbox. A thread
+     * Locks: the library uses six mutexes, and each one is a leaf: Manager's container table, and
+     * this class's mailbox table, deferred queue, log destination and start/stop state (lifecycleLock),
+     * plus one per system mailbox. A thread
      * holds at most one at any moment, and none is held while user code runs (system methods, timer
      * callbacks, message handlers, log destinations, deferred functions or destructors of user
      * objects). Sending a message never waits for a world to update. Worlds whose systems message each
@@ -90,7 +90,8 @@ namespace ecs
          * to a manager that is still running starts the thread. Every other call is a no-op that returns
          * normally: calling Start() again does not start a second thread, does not start any system a
          * second time and does not change the interval. A world that has stopped cannot be started
-         * again; make a new world instead. On the thread, systems are started (System::Initialize())
+         * again; make a new world instead. A call that is refused because the world has been stopped or
+         * its manager has shut down logs one warning. On the thread, systems are started (System::Initialize())
          * before the first pass, and again whenever a system has been registered since.
          *
          * A world that is never given a thread is driven by the application's calls to Update(). The
@@ -110,13 +111,18 @@ namespace ecs
          * quarter of a second). Called from the world's own thread (a system, a timer callback or a
          * deferred function) it only asks, returns at once, and the stop completes when the pass ends.
          * Concurrent callers all return after the stop is complete. A stopped world cannot be restarted.
+         * A request from the thread of a different world also only asks and returns at once; for a world
+         * without a thread that leaves the teardown to its owner's later Stop() or destruction.
          * The destructor does the same stop and is the only call that releases the world; no other
          * thread may use the world while it runs.
          *
-         * A world without a thread is torn down on the calling thread before the call returns. Errors
-         * thrown by Shutdown() are logged at level "error" with the system's identifier and swallowed, and
+         * A world without a thread is torn down on the calling thread before the call returns, also when
+         * the call is made from inside one of its own passes: the systems are shut down at once, the
+         * rest of that pass skips them, and the system that made the call has already been shut down
+         * when the call returns. Errors thrown by Shutdown() are logged at level "error" with the system's identifier and swallowed, and
          * the remaining systems are still notified. Functions still waiting in Defer() are discarded
-         * unrun. A system removed from inside a Shutdown() is notified once and released; a system
+         * unrun. A system removed from inside a Shutdown() is notified once and released when the
+         * teardown walk ends (so after the systems still to be visited); a system
          * registered from inside one is never started and is released without a notification. Calling
          * Stop() from inside a Shutdown() returns at once. After the call, Update() does nothing and a
          * system registered later is never started. */
@@ -203,7 +209,8 @@ namespace ecs
          * inside a walk or from inside a deferred function. If one of them throws, the rest still run and
          * the first exception is rethrown before any system is updated. Then the start-up step runs, which
          * calls Initialize() on every system not yet started, and then the update walk. After the world
-         * has been stopped or destroyed, Update() does nothing.
+         * has been stopped or destroyed, Update() does nothing, and on a world with its own thread it
+         * returns at once from the moment a stop is requested.
          *
          * Adding or removing systems never changes the relative order of the others. A system removed
          * earlier in the pass is skipped. A system added during the pass is first updated in the next one.

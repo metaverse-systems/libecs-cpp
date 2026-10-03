@@ -660,7 +660,8 @@ namespace ecs
         for(size_t i = 0, count = this->system_order.size(); i < count; i++)
         {
             auto *system = this->system_order[i].system;
-            if(system == nullptr || !this->system_order[i].started) continue;
+            // A system shut down earlier in this pass (the world was stopped from inside the pass) is not updated.
+            if(system == nullptr || !this->system_order[i].started || this->system_order[i].shutdown) continue;
             try
             {
                 if(system->Timing.ShouldUpdate())

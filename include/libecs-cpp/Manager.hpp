@@ -33,8 +33,9 @@ namespace ecs
      *   manager is destroyed.
      * - Shutdown guarantee: IsRunning() and Shutdown() are atomic. Once IsRunning() has returned false
      *   it never returns true again, and repeated or concurrent requests are idempotent. A request
-     *   made from a thread that runs world code (a system's Update(), Initialize() or Shutdown()) only
-     *   requests the stop of the worlds and returns at once; from any other thread, Shutdown() returns
+     *   made from a thread that runs world code (a system's Initialize(), Update() or Shutdown(), a timer
+     *   callback or a deferred function) only
+     *   requests the stop of the worlds that have their own thread and returns at once; from any other thread, Shutdown() returns
      *   after every threaded world has stopped, its thread has ended and its systems have been shut
      *   down. Worlds driven by their owner's calls to Update() are not touched; the owner stops them.
      * - MessageSubmit() returns without waiting for the destination's update and throws
@@ -70,7 +71,7 @@ namespace ecs
         /** Any thread. True until Shutdown() has been called. */
         bool IsRunning();
 
-        /** Any thread. Sets IsRunning() to false, asks every world to stop, and waits for it (see above);
+        /** Any thread. Sets IsRunning() to false, asks every world that has its own thread to stop, and waits for it (see above);
          *  idempotent, and the request is never withdrawn.
          *
          *  From an application thread it blocks until every world that has its own thread has ended and

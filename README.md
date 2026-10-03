@@ -191,7 +191,7 @@ into a world or leaves it. Both are called on the world thread unless the table 
   swallowed, on every path. The other systems are still notified and released, and nothing escapes a
   destructor.
 * While a world is being torn down, a notification may remove a later system (it is notified once and
-  released), may register a system (it is not started and is released without a notification), and may
+  released when the teardown walk ends, so after the systems still to be visited), may register a system (it is not started and is released without a notification), and may
   call `Container::Stop()` or `Manager::Shutdown()` (neither waits and neither repeats the teardown).
 * A `Shutdown()` that blocks is waited for. The library does not abandon a notification.
 
@@ -215,7 +215,7 @@ The thread and the moment depend on the path:
 has not been asked to stop and belongs to a manager that is still running starts the world's thread. Every
 other call returns normally and does nothing: no second thread, no second start-up of any system, and the
 interval stays as it was. A world that has been stopped cannot be started again, and a world of a manager
-that has shut down cannot be started at all. Make a new world instead.
+that has shut down cannot be started at all; those two calls log one warning. Make a new world instead.
 
 ### Stopping a world
 
@@ -225,10 +225,16 @@ that has shut down cannot be started at all. Make a new world instead.
   and returns after the world's thread has ended and every notification has been delivered. A world
   driven by `Update()` has no thread, so it is torn down on the calling thread before `Stop()` returns.
 * From the world's own thread (a system, a timer callback, a deferred function or a `Shutdown()`), it only
-  asks and returns at once; the stop completes when the pass ends.
+  asks and returns at once; the stop completes when the pass ends. The same holds for a call made from
+  the thread of a different world: it only asks, and a world driven by `Update()` is then torn down by
+  its owner's later `Stop()` or by destroying it.
+* A world driven by `Update()` that is stopped from inside one of its own passes is torn down at once,
+  on the calling thread: its systems are shut down, including the one that made the call, and the rest of
+  that pass skips them.
 * The wait for a stop does not depend on the update interval. An idle world with a 5 second interval stops
   in milliseconds. The tick period is unchanged when no stop is requested.
-* After a stop, `Update()` does nothing, `Defer()` is dropped, and a system registered later is never
+* After a stop, `Update()` does nothing (on a world with its own thread, from the moment the stop is
+  requested), `Defer()` is dropped, and a system registered later is never
   started.
 * Destroying a world stops it the same way and then releases it. Destruction is exclusive: no other
   thread may use the world while it runs. A world driven by `Update()` is stopped by its owner, with
@@ -236,8 +242,8 @@ that has shut down cannot be started at all. Make a new world instead.
 
 ### Manager shutdown and destruction
 
-* `Manager::Shutdown()` from an application thread sets `IsRunning()` to `false`, asks every world to
-  stop and returns after every world with its own thread has ended and delivered its notifications. After it
+* `Manager::Shutdown()` from an application thread sets `IsRunning()` to `false`, asks every world that has
+  its own thread to stop and returns after every world with its own thread has ended and delivered its notifications. After it
   returns, no thread of the manager runs and no system is updated. It is idempotent, and concurrent callers
   each return after the work is complete.
 * `Manager::Shutdown()` from a world thread only requests the stop and returns at once, so a system can
@@ -246,7 +252,7 @@ that has shut down cannot be started at all. Make a new world instead.
 * Worlds driven by `Update()` are not stopped by the manager, because the library does not run application
   code on threads it does not own. Stop them with `Stop()` or destroy them.
 * A world thread that fails (an exception from start-up or an update) logs the error, calls
-  `Manager::Shutdown()`, which now stops every world of the manager, delivers its own notifications and
+  `Manager::Shutdown()`, which now stops every world of the manager that has its own thread, delivers its own notifications and
   ends.
 * `~Manager()` runs `Shutdown()` first, while every world still exists, so notifications that message
   another world find it. It then closes the manager: later sends and creation of worlds fail with
@@ -530,8 +536,9 @@ stay callable until then.
 
 ### Locks and deadlocks
 
-The library uses six mutexes: the manager's container table, and each container's mailbox table, deferred
-queue, log destination and start/stop state (`lifecycleLock`), plus one per system mailbox. Each is a leaf. A thread holds at most one of them
+The library uses six mutexes: the manager's container table, each container's mailbox table, deferred
+queue, log destination and start/stop state (`lifecycleLock`), and one per system mailbox. Each is a leaf.
+A thread holds at most one of them
 at a time, and none is held while user code runs (system methods, timer callbacks, message handlers, log
 destinations, deferred functions, or destructors of user objects). Sending never waits for a world to
 update; the blocking waits on library state are `~Manager` waiting for sends in progress (those never

@@ -1283,6 +1283,38 @@ TEST_CASE("Changes during teardown", "[Lifecycle]")
     }
 }
 
+TEST_CASE("A world driven by Update() stopped from inside its own pass", "[Lifecycle]")
+{
+    EventLog log;
+    ecs::Manager manager;
+    ecs::Container world(&manager, "inner-stop");
+
+    auto first = std::make_unique<CountingSystem>(&log, "first");
+    auto stopper = std::make_unique<CountingSystem>(&log, "stopper");
+    auto last = std::make_unique<CountingSystem>(&log, "last");
+    auto firstCounters = first->counters;
+    auto stopperCounters = stopper->counters;
+    auto lastCounters = last->counters;
+    ecs::Container *raw = &world;
+    stopper->onUpdate = [raw] { raw->Stop(); };
+    world.System(std::move(first));
+    world.System(std::move(stopper));
+    world.System(std::move(last));
+
+    // The world is torn down at once, on the calling thread. The rest of the pass does not update a
+    // system that has already been shut down.
+    world.Update();
+    CHECK(firstCounters->shutdown.load() == 1);
+    CHECK(stopperCounters->shutdown.load() == 1);
+    CHECK(lastCounters->shutdown.load() == 1);
+    CHECK(lastCounters->update.load() == 0);
+    CHECK(firstCounters->update.load() == 1);
+
+    world.Update();
+    CHECK(firstCounters->update.load() == 1);
+    CHECK(lastCounters->shutdown.load() == 1);
+}
+
 TEST_CASE("Messages to a shut-down system are refused", "[Lifecycle]")
 {
     EventLog log;
