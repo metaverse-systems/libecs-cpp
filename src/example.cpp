@@ -93,9 +93,10 @@ class PhysicsSystem : public ecs::System
     void Update()
     {
         /* Time that passed between the previous Update() and this one */
-        auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(this->ElapsedGet());
+        auto elapsed = this->ElapsedGet();
+        auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
 
-        std::cout << "Last run " << dt.count() << "ms ago" << std::endl;
+        std::cout << "Last run " << std::chrono::duration<double, std::milli>(elapsed).count() << "ms ago" << std::endl;
 
         // Type names held in std::string constants so lookups do not allocate
         static const std::string positionType = "PositionComponent";
