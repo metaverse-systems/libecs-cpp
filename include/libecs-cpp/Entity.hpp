@@ -42,14 +42,18 @@ namespace ecs
         template <class T = ecs::Component>
         std::shared_ptr<T> ComponentGet(const std::string &type) const
         {
-            std::shared_ptr<ecs::Component> found = this->componentFind(type);
+            const std::shared_ptr<ecs::Component> *found = this->componentFind(type);
+            if(found == nullptr)
+            {
+                return nullptr;
+            }
             if constexpr(std::is_same_v<T, ecs::Component>)
             {
-                return found;
+                return *found;
             }
             else
             {
-                return std::dynamic_pointer_cast<T>(found);
+                return std::dynamic_pointer_cast<T>(*found);
             }
         }
         /*! True when this entity has a component stored under the given type name, whatever its kind
@@ -60,6 +64,6 @@ namespace ecs
         void ComponentDestroy(const std::string &type);
     
       private:
-        std::shared_ptr<ecs::Component> componentFind(const std::string &type) const;
+        const std::shared_ptr<ecs::Component> *componentFind(const std::string &type) const;
     };
 }

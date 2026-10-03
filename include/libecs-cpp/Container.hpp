@@ -195,14 +195,18 @@ namespace ecs
         template <class T = ecs::Component>
         std::shared_ptr<T> ComponentGet(const std::string &entity, const std::string &type) const
         {
-            std::shared_ptr<ecs::Component> found = this->componentFind(entity, type);
+            const std::shared_ptr<ecs::Component> *found = this->componentFind(entity, type);
+            if(found == nullptr)
+            {
+                return nullptr;
+            }
             if constexpr(std::is_same_v<T, ecs::Component>)
             {
-                return found;
+                return *found;
             }
             else
             {
-                return std::dynamic_pointer_cast<T>(found);
+                return std::dynamic_pointer_cast<T>(*found);
             }
         }
         /*! True when the given entity has a component stored under the given type name, whatever its kind;
@@ -378,7 +382,20 @@ namespace ecs
         void threadFunc(std::stop_token stopToken);
         ecs::Entity *entityCreate(const std::string &handle);
         /*! Finds the stored component with find() only, so nothing is inserted. Empty when absent. */
-        std::shared_ptr<ecs::Component> componentFind(const std::string &entity, const std::string &type) const;
+        const std::shared_ptr<ecs::Component> *componentFind(const std::string &entity, const std::string &type) const
+        {
+            auto byType = this->Components.find(type);
+            if(byType == this->Components.end())
+            {
+                return nullptr;
+            }
+            auto byEntity = byType->second.find(entity);
+            if(byEntity == byType->second.end())
+            {
+                return nullptr;
+            }
+            return byEntity->second ? &byEntity->second : nullptr;
+        }
 
         std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> resources;
 
