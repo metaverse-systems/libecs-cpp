@@ -21,7 +21,7 @@ libecs_cpp_la_CXXFLAGS = -std=c++20 -I$(top_srcdir)/include -Wall $(WERROR_CXXFL
 libecs_cpp_la_SOURCES = Manager.cpp Container.cpp System.cpp Entity.cpp Uuid.cpp
 libecs_cpp_la_LDFLAGS = -no-undefined -pthread $(SANITIZER_LDFLAGS)
 
-bin_PROGRAMS = example
+noinst_PROGRAMS = example
 example_SOURCES = example.cpp
 example_CXXFLAGS = -std=c++20 -I$(top_srcdir)/include -Wall $(WERROR_CXXFLAGS) $(SANITIZER_CXXFLAGS)
 example_LDADD = libecs-cpp.la
