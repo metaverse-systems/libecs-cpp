@@ -30,192 +30,204 @@ namespace ecs
     class Entity;
     struct Mailbox;
 
-    /*! A world: the entities, components, systems and resources that are updated together.
+    /*! A container: the entities, components, systems and resources that are updated together.
      *
-     * Threading
+     * A container is driven in one of two ways. After Start() it has its own thread, which runs a pass
+     * (Update()) at a fixed interval. Without Start(), the application calls Update() itself. The thread
+     * that runs the passes is the container thread. Any other thread is an outside caller.
      *
-     * The world thread is the thread that runs the world's update passes: the world's own background
-     * thread once Start() has been called, or the single thread an application uses to call Update().
-     * Any other thread is an outside caller.
+     * \par Threading
+     * Each member states one of three categories on its last line:
+     * - Any thread: the member is safe to call from any thread at any time.
+     * - Container thread only: the member reads or changes entities, components, systems, resources,
+     *   timers or the update order.
+     * - Exclusive: no other thread may use the object during the call.
      *
-     * - Safe from any thread: delivering messages, using the manager, requesting and observing
-     *   shutdown, replacing the log destination, logging, and handing the world a deferred change.
-     * - World thread only: everything that reads or changes entities, components, systems, resources,
-     *   timers or the update order, and everything that reads System::messages.
-     * - Unsupported from outside callers of a running world: direct changes to entities, components,
-     *   systems or resources. The outcome is undefined. Use Defer() instead.
-     * - A world that is not running (never started, and nobody is calling Update()) may be changed
-     *   directly from one thread at a time, as before. That thread must hand the world over, for
-     *   example by calling Start(), before another thread uses it.
-     * - Code inside a world has no new obligations: no locks and no new calls. Entities, Components,
-     *   Systems and the update order stay usable from the world thread exactly as before.
+     * \par
+     * An outside caller must not change the entities, components, systems or resources of a running
+     * container directly. The outcome is undefined. Hand the change to Defer() instead. A container that
+     * is not running (never started, and nobody is calling Update()) may be changed directly by one
+     * thread at a time. That thread must hand the container over, for example by calling Start(), before
+     * another thread uses it. Code inside a container (systems, timer callbacks, deferred functions) runs
+     * on the container thread and needs no locks.
      *
-     * Operations:
-     *
-     * | Member | Class |
-     * |---|---|
-     * | Start(), Start(interval) | Once: call from the thread that owns the world, before any other thread uses it; a repeated call is a no-op |
-     * | ClockSet(clock) | World thread |
-     * | Defer(fn) | Any thread |
-     * | MessageSubmit(message) | Any thread |
-     * | Log(message, level), LoggerSet(fn) | Any thread |
-     * | UuidGet(), Handle, Manager | Any thread (Handle and Manager are set at construction and never change) |
-     * | Update(), SystemsInitialize() | World thread, one thread at a time |
-     * | Stop() | Any thread. From the world thread it only requests; elsewhere it returns once the world has been torn down |
-     * | System(), SystemDestroy() | World thread |
-     * | Entity(), EntityDestroy(), Component(), ComponentDestroy() | World thread |
-     * | ComponentGet(), ComponentHas() | World thread; takes no lock |
-     * | ResourceAdd(), Resources(), ResourceGet(), Export() | World thread |
-     * | Entities, Components, Systems | World thread (public so systems can iterate them) |
-     * | ~Container() | Exclusive: discards pending deferred changes unrun, stops and joins the thread, delivers Shutdown() to every started system |
-     *
-     * Locks: the library uses six mutexes, and each one is a leaf: Manager's container table, and
-     * this class's mailbox table, deferred queue, log destination and start/stop state (lifecycleLock),
-     * plus one per system mailbox. A thread
-     * holds at most one at any moment, and none is held while user code runs (system methods, timer
-     * callbacks, message handlers, log destinations, deferred functions or destructors of user
-     * objects). Sending a message never waits for a world to update. Worlds whose systems message each
-     * other in both directions, or themselves, therefore cannot deadlock. An application's own locks
+     * \par Locks
+     * A thread holds at most one of the library's locks at a time, and none is held while user code runs
+     * (system methods, timer callbacks, log destinations, deferred functions or destructors of user
+     * objects). Sending a message never waits for a container to update. Containers whose systems message
+     * each other in both directions, or themselves, therefore cannot deadlock. An application's own locks
      * are its own responsibility.
      *
-     * Lifetime: pointers returned by Entity(), System() and similar keep their existing lifetime
-     * rules. A thread other than the world thread must not hold one across a point where another
+     * \par Lifetime
+     * A pointer returned by Entity() or System() is valid until the object is removed or the container is
+     * destroyed. A thread other than the container thread must not hold one across a point where another
      * thread could remove the object. A deferred function that needs an entity looks it up by handle
      * inside the function.
      *
-     * Deferred changes: see Defer(). Log destination: see Log() and LoggerSet().
+     * The complete rules, with a table of every member, are in the Threading section of REFERENCE.md.
      */
     class Container
     {
         friend class Manager;
 
       public:
+        /*! Creates a container with a generated handle. Applications normally call Manager::Container()
+         *  instead, which creates the container and owns it. */
         Container(ecs::Manager *manager);
+        /*! Creates a container with the given handle. Applications normally call
+         *  Manager::Container(handle) instead, which creates the container and owns it. */
         Container(ecs::Manager *manager, const std::string &handle);
+        /*! Stops the container as Stop() does, then releases it. Functions still waiting in Defer() are
+         *  discarded without running.
+         *
+         * Thread: exclusive. */
         ~Container();
-        /*! Starts the world's own thread with the default interval (30 passes a second). Call it once,
-         *  from the thread that owns the world, before any other thread uses the world.
+        /*! Starts the container's own thread, which runs 30 passes a second.
          *
-         * The first call on a world that has never been started, has not been asked to stop, and belongs
-         * to a manager that is still running starts the thread. Every other call is a no-op that returns
-         * normally: calling Start() again does not start a second thread, does not start any system a
-         * second time and does not change the interval. A world that has stopped cannot be started
-         * again; make a new world instead. A call that is refused because the world has been stopped or
-         * its manager has shut down logs one warning. On the thread, systems are started (System::Initialize())
-         * before the first pass, and again whenever a system has been registered since.
+         * On the thread, systems are started (System::Initialize()) before the first pass, and again
+         * whenever a system has been registered since the last pass.
          *
-         * A world that is never given a thread is driven by the application's calls to Update(). The
-         * manager does not stop such a world; its owner stops it with Stop() or by destroying it.
-         */
+         * Start() takes effect once. A repeated call does nothing: it does not start a second thread, does
+         * not start any system a second time and does not change the interval. A container that has been
+         * stopped, or whose manager has shut down, cannot be started; the call logs one warning and
+         * returns. Make a new container instead.
+         *
+         * A container that is never started is driven by the application's calls to Update(). The manager
+         * does not stop such a container; its owner stops it with Stop() or by destroying it.
+         *
+         * Thread: call it once, from the thread that owns the container, before any other thread uses the
+         * container. */
         void Start();
-        /*! As Start(), with the time between passes. The interval does not delay a stop: a stop request
-         *  ends the wait at once. An interval of zero runs the passes back to back. An interval below zero
-         *  or above ecs::MAX_INTERVAL throws std::runtime_error and leaves the world not started.
+        /*! Starts the container's own thread with the given time between passes.
          *
-         * The world's thread waits on the real steady clock whatever clock is set with ClockSet(). */
+         * Behaves as Start(). An interval of zero runs the passes back to back. An interval below zero or
+         * above ecs::MAX_INTERVAL throws std::runtime_error and leaves the container not started. The
+         * interval does not delay a stop: a stop request ends the wait at once. The thread waits on the
+         * real steady clock whatever clock is set with ClockSet(). */
         void Start(std::chrono::microseconds interval);
-        /*! As Start(interval), with the interval as a number of microseconds. */
+        /*! Starts the container's own thread with the interval given as a number of microseconds. Behaves
+         *  as Start(std::chrono::microseconds). */
         void Start(uint32_t);
-        /*! Replaces the clock that every system of this world reads, and the clock given to every system
-         *  registered later. World thread only. Each system starts its schedule, timers and elapsed-time
-         *  measurement again from the new clock (see System::ClockSet()). The pointer is not owned and the
-         *  clock must outlive the world. A null pointer selects the real steady clock, the default. Meant
-         *  for worlds driven by calls to Update(), for example with an ecs::ManualClock in a test. */
+        /*! Replaces the clock that the systems of this container read.
+         *
+         * The new clock is given to every system in the container and to every system registered later.
+         * Each system starts its schedule, timers and elapsed-time measurement again from the new clock
+         * (see System::ClockSet()). The pointer is not owned and the clock must outlive the container. A
+         * null pointer selects the real steady clock, the default. Meant for containers driven by calls to
+         * Update(), for example with an ecs::ManualClock in a test.
+         *
+         * Thread: container thread only. */
         void ClockSet(const ecs::Clock *clock);
-        /*! Stops the world and delivers System::Shutdown() once to every system that was started and has
-         *  not been shut down yet, last registered first. Calling it again does nothing. Safe from any
-         *  thread.
+        /*! Stops the container and calls System::Shutdown() on every started system, last registered first.
          *
-         * Called from a thread other than the world's, it asks the world to stop after the pass in
-         * progress and returns after the world's thread has ended and every notification has been
-         * delivered; the wait does not depend on the update interval (an idle world stops within a
-         * quarter of a second). Called from the world's own thread (a system, a timer callback or a
-         * deferred function) it only asks, returns at once, and the stop completes when the pass ends.
-         * Concurrent callers all return after the stop is complete. A stopped world cannot be restarted.
-         * A request from the thread of a different world also only asks and returns at once; for a world
-         * without a thread that leaves the teardown to its owner's later Stop() or destruction.
-         * The destructor does the same stop and is the only call that releases the world; no other
-         * thread may use the world while it runs.
+         * Each started system receives Shutdown() once; a system that was never started does not receive
+         * it. Calling Stop() again does nothing. A stopped container cannot be restarted. After the call,
+         * Update() does nothing and a system registered later is never started.
          *
-         * A world without a thread is torn down on the calling thread before the call returns, also when
-         * the call is made from inside one of its own passes: the systems are shut down at once, the
-         * rest of that pass skips them, and the system that made the call has already been shut down
-         * when the call returns. Errors thrown by Shutdown() are logged at level "error" with the system's identifier and swallowed, and
-         * the remaining systems are still notified. Functions still waiting in Defer() are discarded
-         * unrun. A system removed from inside a Shutdown() is notified once and released when the
-         * teardown walk ends (so after the systems still to be visited); a system
-         * registered from inside one is never started and is released without a notification. Calling
-         * Stop() from inside a Shutdown() returns at once. After the call, Update() does nothing and a
-         * system registered later is never started. */
+         * When the call returns depends on the caller and on how the container is driven:
+         * - From an application thread, on a container with its own thread: after the pass in progress
+         *   has ended, every Shutdown() has run and the thread has ended. The wait does not depend on the
+         *   update interval; an idle container stops in milliseconds. Concurrent callers all return after
+         *   the stop is complete.
+         * - From the container's own thread (a system, a timer callback or a deferred function), or from
+         *   the thread of another container: at once. The call only records the request. A container with
+         *   its own thread completes the stop when the pass ends; a container driven by Update() is shut
+         *   down by its owner's later Stop() or destruction.
+         * - On a container driven by Update(), from the thread that drives it: the systems are shut down
+         *   on that thread before the call returns. This also holds inside one of the container's own
+         *   passes: the systems are shut down at once, including the one that made the call, and the rest
+         *   of the pass skips them.
+         *
+         * During the shutdown:
+         * - An error thrown by Shutdown() is logged at level "error" with the system's handle and
+         *   swallowed. The remaining systems still receive Shutdown().
+         * - Functions still waiting in Defer() are discarded without running.
+         * - A system removed from inside a Shutdown() receives its own Shutdown() once and is released
+         *   after the remaining systems have been shut down.
+         * - A system registered from inside a Shutdown() is never started and is released without
+         *   Shutdown().
+         * - Stop() called from inside a Shutdown() returns at once.
+         *
+         * Thread: any. */
         void Stop();
-        /*! Calls Initialize() once on every registered system that has not been started yet, in
-         *  registration order. Update() does this by itself before the update walk whenever a system
-         *  has been registered since the last time, so calling it is optional, and calling it again
-         *  never starts a system twice. It does nothing once the world has been stopped.
+        /*! Calls System::Initialize() on every registered system that has not been started, in registration
+         *  order.
          *
-         * This is a walk. A system registered during it does not get Initialize() from this call and is
-         * started and updated from the next Update(). A system removed during it is not initialized if it has not
-         * been reached yet. Systems removed during the walk are released when it returns, normally or
-         * because a system threw. World thread only. If Initialize() throws, the error is logged with the system's
-         * identifier and rethrown after every change requested so far has completed.
-         */
+         * Update() does this by itself at the start of each pass, so calling it is optional, and calling
+         * it again never starts a system twice. It does nothing once the container has been stopped.
+         *
+         * A system registered during the call is not started by it; it is started and updated from the
+         * next Update(). A system removed during the call before it was reached is not started. Systems
+         * removed during the call are released when it returns. If Initialize() throws, the error is
+         * logged with the system's handle and rethrown after every change requested so far has completed.
+         *
+         * Thread: container thread only. */
         void SystemsInitialize();
-        /*! Registers a system (world thread only). It is found in Systems as soon as the call returns.
+        /*! Registers a system and returns a pointer to it.
          *
-         * Called during a walk, the new system is not updated or initialized in that walk. It is updated
-         * from the next pass, after every system registered before it. Registering under the identifier
-         * of a system removed earlier in the same walk creates a new system that goes to the end of the
-         * order and is not affected when the removed one is released.
+         * The system is in Systems when the call returns. It is started (System::Initialize()) once, on
+         * the container thread, at the start of the next pass and so before its first update. A system
+         * registered after the container has been stopped is never started and is released without
+         * Shutdown().
          *
-         * Three calls are rejected with std::runtime_error and leave the world unchanged: a null pointer,
-         * a system whose Handle is empty, and a system object that is already registered in a world. A
+         * \par During a pass
+         * A system registered during a pass or during SystemsInitialize() is not started or updated in it.
+         * It is updated from the next pass, after every system registered before it. Registering under
+         * the handle of a system removed earlier in the same pass creates a new system that goes to the end
+         * of the order and is not affected when the removed one is released.
+         *
+         * \par Replacement
+         * Registering under the Handle of a system that is still registered replaces it. The new instance
+         * takes the old one's place in the update order, is started and updated once, and receives
+         * messages sent after the call. The old instance receives Shutdown() if it was started, and
+         * messages still waiting for it are discarded with it. It is not updated again and stays in
+         * memory until the outermost pass or SystemsInitialize() call ends. Raw pointers to it must not be
+         * used after the call.
+         *
+         * \par Rejected calls
+         * Three calls throw std::runtime_error and leave the container unchanged: a null pointer, a system
+         * whose Handle is empty, and a system object that is already registered in a container. A
          * rejected call destroys the system that was passed in, except for an already registered object:
-         * that one belongs to its world, so the pointer is released and the object is not deleted.
+         * that one belongs to its container, so the pointer is released and the object is not deleted.
          *
-         * A system registered at any time is started (System::Initialize()) once, on the world thread,
-         * before its first Update(): at the next start-up step, which Update() runs before the update
-         * walk. A system registered after the world has been stopped is never started and is released
-         * without a notification.
-         *
-         * Registering a system under the Handle of a system that is still registered replaces it. The new
-         * instance takes the old one's place in the update order, is started and updated once, and
-         * receives messages sent after the call. The old instance receives Shutdown() if it was started.
-         * Messages still waiting for the old instance are discarded with it. The old instance stays in memory until the outermost walk ends, but is not
-         * visited again. Raw pointers to the replaced system must not be used after the call.
-         * System::Container is set by registration only.
-         *
+         * \par Lines logged before registration
          * Lines the system logged before this call are delivered to the log destination as the last step
-         * of a successful call, once and in order, each with the system's identifier as a prefix, before
-         * the world starts the system. A rejected call delivers nothing. A destination that throws does
-         * not stop the remaining lines or undo the registration. Held lines are not capped.
-         */
+         * of a successful call, once and in order, each with the system's handle as a prefix, before the
+         * system is started. A rejected call delivers nothing. A destination that throws does not stop the
+         * remaining lines or undo the registration. Held lines are not capped.
+         *
+         * Thread: container thread only. */
         ecs::System *System(std::unique_ptr<ecs::System> system);
-        /*! Attaches a component to the entity named by its EntityHandle (world thread only).
+        /*! Attaches a component to the entity named by its EntityHandle and returns the stored component.
          *
-         * The world becomes the sole owner from the moment of the call: the caller's handle is empty
-         * afterwards, whether the call is accepted or rejected, and a rejected component is released
-         * exactly once. Pass std::make_unique<T>(...) or std::move(handle); raw pointers, shared_ptrs and
-         * copies of a handle do not compile. Returns the stored component.
+         * The container becomes the sole owner at the call: the caller's pointer is empty afterwards,
+         * whether the call is accepted or rejected, and a rejected component is released exactly once.
+         * Pass std::make_unique<T>(...) or a std::move()d std::unique_ptr; raw pointers and shared_ptrs do
+         * not compile.
          *
-         * Four attachments are rejected with std::runtime_error and leave the world unchanged: an empty
-         * handle, an empty Type, an empty EntityHandle, and an EntityHandle that names no entity in this
-         * world. If the entity already has a component of the same Type, the new component replaces it, so
-         * the entity has exactly one component of each type. Anyone holding a shared_ptr to the replaced
-         * component keeps a valid object. The same type on a different entity is kept alongside. */
+         * If the entity already has a component of the same Type, the new component replaces it, so an
+         * entity has exactly one component of each type. Anyone holding a shared_ptr to the replaced
+         * component keeps a valid object. The same type on a different entity is kept alongside.
+         *
+         * Throws std::runtime_error, leaving the container unchanged, for a null pointer, an empty Type, an
+         * empty EntityHandle, and an EntityHandle that names no entity in this container.
+         *
+         * Thread: container thread only. */
         std::shared_ptr<ecs::Component> Component(std::unique_ptr<ecs::Component> component);
-        /*! Looks up the component of the given type on the given entity, as kind T (world thread only).
+        /*! Looks up the component with the given type name on the given entity, as class T.
          *
-         * The result is empty when the entity has no component of that type, when the type has never been
-         * used, when the entity is unknown, when either string is empty, and when the stored component is
-         * not a T. With the default kind, ecs::Component, any stored component is returned. The call
-         * never throws, never changes the world, takes no lock and, given existing std::string
-         * arguments, never allocates. The result keeps its object valid even if the component is later
-         * replaced or removed.
+         * The result is empty when the entity has no component with that type name, when the type name
+         * has never been used, when the entity is unknown, when either string is empty, and when the
+         * stored component is not a T. With the default T, ecs::Component, any stored component is
+         * returned. The result keeps its object valid even if the component is later replaced or removed.
          *
-         * Unlike Components[type][entity], which inserts an empty entry for a type or entity it does not
-         * find, this lookup (like find() and at()) leaves the table as it was. A short string literal
-         * (up to 15 characters) does not allocate when converted to std::string, a longer one does, so
-         * code that runs every pass should hold its type names in std::string constants. */
+         * The call never throws, never changes the container and takes no lock. Unlike
+         * Components[type][entity], which inserts an empty entry for a type or entity it does not find,
+         * it leaves the table as it was. Given existing std::string arguments it does not allocate. A
+         * string literal longer than 15 characters allocates when it is converted to std::string, so code
+         * that runs every pass should hold its type names in std::string constants.
+         *
+         * Thread: container thread only. */
         template <class T = ecs::Component>
         std::shared_ptr<T> ComponentGet(const std::string &entity, const std::string &type) const
         {
@@ -233,132 +245,192 @@ namespace ecs
                 return std::dynamic_pointer_cast<T>(*found);
             }
         }
-        /*! True when the given entity has a component stored under the given type name, whatever its kind;
-         *  only the name is compared (world thread only). Never throws, never changes the world, takes no
-         *  lock and never allocates given existing std::string arguments. An empty slot left by
-         *  Components[type][entity] counts as no component. */
+        /*! Says whether the given entity has a component stored under the given type name.
+         *
+         * Only the name is compared, so the component's class does not matter. An empty slot left by
+         * Components[type][entity] counts as no component. The call never throws, never changes the
+         * container, takes no lock and does not allocate given existing std::string arguments.
+         *
+         * Thread: container thread only. */
         bool ComponentHas(const std::string &entity, const std::string &type) const;
-        /*! Removes a component (world thread only). The identifiers may be fields of the component being removed. An
-         *  unknown entity or type is a silent no-op. */
+        /*! Removes the component with the given type name from the given entity. The arguments may be
+         *  fields of the component being removed. An unknown entity or type name is a silent no-op.
+         *
+         * Thread: container thread only. */
         void ComponentDestroy(const std::string &entity, const std::string &type);
-        /*! World thread only. */
+        /*! Returns the entity with this handle, creating it if it does not exist. The pointer is valid
+         *  until the entity is removed or the container is destroyed.
+         *
+         * Thread: container thread only. */
         ecs::Entity *Entity(const std::string &handle);
-        /*! World thread only. */
+        /*! Creates an entity with a generated handle. The pointer is valid until the entity is removed or
+         *  the container is destroyed.
+         *
+         * Thread: container thread only. */
         ecs::Entity *Entity();
-        /*! Removes an entity and its components (world thread only). The identifier may be the entity's own Handle. An
-         *  unknown identifier, including an empty one, is a silent no-op. */
+        /*! Removes an entity and its components. The handle may be the entity's own Handle. An unknown
+         *  handle, including an empty one, is a silent no-op.
+         *
+         * Thread: container thread only. */
         void EntityDestroy(const std::string &handle);
-        /*! Removes a system (world thread only).
+        /*! Removes a system.
          *
-         * The identifier may be the system's own Handle. An unknown identifier, including an empty one,
-         * is a silent no-op, so removing a system twice releases it once. When the call returns the
-         * system is no longer part of the world: it is not in Systems, is not exported, cannot receive
-         * messages, and is never started, updated or timer-walked again, even later in the same pass. Its
-         * identifier may be registered again at once.
+         * When the call returns the system is no longer part of the container: it is not in Systems, is
+         * not exported, cannot receive messages, and is not started or updated again, and its timers do
+         * not fire, even later in the same pass. Its handle may be registered again at once. The handle
+         * passed in may be the system's own Handle. An unknown handle, including an empty one, is a silent
+         * no-op, so removing a system twice releases it once.
          *
-         * If the system was started it receives Shutdown() once, just before it is released. Called outside
-         * a walk, that happens during this call and the system is destroyed at once. Called during a walk,
-         * or from inside the system's own timer walk, the notification is delivered and the system is
-         * released when the walk returns, so code running inside it may finish, but must not use the
-         * system after the walk ends. An error thrown by Shutdown() is logged and swallowed. If the removal happens
-         * in a direct System::UpdateSystem() call made outside a walk, the system stays in memory until
-         * the end of the next walk or until the container is destroyed.
-         */
+         * If the system was started it receives Shutdown() once, just before it is released. An error
+         * thrown by Shutdown() is logged and swallowed. When that happens depends on where the call is
+         * made:
+         * - Outside a pass: during this call, and the system is destroyed at once.
+         * - During a pass or during SystemsInitialize(), including from one of the system's own timer
+         *   callbacks: when the pass or the SystemsInitialize() call returns. Code running inside the
+         *   system may finish, but must not use the system after that.
+         * - From one of the system's own timer callbacks during a direct System::UpdateSystem() call made
+         *   outside a pass: at the end of the next pass, or when the container is destroyed.
+         *
+         * Thread: container thread only. */
         void SystemDestroy(const std::string &handle);
-        /*! Describes the world as JSON (world thread only). This is a const query: overrides of System::Export() must not add
-         *  or remove systems, entities or components. */
+        /*! Describes the container, its entities and its systems as JSON. This is a const query: overrides
+         *  of System::Export() must not add or remove systems, entities or components.
+         *
+         * Thread: container thread only. */
         nlohmann::json Export() const;
-        /*! Runs one update pass (world thread only, one thread at a time): calls System::UpdateSystem() on each system in registration order, each at
-         *  most once. This is a walk.
+        /*! Runs one pass: the deferred functions, then the start of new systems, then one update of each
+         *  system.
          *
-         * Before any system is updated, the functions handed to Defer() run, unless this call is made from
-         * inside a walk or from inside a deferred function. If one of them throws, the rest still run and
-         * the first exception is rethrown before any system is updated. Then the start-up step runs, which
-         * calls Initialize() on every system not yet started, and then the update walk. After the world
-         * has been stopped or destroyed, Update() does nothing, and on a world with its own thread it
-         * returns at once from the moment a stop is requested.
+         * - The functions handed to Defer() run first, unless this call is made from inside a pass or from
+         *   inside a deferred function. If one of them throws, the rest still run and the first exception
+         *   is rethrown before any system is updated.
+         * - Initialize() is then called on every system not yet started, as SystemsInitialize() does.
+         * - System::UpdateSystem() is then called on each system in registration order, each at most once.
          *
+         * After the container has been stopped or destroyed, Update() does nothing. On a container with
+         * its own thread it does nothing from the moment a stop is requested.
+         *
+         * \par Changes during a pass
          * Adding or removing systems never changes the relative order of the others. A system removed
          * earlier in the pass is skipped. A system added during the pass is first updated in the next one.
-         * A pass in which nothing is added or removed allocates no memory and does not copy the system
-         * list. Systems removed during the pass are released when it returns, which is the point where
-         * the changes take effect for memory.
+         * Systems removed during the pass are released when it returns. A pass in which nothing is added
+         * or removed allocates no memory and does not copy the system list.
          *
-         * If a system throws, the error is logged at level "error" with the system's identifier and
-         * rethrown to the caller. Before it leaves, every change requested in the pass completes: removed
-         * systems are released exactly once, added systems stay registered, and the timer changes made
-         * before the failure are kept. A caller that catches the exception and calls Update() again finds
-         * a consistent world. Calling Update() or SystemsInitialize() from inside a walk of the same
-         * container is memory safe, but its outcome is not defined. All changes to a world must come from
-         * the thread that drives its walks.
-         */
+         * \par Errors
+         * If a system throws, the error is logged at level "error" with the system's handle and rethrown
+         * to the caller. Before it leaves, every change requested in the pass completes: removed systems
+         * are released exactly once, added systems stay registered, and the timer changes made before the
+         * failure are kept. A caller that catches the exception and calls Update() again finds a
+         * consistent container.
+         *
+         * \par
+         * Calling Update() or SystemsInitialize() from inside a pass of the same container is memory safe,
+         * but its outcome is not defined.
+         *
+         * Thread: container thread only, one thread at a time. */
         void Update();
-        /*! Routes a message to the system named in message["destination"]["system"]. Safe to call from
-         *  any thread, at any time.
+        /*! Sends a message to the system named in message["destination"]["system"].
          *
-         *  The message must be a JSON object with a "destination" object that holds a non-empty text
-         *  "system". The world name in message["destination"]["container"] is not read: a message sent
-         *  directly to a world goes to this world whatever that field holds. A message that breaks the
-         *  rules throws std::runtime_error naming the missing or wrong field and, for a wrong type, the type
-         *  found; nothing is changed and no lock is taken. Throws std::runtime_error if the system is
-         *  unknown, and the error names this world, the one that received the call. A system is addressable
-         *  by handle once it has been registered with System(). */
+         * The message must be a JSON object with a "destination" object that holds a non-empty text
+         * "system". message["destination"]["container"] is not read: the message goes to this container
+         * whatever that field holds. A system can be addressed by handle once it has been registered with
+         * System().
+         *
+         * Throws std::runtime_error, changing nothing and taking no lock, if the message breaks these
+         * rules; the text names the missing or wrong field and, for a wrong type, the type found. Also
+         * throws std::runtime_error if the system is unknown; the text names this container.
+         *
+         * Thread: any. */
         void MessageSubmit(const nlohmann::json &message);
-        /*! Queues a change to the world to be made by the world's own thread. Safe to call from any
-         *  thread, including from inside the world.
+        /*! Hands a function to the container thread, which runs it at the start of the next pass.
          *
-         * The function runs once, on the thread that calls Update(), in the order the calls were accepted,
-         * at the start of the next Update(), before any system is updated and never in the middle of a
-         * pass. A function submitted from a deferred function, or during a pass, runs in the next pass.
+         * The function runs once, before any system is updated and never in the middle of a pass.
+         * Functions run in the order the calls were accepted. A function submitted from a deferred
+         * function, or during a pass, runs in the next pass. A container that is never updated never runs
+         * them. Functions still pending when the container is stopped or destroyed are discarded without
+         * running, and a call made after that is dropped.
          *
          * If a function throws, the error is logged at level "error", the rest of the batch still runs,
-         * and the first exception is rethrown by Update() before any system is updated. On the world's own
-         * thread it is caught at the thread boundary, as for a system's error. A world that is never
-         * updated never runs them. Functions still pending when the container is destroyed are discarded
-         * without running, and a call made after destruction has begun is dropped.
+         * and the first exception is rethrown by Update() before any system is updated. On the
+         * container's own thread it is caught at the thread boundary, as for a system's error.
          *
-         * The function and everything it captures must stay valid until it runs or is discarded. */
+         * The function and everything it captures must stay valid until it runs or is discarded.
+         *
+         * Thread: any, including from inside the container. */
         void Defer(std::function<void()> fn);
-        /*! Stores a resource under a name, replacing any resource of that name (world thread only). Passing
-         *  a temporary or a std::move()d value costs no copy of the bytes; passing an lvalue copies them
-         *  once. Readers that still hold the replaced resource keep their data. Treat a resource as
-         *  read-only once added. */
+        /*! Stores a resource under a name, replacing any resource of that name.
+         *
+         * Passing a temporary or a std::move()d value costs no copy of the bytes; passing an lvalue copies
+         * them once. Readers that still hold the replaced resource keep their data. Treat a resource as
+         * read-only once added.
+         *
+         * Thread: container thread only. */
         void ResourceAdd(const std::string &name, ecs::Resource r);
-        /*! World thread only. */
+        /*! Stores every resource in the given map under its name, replacing resources of the same names.
+         *  The stored resources share their bytes with the map's; nothing is copied.
+         *
+         * Thread: container thread only. */
         void Resources(const std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> &resources);
-        /*! Returns the stored resource as a shared read-only view, without copying its bytes (world thread
-         *  only). The result is empty when the name is unknown; nothing is created and nothing is thrown.
-         *  The data stays valid for as long as the result is held, even after the resource is replaced or
-         *  the world is destroyed. */
+        /*! Returns the resource stored under a name as a shared read-only view, without copying its bytes.
+         *
+         * The result is empty when the name is unknown; nothing is created and nothing is thrown. The
+         * data stays valid for as long as the result is held, even after the resource is replaced or the
+         * container is destroyed.
+         *
+         * Thread: container thread only. */
         std::shared_ptr<const ecs::Resource> ResourceGet(const std::string &name) const;
-        /*! World thread only. Public so systems can iterate it. */
+        /*! The entities of the container, by handle. Public so systems can iterate it; create and remove
+         *  entities with Entity() and EntityDestroy().
+         *
+         * Thread: container thread only. */
         std::unordered_map<std::string, std::unique_ptr<ecs::Entity>> Entities;
-        /*! Any thread. Set at construction and never changes. */
+        /*! The manager that owns the container. Set at construction and never changes.
+         *
+         * Thread: any. */
         ecs::Manager *Manager = nullptr;
-        /*! Any thread. Set at construction and never changes. */
+        /*! The container's handle: the name given to Manager::Container(), or a generated UUID. Set at
+         *  construction and never changes.
+         *
+         * Thread: any. */
         const std::string Handle;
-        /*! World thread only. Public so systems can iterate it. */
+        /*! The components of the container, by type name and then by entity handle. Public so systems can
+         *  iterate it. Reading Components[type][entity] inserts an empty entry when the type or entity is
+         *  missing; ComponentGet() does not.
+         *
+         * Thread: container thread only. */
         ecs::TypeEntityComponentList Components;
-        /*! Any thread. */
+        /*! Generates a new identifier.
+         *
+         * Thread: any. */
         ecs::Uuid UuidGet();
-        /*! World thread only. Public so systems can iterate it; register systems with System(). */
+        /*! The systems of the container, by handle. Public so systems can iterate it; register and remove
+         *  systems with System() and SystemDestroy().
+         *
+         * Thread: container thread only. */
         std::unordered_map<std::string, std::unique_ptr<ecs::System>> Systems;
-        /*! Sends a line to the current log destination. Safe to call from any thread. Each call goes to
-         *  exactly one destination, one that was installed at some time during the call; a call that starts
-         *  after LoggerSet() returned uses the new destination. The destination is called with no lock held,
-         *  so it may itself call Log() or LoggerSet(). If the destination is empty the line is dropped.
-         *  Lines a system logged before it was registered reach the destination when it is registered.
-         *  A new world's default destination writes "[level] message": error and warning to standard error,
-         *  every other level to standard output. A stream gets colour codes only when it is an interactive
-         *  terminal and the NO_COLOR environment variable is unset or empty; each stream is decided once,
-         *  when the world is created, so redirecting it later does not change the decision. A destination
-         *  set with LoggerSet() always receives the plain message and level. */
+        /*! Sends a line to the log destination.
+         *
+         * Each call goes to exactly one destination, one that was installed at some time during the call;
+         * a call that starts after LoggerSet() returned uses the new destination. The destination is
+         * called with no lock held, so it may itself call Log() or LoggerSet(). If the destination is
+         * empty the line is dropped. Lines a system logged before it was registered reach the destination
+         * when it is registered.
+         *
+         * The default destination of a new container writes "[level] message": error and warning to
+         * standard error, every other level to standard output. A stream gets colour codes only when it
+         * is an interactive terminal and the NO_COLOR environment variable is unset or empty. Each stream
+         * is decided once, when the container is created, so redirecting it later does not change the
+         * decision. A destination set with LoggerSet() always receives the plain message and level.
+         *
+         * Thread: any. */
         void Log(const std::string &message, const std::string &level = "info");
-        /*! Replaces the log destination. Safe to call from any thread, including from inside a destination.
-         *  An empty function makes later Log() calls drop their lines. The previous destination may still
-         *  finish a call that began before the replacement. */
+        /*! Replaces the log destination.
+         *
+         * An empty function makes later Log() calls drop their lines. The previous destination may still
+         * finish a call that began before the replacement, so it must stay callable until then.
+         *
+         * Thread: any, including from inside a destination. */
         void LoggerSet(std::function<void(const std::string &, const std::string &)> fn);
-        
       private:
         /*! Maps system handles to their mailboxes so other threads can route without touching Systems. */
         std::mutex mailboxesLock;
@@ -408,7 +480,7 @@ namespace ecs
         void deferredClose();
         /*! Time to sleep between Update() calls */
         std::chrono::microseconds sleepInterval = ecs::DEFAULT_INTERVAL;
-        /*! The clock given to every system. World thread only. */
+        /*! The clock given to every system. Container thread only. */
         const ecs::Clock *clock = &ecs::SteadyClock::Instance();
 
         std::jthread containerThread;
@@ -432,11 +504,11 @@ namespace ecs
 
         std::unordered_map<std::string, std::shared_ptr<ecs::Resource>> resources;
 
-        /*! World thread only. True when a registered system may not have been started yet. */
+        /*! Container thread only. True when a registered system may not have been started yet. */
         bool startPending = false;
         /*! Calls Initialize() on every slot not yet started, in registration order. */
         void systemsStart();
-        /*! World thread, or the thread that stops or destroys a world without one. True while teardown
+        /*! Container thread, or the thread that stops or destroys a container without one. True while teardown
          *  runs and after it has finished. */
         bool tearingDown = false;
         bool tornDown = false;
@@ -447,29 +519,29 @@ namespace ecs
          *  nothing else is taken and no user code runs while it is held. */
         std::mutex lifecycleLock;
         std::condition_variable_any lifecycleChanged;
-        /*! The world's own thread has been created. Under lifecycleLock. */
+        /*! The container's own thread has been created. Under lifecycleLock. */
         bool threadStarted = false;
         /*! Set under lifecycleLock, readable without it. */
         std::atomic<bool> stopRequested{false};
-        /*! The world's thread has finished teardown. Under lifecycleLock. */
+        /*! The container's thread has finished teardown. Under lifecycleLock. */
         bool stopDone = false;
         /*! One caller has taken the thread to join it. Under lifecycleLock. */
         bool joining = false;
-        /*! The world's thread has ended. Under lifecycleLock. */
+        /*! The container's thread has ended. Under lifecycleLock. */
         bool joined = false;
-        /*! True once the world's own thread exists; set before the thread starts and never cleared. */
+        /*! True once the container's own thread exists; set before the thread starts and never cleared. */
         std::atomic<bool> ownsThread{false};
         /*! Starts the thread once, if no stop was requested and the manager is running. */
         void threadStart(const std::chrono::microseconds *interval);
-        /*! Marks the stop as requested and wakes the world's thread. Takes no lock while calling out. */
+        /*! Marks the stop as requested and wakes the container's thread. Takes no lock while calling out. */
         void requestStop();
-        /*! Waits until the world's thread has ended (one caller joins, the others wait), or tears down a
-         *  world that has no thread on the calling thread. */
+        /*! Waits until the container's thread has ended (one caller joins, the others wait), or tears down a
+         *  container that has no thread on the calling thread. */
         void waitStopped();
-        /*! For the manager. Requests the stop of a world that has its own thread and says whether it has
-         *  one; a world without a thread is left alone. */
+        /*! For the manager. Requests the stop of a container that has its own thread and says whether it has
+         *  one; a container without a thread is left alone. */
         bool managerStopRequest();
-        /*! For the manager. Waits until the world's thread has ended, unless called from a world thread,
+        /*! For the manager. Waits until the container's thread has ended, unless called from a container thread,
          *  which only requests. */
         void managerStopWait();
     };

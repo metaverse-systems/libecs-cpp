@@ -11,4 +11,6 @@
 #include <libecs-cpp/Component.hpp>
 #include <libecs-cpp/Entity.hpp>
 
+/*! The process-wide manager. It is never destroyed, so a program that uses it calls ECS->Shutdown()
+ *  from its main thread before main returns. */
 extern ecs::Manager *ECS;

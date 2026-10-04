@@ -14,84 +14,95 @@ namespace ecs
 {
     class Container;
 
-    /**
-     * Manages containers.
+    /*! Creates and owns containers, routes messages between them and shuts them down.
      *
-     * Every method is safe to call from any thread, including from inside a
-     * system's Update(). Shutdown is atomic and never reverts once requested.
-     * The destructor is the one exclusive operation: it waits for message
-     * submissions already in progress, and later submissions fail as if the
-     * destination container were unknown.
+     * A program uses either the process-wide manager, ECS, or a manager of its own.
      *
-     * Threading
+     * \par Threading
+     * Every member is safe to call from any thread at any time, including from inside a system's
+     * Update(). The destructor is the one exclusive operation: no other thread may use a manager that is
+     * being destroyed, except through sends that were already in progress.
      *
-     * - Container(handle), Container(), ContainersGet(), IsRunning(), Shutdown() and MessageSubmit()
-     *   are safe from any thread at any time. Container(handle) yields exactly one world per handle
-     *   even when many threads ask at once. ContainersGet() returns a snapshot by value; worlds
-     *   created later are not in it. The pointers keep their existing lifetime: valid until the
-     *   manager is destroyed.
-     * - Shutdown guarantee: IsRunning() and Shutdown() are atomic. Once IsRunning() has returned false
-     *   it never returns true again, and repeated or concurrent requests are idempotent. A request
-     *   made from a thread that runs world code (a system's Initialize(), Update() or Shutdown(), a timer
-     *   callback or a deferred function) only
-     *   requests the stop of the worlds that have their own thread and returns at once; from any other thread, Shutdown() returns
-     *   after every threaded world has stopped, its thread has ended and its systems have been shut
-     *   down. Worlds driven by their owner's calls to Update() are not touched; the owner stops them.
-     * - MessageSubmit() returns without waiting for the destination's update and throws
-     *   std::runtime_error if the world is unknown. Callers on other threads should catch it.
-     * - Destruction: the destructor waits for sends already in progress; sends that start later fail
-     *   as unknown. No outside thread may use a manager that another thread is destroying, except
-     *   through sends that were already in progress.
-     * - The process-wide ECS manager is intentionally never destroyed.
+     * \par Shutdown
+     * A program that uses a manager calls Shutdown() from an application thread before the manager goes
+     * away or main returns. The process-wide manager, ECS, is never destroyed, so for it the call is the
+     * only thing that stops the container threads.
      */
-
     class Manager
     {
       public:
+        /*! Creates a running manager with no containers. */
         Manager();
 
-        /** Exclusive. Runs Shutdown() first, so that every threaded world is stopped and joined, and its
-         *  systems are notified, while all worlds still exist. Then it closes the manager: later sends and
-         *  creation of worlds fail. Then it destroys the worlds, which stops and releases the worlds that
-         *  are driven by their owner's Update() calls. The process-wide ECS manager is never destroyed. */
+        /*! Shuts the manager down, then destroys its containers.
+         *
+         * It runs Shutdown() first, so that every container with its own thread is stopped and its
+         * systems receive System::Shutdown() while all containers still exist. Then it waits for sends
+         * already in progress and closes the manager: later sends and creation of containers fail. Then
+         * it destroys the containers, which stops the ones driven by their owner's Update() calls.
+         *
+         * Thread: exclusive. */
         ~Manager();
 
-        /** Any thread. Returns the container with this handle, creating it if needed; the same handle always yields the same container.
-         *  Throws std::runtime_error when a new world is asked for while the manager is being destroyed. A world created after
-         *  Shutdown() cannot be started with Start(). */
+        /*! Returns the container with this handle, creating it if needed.
+         *
+         * The same handle always yields the same container, even when many threads ask at once. The
+         * pointer is valid until the manager is destroyed. Throws std::runtime_error when a new container
+         * is asked for while the manager is being destroyed. A container created after Shutdown() cannot
+         * be started with Container::Start().
+         *
+         * Thread: any. */
         ecs::Container *Container(const std::string &handle);
 
-        /** Any thread. Creates a container with a generated unique handle. Throws std::runtime_error when a new world is asked for while the manager is being destroyed. */
+        /*! Creates a container with a generated handle. The pointer is valid until the manager is
+         *  destroyed. Throws std::runtime_error while the manager is being destroyed.
+         *
+         * Thread: any. */
         ecs::Container *Container();
 
-        /** Any thread. Returns a snapshot of the handles of all containers, by value. */
+        /*! Returns the handles of all containers, as a snapshot by value. Containers created later are
+         *  not in it.
+         *
+         * Thread: any. */
         std::vector<std::string> ContainersGet();
 
-        /** Any thread. True until Shutdown() has been called. */
+        /*! Says whether the manager is running: true until Shutdown() has been called. Once it has
+         *  returned false it never returns true again.
+         *
+         * Thread: any. */
         bool IsRunning();
 
-        /** Any thread. Sets IsRunning() to false, asks every world that has its own thread to stop, and waits for it (see above);
-         *  idempotent, and the request is never withdrawn.
+        /*! Sets IsRunning() to false and stops every container that has its own thread.
          *
-         *  From an application thread it blocks until every world that has its own thread has ended and
-         *  delivered Shutdown() to its systems; afterwards no thread of this manager runs and no system
-         *  is updated. Concurrent callers each return after that point. From a world thread it only
-         *  requests, so it never waits for itself or for another world that is waiting for it; an
-         *  application thread's later call completes the wait. Worlds driven by the application's own
-         *  Update() calls are not stopped here (the library does not run application code on threads it
-         *  does not own); stop them with Container::Stop() or by destroying them. A program that uses the
-         *  process-wide manager calls ECS->Shutdown() from its main thread before main returns. */
+         * The call is idempotent and the request is never withdrawn.
+         *
+         * - From an application thread it blocks until every container that has its own thread has
+         *   delivered System::Shutdown() to its systems and its thread has ended. Afterwards no thread of
+         *   this manager runs and no system is updated. Concurrent callers each return after that point.
+         * - From a thread that runs container code (a system's Initialize(), Update() or Shutdown(), a
+         *   timer callback or a deferred function) it only records the request and returns at once, so
+         *   it never waits for itself or for another container that is waiting for it. An application
+         *   thread's later call completes the wait.
+         *
+         * Containers driven by the application's own Update() calls are not stopped here, because the
+         * library does not run application code on threads it does not own. Stop them with
+         * Container::Stop() or by destroying them.
+         *
+         * Thread: any. */
         void Shutdown();
 
-        /** Any thread. Routes a message to its destination container.
+        /*! Sends a message to the system named in message["destination"], in the container named there.
          *
          * The message must be a JSON object with a "destination" object that holds a non-empty text
-         * "container" and a non-empty text "system". Other fields are delivered unchanged. A message that
-         * breaks these rules throws std::runtime_error whose text names the missing or wrong field and,
-         * for a wrong type, the type that was found. The checks run before any lock is taken, so a
-         * rejected message changes nothing: no mailbox gains an entry and shutdown accounting is not
-         * touched. Throws std::runtime_error as well if the container or the system is unknown, or the
-         * manager is being destroyed. */
+         * "container" and a non-empty text "system". Other fields are delivered unchanged. The call
+         * returns without waiting for the destination's update.
+         *
+         * Throws std::runtime_error, changing nothing and taking no lock, if the message breaks these
+         * rules; the text names the missing or wrong field and, for a wrong type, the type found. Also
+         * throws std::runtime_error if the container or the system is unknown, or the manager is being
+         * destroyed. Callers on other threads should catch it.
+         *
+         * Thread: any. */
         void MessageSubmit(const nlohmann::json &message);
       private:
         ecs::Container *containerCreate(const std::string &handle);

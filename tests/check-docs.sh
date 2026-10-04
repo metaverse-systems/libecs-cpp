@@ -68,14 +68,14 @@ else
     bad=""
     for item in $input; do
         case "$item" in
-            */include/libecs-cpp|*/include/libecs-cpp/|*/README.md) ;;
+            */include/libecs-cpp|*/include/libecs-cpp/|*/README.md|*/GUIDE.md|*/REFERENCE.md|*/CONTRIBUTING.md|*/NEWS.md) ;;
             *) bad="$bad $item" ;;
         esac
     done
     if [ -n "$bad" ]; then
-        fail "Doxygen INPUT is not limited to the public headers and the readme:$bad"
+        fail "Doxygen INPUT is not limited to the public headers and the user documents:$bad"
     else
-        echo "PASS: Doxygen reads only the public headers and the readme"
+        echo "PASS: Doxygen reads only the public headers and the user documents"
     fi
 fi
 

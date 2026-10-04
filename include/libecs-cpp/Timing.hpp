@@ -32,19 +32,21 @@ namespace ecs
      * MAX_CATCHUP whole intervals have passed, which happens after a long stall, it fires once and
      * starts counting again from that moment instead of catching up.
      *
-     * World thread only.
+     * Thread: container thread only.
      */
     class Timing
     {
       public:
+        /*! Creates a schedule with the given interval, first due one full interval from now. Throws
+         *  std::runtime_error for an interval below zero or above MAX_INTERVAL. */
         Timing(std::chrono::microseconds interval = DEFAULT_INTERVAL)
           : updateInterval(Timing::checked(interval)),
             lastUpdateTime(Timing::steadyNow())
         {
         }
 
-        /*! The old form: the number is the interval in microseconds. Deprecated; it stays for at least the
-         *  next minor release and removal is not scheduled in this one. */
+        /*! Creates a schedule from a bare number, which is the interval in microseconds. Deprecated since 1.8.0;
+         *  no removal is scheduled, and a removal will be announced in the release notes first. */
         [[deprecated("use Timing(std::chrono::microseconds) instead")]]
         Timing(uint32_t frequency)
           : updateInterval(static_cast<int64_t>(frequency)),
@@ -52,7 +54,7 @@ namespace ecs
         {
         }
 
-        /*! True when an update is due at the given instant, and then moves the schedule on. The instant
+        /*! Says whether an update is due at the given instant and, when it is, moves the schedule on. The instant
          *  comes from the clock the caller uses; an instant earlier than the last one counts as no time
          *  having passed. An interval of zero is always due and leaves the schedule alone. */
         bool ShouldUpdate(std::chrono::microseconds now)
@@ -83,7 +85,7 @@ namespace ecs
             return false;
         }
 
-        /*! As above, reading the real steady clock. */
+        /*! Says whether an update is due now by the real steady clock and, when it is, moves the schedule on. */
         bool ShouldUpdate()
         {
             return this->ShouldUpdate(std::chrono::microseconds(Timing::steadyNow()));
@@ -102,23 +104,23 @@ namespace ecs
             this->updateInterval = Timing::checked(interval);
         }
 
-        /*! The interval between updates. */
+        /*! Returns the interval between updates. */
         std::chrono::microseconds GetInterval() const
         {
             return std::chrono::microseconds(this->updateInterval);
         }
 
-        /*! The old name of SetInterval(): the number is the interval in microseconds. Deprecated; it stays
-         *  for at least the next minor release and removal is not scheduled in this one. */
+        /*! Changes the interval to a bare number of microseconds, without a range check. Deprecated since 1.8.0;
+         *  no removal is scheduled, and a removal will be announced in the release notes first. */
         [[deprecated("use SetInterval(std::chrono::microseconds) instead")]]
         void SetFrequency(uint32_t frequency)
         {
             this->updateInterval = static_cast<int64_t>(frequency);
         }
 
-        /*! The old name of GetInterval(): the interval in microseconds, or 4 294 967 295 if it is longer
-         *  than that number can hold. Use GetInterval(). Deprecated; it stays for at least the next minor
-         *  release and removal is not scheduled in this one. */
+        /*! Returns the interval in microseconds, or 4 294 967 295 if it is longer than that number can
+         *  hold. Use GetInterval() instead. Deprecated since 1.8.0;
+         *  no removal is scheduled, and a removal will be announced in the release notes first. */
         [[deprecated("use GetInterval() instead")]]
         uint32_t GetFrequency() const
         {

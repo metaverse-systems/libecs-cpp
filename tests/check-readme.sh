@@ -1,11 +1,14 @@
 #!/bin/sh
-# Checks that the readme is accurate against the tree: there is exactly one readme, it carries no obsolete
-# setup steps, every repository path it names exists, every configure option it names is defined in
-# configure.ac (and every option configure.ac defines is documented), the packages it tells the reader to
-# install are the ones the workflows and the cross-build record use, it has the sections a newcomer needs
-# (requirements per task, configure options, running the tests, an orientation with a minimal program), and
-# the package metadata has a real test command. A negative self-test plants a missing path and an unknown
-# option in a copy of the readme and requires both to be reported.
+# Checks that the documents (README.md, GUIDE.md, REFERENCE.md, CONTRIBUTING.md and NEWS.md) are accurate
+# against the tree: there is exactly one readme, the documents carry no obsolete setup steps, every
+# repository path they name exists, every configure option they name is defined in configure.ac (and every
+# option configure.ac defines is documented), the packages they tell the reader to install are the ones the
+# workflows and the cross-build record use, the sections a newcomer needs are present (in the readme:
+# requirements per task, configure options, an orientation with a minimal program; in CONTRIBUTING.md:
+# running the tests; in NEWS.md: the versioning rule and the release notes), every link between the documents
+# leads to a heading that exists, no document has two headings with the same text, and the package metadata
+# has a real test command. A negative self-test plants a missing path and an unknown option in a copy of the
+# readme and requires both to be reported.
 #
 # Assertions about the .github directory are skipped when the source tree has none, which is the case in a
 # source archive.
@@ -17,6 +20,9 @@
 here="$(cd "$(dirname "$0")" && pwd)"
 srcdir="${ECS_SRCDIR:-$here/..}"
 readme="$srcdir/README.md"
+contributing="$srcdir/CONTRIBUTING.md"
+news="$srcdir/NEWS.md"
+documents="README.md GUIDE.md REFERENCE.md CONTRIBUTING.md NEWS.md"
 configure_ac="$srcdir/configure.ac"
 package_json="$srcdir/package.json"
 
@@ -52,6 +58,18 @@ done
 
 tmp="$(mktemp -d)" || { echo "FAIL: cannot create a temporary directory"; exit 2; }
 trap 'rm -rf "$tmp"' EXIT INT TERM
+
+# The text checks read all the documents as one file.
+all="$tmp/all.md"
+: >"$all"
+for d in $documents; do
+    if [ ! -f "$srcdir/$d" ]; then
+        echo "FAIL: $srcdir/$d does not exist"
+        exit 2
+    fi
+    cat "$srcdir/$d" >>"$all"
+    echo >>"$all"
+done
 
 # Prints the paths named in backticks that look like repository paths (one per line).
 named_paths() {
@@ -123,16 +141,16 @@ fi
 # --- obsolete setup steps --------------------------------------------------------------------------------
 found=""
 while IFS= read -r marker; do
-    if grep -qF -- "$marker" "$readme"; then
+    if grep -qF -- "$marker" "$all"; then
         found="$found '$marker'"
     fi
 done <<EOT
 $obsolete_markers
 EOT
 if [ -n "$found" ]; then
-    fail "the readme still has obsolete setup text:$found"
+    fail "the documents still have obsolete setup text:$found"
 else
-    echo "PASS: the readme has no obsolete setup text"
+    echo "PASS: the documents have no obsolete setup text"
 fi
 
 # --- named paths and options -----------------------------------------------------------------------------
@@ -141,21 +159,21 @@ if [ -d "$srcdir/.github" ]; then
 else
     echo "SKIP: no .github directory in the source tree; paths under .github are not checked"
 fi
-out="$(check_paths "$readme")" && echo "PASS: every path the readme names exists" || { echo "$out"; status=1; }
-out="$(check_options "$readme")" && echo "PASS: every option the readme names is defined in configure.ac" || { echo "$out"; status=1; }
+out="$(check_paths "$all")" && echo "PASS: every path the documents name exists" || { echo "$out"; status=1; }
+out="$(check_options "$all")" && echo "PASS: every option the documents name is defined in configure.ac" || { echo "$out"; status=1; }
 
 missing=""
 for name in $(defined_options); do
-    grep -qE -- "--(enable|disable)-$name" "$readme" || missing="$missing --enable-$name"
+    grep -qE -- "--(enable|disable)-$name" "$all" || missing="$missing --enable-$name"
 done
 if [ -n "$missing" ]; then
-    fail "configure.ac defines options the readme does not document:$missing"
+    fail "configure.ac defines options the documents do not mention:$missing"
 else
     echo "PASS: every option configure.ac defines is documented"
 fi
 
 # --- packages --------------------------------------------------------------------------------------------
-packages="$(sed 's/`//g' "$readme" | awk '
+packages="$(sed 's/`//g' "$all" | awk '
     { line = $0 }
     joined { line = acc " " line; joined = 0 }
     line ~ /\\[ \t]*$/ { sub(/\\[ \t]*$/, "", line); acc = line; joined = 1; next }
@@ -177,9 +195,9 @@ for p in $packages; do
     esac
 done
 if [ -n "$unknown" ]; then
-    fail "the readme tells the reader to install packages that no workflow or cross-build record uses:$unknown"
+    fail "the documents tell the reader to install packages that no workflow or cross-build record uses:$unknown"
 else
-    echo "PASS: every package the readme names is a known one"
+    echo "PASS: every package the documents name is a known one"
 fi
 
 # --- sections --------------------------------------------------------------------------------------------
@@ -213,13 +231,13 @@ else
     fi
 fi
 
-tests="$(section "$readme" 'running the tests|^#+ tests')"
+tests="$(section "$contributing" 'running the tests|^#+ tests')"
 if [ -z "$tests" ]; then
-    fail "the readme has no section on running the tests"
+    fail "CONTRIBUTING.md has no section on running the tests"
 elif ! echo "$tests" | grep -qF 'make check'; then
     fail "the tests section does not show make check"
 else
-    echo "PASS: the readme shows how to run the tests"
+    echo "PASS: CONTRIBUTING.md shows how to run the tests"
 fi
 
 orient="$(section "$readme" 'orientation|overview|using the library')"
@@ -251,13 +269,13 @@ else
 fi
 
 # --- version agreement -----------------------------------------------------------------------------------
-# The version in configure.ac, the version in package.json and the newest release-notes heading are one
-# number, the readme states the shared-object name of this release (soname .so.2) and the rule for changing
-# it, and no sentence still says the shared-object name is the old .so.0.
+# The version in configure.ac, the version in package.json and the newest release-notes heading in NEWS.md
+# are one number, the readme states the shared-object name of this release (soname .so.2), NEWS.md has the
+# rule for changing it, and no sentence still says the shared-object name is the old .so.0.
 ac_version="$(sed -n 's/^AC_INIT(\[[^]]*\],\[\([^]]*\)\].*/\1/p' "$configure_ac" | head -n 1)"
 pkg_version=""
 [ -f "$package_json" ] && pkg_version="$(sed -n 's/^[ \t]*"version"[ \t]*:[ \t]*"\([^"]*\)".*/\1/p' "$package_json" | head -n 1)"
-notes_version="$(section "$readme" '^## release notes' | sed -n 's/^### \([0-9][0-9.]*\).*/\1/p' | head -n 1)"
+notes_version="$(section "$news" '^## release notes' | sed -n 's/^### \([0-9][0-9.]*\).*/\1/p' | head -n 1)"
 if [ -z "$ac_version" ] || [ -z "$pkg_version" ] || [ -z "$notes_version" ]; then
     fail "cannot read all three versions (configure.ac: '$ac_version', package.json: '$pkg_version', newest release notes: '$notes_version')"
 elif [ "$ac_version" != "$pkg_version" ] || [ "$ac_version" != "$notes_version" ]; then
@@ -266,31 +284,75 @@ else
     echo "PASS: configure.ac, package.json and the newest release notes agree on $ac_version"
 fi
 
-stale="$(grep -nE 'so\.0' "$readme" | grep -iE 'stays|unchanged|soname|shared-object name|shared object name|name is' || true)"
+stale="$(grep -nE 'so\.0' "$readme" "$news" | grep -iE 'stays|unchanged|soname|shared-object name|shared object name|name is' || true)"
 if [ -n "$stale" ]; then
-    fail "the readme still gives libecs-cpp.so.0 as the shared-object name: $(echo "$stale" | cut -c1-80 | tr '\n' ' ')"
+    fail "the documents still give libecs-cpp.so.0 as the shared-object name: $(echo "$stale" | cut -c1-80 | tr '\n' ' ')"
 elif ! grep -qE 'libecs-cpp\.so\.2([^.0-9]|$)' "$readme"; then
     fail "the readme does not state the libecs-cpp.so.2 soname"
 else
     echo "PASS: the readme states the .so.2 soname and no longer gives .so.0 as the name"
 fi
 
-newest_notes="$(section "$readme" '^## release notes' | awk '/^### /{n++} n==1')"
+newest_notes="$(section "$news" '^## release notes' | awk '/^### /{n++} n==1')"
 if echo "$newest_notes" | grep -qE 'libecs-cpp\.so\.2([^.0-9]|$)'; then
     echo "PASS: the newest release notes name the .so.2 shared library"
 else
     fail "the newest release notes do not name the libecs-cpp.so.2 shared library"
 fi
 
-if ! grep -qiE '^#+ .*versioning' "$readme"; then
-    fail "the readme has no versioning-rule section"
+if ! grep -qiE '^#+ .*versioning' "$news"; then
+    fail "NEWS.md has no versioning-rule section"
 else
-    echo "PASS: the readme has a versioning-rule section"
+    echo "PASS: NEWS.md has a versioning-rule section"
 fi
-if ! grep -qiE '^(#+ .*|(\*\*)?)migration' "$readme"; then
-    fail "the readme has no migration section"
+if ! grep -qiE '^(#+ .*|(\*\*)?)migration' "$news"; then
+    fail "NEWS.md has no migration section"
 else
-    echo "PASS: the readme has a migration section"
+    echo "PASS: NEWS.md has a migration section"
+fi
+
+# --- links and headings ----------------------------------------------------------------------------------
+# anchors FILE: prints the anchor of each heading outside code blocks, as GitHub derives it: lower case,
+# punctuation removed, spaces turned into hyphens.
+anchors() {
+    awk '
+        /^```/ { fence = !fence }
+        !fence && /^#+ / {
+            sub(/^#+ +/, ""); line = tolower($0)
+            gsub(/[^a-z0-9 _-]/, "", line); gsub(/ /, "-", line)
+            print line
+        }
+    ' "$1"
+}
+
+# links FILE: prints the target of each Markdown link outside code blocks that points into the documents.
+links() {
+    awk '/^```/ { fence = !fence } !fence' "$1" | grep -oE '\]\([^)# ]*#[^) ]+\)|\]\([A-Z]+\.md\)' |
+        sed 's/^](//; s/)$//' | sort -u
+}
+
+bad=""
+for d in $documents; do
+    dup="$(anchors "$srcdir/$d" | sort | uniq -d)"
+    [ -n "$dup" ] && bad="$bad $d has two headings that give the anchor #$(echo $dup | sed 's/ / #/g');"
+    for target in $(links "$srcdir/$d"); do
+        case "$target" in
+            http*) continue ;;
+            \#*) file="$d"; anchor="${target#\#}" ;;
+            *\#*) file="${target%%\#*}"; anchor="${target#*\#}" ;;
+            *) file="$target"; anchor="" ;;
+        esac
+        if [ ! -f "$srcdir/$file" ]; then
+            bad="$bad $d links to $file, which does not exist;"
+        elif [ -n "$anchor" ] && ! anchors "$srcdir/$file" | grep -qxF -- "$anchor"; then
+            bad="$bad $d links to $target, but $file has no such heading;"
+        fi
+    done
+done
+if [ -n "$bad" ]; then
+    fail "broken links or repeated headings:$bad"
+else
+    echo "PASS: every link between the documents leads to a heading, and no heading is repeated"
 fi
 
 # --- negative self-test ----------------------------------------------------------------------------------

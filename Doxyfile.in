@@ -11,15 +11,20 @@ HTML_OUTPUT            = html
 GENERATE_HTML          = YES
 GENERATE_LATEX         = NO
 
-# Public headers and the readme only. The vendored JSON header, the sources, the tests and the
+# Public headers and the user documents only. The vendored JSON header, the sources, the tests and the
 # example are not read.
 INPUT                  = @abs_top_srcdir@/include/libecs-cpp \
-                         @abs_top_srcdir@/README.md
+                         @abs_top_srcdir@/README.md \
+                         @abs_top_srcdir@/GUIDE.md \
+                         @abs_top_srcdir@/REFERENCE.md \
+                         @abs_top_srcdir@/CONTRIBUTING.md \
+                         @abs_top_srcdir@/NEWS.md
 FILE_PATTERNS          = *.hpp
 RECURSIVE              = NO
 EXCLUDE                = @abs_top_srcdir@/include/libecs-cpp/json.hpp
 USE_MDFILE_AS_MAINPAGE = @abs_top_srcdir@/README.md
-STRIP_FROM_PATH        = @abs_top_srcdir@/include
+STRIP_FROM_PATH        = @abs_top_srcdir@/include \
+                         @abs_top_srcdir@
 
 # Document the public interface only.
 EXTRACT_ALL            = YES
@@ -27,6 +32,14 @@ EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = NO
 EXTRACT_LOCAL_CLASSES  = NO
 SOURCE_BROWSER         = NO
+
+# The first sentence of a comment is its one-line description in the lists of classes and members.
+QT_AUTOBRIEF           = YES
+JAVADOC_AUTOBRIEF      = YES
+# Friend declarations are not part of the interface.
+HIDE_FRIEND_COMPOUNDS  = YES
+# Headings in the Markdown documents get the same anchors as on GitHub, so their links work in both places.
+MARKDOWN_ID_STYLE      = GITHUB
 
 HAVE_DOT               = YES
 WARN_AS_ERROR          = NO

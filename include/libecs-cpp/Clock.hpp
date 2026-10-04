@@ -8,24 +8,25 @@
 
 namespace ecs
 {
-    /*! A source of time for systems and worlds.
+    /*! A source of time for systems and containers.
      *
-     * Now() is the time since some fixed starting point that the clock chooses. It never decreases. Only
+     * Now() returns the time since some fixed starting point that the clock chooses. It never decreases. Only
      * differences between two readings of the same clock mean anything.
      *
-     * A system or a world holds a pointer to its clock and does not own it, so the clock must outlive
+     * A system or a container holds a pointer to its clock and does not own it, so the clock must outlive
      * whatever uses it. The default is the real steady clock (SteadyClock). A ManualClock lets a test
      * move time by exact amounts without waiting.
      */
     class Clock
     {
       public:
+        /*! Destroys the clock. */
         virtual ~Clock() = default;
         /*! Time since the clock's starting point, in microseconds. Never decreases. */
         virtual std::chrono::microseconds Now() const = 0;
     };
 
-    /*! The real clock: std::chrono::steady_clock, truncated to whole microseconds. Stateless and safe to
+    /*! The real clock: std::chrono::steady_clock, truncated to whole microseconds. It is stateless and safe to
      *  use from any thread. */
     class SteadyClock : public Clock
     {
@@ -44,12 +45,13 @@ namespace ecs
         }
     };
 
-    /*! A clock that only moves when told to, for tests. Safe to read and move from any thread. A world that
-     *  has its own thread still sleeps on the real clock between passes, so use a ManualClock with worlds
+    /*! A clock that only moves when told to, for tests. Safe to read and move from any thread. A container
+     *  that has its own thread sleeps on the real clock between passes, so use a ManualClock with containers
      *  that are driven by calls to Container::Update(). */
     class ManualClock : public Clock
     {
       public:
+        /*! Creates a clock that reads the given time, zero by default. */
         explicit ManualClock(std::chrono::microseconds start = std::chrono::microseconds(0))
           : count(start.count())
         {

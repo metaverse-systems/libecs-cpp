@@ -269,7 +269,7 @@ namespace ecs
             }
             if(this->stopRequested.load())
             {
-                refusal = "Start() ignored: the world has been stopped.";
+                refusal = "Start() ignored: the container has been stopped.";
             }
             else if(this->Manager != nullptr && !this->Manager->IsRunning())
             {

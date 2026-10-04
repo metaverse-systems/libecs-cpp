@@ -18,7 +18,7 @@ class PositionComponent : public ecs::Component
         this->y = config["y"].get<float>();
     }
 
-    nlohmann::json Export() const
+    nlohmann::json Export() const override
     {
         nlohmann::json config;
         config["x"] = this->x;
@@ -41,7 +41,7 @@ class VelocityComponent : public ecs::Component
         this->y = config["y"].get<float>();
     }
 
-    nlohmann::json Export() const
+    nlohmann::json Export() const override
     {
         nlohmann::json config;
         config["x"] = this->x;
@@ -54,7 +54,7 @@ class VelocityComponent : public ecs::Component
 
 namespace
 {
-    /* Set by Ctrl-C so the main loop can end and shut the worlds down cleanly */
+    /* Set by Ctrl-C so the main loop can end and shut the containers down cleanly */
     volatile std::sig_atomic_t interrupted = 0;
 
     void onInterrupt(int)
@@ -71,32 +71,31 @@ class PhysicsSystem : public ecs::System
     {
     }
 
-    nlohmann::json Export() const
+    nlohmann::json Export() const override
     {
         nlohmann::json config;
         config["Handle"] = this->Handle;
         return config;
     }
 
-    /* Called once on the world's thread, before the first Update() */
-    void Initialize()
+    /* Called once on the container's thread, before the first Update() */
+    void Initialize() override
     {
         std::cout << this->Handle << " started" << std::endl;
     }
 
-    /* Called once on the world's thread when the system is removed or the world stops */
-    void Shutdown()
+    /* Called once on the container's thread when the system is removed or the container stops */
+    void Shutdown() override
     {
         std::cout << this->Handle << " shut down" << std::endl;
     }
 
-    void Update()
+    void Update() override
     {
-        /* Time that passed between the previous Update() and this one */
-        auto elapsed = this->ElapsedGet();
-        auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+        /* Time that passed between the previous Update() and this one, in seconds */
+        double seconds = this->ElapsedSecondsGet();
 
-        std::cout << "Last run " << std::chrono::duration<double, std::milli>(elapsed).count() << "ms ago" << std::endl;
+        std::cout << "Last run " << seconds * 1000.0 << "ms ago" << std::endl;
 
         // Type names held in std::string constants so lookups do not allocate
         static const std::string positionType = "PositionComponent";
@@ -121,8 +120,8 @@ class PhysicsSystem : public ecs::System
                 continue;
             }
 
-            // scale velocity
-            float multiplier = dt.count() / 1000.0;
+            // Scale the velocity, which is per second, to the time that passed
+            float multiplier = static_cast<float>(seconds);
 
             // Adjust position data
             pos->x += vel->x * multiplier;
@@ -142,12 +141,12 @@ int main(int argc, char *argv[])
 
     std::signal(SIGINT, onInterrupt);
 
-    auto world = ECS->Container();
+    auto container = ECS->Container();
 
-    world->System(std::make_unique<PhysicsSystem>());
+    container->System(std::make_unique<PhysicsSystem>());
 
-    /* Create a new entity in the 'world' container */
-    auto e = world->Entity();
+    /* Create a new entity in the container */
+    auto e = container->Entity();
 
     /* Initialize a PositionComponent and add it to the Entity 'e' */
     nlohmann::json config;
@@ -161,41 +160,37 @@ int main(int argc, char *argv[])
     e->Component(std::make_unique<VelocityComponent>(config));
 
     /* An entity with a position and no velocity: the system skips it */
-    auto still = world->Entity();
+    auto still = container->Entity();
     config["x"] = 5;
     config["y"] = 5;
     still->Component(std::make_unique<PositionComponent>(config));
 
-    /* Run container in its own thread */
-    bool threaded = true;
-
-    /*                   OR               */
-
-    /* Run container loop in main thread, */
-    /* OS X won't let GUI stuff happen    */
-    /* outside the main thread)           */
+    /* A container runs in one of two ways: on its own thread, or driven by Update() calls from this */
+    /* thread. macOS only allows GUI work on the main thread, so there the main thread drives it.   */
 #if __APPLE__
-    threaded = false;
+    const bool threaded = false;
+#else
+    const bool threaded = true;
 #endif
 
-    /* Printed before the world runs so its output is not mixed with the world thread's */
-    std::cout << world->Export() << std::endl;
+    /* Printed before the container runs so its output is not mixed with the container thread's */
+    std::cout << container->Export() << std::endl;
 
-    if(threaded) world->Start();
-    else world->SystemsInitialize();
+    if(threaded) container->Start();
+    else container->SystemsInitialize();
 
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
     while(ECS->IsRunning() && !interrupted && (seconds == 0 || std::chrono::steady_clock::now() < deadline))
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        if(!threaded) world->Update();
+        if(!threaded) container->Update();
     }
 
-    /* Stops every threaded world and waits until they have ended and their systems were shut down */
+    /* Stops every threaded container and waits until they have ended and their systems were shut down */
     ECS->Shutdown();
 
-    /* A world driven from this thread is stopped by its owner */
-    if(!threaded) world->Stop();
+    /* A container driven from this thread is stopped by its owner */
+    if(!threaded) container->Stop();
 
     return 0;
 }
