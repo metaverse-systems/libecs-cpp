@@ -20,8 +20,10 @@
 
 # Namespaces that come from internal headers in src/ and appear as weak symbols of inline functions.
 INTERNAL_NAMES="validation"
-# Types that hold data or inline code only, so the library has nothing to export for them.
-HEADER_ONLY="Resource Timing Mailbox Timer Component"
+# Types that hold data or inline code only, so the library has nothing to export for them. Whether a
+# compiler emits weak copies of such inline code into the library depends on the compiler and on what the
+# library itself uses, so these are never required to appear.
+HEADER_ONLY="Resource Timing Mailbox Timer Component Clock SteadyClock ManualClock"
 
 if [ $# -eq 0 ]; then
     set -- "${ECS_EXPORT_LIBRARY:-}" "${ECS_EXPORT_INCLUDE:-}"

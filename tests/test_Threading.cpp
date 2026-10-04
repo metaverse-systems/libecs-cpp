@@ -1074,9 +1074,49 @@ TEST_CASE("Shutdown from inside a system is recorded", "[Threading]")
     REQUIRE(observed);
 }
 
-// The senders hold only a raw pointer to the manager. They are told to stop by the thread that destroys
-// the manager, immediately before it does, so a send that has already started can overlap the
-// destruction and no send starts long after it.
+namespace
+{
+    // A system whose destructor holds the manager's destruction open. The manager destroys its worlds
+    // after it has stopped them and started refusing sends, and before it releases its own storage, so
+    // while this destructor waits the manager is part-way through being destroyed but still exists.
+    class GateSystem : public ecs::System
+    {
+      public:
+        GateSystem(const std::string &handle, std::atomic<bool> *reached, const std::atomic<bool> *release,
+                   const std::atomic<bool> *stop)
+          : ecs::System(handle), reached(reached), release(release), stop(stop)
+        {
+        }
+
+        ~GateSystem() override
+        {
+            this->reached->store(true);
+            while(!this->release->load() && !this->stop->load())
+            {
+                std::this_thread::yield();
+            }
+        }
+
+        void Update() override
+        {
+        }
+
+        nlohmann::json Export() const override
+        {
+            return nlohmann::json::object();
+        }
+
+      private:
+        std::atomic<bool> *reached;
+        const std::atomic<bool> *release;
+        const std::atomic<bool> *stop;
+    };
+}
+
+// The senders hold only a raw pointer to the manager and keep sending while another thread destroys
+// it. The destruction is held open part-way through, after the manager has begun refusing sends, until
+// every sender has stopped, so sends overlap the destruction but none can start after the manager's
+// storage is released.
 TEST_CASE("Sending to a manager that is being destroyed is memory safe", "[Threading]")
 {
     constexpr int ROUNDS = 50;
@@ -1085,19 +1125,25 @@ TEST_CASE("Sending to a manager that is being destroyed is memory safe", "[Threa
     std::atomic<bool> stop{false};
     std::atomic<int> otherErrors{0};
     std::atomic<std::size_t> delivered{0};
+    std::atomic<int> roundsOverlapped{0};
 
     bool completed = withTimeout(
       [&]() {
           for(int round = 0; round < ROUNDS && !stop; round++)
           {
+              std::atomic<bool> reached{false};
+              std::atomic<bool> release{false};
+
               auto manager = std::make_unique<ecs::Manager>();
               auto container = manager->Container("world");
               container->System(std::make_unique<RecorderSystem>("recorder"));
+              container->System(std::make_unique<GateSystem>("gate", &reached, &release, &stop));
               container->Start(100);
 
               ecs::Manager *raw = manager.get();
               std::atomic<bool> halt{false};
               std::atomic<int> sent{0};
+              std::atomic<int> refusedWhileDestroying{0};
               std::latch go(SENDERS + 1);
               std::vector<std::thread> senders;
               for(int s = 0; s < SENDERS; s++)
@@ -1113,6 +1159,10 @@ TEST_CASE("Sending to a manager that is being destroyed is memory safe", "[Threa
                           }
                           catch(const std::runtime_error &)
                           {
+                              if(reached.load())
+                              {
+                                  refusedWhileDestroying++;
+                              }
                           }
                           catch(const std::exception &)
                           {
@@ -1126,13 +1176,29 @@ TEST_CASE("Sending to a manager that is being destroyed is memory safe", "[Threa
               {
                   std::this_thread::yield();
               }
-              delivered += static_cast<std::size_t>(sent.load());
+
+              std::thread destroyer([&]() { manager.reset(); });
+              while(!reached.load() && !stop)
+              {
+                  std::this_thread::yield();
+              }
+              while(refusedWhileDestroying.load() == 0 && !stop)
+              {
+                  std::this_thread::yield();
+              }
+              if(refusedWhileDestroying.load() > 0)
+              {
+                  roundsOverlapped++;
+              }
+
               halt = true;
-              manager.reset();
               for(auto &t : senders)
               {
                   t.join();
               }
+              release = true;
+              destroyer.join();
+              delivered += static_cast<std::size_t>(sent.load());
           }
       },
       30s,
@@ -1144,6 +1210,7 @@ TEST_CASE("Sending to a manager that is being destroyed is memory safe", "[Threa
     }
     REQUIRE(otherErrors == 0);
     REQUIRE(delivered > 0);
+    REQUIRE(roundsOverlapped == ROUNDS);
 }
 
 namespace
