@@ -1762,9 +1762,11 @@ namespace
         auto returnedFuture = returned.get_future();
         std::thread caller([&] { world->Start(1000); returned.set_value(); });
         out.startReturnedWhileBlocked = returnedFuture.wait_for(std::chrono::seconds(5 * kSanitizerFactor)) == std::future_status::ready;
+        // Read before the gate opens: start-up is still blocked, so no update can have run yet. Once the
+        // gate opens the world thread may update at any time.
+        out.startsAfterStart = counters->update.load();
         gate->open.store(true);
         caller.join();
-        out.startsAfterStart = counters->update.load();
         waitForUpdate(counters);
         out.startsAfterRelease = counters->initialize.load();
         out.initializeThread = counters->initializeThread();

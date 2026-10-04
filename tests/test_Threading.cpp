@@ -1331,6 +1331,13 @@ TEST_CASE("Replacing the log destination while logging", "[Threading]")
               }
           });
 
+          // Wait for the world's own system to log before the other threads start, so it logs while
+          // the destination is being replaced even when the replacing thread would otherwise finish
+          // before the world thread is first scheduled.
+          while(systemCalls->load() == 0 && !stop)
+          {
+              std::this_thread::yield();
+          }
           go.arrive_and_wait();
           replacer.join();
           halt = true;
