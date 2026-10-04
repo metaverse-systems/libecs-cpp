@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Entity Component System library",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "sh -c 'test -x configure || ./autogen.sh; test -f Makefile || ./configure; make check'"
   },
   "repository": {
     "type": "git",

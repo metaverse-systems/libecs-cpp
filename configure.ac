@@ -27,7 +27,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CXX
 AC_CHECK_PROG([DOXYGEN], [doxygen], [doxygen])
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE([subdir-objects foreign])
 AM_MAINTAINER_MODE([enable])
 
 AC_ARG_ENABLE([tests],

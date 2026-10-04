@@ -1,64 +1,256 @@
 # libecs-cpp - Entity Component System for C++
 
-See ```src/example.cpp``` for a minimal example.
+libecs-cpp is a shared C++20 library that runs worlds of entities, components and systems, each world on its
+own thread if you want. `src/example.cpp` is a complete, runnable example.
 
-## Build environment setup
-  
-The build system and its dependencies are designed around Linux,
-if you want to build on Windows you will need to use Windows Subsystem for Linux.
+The build system and its tools are designed around Linux. To build on Windows, use the Windows Subsystem for
+Linux and the cross build described in "Building for Windows".
 
-* Install base packages
+## Requirements
 
-```
-sudo apt install build-essential libtool pkg-config curl git gawk
-```
+What you need depends on what you want to do. On Debian and Ubuntu:
 
-* Install wine and Windows dev packages
+| To do this | You need | Install |
+| --- | --- | --- |
+| Build and install the library | a C++20 compiler, make, autoconf, automake, libtool, pkg-config | `sudo apt install build-essential autoconf automake libtool pkg-config` |
+| Run the tests | Catch2 v3 (`catch2-with-main` in pkg-config) | `sudo apt install catch2` |
+| Build the reference documentation | doxygen and graphviz | `sudo apt install doxygen graphviz` |
+| Build for Windows | the mingw-w64 cross compiler and its libraries | `sudo apt install g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 binutils-mingw-w64-x86-64 mingw-w64-x86-64-dev mingw-w64-tools libz-mingw-w64-dev` |
+| Run the Windows programs | wine | `sudo apt install wine wine64` |
 
-```
-sudo su -
-dpkg --add-architecture i386
-apt update
-apt install libz-mingw-w64-dev mingw-w64-x86-64-dev binutils-mingw-w64-x86-64 \
-g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 wine wine32 wine64 wixl osslsigncode \
-mingw-w64-tools
-exit
-```
+Building and installing the library needs nothing else. The tests are optional: `configure` builds them when it
+finds Catch2 and prints `tests: no (not found)` when it does not.
 
-* Download std::thread implementation for mingw
+## Build and install
 
 ```
-sudo su -
-
-curl -o /usr/x86_64-w64-mingw32/include/mingw.thread.h \
-https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.thread.h
-
-curl -o /usr/x86_64-w64-mingw32/include/mingw.invoke.h \
-https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.invoke.h
-
-curl -o  /usr/x86_64-w64-mingw32/include/mingw.mutex.h \
-https://raw.githubusercontent.com/meganz/mingw-std-threads/master/mingw.mutex.h
-
-exit
-```
-
-## Build library
-
-* Build and install libecs-cpp
-
-```
-cd libecs-cpp
 ./autogen.sh
-./configure
+./configure --prefix=/usr/local
 make
 sudo make install
 ```
 
-* Run the example
+`./autogen.sh` generates `configure`; it is only needed in a checkout of the repository, not in a source
+archive. The installation consists of the headers in `include/libecs-cpp` (including the bundled
+`json.hpp`), the shared and static library, `libecs-cpp.la` and the pkg-config file
+`lib/pkgconfig/ecs-cpp.pc`. Nothing else is installed: not the tests and not the example.
+
+`make uninstall` removes exactly what `make install` put in place. The library can also be built in a
+separate directory, which leaves the source directory untouched:
 
 ```
-./src/example
+mkdir build && cd build
+../configure --prefix=/usr/local
+make
 ```
+
+`make doxygen` writes the reference documentation to `doxygen/html` in the build directory.
+
+## Configure options
+
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `--prefix=DIR` | `/usr/local` | Where `make install` puts the files. |
+| `--host=TRIPLET` | the build machine | Cross-compile for another system, for example `--host=x86_64-w64-mingw32`. |
+| `--enable-sanitizer=no\|address\|thread` | `no` | Build the library and the tests with AddressSanitizer together with UndefinedBehaviorSanitizer (`address`) or ThreadSanitizer (`thread`). Any other value stops `configure` with an error. |
+| `--enable-werror=no\|yes` | `no` | Treat compiler warnings as errors in the library, the example and the tests. |
+| `--enable-tests=auto\|yes\|no` | `auto` | Build the tests. `auto` builds them when Catch2 is found, `yes` stops `configure` when it is not, `no` never builds them. |
+| `--enable-builtin-uuid` | none | Retired: it has no effect, the portable identifier generator is always used. |
+
+## Using the library
+
+The installed `ecs-cpp.pc` tells the compiler and the linker what a program needs:
+
+```
+pkg-config --cflags --libs ecs-cpp
+```
+
+prints the include directory, `-std=c++20 -pthread`, the library directory, `-lecs-cpp` and `-pthread`.
+Build a program with
+
+```
+g++ $(pkg-config --cflags ecs-cpp) main.cpp $(pkg-config --libs ecs-cpp) -o main
+```
+
+and require the library from an autoconf project with `PKG_CHECK_MODULES([LIBECS], [ecs-cpp >= 2.0.0])`. If
+the library is installed outside the default prefix, add `PREFIX/lib/pkgconfig` to `PKG_CONFIG_PATH`. The
+compile flags include `-std=c++20`; a consumer that wants a later standard must put its own `-std=` after
+the pkg-config flags.
+
+The shared library carries a compatibility version in its file name (`libecs-cpp.so.N`). The number `N`
+changes only when a change is not compatible with programs built against the older library, so a program
+keeps running with a newer library of the same number and the loader refuses to start it with one of a
+different number. A new install does not remove the files of an older one: `libecs-cpp.so.0` and
+`libecs-cpp.so.0.0.0` left in the library directory by an earlier version are harmless, and the programs that
+still need them keep using them. Remove them by hand when nothing needs them any more.
+
+### Orientation
+
+A world is a `Container`. It holds entities, an entity holds components, and systems work on the components
+of the world they are registered in. `ECS` is the process-wide manager that creates worlds and shuts them
+down. A system derives from `ecs::System`, a component from `ecs::Component`; both describe themselves with
+`Export()`, which returns JSON.
+
+```cpp
+#include <libecs-cpp/ecs.hpp>
+#include <chrono>
+#include <iostream>
+#include <thread>
+
+class HelloSystem : public ecs::System
+{
+  public:
+    HelloSystem():
+        System("HelloSystem")
+    {
+    }
+
+    nlohmann::json Export() const
+    {
+        nlohmann::json config;
+        config["Handle"] = this->Handle;
+        return config;
+    }
+
+    void Update()
+    {
+        std::cout << this->Handle << " updated" << std::endl;
+    }
+};
+
+int main()
+{
+    auto world = ECS->Container();
+    world->System(std::make_unique<HelloSystem>());
+    world->Entity();
+
+    // The world updates its systems on its own thread.
+    world->Start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+
+    // Stops every world and waits until their systems were shut down.
+    ECS->Shutdown();
+    return 0;
+}
+```
+
+`src/example.cpp` adds components, a system that reads them, timing and a clean stop on Ctrl-C. The sections
+below describe what happens when systems change while a world runs, time, start-up and shutdown,
+identifiers, logging, validation, component access and threading. The reference documentation for every
+class is built with `make doxygen` and published at https://metaverse-systems.github.io/libecs-cpp/.
+
+## Building for Windows
+
+The library is cross-compiled on Linux with the mingw-w64 compiler (the packages are in "Requirements"; the
+POSIX thread model of mingw-w64 provides `std::thread` and `std::mutex`, so no further download is needed).
+Point `pkg-config` at the Windows prefix, configure with `--host` and install into that prefix:
+
+```
+export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig/
+./autogen.sh
+make distclean
+./configure --host=x86_64-w64-mingw32 --prefix=/usr/x86_64-w64-mingw32
+make
+sudo make install
+unset PKG_CONFIG_PATH
+```
+
+The example can be run under wine:
+
+```
+export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep posix|head -n1`
+WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib" wine64 src/example.exe
+```
+
+`make check` in a Windows cross-build builds the test programs (`tests/*.exe`) but does not run them.
+For it to find the Windows build of Catch2, keep `PKG_CONFIG_PATH` set to the prefix's `lib/pkgconfig`
+and `share/pkgconfig` directories while running `configure` and `make check`.
+
+## Running the tests
+
+```
+./autogen.sh
+./configure --enable-tests=yes
+make
+make check
+```
+
+`--enable-tests=yes` makes `configure` stop if Catch2 is missing instead of quietly skipping the tests.
+Add `--enable-werror=yes` to treat warnings as errors, as the hosted checks do. `npm test` runs the same
+`make check` (it runs `./autogen.sh` and `./configure` first when they have not been run) and exits
+non-zero when a test fails.
+
+`make check` builds and runs every test program in `tests/` and finishes in a few seconds. Each
+program prints one `PASS:` or `FAIL:` line, followed by a summary (`# TOTAL`, `# PASS`, `# FAIL`,
+`# ERROR`). The command exits non-zero if any program fails, crashes or cannot start, and the
+`FAIL:` line names the program. The full output of each program is in `tests/<program>.log`, and the
+combined output of a failing run is in `tests/test-suite.log`.
+
+The programs are `test_Manager`, `test_System`, `test_Entity`, `test_Container`, `test_Timing` (schedule
+arithmetic, with explicit instants), `test_Elapsed` (elapsed time, the first update, stalls and the world
+clock, on a controlled clock), `test_Compatibility` (the deprecated names), `test_UpdateAllocation`,
+`test_Uuid`, `test_Threading`, `test_Validation`, `test_Lifecycle`, `test_ProcessManager`, `test_Access`,
+`test_Logging` (severity, held lines, colour, the library warning, construction-time identifiers),
+`test_Resources` and `test_Export`. The script tests are `run-test-selftest.sh`, `run-example.sh`,
+`run-logging.sh` (console writes outside the default destination, and output to a file and a terminal),
+`check-exports.sh` and `check-exports-selftest.sh` (exported names) and `check-style.sh` with
+`check-style-selftest.sh` (member naming: no trailing underscores, camelCase private members).
+
+To run one program or script, name it: `make check TESTS=test_Manager`. The tests need Catch2 v3
+(`catch2-with-main` in pkg-config), for example `sudo apt install catch2`.
+
+## Sanitizer variants
+
+Two opt-in variants run the same tests with a sanitizer built in:
+
+```
+make distclean
+./configure --enable-sanitizer=address
+make
+make check
+```
+
+```
+make distclean
+./configure --enable-sanitizer=thread
+make
+make check
+```
+
+`address` enables AddressSanitizer together with UndefinedBehaviorSanitizer (memory errors, leaks and
+undefined behavior); `thread` enables ThreadSanitizer (data races). They correspond to the hosted
+`test (address+undefined)` and `test (thread)` checks. The sanitizer runtime options are fixed in
+`tests/Makefile.am`, so a local run behaves the same as the hosted one. Run `make distclean` before
+switching variants. Any other value for `--enable-sanitizer` stops `configure` with an error.
+
+## Known gaps
+
+`tests/known-gaps.txt` lists sanitizer findings that are already understood and are waiting for a
+planned fix. Each entry names the sanitizer variant, the test program, the test case, a text that must
+appear in the failure output, the finding, and the roadmap task that fixes it. The file currently has
+no entries.
+
+When a listed test case fails with the listed text, the run passes and prints a `KNOWN GAP:` line.
+Any other failure, in a listed or unlisted test case, still fails the run. If a listed test case
+passes, the run prints a `STALE KNOWN GAP:` line: remove the entry. If an entry is malformed or names a
+test case that does not exist, the run fails with a `MALFORMED KNOWN GAP:` line. Entries are removed
+when the fix lands; the file is never used to hide a new defect.
+
+## Continuous integration
+
+Every pull request to `master`, every push to `master` and every manual run builds the library and runs
+`make check` as four separate checks: `test (plain)`, `test (address+undefined)`, `test (thread)` and
+`test (plain (arm64))`, which runs the plain variant on a 64-bit ARM machine.
+These runs have read-only access to the repository and no secrets, so proposals from forks are checked
+the same way as proposals from this repository. A manual run accepts a `repeat` count to run the tests
+several times in a row.
+
+The reference documentation is not stored in the repository. `make doxygen` writes it to `doxygen/html` in the
+build directory (it needs `doxygen` and `graphviz`). A read-only `docs` check runs with every proposal, and the
+site is published to GitHub Pages only by pushes to `master`, never by proposals.
+The repository owner enables publishing once, under Settings, Pages, Build and deployment, Source: GitHub Actions;
+until then the publishing job reports an error and the site is not updated.
+
 
 ## Changing systems and timers while they run
 
@@ -809,7 +1001,7 @@ that is luck of its layout and not something to rely on. Projects require `ecs-c
 
 The shared-object name stays `libecs-cpp.so.0`. No libtool version-info is set for this library, so the
 loader cannot tell 1.8.0 and 2.0.0 apart by name; the versioning of the shared object is planned
-separately. Until then the rebuild rule above and the `ecs-cpp >= 2.0.0` requirement are what keep the
+separately (the library has had a compatibility version since; see "Using the library"). Until then the rebuild rule above and the `ecs-cpp >= 2.0.0` requirement are what keep the
 two apart.
 
 Changed:
@@ -1055,107 +1247,3 @@ The rules in "Changing systems and timers while they run" are now guaranteed. Th
 `ecs::Container`, `ecs::System` and `ecs::Timer` changed (private members only, no public signature
 changed), so plugins must be rebuilt against the new headers. `the-seed build` does this.
 
-## Running the tests
-
-```
-./autogen.sh
-./configure
-make
-make check
-```
-
-`make check` builds and runs every test program in `tests/` and finishes in a few seconds. Each
-program prints one `PASS:` or `FAIL:` line, followed by a summary (`# TOTAL`, `# PASS`, `# FAIL`,
-`# ERROR`). The command exits non-zero if any program fails, crashes or cannot start, and the
-`FAIL:` line names the program. The full output of each program is in `tests/<program>.log`, and the
-combined output of a failing run is in `tests/test-suite.log`.
-
-The programs are `test_Manager`, `test_System`, `test_Entity`, `test_Container`, `test_Timing` (schedule
-arithmetic, with explicit instants), `test_Elapsed` (elapsed time, the first update, stalls and the world
-clock, on a controlled clock), `test_Compatibility` (the deprecated names), `test_UpdateAllocation`,
-`test_Uuid`, `test_Threading`, `test_Validation`, `test_Lifecycle`, `test_ProcessManager`, `test_Access`,
-`test_Logging` (severity, held lines, colour, the library warning, construction-time identifiers),
-`test_Resources` and `test_Export`. The script tests are `run-test-selftest.sh`, `run-example.sh`,
-`run-logging.sh` (console writes outside the default destination, and output to a file and a terminal),
-`check-exports.sh` and `check-exports-selftest.sh` (exported names) and `check-style.sh` with
-`check-style-selftest.sh` (member naming: no trailing underscores, camelCase private members).
-
-The tests need Catch2 v3 (`catch2-with-main` in pkg-config), for example `sudo apt install catch2`.
-
-## Sanitizer variants
-
-Two opt-in variants run the same tests with a sanitizer built in:
-
-```
-make distclean
-./configure --enable-sanitizer=address
-make
-make check
-```
-
-```
-make distclean
-./configure --enable-sanitizer=thread
-make
-make check
-```
-
-`address` enables AddressSanitizer together with UndefinedBehaviorSanitizer (memory errors, leaks and
-undefined behavior); `thread` enables ThreadSanitizer (data races). They correspond to the hosted
-`test (address+undefined)` and `test (thread)` checks. The sanitizer runtime options are fixed in
-`tests/Makefile.am`, so a local run behaves the same as the hosted one. Run `make distclean` before
-switching variants. Any other value for `--enable-sanitizer` stops `configure` with an error.
-
-## Known gaps
-
-`tests/known-gaps.txt` lists sanitizer findings that are already understood and are waiting for a
-planned fix. Each entry names the sanitizer variant, the test program, the test case, a text that must
-appear in the failure output, the finding, and the roadmap task that fixes it. The file currently has
-no entries.
-
-When a listed test case fails with the listed text, the run passes and prints a `KNOWN GAP:` line.
-Any other failure, in a listed or unlisted test case, still fails the run. If a listed test case
-passes, the run prints a `STALE KNOWN GAP:` line: remove the entry. If an entry is malformed or names a
-test case that does not exist, the run fails with a `MALFORMED KNOWN GAP:` line. Entries are removed
-when the fix lands; the file is never used to hide a new defect.
-
-## Continuous integration
-
-Every pull request to `master`, every push to `master` and every manual run builds the library and runs
-`make check` as four separate checks: `test (plain)`, `test (address+undefined)`, `test (thread)` and
-`test (plain (arm64))`, which runs the plain variant on a 64-bit ARM machine.
-These runs have read-only access to the repository and no secrets, so proposals from forks are checked
-the same way as proposals from this repository. A manual run accepts a `repeat` count to run the tests
-several times in a row.
-
-The reference documentation is not stored in the repository. `make doxygen` writes it to `doxygen/html` in the
-build directory (it needs `doxygen` and `graphviz`). A read-only `docs` check runs with every proposal, and the
-site is published to GitHub Pages only by pushes to `master`, never by proposals.
-The repository owner enables publishing once, under Settings, Pages, Build and deployment, Source: GitHub Actions;
-until then the publishing job reports an error and the site is not updated.
-
-## Build library for Windows
-
-* Build and install libecs-cpp
-
-```
-export PKG_CONFIG_PATH=/usr/x86_64-w64-mingw32/lib/pkgconfig/
-cd libecs-cpp
-./autogen.sh
-make distclean
-./configure --host=x86_64-w64-mingw32 --prefix=/usr/x86_64-w64-mingw32
-make
-sudo make install
-unset PKG_CONFIG_PATH
-```
-
-* Test
-
-```
-export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep posix|head -n1`
-WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib" wine64 src/example.exe
-```
-
-`make check` in a Windows cross-build builds the test programs (`tests/*.exe`) but does not run them.
-For it to find the Windows build of Catch2, keep `PKG_CONFIG_PATH` set to the prefix's `lib/pkgconfig`
-and `share/pkgconfig` directories while running `configure` and `make check`.
