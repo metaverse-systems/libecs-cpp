@@ -53,7 +53,7 @@ make
 | `--prefix=DIR` | `/usr/local` | Where `make install` puts the files. |
 | `--host=TRIPLET` | the build machine | Cross-compile for another system, for example `--host=x86_64-w64-mingw32`. |
 | `--enable-sanitizer=no\|address\|thread` | `no` | Build the library and the tests with AddressSanitizer together with UndefinedBehaviorSanitizer (`address`) or ThreadSanitizer (`thread`). Any other value stops `configure` with an error. |
-| `--enable-werror=no\|yes` | `no` | Treat compiler warnings as errors in the library, the example and the tests. |
+| `--enable-werror=no\|yes` | `no` | Treat compiler warnings as errors in the library, the sample and the tests. |
 | `--enable-tests=auto\|yes\|no` | `auto` | Build the tests. `auto` builds them when Catch2 is found, `yes` stops `configure` when it is not, `no` never builds them. |
 | `--enable-builtin-uuid` | none | Retired: it has no effect, the portable identifier generator is always used. |
 
@@ -162,7 +162,9 @@ export MING_LIB=`ls  /usr/lib/gcc/x86_64-w64-mingw32/|grep posix|head -n1`
 WINEPATH="/usr/lib/gcc/x86_64-w64-mingw32/${MING_LIB};/usr/x86_64-w64-mingw32/lib" wine64 src/example.exe
 ```
 
-`make check` in a Windows cross-build builds the test programs (`tests/*.exe`) but does not run them.
+`make check` in a Windows cross-build builds the test programs (`tests/*.exe`) but does not run them. It runs
+the checks that need no Windows program: `check-install.sh`, `check-headers.sh`, `check-consumer.sh` (which
+compiles and links its consumers but does not run them), `check-docs.sh` and `check-readme.sh`.
 For it to find the Windows build of Catch2, keep `PKG_CONFIG_PATH` set to the prefix's `lib/pkgconfig`
 and `share/pkgconfig` directories while running `configure` and `make check`.
 
@@ -175,7 +177,9 @@ make
 make check
 ```
 
-`--enable-tests=yes` makes `configure` stop if Catch2 is missing instead of quietly skipping the tests.
+`--enable-tests=yes` makes `configure` stop if Catch2 is missing instead of quietly skipping the tests. When the
+tests are not enabled (Catch2 not found, or `--enable-tests=no`), `make check` fails with a message that says why
+instead of reporting success.
 Add `--enable-werror=yes` to treat warnings as errors, as the hosted checks do. `npm test` runs the same
 `make check` (it runs `./autogen.sh` and `./configure` first when they have not been run) and exits
 non-zero when a test fails.
@@ -194,7 +198,13 @@ clock, on a controlled clock), `test_Compatibility` (the deprecated names), `tes
 `test_Resources` and `test_Export`. The script tests are `run-test-selftest.sh`, `run-example.sh`,
 `run-logging.sh` (console writes outside the default destination, and output to a file and a terminal),
 `check-exports.sh` and `check-exports-selftest.sh` (exported names) and `check-style.sh` with
-`check-style-selftest.sh` (member naming: no trailing underscores, camelCase private members).
+`check-style-selftest.sh` (member naming: no trailing underscores, camelCase private members). Five more
+scripts check the build and the packaging: `check-install.sh` (installs into a temporary directory and compares
+the file list with the expected one, then uninstalls), `check-headers.sh` (every installed header compiles
+alone, twice and with `ecs.hpp` in either order), `check-consumer.sh` (builds and runs small programs from the
+installed `pkg-config` flags only), `check-docs.sh` (what the reference documentation covers, and that the
+workflows only read the repository; it is skipped when `doxygen` is missing, and fails instead when
+`ECS_REQUIRE_DOCS=1` is set) and `check-readme.sh` (the files, options and packages this readme names exist).
 
 To run one program or script, name it: `make check TESTS=test_Manager`. The tests need Catch2 v3
 (`catch2-with-main` in pkg-config), for example `sudo apt install catch2`.
@@ -247,7 +257,7 @@ several times in a row.
 
 The reference documentation is not stored in the repository. `make doxygen` writes it to `doxygen/html` in the
 build directory (it needs `doxygen` and `graphviz`). A read-only `docs` check runs with every proposal, and the
-site is published to GitHub Pages only by pushes to `master`, never by proposals.
+site is published to GitHub Pages only by pushes to `master` (and by a manual run of the Publish Documentation workflow), never by proposals.
 The repository owner enables publishing once, under Settings, Pages, Build and deployment, Source: GitHub Actions;
 until then the publishing job reports an error and the site is not updated.
 
