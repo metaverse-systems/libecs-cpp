@@ -1,6 +1,6 @@
 {
   "name": "@metaverse-systems/libecs-cpp",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Entity Component System library",
   "scripts": {
     "test": "sh -c 'test -x configure || ./autogen.sh; test -f Makefile || ./configure; make check'"

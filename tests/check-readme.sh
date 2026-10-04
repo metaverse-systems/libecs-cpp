@@ -250,6 +250,49 @@ else
     fi
 fi
 
+# --- version agreement -----------------------------------------------------------------------------------
+# The version in configure.ac, the version in package.json and the newest release-notes heading are one
+# number, the readme states the shared-object name of this release (soname .so.2) and the rule for changing
+# it, and no sentence still says the shared-object name is the old .so.0.
+ac_version="$(sed -n 's/^AC_INIT(\[[^]]*\],\[\([^]]*\)\].*/\1/p' "$configure_ac" | head -n 1)"
+pkg_version=""
+[ -f "$package_json" ] && pkg_version="$(sed -n 's/^[ \t]*"version"[ \t]*:[ \t]*"\([^"]*\)".*/\1/p' "$package_json" | head -n 1)"
+notes_version="$(section "$readme" '^## release notes' | sed -n 's/^### \([0-9][0-9.]*\).*/\1/p' | head -n 1)"
+if [ -z "$ac_version" ] || [ -z "$pkg_version" ] || [ -z "$notes_version" ]; then
+    fail "cannot read all three versions (configure.ac: '$ac_version', package.json: '$pkg_version', newest release notes: '$notes_version')"
+elif [ "$ac_version" != "$pkg_version" ] || [ "$ac_version" != "$notes_version" ]; then
+    fail "the versions disagree (configure.ac: $ac_version, package.json: $pkg_version, newest release notes: $notes_version)"
+else
+    echo "PASS: configure.ac, package.json and the newest release notes agree on $ac_version"
+fi
+
+stale="$(grep -nE 'so\.0' "$readme" | grep -iE 'stays|unchanged|soname|shared-object name|shared object name|name is' || true)"
+if [ -n "$stale" ]; then
+    fail "the readme still gives libecs-cpp.so.0 as the shared-object name: $(echo "$stale" | cut -c1-80 | tr '\n' ' ')"
+elif ! grep -qE 'libecs-cpp\.so\.2([^.0-9]|$)' "$readme"; then
+    fail "the readme does not state the libecs-cpp.so.2 soname"
+else
+    echo "PASS: the readme states the .so.2 soname and no longer gives .so.0 as the name"
+fi
+
+newest_notes="$(section "$readme" '^## release notes' | awk '/^### /{n++} n==1')"
+if echo "$newest_notes" | grep -qE 'libecs-cpp\.so\.2([^.0-9]|$)'; then
+    echo "PASS: the newest release notes name the .so.2 shared library"
+else
+    fail "the newest release notes do not name the libecs-cpp.so.2 shared library"
+fi
+
+if ! grep -qiE '^#+ .*versioning' "$readme"; then
+    fail "the readme has no versioning-rule section"
+else
+    echo "PASS: the readme has a versioning-rule section"
+fi
+if ! grep -qiE '^(#+ .*|(\*\*)?)migration' "$readme"; then
+    fail "the readme has no migration section"
+else
+    echo "PASS: the readme has a migration section"
+fi
+
 # --- negative self-test ----------------------------------------------------------------------------------
 cp "$readme" "$tmp/README.md"
 chmod u+w "$tmp/README.md"

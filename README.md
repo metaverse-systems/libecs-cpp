@@ -982,7 +982,83 @@ request from inside a system only records the stop and cannot deadlock. A reques
 thread also stops every world that has its own thread and waits until it has ended, as described in
 "Start-up, shutdown and stopping". It does not destroy worlds.
 
+## Versioning
+
+Two numbers describe a release, and they answer different questions.
+
+**The package version** (`2.1.0`, in `configure.ac` and `package.json`) follows semantic versioning for the
+source interface: a major number changes when programs have to be changed or rebuilt because the public
+headers or the layout of the classes changed, a minor number when something is added or the build and
+packaging change without touching the interface, and the last number for fixes. Release 2.1.0 is a minor
+release because the source interface and the class layout are the same as in 2.0.0. Consumers need a
+rebuild only because the shared library now carries a compatibility version that records what has been true
+since 2.0.0.
+
+**The shared-library version** is the libtool triple `current:revision:age` in `src/Makefile.am`
+(`-version-info 2:0:0`). It decides the file name: on Linux the soname is `libecs-cpp.so.N` with
+`N = current - age`, and on Windows the library is `libecs-cpp-N.dll`. The rule for changing it:
+
+* The soname major starts at the major number of the package, which is why it is `2` and not `0`.
+  Earlier releases shipped `0` while the layout of the classes changed and names were removed, so `0` could
+  not tell them apart.
+* After that, change the triple by the usual libtool rule. Code changes only: raise `revision`. Interface
+  added: raise `current`, reset `revision` to 0 and raise `age`. Interface removed or changed
+  incompatibly, or the layout of an exported class changed: raise `current`, and reset `revision` and `age`
+  to 0. Only the last case changes `N`, so a program keeps running with any newer library of the same `N`
+  and the loader refuses a library of a different `N`.
+* `tests/check-install.sh` names the expected files, so a change to the triple and to that check go in
+  the same commit.
+
 ## Release notes
+
+### 2.1.0
+
+Packaging and build release. The source interface and the class layout are the same as in 2.0.0, so this
+is a minor release (see "Versioning"). What changes is what is installed, how the library is built and
+tested, and the name of the shared library.
+
+**Rebuild libthe-seed, the-seed's native addon and every plugin that links libecs-cpp** after installing
+2.1.0. They were linked against `libecs-cpp.so.0`; the new library is `libecs-cpp.so.2` (Windows:
+`libecs-cpp-2.dll`), so a program built against 2.0.0 is refused by the loader instead of running against
+a library it was not built for. Projects keep requiring `ecs-cpp >= 2.0.0`, which 2.1.0 satisfies.
+
+Changed:
+
+* No program is installed. The sample `src/example.cpp` is still built in the build tree and run by the
+  tests, but `make install` no longer puts `example` in `bin`. On Windows the only file in `bin` is the DLL.
+* `--enable-werror=yes` turns compiler warnings into errors in the library, the sample and the tests. It is
+  off by default, so a newer compiler cannot break a build that only installs the library.
+* `--enable-tests=auto|yes|no` controls the tests. Catch2 is optional: the default, `auto`, builds the
+  tests when Catch2 is found, and `configure` no longer fails without it. `yes` insists on it.
+* The shared library is `libecs-cpp.so.2` (with `libecs-cpp.so.2.0.0` and the `libecs-cpp.so` link) and on
+  Windows `libecs-cpp-2.dll`. A new install does not remove the files of an older one, so `libecs-cpp.so.0`
+  and `libecs-cpp.so.0.0.0` can be left in the library directory; they are harmless and can be deleted
+  once nothing needs them. The rule for future changes is in "Versioning".
+* Every public header can be included on its own, and `Container.hpp` and `System.hpp` no longer include
+  `<iostream>`. A program that relied on getting `<iostream>` through the library headers must include it
+  itself.
+* Out-of-tree builds work, and `make distcheck` passes.
+* The installed pkg-config file is checked by building and running a small consumer against an installed
+  copy, with `pkg-config` flags only.
+* The reference documentation is published as a site (GitHub Pages) by pushes to `master`, and `docs/` is no
+  longer stored in the repository. Build it locally with `make doxygen`. The repository owner must switch
+  Settings, Pages, Build and deployment, Source to "GitHub Actions" once; until then the publishing job
+  reports an error.
+* There is one readme, `README.md`; the plain-text `README` is removed, and a check keeps the readme's
+  statements about files and options true.
+* `npm test` runs `make check` (it was a placeholder that failed).
+
+Migration:
+
+| Before | After |
+|---|---|
+| A packaging script or a user runs the installed `example` (`PREFIX/bin/example`) | It is not installed. Build the tree and run the sample from the `src` directory of the build, or compile `src/example.cpp` against the installed library. |
+| Reading the reference documentation from the committed `docs/` directory | `docs/` is gone. Open the published site, or run `make doxygen` and read `doxygen/html`. |
+| Warnings always stopped the build (`-Werror` by default) | Warnings are shown and the build continues. Add `--enable-werror=yes` to get the old behaviour, as the continuous integration does. |
+| `configure` failed when Catch2 was missing | The tests are skipped with a message. Use `--enable-tests=yes` to require them, or `--enable-tests=no` to skip them without looking. |
+| Scripts that name `libecs-cpp.so.0` or `libecs-cpp.so.0.0.0` | The files are `libecs-cpp.so.2` and `libecs-cpp.so.2.0.0` (Windows: `libecs-cpp-2.dll`). Update the names; delete leftover old files when nothing needs them. |
+| libthe-seed and the-seed's native addon built against 2.0.0 | Rebuild and reinstall libthe-seed after libecs-cpp, then rebuild the-seed's addon. Plugins built against 2.0.0 are rebuilt with `the-seed build`. |
+| A program that got `<iostream>` through `Container.hpp` or `System.hpp` | Add `#include <iostream>` to that program. |
 
 ### 2.0.0
 
@@ -999,10 +1075,10 @@ positions and the program crashed. A system plugin that does nothing with compon
 that is luck of its layout and not something to rely on. Projects require `ecs-cpp >= 2.0.0`; libthe-seed
 0.3.3 and the project templates of the-seed 1.8.0 do, and `configure` refuses a 1.8.0 install.
 
-The shared-object name stays `libecs-cpp.so.0`. No libtool version-info is set for this library, so the
-loader cannot tell 1.8.0 and 2.0.0 apart by name; the versioning of the shared object is planned
-separately (the library has had a compatibility version since; see "Using the library"). Until then the rebuild rule above and the `ecs-cpp >= 2.0.0` requirement are what keep the
-two apart.
+The 2.0.0 release shipped the shared library as `libecs-cpp.so.0`, the same file name as 1.8.0. No libtool
+version-info was set for it, so the loader could not tell 1.8.0 and 2.0.0 apart by name. The rebuild rule
+above and the `ecs-cpp >= 2.0.0` requirement are what kept the two apart. Release 2.1.0 gives the library a
+compatibility version of its own (see "Versioning").
 
 Changed:
 
@@ -1036,7 +1112,7 @@ Migration:
 | Relying on colour in a redirected file | Gone. Colour appears on a terminal only; `NO_COLOR` turns it off there too. |
 | Lines logged in a constructor arriving late | They now reach the destination at registration. |
 | System and component plugins built against 1.8.0 | Rebuild all of them with `the-seed build`. |
-| `PKG_CHECK_MODULES([LIBECS], [ecs-cpp >= 1.8.0])` | `ecs-cpp >= 2.0.0`; the soname is unchanged (`libecs-cpp.so.0`). |
+| `PKG_CHECK_MODULES([LIBECS], [ecs-cpp >= 1.8.0])` | `ecs-cpp >= 2.0.0`. The 2.0.0 release shipped the shared library as `libecs-cpp.so.0`; 2.1.0 ships `libecs-cpp.so.2`. |
 
 Tests: `test_Logging` (default severity, held lines, colour decisions, the library warning and
 construction-time identifiers), `test_Resources` and `test_Export` are new, as are the script tests
