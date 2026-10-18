@@ -151,7 +151,7 @@ it says what the member does. The last line of a member's comment states its
 
 ## Continuous integration
 
-Every pull request to `master`, every push to `master` and every manual run builds the library and runs
+Every pull request to `main`, every push to `main` and every manual run builds the library and runs
 `make check` as four separate checks:
 
 | Check | Variant |
@@ -166,7 +166,7 @@ the same way as pull requests from this repository. A manual run accepts a `repe
 several times in a row.
 
 A read-only `docs` check builds the API documentation for every pull request. The site is published to
-GitHub Pages only by pushes to `master` and by a manual run of the Publish Documentation workflow, never
+GitHub Pages only by pushes to `main` and by a manual run of the Publish Documentation workflow, never
 by pull requests. The repository owner enables publishing once, under Settings, Pages, Build and
 deployment, Source: GitHub Actions. Until then the publishing job reports an error and the site is not
 updated.

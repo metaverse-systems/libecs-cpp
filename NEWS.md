@@ -61,7 +61,7 @@ Changed:
 * Out-of-tree builds work, and `make distcheck` passes.
 * The installed pkg-config file is checked by building and running a small consumer against an installed
   copy, with `pkg-config` flags only.
-* The reference documentation is published as a site (GitHub Pages) by pushes to `master`, and `docs/` is no
+* The reference documentation is published as a site (GitHub Pages) by pushes to `main`, and `docs/` is no
   longer stored in the repository. Build it locally with `make doxygen`. The repository owner must switch
   Settings, Pages, Build and deployment, Source to "GitHub Actions" once; until then the publishing job
   reports an error.
